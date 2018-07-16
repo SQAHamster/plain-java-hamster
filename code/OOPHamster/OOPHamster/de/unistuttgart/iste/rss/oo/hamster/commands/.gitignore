@@ -2,3 +2,5 @@
 /HamsterCommand.class
 /MoveCommand.class
 /TurnLeftCommand.class
+/PickGrainCommand.class
+/PutGrainCommand.class

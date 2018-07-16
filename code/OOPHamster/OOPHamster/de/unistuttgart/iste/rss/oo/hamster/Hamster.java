@@ -1,9 +1,11 @@
 package de.unistuttgart.iste.rss.oo.hamster;
 
-import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 import de.unistuttgart.iste.rss.oo.hamster.commands.MoveCommand;
+import de.unistuttgart.iste.rss.oo.hamster.commands.PickGrainCommand;
+import de.unistuttgart.iste.rss.oo.hamster.commands.PutGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamster.commands.TurnLeftCommand;
 
 public class Hamster extends TileContent {
@@ -16,8 +18,11 @@ public class Hamster extends TileContent {
 
     private Tile currentTile;
     private Direction direction = Direction.NORTH;
-    private final Collection<Grain> grainInMouth = new LinkedList<>();
+    private final List<Grain> grainInMouth = new LinkedList<>();
 
+    /*
+     * Constructors
+     */
     public Hamster(final HamsterSimulator simulator, final int id, final Location initialPosition) {
         super();
         this.simulator = simulator;
@@ -40,36 +45,23 @@ public class Hamster extends TileContent {
         }
     }
 
+    /*
+     * Commands
+     */
     public void move() {
-        this.commandStack.execute(new MoveCommand(manipulator));
+        this.commandStack.execute(new MoveCommand(manipulator, territory));
     }
 
     public void turnLeft() {
-        this.commandStack.execute(new TurnLeftCommand(manipulator));
+        this.commandStack.execute(new TurnLeftCommand(manipulator, territory));
     }
 
     public void pickGrain() {
-        // TODO - implement Hamster.pickGrain
-        throw new UnsupportedOperationException();
+        this.commandStack.execute(new PickGrainCommand(manipulator, territory));
     }
 
     public void putGrain() {
-        // TODO - implement Hamster.putGrain
-        throw new UnsupportedOperationException();
-    }
-
-    public boolean frontIsClear() {
-        final LocationVector movementVector = this.direction.getMovementVector();
-        final Location potentialNewLocation = this.getCurrentPosition().translate(movementVector);
-        return territory.getTileAt(potentialNewLocation).canEnter();
-    }
-
-    public boolean grainAvailable() {
-        return this.currentTile.countObjectsOfType(Grain.class) > 0;
-    }
-
-    public boolean mouthEmpty() {
-        return grainInMouth.isEmpty();
+        this.commandStack.execute(new PutGrainCommand(manipulator, territory));
     }
 
     public void readNumber() {
@@ -87,6 +79,23 @@ public class Hamster extends TileContent {
         throw new UnsupportedOperationException();
     }
 
+    /*
+     * Queries
+     */
+    public boolean frontIsClear() {
+        final LocationVector movementVector = this.direction.getMovementVector();
+        final Location potentialNewLocation = this.getCurrentPosition().translate(movementVector);
+        return territory.getTileAt(potentialNewLocation).canEnter();
+    }
+
+    public boolean grainAvailable() {
+        return this.currentTile.countObjectsOfType(Grain.class) > 0;
+    }
+
+    public boolean mouthEmpty() {
+        return grainInMouth.isEmpty();
+    }
+
     public Location getCurrentPosition() {
         return this.currentTile.getTileLocation();
     }
@@ -99,6 +108,9 @@ public class Hamster extends TileContent {
         return this.direction;
     }
 
+    /*
+     * Implementation Internals... not part of the API
+     */
     private final HamsterManipulator manipulator = new HamsterManipulator();
 
     public class HamsterManipulator {
@@ -115,6 +127,16 @@ public class Hamster extends TileContent {
 
         public Hamster getHamster() {
             return Hamster.this;
+        }
+
+        public void addGrain(final Grain pickedGrain) {
+            Hamster.this.grainInMouth.add(pickedGrain);
+        }
+
+        public Grain removeAnyGrain() {
+            final Grain result = Hamster.this.grainInMouth.get(0);
+            Hamster.this.grainInMouth.remove(0);
+            return result;
         }
 
     }

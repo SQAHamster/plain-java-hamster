@@ -55,4 +55,14 @@ public class Tile {
         return tileLocation;
     }
 
+    @SuppressWarnings("unchecked")
+    public <R extends TileContent> R getAnyContentOfType(final Class<?> clazz) {
+        for (final TileContent c : content) {
+            if (clazz.isInstance(c)) {
+                return (R)c;
+            }
+        }
+        throw new RuntimeException();
+    }
+
 }
