@@ -16,11 +16,11 @@ public class Tile {
         this.content.addAll(initialContent);
     }
 
-    public Tile createWall(final Location location) {
+    public static Tile createWall(final Location location) {
         return new Tile(location, Arrays.asList(new Wall()));
     }
 
-    public Tile createGrainTile(final Location location) {
+    public static Tile createGrainTile(final Location location) {
         return new Tile(location, Arrays.asList(new Grain()));
     }
 

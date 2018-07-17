@@ -1,16 +1,15 @@
 package de.unistuttgart.iste.rss.oo.hamster.commands;
 
 import de.unistuttgart.iste.rss.oo.hamster.Grain;
-import de.unistuttgart.iste.rss.oo.hamster.Hamster.HamsterManipulator;
-import de.unistuttgart.iste.rss.oo.hamster.Territory;
 import de.unistuttgart.iste.rss.oo.hamster.Tile;
+import de.unistuttgart.iste.rss.oo.hamster.state.HamsterManipulator;
 
 public class PutGrainCommand extends HamsterCommand {
 
     private Grain grainDropped;
 
-    public PutGrainCommand(final HamsterManipulator manipulator, final Territory territory) {
-        super(manipulator, territory);
+    public PutGrainCommand(final HamsterManipulator manipulator) {
+        super(manipulator);
     }
 
     @Override

@@ -1,15 +1,14 @@
 package de.unistuttgart.iste.rss.oo.hamster.commands;
 
 import de.unistuttgart.iste.rss.oo.hamster.Direction;
-import de.unistuttgart.iste.rss.oo.hamster.Hamster.HamsterManipulator;
-import de.unistuttgart.iste.rss.oo.hamster.Territory;
+import de.unistuttgart.iste.rss.oo.hamster.state.HamsterManipulator;
 
 public class TurnLeftCommand extends HamsterCommand {
 
     private final Direction previousDirection;
 
-    public TurnLeftCommand(final HamsterManipulator manipulator, final Territory territory) {
-        super(manipulator, territory);
+    public TurnLeftCommand(final HamsterManipulator manipulator) {
+        super(manipulator);
         this.previousDirection = this.hamster.getDirection();
     }
 
