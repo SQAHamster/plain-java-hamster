@@ -18,7 +18,14 @@ public class Main {
 
         paule.move();
         paule.move();
-        paule.pickGrain();
+        while (paule.grainAvailable()) {
+            paule.pickGrain();
+        }
+        paule.turnLeft();
+        paule.turnLeft();
+        while (paule.frontIsClear()) {
+            paule.move();
+        }
     }
 
 }

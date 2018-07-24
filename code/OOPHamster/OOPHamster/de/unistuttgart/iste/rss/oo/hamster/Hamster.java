@@ -112,6 +112,9 @@ public class Hamster extends TileContent {
         return this.state.getDirection();
     }
 
+    /*
+     * OO-Design Methods
+     */
     public void addHamsterStateListener(final HamsterStateListener listener) {
         state.addHamsterStateListener(listener);
     }
@@ -121,14 +124,12 @@ public class Hamster extends TileContent {
     }
 
     @Override
-    protected boolean blocksEntrance() {
-        return false;
+    public String toString() {
+        return "Hamster";
     }
 
-    public static Hamster getDefaultHamster(final HamsterSimulator simulator) {
-        if (defaultHamster == null) {
-            defaultHamster = new Hamster(simulator, new Location(0,0));
-        }
-        return defaultHamster;
+    @Override
+    protected boolean blocksEntrance() {
+        return false;
     }
 }

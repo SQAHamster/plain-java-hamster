@@ -21,9 +21,9 @@ public enum Direction {
         case EAST:
             return Direction.NORTH;
         case NORTH:
-            return Direction.EAST;
-        case SOUTH:
             return Direction.WEST;
+        case SOUTH:
+            return Direction.EAST;
         case WEST:
             return Direction.SOUTH;
         }

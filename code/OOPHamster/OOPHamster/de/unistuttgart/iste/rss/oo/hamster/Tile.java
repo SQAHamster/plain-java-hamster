@@ -2,6 +2,7 @@ package de.unistuttgart.iste.rss.oo.hamster;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 
 import de.unistuttgart.iste.rss.oo.hamster.datatypes.Location;
@@ -23,7 +24,7 @@ public class Tile {
     }
 
     public static Tile createGrainTile(final Location location) {
-        return new Tile(location, Arrays.asList(new Grain()));
+        return new Tile(location, Collections.emptyList());
     }
 
     public boolean canEnter() {
