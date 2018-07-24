@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamster;
+package de.unistuttgart.iste.rss.oo.hamster.datatypes;
 
 public enum Direction {
     NORTH (new LocationVector(-1,0)),

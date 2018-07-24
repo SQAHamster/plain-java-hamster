@@ -1,7 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamster.commands;
 
-import de.unistuttgart.iste.rss.oo.hamster.Location;
-import de.unistuttgart.iste.rss.oo.hamster.LocationVector;
+import de.unistuttgart.iste.rss.oo.hamster.datatypes.Location;
+import de.unistuttgart.iste.rss.oo.hamster.datatypes.LocationVector;
 import de.unistuttgart.iste.rss.oo.hamster.state.HamsterManipulator;
 
 public class MoveCommand extends HamsterCommand {

@@ -1,6 +1,11 @@
-package de.unistuttgart.iste.rss.oo.hamster;
+package de.unistuttgart.iste.rss.oo.hamster.datatypes;
 
 public final class Location {
+
+    @Override
+    public String toString() {
+        return "Location [row=" + row + ", column=" + column + "]";
+    }
 
     private final int row;
     private final int column;

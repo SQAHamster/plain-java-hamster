@@ -1,10 +1,10 @@
 package de.unistuttgart.iste.rss.oo.hamster.state;
 
-import de.unistuttgart.iste.rss.oo.hamster.Direction;
 import de.unistuttgart.iste.rss.oo.hamster.Grain;
 import de.unistuttgart.iste.rss.oo.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamster.Location;
 import de.unistuttgart.iste.rss.oo.hamster.Territory;
+import de.unistuttgart.iste.rss.oo.hamster.datatypes.Direction;
+import de.unistuttgart.iste.rss.oo.hamster.datatypes.Location;
 
 public class HamsterManipulator {
 
@@ -28,9 +28,7 @@ public class HamsterManipulator {
     }
 
     public void setLocation(final Location newLocation) {
-        this.state.getCurrentTile().removeObjectFromContent(hamster);
         this.state.setCurrentTile(this.territory.getTileAt(newLocation));
-        this.state.getCurrentTile().addObjectToContent(hamster);
     }
 
     public void setDirection(final Direction newDirection) {
@@ -38,13 +36,12 @@ public class HamsterManipulator {
     }
 
     public void addGrain(final Grain pickedGrain) {
-        this.state.getGrainInMouth().add(pickedGrain);
+        this.state.addGrainToMouth(pickedGrain);
     }
 
     public Grain removeAnyGrain() {
         final Grain result = this.state.getGrainInMouth().get(0);
-        this.state.getGrainInMouth().remove(0);
+        this.state.removeGrainFromMouth(result);
         return result;
     }
-
 }

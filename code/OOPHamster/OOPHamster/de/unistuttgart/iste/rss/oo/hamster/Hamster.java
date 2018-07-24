@@ -6,44 +6,47 @@ import de.unistuttgart.iste.rss.oo.hamster.commands.MoveCommand;
 import de.unistuttgart.iste.rss.oo.hamster.commands.PickGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamster.commands.PutGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamster.commands.TurnLeftCommand;
+import de.unistuttgart.iste.rss.oo.hamster.datatypes.Direction;
+import de.unistuttgart.iste.rss.oo.hamster.datatypes.Location;
+import de.unistuttgart.iste.rss.oo.hamster.datatypes.LocationVector;
 import de.unistuttgart.iste.rss.oo.hamster.state.HamsterManipulator;
 import de.unistuttgart.iste.rss.oo.hamster.state.HamsterState;
+import de.unistuttgart.iste.rss.oo.hamster.state.HamsterStateListener;
 
 public class Hamster extends TileContent {
 
+    private static Hamster defaultHamster = null;
+
     private final HamsterSimulator simulator;
     private final CommandStack commandStack;
-    private final Territory territory;
+
     private final Location initialPosition;
-    private final HamsterManipulator manipulator;
-    private final int id;
 
     private final HamsterState state;
+    private final HamsterManipulator manipulator;
 
     /*
      * Constructors
      */
-    public Hamster(final HamsterSimulator simulator, final int id, final Location initialPosition) {
-        this(simulator, id, initialPosition, Direction.NORTH, 0);
-    }
-
-    public Hamster(final HamsterSimulator simulator, final int id, final Location initialPosition, final Direction direction) {
-        this(simulator, id, initialPosition, direction, 0);
-    }
-
-    public Hamster(final HamsterSimulator simulator, final int id, final Location initialPosition, final Direction direction, final int grainInMouth) {
+    Hamster(final HamsterSimulator simulator, final Location initialPosition, final Direction direction, final int grainInMouth) {
         super();
         this.simulator = simulator;
-        this.territory = simulator.getTerritory();
         this.commandStack = simulator.getCommandStack();
         this.initialPosition = initialPosition;
-        this.id = id;
         final LinkedList<Grain> myGrain = new LinkedList<>();
         for (int i = 0; i < grainInMouth; i++) {
             myGrain.add(new Grain());
         }
-        this.state = new HamsterState(this.territory.getTileAt(this.initialPosition), direction, myGrain);
-        this.manipulator = new HamsterManipulator(this, state, territory);
+        this.state = new HamsterState(this, simulator.getTerritory().getTileAt(this.initialPosition), direction, myGrain);
+        this.manipulator = new HamsterManipulator(this, state, simulator.getTerritory());
+    }
+
+    Hamster(final HamsterSimulator simulator, final Location initialPosition, final Direction direction) {
+        this(simulator, initialPosition, direction, 0);
+    }
+
+    Hamster(final HamsterSimulator simulator, final Location initialPosition) {
+        this(simulator, initialPosition, Direction.NORTH, 0);
     }
 
     /*
@@ -86,7 +89,7 @@ public class Hamster extends TileContent {
     public boolean frontIsClear() {
         final LocationVector movementVector = this.state.getDirection().getMovementVector();
         final Location potentialNewLocation = this.getCurrentPosition().translate(movementVector);
-        return territory.getTileAt(potentialNewLocation).canEnter();
+        return manipulator.getTerritory().getTileAt(potentialNewLocation).canEnter();
     }
 
     public boolean grainAvailable() {
@@ -109,9 +112,23 @@ public class Hamster extends TileContent {
         return this.state.getDirection();
     }
 
+    public void addHamsterStateListener(final HamsterStateListener listener) {
+        state.addHamsterStateListener(listener);
+    }
+
+    public void removeHamsterStateListener(final HamsterStateListener listener) {
+        state.removeHamsterStateListener(listener);
+    }
+
     @Override
     protected boolean blocksEntrance() {
         return false;
     }
 
+    public static Hamster getDefaultHamster(final HamsterSimulator simulator) {
+        if (defaultHamster == null) {
+            defaultHamster = new Hamster(simulator, new Location(0,0));
+        }
+        return defaultHamster;
+    }
 }

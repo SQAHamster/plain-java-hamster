@@ -1,6 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamster.commands;
 
-import de.unistuttgart.iste.rss.oo.hamster.Direction;
+import de.unistuttgart.iste.rss.oo.hamster.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamster.state.HamsterManipulator;
 
 public class TurnLeftCommand extends HamsterCommand {

@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import de.unistuttgart.iste.rss.oo.hamster.datatypes.Location;
+
 public class Tile {
 
     private final Location tileLocation;
@@ -39,6 +41,15 @@ public class Tile {
 
     public void removeObjectFromContent(final TileContent objectToRemove) {
         this.content.remove(objectToRemove);
+    }
+
+    public boolean hasObjectInContent(final TileContent content) {
+        return this.content.contains(content);
+    }
+
+    @Override
+    public String toString() {
+        return "Tile [tileLocation=" + tileLocation + ", content=" + content + "]";
     }
 
     public int countObjectsOfType(final Class<?> clazz) {

@@ -1,28 +1,15 @@
 package de.unistuttgart.iste.rss.oo.hamster;
 
-import java.util.Collection;
-import java.util.Collections;
-
 public class HamsterSimulator {
 
-    private Territory territory;
-
-    private Collection<Hamster> otherHamsters;
-    private final Hamster defaultHamster;
+    private final Territory territory;
     private final CommandStack commandStack;
 
-    public HamsterSimulator() {
+    public HamsterSimulator(final String territoryFileName) {
         super();
-        this.defaultHamster = new Hamster(this, 1, new Location(0,0));
         this.commandStack = new CommandStack(this);
-    }
-
-    public Collection<Hamster> getOtherHamsters() {
-        return Collections.unmodifiableCollection(this.otherHamsters);
-    }
-
-    public Hamster getDefaultHamster() {
-        return this.defaultHamster;
+        this.territory = new Territory(this, territoryFileName);
+        this.territory.buildTerritoryFromString(territoryFileName);
     }
 
     public Territory getTerritory() {

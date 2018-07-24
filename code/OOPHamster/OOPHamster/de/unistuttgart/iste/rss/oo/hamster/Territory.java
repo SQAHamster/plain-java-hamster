@@ -1,31 +1,43 @@
 package de.unistuttgart.iste.rss.oo.hamster;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
-import java.util.regex.Pattern;
+import java.util.List;
+import java.util.Optional;
+import java.util.Scanner;
+
+import de.unistuttgart.iste.rss.oo.hamster.datatypes.Direction;
+import de.unistuttgart.iste.rss.oo.hamster.datatypes.Location;
 
 public class Territory {
 
-    private static final int DEFAULT_HAMSTER_ID = -1;
-    private final Tile[][] tiles;
+    private final HamsterSimulator simulator;
+
+    private Tile[][] tiles;
     private int rowCount;
     private int columnCount;
-    private HamsterSimulator simulator;
+    private Collection<Hamster> otherHamsters;
+    private Hamster defaultHamster;
 
     /**
      *
      * @param territoryFileName
      */
-    public Territory(final String territoryFileName) {
+    public Territory(final HamsterSimulator simulator, final String territoryFileName) {
         super();
-        this.tiles = new Tile[rowCount][columnCount];
+        this.simulator = simulator;
     }
 
-    public Integer getRowCount() {
+    public int getRowCount() {
         return this.rowCount;
     }
 
-    public Integer getColumnCount() {
+    public int getColumnCount() {
         return this.columnCount;
     }
 
@@ -37,61 +49,113 @@ public class Territory {
         return tiles[location.getRow()][location.getColumn()];
     }
 
-    private void buildTerritoryFromString(final String string) {
-        final Pattern lineSplitter = Pattern.compile("\n|\r\n");
-        final String[] lines = lineSplitter.split(string);
+    public Collection<Hamster> getOtherHamsters() {
+        return Collections.unmodifiableCollection(this.otherHamsters);
+    }
+
+    public Hamster getDefaultHamster() {
+        return this.defaultHamster;
+    }
+
+    void buildTerritoryFromString(final String territoryFile) {
+        final List<String> list = readLinesFromTerritoryFile(territoryFile);
+        final String[] lines = list.toArray(new String[]{});
+        initializeTiles(lines);
+        final String[] territoryDefinition = Arrays.copyOfRange(lines,2,lines.length);
+        buildTiles(territoryDefinition);
+    }
+
+    private void initializeTiles(final String[] lines) {
         this.columnCount = Integer.parseInt(lines[0]);
         this.rowCount = Integer.parseInt(lines[1]);
-        final String[] territoryDefinition = Arrays.copyOfRange(lines,2,this.rowCount+2);
-        buildTiles(territoryDefinition);
-
-        for (int i = 0; i < cornPosition.size(); i++) {
-            final int[] p = (int[]) cornPosition.get(i);
-            final int count = Integer.parseInt(lines[2 + height + i]);
-            corn[p[0]][p[1]] = count;
-        }
-        defaultHamster.setMouth(Integer.parseInt(lines[2 + height
-                                                       + cornPosition.size()]));
-
+        this.tiles = new Tile[rowCount][columnCount];
     }
 
     private void buildTiles(final String[] lines) {
-        final LinkedList<Location> cornLocations = new LinkedList<Location>();
-        Hamster defaultHamster;
-        for (int i = 0; i < this.rowCount; i++) {
-            for (int j = 0; j < this.columnCount; j++) {
-                final Location currentLocation = new Location(j,i);
-                switch (lines[i + 2].charAt(j)) {
-                case '#':
-                    this.tiles[i][j] = Tile.createWall(currentLocation);
-                    break;
+        final LinkedList<Location> grainLocations = new LinkedList<Location>();
+        Optional<Location> defaultHamsterLocation = Optional.empty();
+        Optional<Direction> defaultHamsterDirection = Optional.empty();
+        for (int row = 0; row < this.rowCount; row++) {
+            for (int column = 0; column < this.columnCount; column++) {
+                final Location currentLocation = new Location(row,column);
+                final char tileCode = lines[row].charAt(column);
+                createTileAt(currentLocation, tileCode);
+                switch (tileCode) {
                 case ' ':
+                case '#':
                     break;
                 case '*':
-                    cornLocations.add(currentLocation);
+                    grainLocations.add(currentLocation);
                     break;
                 case '^':
-                    cornLocations.add(currentLocation);
-                    defaultHamster = new Hamster(simulator, DEFAULT_HAMSTER_ID, currentLocation, Direction.NORTH);
+                    grainLocations.add(currentLocation);
+                    defaultHamsterLocation = Optional.of(currentLocation);
+                    defaultHamsterDirection = Optional.of(Direction.NORTH);
                     break;
                 case '>':
-                    cornLocations.add(currentLocation);
-                    defaultHamster = new Hamster(simulator, DEFAULT_HAMSTER_ID, currentLocation, Direction.EAST);
+                    grainLocations.add(currentLocation);
+                    defaultHamsterLocation = Optional.of(currentLocation);
+                    defaultHamsterDirection = Optional.of(Direction.EAST);
                     break;
                 case 'v':
-                    cornLocations.add(currentLocation);
-                    defaultHamster = new Hamster(simulator, DEFAULT_HAMSTER_ID, currentLocation, Direction.SOUTH);
+                    grainLocations.add(currentLocation);
+                    defaultHamsterLocation = Optional.of(currentLocation);
+                    defaultHamsterDirection = Optional.of(Direction.SOUTH);
                     break;
                 case '<':
-                    cornLocations.add(currentLocation);
-                    defaultHamster = new Hamster(simulator, DEFAULT_HAMSTER_ID, currentLocation, Direction.WEST);
+                    grainLocations.add(currentLocation);
+                    defaultHamsterLocation = Optional.of(currentLocation);
+                    defaultHamsterDirection = Optional.of(Direction.WEST);
                     break;
                 default:
                     throw new RuntimeException("Territory error.");
                 }
             }
         }
-        simulator.
+        final int initialGrainCount = Integer.parseInt(lines[this.rowCount + grainLocations.size()]);
+        this.defaultHamster = new Hamster(
+                simulator,
+                defaultHamsterLocation.orElseThrow(IllegalStateException::new),
+                defaultHamsterDirection.orElseThrow(IllegalStateException::new),
+                initialGrainCount);
+        placeGrain(lines, grainLocations);
     }
 
+    private void createTileAt(final Location currentLocation, final char tileCode) {
+        if (tileCode == '#') {
+            this.tiles[currentLocation.getRow()][currentLocation.getColumn()] = Tile.createWall(currentLocation);
+        } else {
+            this.tiles[currentLocation.getRow()][currentLocation.getColumn()] = Tile.createGrainTile(currentLocation);
+        }
+    }
+
+    private void placeGrain(final String[] lines, final LinkedList<Location> grainLocations) {
+        for (int i = 0; i < grainLocations.size(); i++) {
+            final Location location = grainLocations.get(i);
+            final int count = Integer.parseInt(lines[this.rowCount + i]);
+            putNewGrain(getTileAt(location), count);
+        }
+    }
+
+    private void putNewGrain(final Tile tile, final int count) {
+        for (int i = 0; i < count; i++) {
+            tile.addObjectToContent(new Grain());
+        }
+    }
+
+    private List<String> readLinesFromTerritoryFile(final String territoryFileName) {
+        final File file = new File(territoryFileName);
+        final List<String> list = new ArrayList<String>();
+
+        try ( Scanner input = new Scanner(file) )
+        {
+            while (input.hasNextLine()) {
+                list.add(input.nextLine());
+            }
+        } catch (final FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        return list;
+    }
 }
