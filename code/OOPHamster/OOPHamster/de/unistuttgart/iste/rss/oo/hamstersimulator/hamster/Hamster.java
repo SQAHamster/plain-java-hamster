@@ -2,8 +2,13 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster;
 
 import java.util.LinkedList;
 
+<<<<<<< Upstream, based on branch 'master' of ssh://git@git.rss.iste.uni-stuttgart.de:22222/Teaching/pse.git
 import de.unistuttgart.iste.rss.oo.hamstersimulator.CommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
+=======
+import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandStack;
+>>>>>>> 3d2e677 Refactored package names
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.MoveCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PickGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PutGrainCommand;
