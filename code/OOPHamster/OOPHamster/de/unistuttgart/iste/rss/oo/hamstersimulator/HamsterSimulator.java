@@ -1,9 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator;
 
-<<<<<<< Upstream, based on branch 'master' of ssh://git@git.rss.iste.uni-stuttgart.de:22222/Teaching/pse.git
-=======
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandStack;
->>>>>>> 3d2e677 Refactored package names
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 
 public class HamsterSimulator {
