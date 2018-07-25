@@ -1,0 +1,9 @@
+/HamsterState.class
+/HamsterManipulator.class
+/HamsterStateListener.class
+/HamsterStateChangedEvent.class
+/HamsterMovedEvent.class
+/HamsterChangedDirectionEvent.class
+/HamsterGrainAddedEvent.class
+/HamsterGrainDeletedEvent.class
+/Hamster.class

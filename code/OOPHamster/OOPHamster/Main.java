@@ -1,11 +1,13 @@
-import de.unistuttgart.iste.rss.oo.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamster.HamsterSimulator;
-import de.unistuttgart.iste.rss.oo.hamster.state.HamsterStateChangedEvent;
-import de.unistuttgart.iste.rss.oo.hamster.state.HamsterStateListener;
+import java.io.IOException;
+
+import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterStateChangedEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterStateListener;
 
 public class Main {
 
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws IOException {
         final HamsterSimulator simulator = new HamsterSimulator("/Users/snowball/test.ter");
         final Hamster paule = simulator.getTerritory().getDefaultHamster();
         paule.addHamsterStateListener(new HamsterStateListener() {
@@ -16,8 +18,9 @@ public class Main {
             }
         });
 
-        paule.move();
-        paule.move();
+        while (!paule.grainAvailable() && paule.frontIsClear()) {
+            paule.move();
+        }
         while (paule.grainAvailable()) {
             paule.pickGrain();
         }
@@ -25,6 +28,9 @@ public class Main {
         paule.turnLeft();
         while (paule.frontIsClear()) {
             paule.move();
+        }
+        while (!paule.mouthEmpty()) {
+            paule.putGrain();
         }
     }
 
