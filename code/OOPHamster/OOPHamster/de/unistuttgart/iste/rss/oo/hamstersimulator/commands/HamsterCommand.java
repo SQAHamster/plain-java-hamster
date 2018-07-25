@@ -1,18 +1,18 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterManipulator;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterStateChanger;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 
-public abstract class HamsterCommand extends Command {
-    protected final HamsterManipulator hamsterManipulator;
+abstract class HamsterCommand extends Command {
+    protected final HamsterStateChanger stateChanger;
     protected final Hamster hamster;
     protected final Territory territory;
 
-    public HamsterCommand(final HamsterManipulator manipulator) {
+    public HamsterCommand(final Territory territory, final HamsterStateChanger stateChanger) {
         super();
-        this.hamsterManipulator = manipulator;
-        this.hamster = manipulator.getHamster();
-        this.territory = manipulator.getTerritory();
+        this.stateChanger = stateChanger;
+        this.hamster = stateChanger.getHamster();
+        this.territory = territory;
     }
 }

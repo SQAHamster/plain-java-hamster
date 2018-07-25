@@ -7,3 +7,7 @@
 /HamsterGrainAddedEvent.class
 /HamsterGrainDeletedEvent.class
 /Hamster.class
+/HamsterState$HamsterStateChanger.class
+/HamsterState$HamsterStateChangerImpl.class
+/IHamsterStateChanger.class
+/HamsterStateChanger.class

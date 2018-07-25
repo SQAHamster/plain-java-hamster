@@ -1,23 +1,25 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster;
 
+import java.util.Optional;
+
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
 
 public class HamsterMovedEvent extends HamsterStateChangedEvent {
 
-    private final Tile oldTile;
-    private final Tile newTile;
+    private final Optional<Tile> oldTile;
+    private final Optional<Tile> newTile;
 
-    public HamsterMovedEvent(final Hamster hamster, final Tile oldTile, final Tile newTile) {
+    public HamsterMovedEvent(final Hamster hamster, final Optional<Tile> oldTile, final Optional<Tile> currentTile) {
         super(hamster);
         this.oldTile = oldTile;
-        this.newTile = newTile;
+        this.newTile = currentTile;
     }
 
-    public Tile getOldTile() {
+    public Optional<Tile> getOldTile() {
         return oldTile;
     }
 
-    public Tile getNewTile() {
+    public Optional<Tile> getNewTile() {
         return newTile;
     }
 

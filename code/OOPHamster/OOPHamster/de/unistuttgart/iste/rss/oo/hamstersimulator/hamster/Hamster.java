@@ -1,9 +1,9 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster;
 
 import java.util.LinkedList;
+import java.util.Optional;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.MoveCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PickGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PutGrainCommand;
@@ -16,11 +16,11 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.TileContent;
 
 public class Hamster extends TileContent {
 
-    private final CommandStack commandStack;
+    private final HamsterSimulator simulator;
     private final Location initialPosition;
 
     private final HamsterState state;
-    private final HamsterManipulator manipulator;
+    private final HamsterStateChanger stateChanger;
 
     /*
      * Constructors
@@ -28,14 +28,15 @@ public class Hamster extends TileContent {
     // TODO: Fixme, make private by using a creational pattern
     public Hamster(final HamsterSimulator simulator, final Location initialPosition, final Direction direction, final int grainInMouth) {
         super();
-        this.commandStack = simulator.getCommandStack();
+        this.simulator = simulator;
         this.initialPosition = initialPosition;
         final LinkedList<Grain> myGrain = new LinkedList<>();
         for (int i = 0; i < grainInMouth; i++) {
             myGrain.add(new Grain());
         }
         this.state = new HamsterState(this, simulator.getTerritory().getTileAt(this.initialPosition), direction, myGrain);
-        this.manipulator = new HamsterManipulator(this, state, simulator.getTerritory());
+        this.stateChanger = this.state.getStateChanger();
+        this.stateChanger.setCurrentTile(Optional.of(this.simulator.getTerritory().getTileAt(initialPosition)));
     }
 
     Hamster(final HamsterSimulator simulator, final Location initialPosition, final Direction direction) {
@@ -50,19 +51,19 @@ public class Hamster extends TileContent {
      * Commands
      */
     public void move() {
-        this.commandStack.execute(new MoveCommand(manipulator));
+        this.simulator.getCommandStack().execute(new MoveCommand(this.simulator.getTerritory(), stateChanger));
     }
 
     public void turnLeft() {
-        this.commandStack.execute(new TurnLeftCommand(manipulator));
+        this.simulator.getCommandStack().execute(new TurnLeftCommand(this.simulator.getTerritory(), stateChanger));
     }
 
     public void pickGrain() {
-        this.commandStack.execute(new PickGrainCommand(manipulator));
+        this.simulator.getCommandStack().execute(new PickGrainCommand(this.simulator.getTerritory(), stateChanger));
     }
 
     public void putGrain() {
-        this.commandStack.execute(new PutGrainCommand(manipulator));
+        this.simulator.getCommandStack().execute(new PutGrainCommand(this.simulator.getTerritory(), stateChanger));
     }
 
     public void readNumber() {
@@ -85,20 +86,20 @@ public class Hamster extends TileContent {
      */
     public boolean frontIsClear() {
         final LocationVector movementVector = this.state.getDirection().getMovementVector();
-        final Location potentialNewLocation = this.getCurrentPosition().translate(movementVector);
-        return manipulator.getTerritory().getTileAt(potentialNewLocation).canEnter();
+        final Location potentialNewLocation = this.getCurrentPosition().orElseThrow(IllegalStateException::new).translate(movementVector);
+        return this.simulator.getTerritory().getTileAt(potentialNewLocation).canEnter();
     }
 
     public boolean grainAvailable() {
-        return this.state.getCurrentTile().countObjectsOfType(Grain.class) > 0;
+        return this.state.getCurrentTile().orElseThrow(IllegalStateException::new).countObjectsOfType(Grain.class) > 0;
     }
 
     public boolean mouthEmpty() {
         return state.getGrainInMouth().isEmpty();
     }
 
-    public Location getCurrentPosition() {
-        return this.state.getCurrentTile().getTileLocation();
+    public Optional<Location> getCurrentPosition() {
+        return this.state.getCurrentTile().map(t -> t.getTileLocation());
     }
 
     public Location getInitialPosition() {

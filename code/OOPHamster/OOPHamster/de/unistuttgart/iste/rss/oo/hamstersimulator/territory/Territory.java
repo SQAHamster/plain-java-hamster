@@ -152,4 +152,9 @@ public class Territory {
 
         return list;
     }
+
+    public boolean isLocationInTerritory(final Location newHamsterPosition) {
+        return newHamsterPosition.getColumn() < this.getColumnCount() &&
+                newHamsterPosition.getRow() < this.getRowCount();
+    }
 }

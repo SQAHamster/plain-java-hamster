@@ -12,6 +12,9 @@ public final class Location {
 
     public Location(final int row, final int column) {
         super();
+        if (row < 0 || column < 0) {
+            throw new IllegalArgumentException("Negative row/column not allowed.");
+        }
         this.row = row;
         this.column = column;
     }
