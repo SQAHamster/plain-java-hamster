@@ -21,8 +21,8 @@ public class PutGrainCommand extends HamsterCommand {
 
         this.currentTile = this.territory.getTileAt(this.hamster.getCurrentPosition().get());
         this.grainDropped = this.stateChanger.getAnyGrain();
-        this.stateChanger.removeGrainFromMouth(this.grainDropped);
         this.currentTile.addObjectToContent(this.grainDropped);
+        this.stateChanger.removeGrainFromMouth(this.grainDropped);
     }
 
     @Override

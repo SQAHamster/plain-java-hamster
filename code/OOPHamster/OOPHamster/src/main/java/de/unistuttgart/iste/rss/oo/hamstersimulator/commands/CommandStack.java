@@ -16,6 +16,11 @@ public class CommandStack {
     public void execute(final Command command) {
         command.execute();
         this.executedCommands.add(command);
+
+        try {
+            Thread.sleep(1500);
+        } catch (final InterruptedException e) { }
+
     }
 
 }
