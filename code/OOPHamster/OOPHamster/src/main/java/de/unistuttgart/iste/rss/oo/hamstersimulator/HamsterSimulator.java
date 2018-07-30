@@ -8,11 +8,10 @@ public class HamsterSimulator {
     private final Territory territory;
     private final CommandStack commandStack;
 
-    public HamsterSimulator(final String territoryFileName) {
+    public HamsterSimulator() {
         super();
         this.commandStack = new CommandStack(this);
-        this.territory = new Territory(this, territoryFileName);
-        this.territory.buildTerritoryFromString(territoryFileName);
+        this.territory = new Territory(this);
     }
 
     public Territory getTerritory() {

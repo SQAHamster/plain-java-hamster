@@ -27,7 +27,7 @@ public class Tile {
         return new Tile(territory, location, Arrays.asList(new Wall()));
     }
 
-    static Tile createGrainTile(final Territory territory, final Location location) {
+    static Tile createEmptyTile(final Territory territory, final Location location) {
         return new Tile(territory, location, Collections.emptyList());
     }
 

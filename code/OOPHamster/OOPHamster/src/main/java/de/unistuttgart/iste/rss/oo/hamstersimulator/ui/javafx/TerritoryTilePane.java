@@ -44,6 +44,31 @@ public class TerritoryTilePane extends Pane {
 
     };
 
+    private final TileListener tileListener = new TileListener() {
+
+        @Override
+        public void contentItemRemoved(final TileContentRemovedEvent e) {
+            if (e.getRemovedContent() instanceof Wall) {
+                removeWall();
+            } else if (e.getRemovedContent() instanceof Hamster) {
+                removeHamster((Hamster) e.getRemovedContent());
+            } else if (e.getRemovedContent() instanceof Grain) {
+                updateGrains();
+            }
+        }
+
+        @Override
+        public void contentItemAdded(final TileContentAddedEvent e) {
+            if (e.getNewContent() instanceof Wall) {
+                showWall();
+            } else if (e.getNewContent() instanceof Hamster) {
+                showHamster((Hamster) e.getNewContent());
+            } else if (e.getNewContent() instanceof Grain) {
+                updateGrains();
+            }
+        }
+    };
+
     TerritoryTilePane(final Tile tile) {
         super();
         this.tile = tile;
@@ -136,30 +161,11 @@ public class TerritoryTilePane extends Pane {
     }
 
     private void addTileListener() {
-        this.tile.addTileListener(new TileListener() {
+        this.tile.addTileListener(tileListener);
 
-            @Override
-            public void contentItemRemoved(final TileContentRemovedEvent e) {
-                if (e.getRemovedContent() instanceof Wall) {
-                    removeWall();
-                } else if (e.getRemovedContent() instanceof Hamster) {
-                    removeHamster((Hamster) e.getRemovedContent());
-                } else if (e.getRemovedContent() instanceof Grain) {
-                    updateGrains();
-                }
-            }
+    }
 
-            @Override
-            public void contentItemAdded(final TileContentAddedEvent e) {
-                if (e.getNewContent() instanceof Wall) {
-                    showWall();
-                } else if (e.getNewContent() instanceof Hamster) {
-                    showHamster((Hamster) e.getNewContent());
-                } else if (e.getNewContent() instanceof Grain) {
-                    updateGrains();
-                }
-            }
-        });
-
+    public void dispose() {
+        this.tile.removeTileListener(tileListener);
     }
 }
