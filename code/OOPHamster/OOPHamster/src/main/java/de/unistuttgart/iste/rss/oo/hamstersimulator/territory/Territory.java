@@ -117,9 +117,9 @@ public class Territory {
 
     private void createTileAt(final Location currentLocation, final char tileCode) {
         if (tileCode == '#') {
-            this.tiles[currentLocation.getRow()][currentLocation.getColumn()] = Tile.createWall(currentLocation);
+            this.tiles[currentLocation.getRow()][currentLocation.getColumn()] = Tile.createWall(this, currentLocation);
         } else {
-            this.tiles[currentLocation.getRow()][currentLocation.getColumn()] = Tile.createGrainTile(currentLocation);
+            this.tiles[currentLocation.getRow()][currentLocation.getColumn()] = Tile.createGrainTile(this, currentLocation);
         }
     }
 

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 
@@ -11,20 +12,27 @@ public class Tile {
 
     private final Location tileLocation;
     private final Collection<TileContent> content;
+    private final Territory territory;
+    private final List<TileListener> tileObservers = new LinkedList<>();
 
-    private Tile(final Location tileLocation, final Collection<? extends TileContent> initialContent) {
+    private Tile(final Territory territory, final Location tileLocation, final Collection<? extends TileContent> initialContent) {
         super();
+        this.territory = territory;
         this.tileLocation = tileLocation;
         this.content = new LinkedList<TileContent>();
         this.content.addAll(initialContent);
     }
 
-    public static Tile createWall(final Location location) {
-        return new Tile(location, Arrays.asList(new Wall()));
+    static Tile createWall(final Territory territory, final Location location) {
+        return new Tile(territory, location, Arrays.asList(new Wall()));
     }
 
-    public static Tile createGrainTile(final Location location) {
-        return new Tile(location, Collections.emptyList());
+    static Tile createGrainTile(final Territory territory, final Location location) {
+        return new Tile(territory, location, Collections.emptyList());
+    }
+
+    public Territory getTerritory() {
+        return territory;
     }
 
     public boolean canEnter() {
@@ -38,10 +46,12 @@ public class Tile {
 
     public void addObjectToContent(final TileContent newObject) {
         this.content.add(newObject);
+        this.notifyContentAdded(new TileContentAddedEvent(this, newObject));
     }
 
     public void removeObjectFromContent(final TileContent objectToRemove) {
         this.content.remove(objectToRemove);
+        this.notifyContentRemoved(new TileContentRemovedEvent(this, objectToRemove));
     }
 
     public boolean hasObjectInContent(final TileContent content) {
@@ -77,4 +87,23 @@ public class Tile {
         throw new RuntimeException();
     }
 
+    public void addTileListener(final TileListener listener) {
+        this.tileObservers.add(listener);
+    }
+
+    public void removeTileListener(final TileListener listener) {
+        this.tileObservers.remove(listener);
+    }
+
+    private void notifyContentAdded(final TileContentAddedEvent e) {
+        for (final TileListener observer : tileObservers) {
+            observer.contentItemAdded(e);
+        }
+    }
+
+    private void notifyContentRemoved(final TileContentRemovedEvent e) {
+        for (final TileListener observer : tileObservers) {
+            observer.contentItemRemoved(e);
+        }
+    }
 }

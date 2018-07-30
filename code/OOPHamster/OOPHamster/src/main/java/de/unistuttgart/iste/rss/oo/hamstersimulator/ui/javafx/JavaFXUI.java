@@ -1,20 +1,9 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 
-import java.util.concurrent.CountDownLatch;
-
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterChangedDirectionEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterGrainAddedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterGrainDeletedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterMovedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterStateChangedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterStateListener;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -27,7 +16,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class JavaFXUI extends Application implements HamsterStateListener {
+public class JavaFXUI extends Application {
 
     private static final double TILE_SIZE = 40.0;
     private static final double INSET = TILE_SIZE / 2.0;
@@ -46,40 +35,6 @@ public class JavaFXUI extends Application implements HamsterStateListener {
             } catch (final InterruptedException e) { }
         }
         return mySingleton;
-    }
-
-    @Override
-    public void onStateChanged(final HamsterStateChangedEvent event) {
-        // queue on JavaFX thread and wait for completion
-        final CountDownLatch doneLatch = new CountDownLatch(1);
-        Platform.runLater(() -> {
-            try {
-                if (event instanceof HamsterMovedEvent) {
-                    final HamsterMovedEvent hme = (HamsterMovedEvent) event;
-                    final Location oldLocation = hme.getOldTile().get().getTileLocation();
-                    final Location newLocation = hme.getNewTile().get().getTileLocation();
-                    territoryTile[oldLocation.getColumn()][oldLocation.getRow()].removeHamster(hme.getHamster());
-                    territoryTile[newLocation.getColumn()][newLocation.getRow()].showHamster(hme.getHamster());
-                }
-                if (event instanceof HamsterChangedDirectionEvent) {
-                    final HamsterChangedDirectionEvent hme = (HamsterChangedDirectionEvent) event;
-                    final Location location = hme.getHamster().getCurrentPosition().get();
-                    territoryTile[location.getColumn()][location.getRow()].showHamster(hme.getHamster());
-                }
-                if (event instanceof HamsterGrainAddedEvent || event instanceof HamsterGrainDeletedEvent) {
-                    final HamsterStateChangedEvent hme = event;
-                    final Location location = hme.getHamster().getCurrentPosition().get();
-                    final int count = this.territory.getTileAt(location).countObjectsOfType(Grain.class);
-                    territoryTile[location.getColumn()][location.getRow()].setGrains(count);
-                }
-            } finally {
-                doneLatch.countDown();
-            }
-        });
-
-        try {
-            doneLatch.await();
-        } catch (final InterruptedException ex) { }
     }
 
     @Override
@@ -102,14 +57,7 @@ public class JavaFXUI extends Application implements HamsterStateListener {
 
     public void init(final Territory territory) {
         this.territory = territory;
-        final CountDownLatch doneLatch = new CountDownLatch(1);
-        Platform.runLater(() -> {
-            initGamefield();
-            doneLatch.countDown();
-        });
-        try {
-            doneLatch.await();
-        } catch (final InterruptedException e) {}
+        JavaFXUtil.blockingExecuteOnFXThread(() -> initGamefield());
     }
 
     private BorderPane getRootScene() {
@@ -164,16 +112,9 @@ public class JavaFXUI extends Application implements HamsterStateListener {
         territoryTile = new TerritoryTilePane[columns][rows];
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < rows; j++) {
-                territoryTile[i][j] = new TerritoryTilePane(new Location(j, i));
-                grid.add(territoryTile[i][j], i, j);
                 final Tile tile = territory.getTileAt(new Location(j, i));
-                if (!tile.canEnter()) {
-                    territoryTile[i][j].showWall();
-                }
-                territoryTile[i][j].setGrains(tile.countObjectsOfType(Grain.class));
-                if (tile.countObjectsOfType(Hamster.class) > 0) {
-                    territoryTile[i][j].showHamster(tile.getAnyContentOfType(Hamster.class));
-                }
+                territoryTile[i][j] = new TerritoryTilePane(tile);
+                grid.add(territoryTile[i][j], i, j);
             }
         }
     }

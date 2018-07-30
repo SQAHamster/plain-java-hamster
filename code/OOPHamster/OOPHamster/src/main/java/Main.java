@@ -42,7 +42,6 @@ public class Main {
         try {
             Thread.sleep(2000);
         } catch (final InterruptedException e) { }
-        paule.addHamsterStateListener(JavaFXUI.getSingleton());
 
         while (!paule.grainAvailable() && paule.frontIsClear()) {
             paule.move();
