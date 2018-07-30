@@ -4,7 +4,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterStateChangedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterStateListener;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.legacy.ui.LegacyUISyncer;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.legacy.ui.JavaFXUI;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
@@ -37,12 +37,12 @@ public class Main {
 
         final Disposable stateObserverDisposable = hamsterStateObservable.subscribe(System.out::println);
 
-        LegacyUISyncer.start();
-        LegacyUISyncer.getSingleton().init(simulator.getTerritory());
+        JavaFXUI.start();
+        JavaFXUI.getSingleton().init(simulator.getTerritory());
         try {
             Thread.sleep(2000);
         } catch (final InterruptedException e) { }
-        paule.addHamsterStateListener(LegacyUISyncer.getSingleton());
+        paule.addHamsterStateListener(JavaFXUI.getSingleton());
 
         while (!paule.grainAvailable() && paule.frontIsClear()) {
             paule.move();

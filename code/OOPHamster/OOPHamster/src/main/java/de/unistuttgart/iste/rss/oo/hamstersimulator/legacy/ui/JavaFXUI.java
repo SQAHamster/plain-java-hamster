@@ -27,7 +27,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class LegacyUISyncer extends Application implements HamsterStateListener {
+public class JavaFXUI extends Application implements HamsterStateListener {
 
     private static final double TILE_SIZE = 40.0;
     private static final double INSET = TILE_SIZE / 2.0;
@@ -37,9 +37,9 @@ public class LegacyUISyncer extends Application implements HamsterStateListener 
     private TerritoryTilePane[][] territoryTile;
     private Territory territory;
     private GridPane grid;
-    public static LegacyUISyncer mySingleton = null;
+    public static JavaFXUI mySingleton = null;
 
-    public static LegacyUISyncer getSingleton() {
+    public static JavaFXUI getSingleton() {
         while (mySingleton == null) {
             try {
                 Thread.sleep(100);
@@ -179,7 +179,7 @@ public class LegacyUISyncer extends Application implements HamsterStateListener 
     }
 
     public static void start() {
-        new Thread(()->Application.launch(LegacyUISyncer.class)).start();
+        new Thread(()->Application.launch(JavaFXUI.class)).start();
     }
 
 }
