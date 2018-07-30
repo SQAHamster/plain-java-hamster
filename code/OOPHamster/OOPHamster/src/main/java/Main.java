@@ -1,7 +1,6 @@
 import java.io.IOException;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterStateListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
@@ -17,9 +16,6 @@ public class Main {
 
         JavaFXUI.start();
         JavaFXUI.getSingleton().init(simulator.getTerritory());
-        try {
-            Thread.sleep(2000);
-        } catch (final InterruptedException e) { }
 
 
         //        class MyFlowableOnSubscribe implements FlowableOnSubscribe<HamsterStateChangedEvent> {
@@ -41,7 +37,12 @@ public class Main {
         //        final Disposable stateObserverDisposable = hamsterStateObservable.subscribe(System.out::println);
 
         final Territory territory = simulator.getTerritory();
-        territory.setSize(6, 3).defaultHamsterAt(1, 1, Direction.EAST, 0).wallAt(0, 0).wallAt(1, 5).wallAt(1,0);
+        // territory.setSize(6, 3).defaultHamsterAt(1, 1, Direction.EAST, 0).wallAt(0, 0).wallAt(1, 5).wallAt(1,0).grainAt(1, 4, 2);
+        territory.loadTerritoryFromFile(territoryFile);
+        try {
+            Thread.sleep(2000);
+        } catch (final InterruptedException e) { }
+
 
         exampleRun(simulator);
         //        stateObserverDisposable.dispose();
