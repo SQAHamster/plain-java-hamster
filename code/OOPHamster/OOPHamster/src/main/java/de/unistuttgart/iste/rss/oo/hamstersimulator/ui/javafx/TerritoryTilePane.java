@@ -16,13 +16,26 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.TileListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Wall;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 public class TerritoryTilePane extends Pane {
 
     private static final Image hamsterImage = new Image("Hamster24.png");
     private static final Image wallImage = new Image("Wall32.png", 40, 40, true, true);
     private static final Map<Integer, Image> cornImages = new HashMap<>();
+    private static final Color[] hamsterColors = new Color[] {
+            Color.BLUE,
+            Color.GREEN,
+            Color.YELLOW,
+            Color.PINK,
+            Color.MAGENTA,
+            Color.RED
+    };
+    private static final Map<Hamster,Integer> hamsterToColorPos = new HashMap<>();
 
     static {
         loadCornImages();
@@ -84,7 +97,8 @@ public class TerritoryTilePane extends Pane {
         JavaFXUtil.blockingExecuteOnFXThread(() -> {
             ImageView view;
             if (!hamsterImageViews.containsKey(hamster)) {
-                view = new ImageView(hamsterImage);
+                final Image coloredHamsterImage = getColoredHamsterImage(hamster);
+                view = new ImageView(coloredHamsterImage);
                 view.resizeRelocate(8, 8, 24, 24);
                 hamsterImageViews.put(hamster, view);
                 hamster.addHamsterStateListener(hamsterListener);
@@ -96,10 +110,61 @@ public class TerritoryTilePane extends Pane {
         });
     }
 
+    private Image getColoredHamsterImage(final Hamster hamster) {
+        int colorIndex;
+        if (hamsterToColorPos.containsKey(hamster)) {
+            colorIndex = hamsterToColorPos.get(hamster);
+        } else {
+            colorIndex = getIndexOfColorForHamster(hamster);
+            hamsterToColorPos.put(hamster, colorIndex);
+        }
+        return changeColor(hamsterImage, hamsterColors[colorIndex]);
+    }
+
+    private Image changeColor(final Image hamsterImage, final Color color) {
+        final int width = (int)hamsterImage.getWidth();
+        final int height = (int)hamsterImage.getHeight();
+        //Creating a writable image
+        final WritableImage wImage = new WritableImage(width, height);
+
+        //Reading color from the loaded image
+        final PixelReader pixelReader = hamsterImage.getPixelReader();
+
+        //getting the pixel writer
+        final PixelWriter writer = wImage.getPixelWriter();
+
+        //Reading the color of the image
+        for(int y = 0; y < height; y++) {
+            for(int x = 0; x < width; x++) {
+                //Retrieving the color of the pixel of the loaded image
+                final Color originalColor = pixelReader.getColor(x, y);
+                Color newColor;
+                if (originalColor.getBlue() == 1.0) {
+                    newColor = Color.color(color.getRed(), color.getGreen(), color.getBlue(), originalColor.getOpacity());
+                } else {
+                    newColor = originalColor;
+                }
+                //Setting the color to the writable image
+                writer.setColor(x, y, newColor);
+            }
+        }
+        return wImage;
+    }
+
+    private int getIndexOfColorForHamster(final Hamster hamster) {
+        for (int i = 0; i < hamsterColors.length; i++) {
+            if (!hamsterToColorPos.containsValue(i)) {
+                return i;
+            }
+        }
+        throw new RuntimeException("No more colors for hamster available.");
+    }
+
     void removeHamster(final Hamster hamster) {
         final ImageView view = hamsterImageViews.remove(hamster);
         JavaFXUtil.blockingExecuteOnFXThread(() -> getChildren().remove(view));
         hamster.removeHamsterStateListener(hamsterListener);
+        hamsterToColorPos.remove(hamster);
     }
 
     void showWall() {

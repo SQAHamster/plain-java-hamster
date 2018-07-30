@@ -1,7 +1,5 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.territory;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,11 +11,9 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 public class Territory {
 
     private final HamsterSimulator simulator;
-
-    private Tile[][] tiles;
-    private Collection<Hamster> otherHamsters;
-    private Hamster defaultHamster;
     private final List<TerritoryListener> listeners = new LinkedList<>();
+    private Tile[][] tiles;
+    private Hamster defaultHamster;
 
     /**
      *
@@ -39,10 +35,6 @@ public class Territory {
 
     public Tile getTileAt(final Location location) {
         return tiles[location.getRow()][location.getColumn()];
-    }
-
-    public Collection<Hamster> getOtherHamsters() {
-        return Collections.unmodifiableCollection(this.otherHamsters);
     }
 
     public Hamster getDefaultHamster() {

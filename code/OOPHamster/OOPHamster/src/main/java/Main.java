@@ -1,6 +1,8 @@
 import java.io.IOException;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterStateListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
@@ -50,6 +52,7 @@ public class Main {
 
     private static void exampleRun(final HamsterSimulator simulator) {
         final Hamster paule = simulator.getTerritory().getDefaultHamster();
+        final Hamster willi = new Hamster(simulator, new Location(1, 3), Direction.WEST, 0);
         paule.addHamsterStateListener(e -> System.out.println(e));
         while (!paule.grainAvailable() && paule.frontIsClear()) {
             paule.move();
@@ -65,5 +68,6 @@ public class Main {
         while (!paule.mouthEmpty()) {
             paule.putGrain();
         }
+        willi.move();
     }
 }
