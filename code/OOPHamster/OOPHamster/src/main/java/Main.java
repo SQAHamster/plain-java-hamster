@@ -4,7 +4,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterStateChangedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterStateListener;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.legacy.ui.JavaFXUI;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;

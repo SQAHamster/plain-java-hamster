@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.legacy.ui;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 
 import java.util.concurrent.CountDownLatch;
 

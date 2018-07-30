@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.commands.hamster;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterStateChanger;

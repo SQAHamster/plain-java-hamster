@@ -1,5 +1,6 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.commands.hamster;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterStateChanger;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;

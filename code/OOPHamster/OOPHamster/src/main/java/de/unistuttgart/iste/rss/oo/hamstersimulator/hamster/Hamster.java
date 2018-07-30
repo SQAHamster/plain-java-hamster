@@ -4,10 +4,10 @@ import java.util.LinkedList;
 import java.util.Optional;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.MoveCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PickGrainCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PutGrainCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.TurnLeftCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.hamster.MoveCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.hamster.PickGrainCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.hamster.PutGrainCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.hamster.TurnLeftCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
