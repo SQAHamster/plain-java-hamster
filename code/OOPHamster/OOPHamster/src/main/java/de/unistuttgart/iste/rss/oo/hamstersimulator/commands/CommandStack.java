@@ -18,7 +18,7 @@ public class CommandStack {
         this.executedCommands.add(command);
 
         try {
-            Thread.sleep(1500);
+            Thread.sleep(1000);
         } catch (final InterruptedException e) { }
 
     }

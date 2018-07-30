@@ -1,7 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.legacy.ui;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Semaphore;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
@@ -36,8 +35,6 @@ public class LegacyUISyncer extends Application implements HamsterStateListener 
     private StackPane gridPane;
     private ToolBar toolbar;
     private TerritoryTilePane[][] territoryTile;
-    private int rows;
-    private int columns;
     private Territory territory;
     private GridPane grid;
     public static LegacyUISyncer mySingleton = null;
@@ -88,7 +85,7 @@ public class LegacyUISyncer extends Application implements HamsterStateListener 
     @Override
     public void start(final Stage primaryStage) throws Exception {
         primaryStage.setTitle("Hamster Simulator");
-        final BorderPane root = getRootScene(this.columns,this.rows);
+        final BorderPane root = getRootScene();
         final Scene scene = new Scene(root, 300, 250);
         primaryStage.setScene(scene);
 
@@ -105,22 +102,20 @@ public class LegacyUISyncer extends Application implements HamsterStateListener 
 
     public void init(final Territory territory) {
         this.territory = territory;
-        this.rows = territory.getRowCount();
-        this.columns = territory.getColumnCount();
-        final Semaphore lock = new Semaphore(0);
+        final CountDownLatch doneLatch = new CountDownLatch(1);
         Platform.runLater(() -> {
-            initGamefield(columns, rows, lock);
-
+            initGamefield();
+            doneLatch.countDown();
         });
         try {
-            lock.acquire();
+            doneLatch.await();
         } catch (final InterruptedException e) {}
     }
 
-    private BorderPane getRootScene(final int columns, final int rows) {
+    private BorderPane getRootScene() {
         final BorderPane borderPane = new BorderPane();
         toolbar = new ToolBar(new Button("Start"));
-        //borderPane.setTop(toolbar);
+        borderPane.setTop(toolbar);
         grid = new GridPane();
         grid.getStyleClass().add("game-grid");
 
@@ -133,7 +128,22 @@ public class LegacyUISyncer extends Application implements HamsterStateListener 
         return borderPane;
     }
 
-    private void initGamefield(final int columns, final int rows, final Semaphore lock) {
+    private void initGamefield() {
+        configureSquareSizedTiles();
+        initTileViewsFromTerritory();
+        computeNewMinimumSize();
+    }
+
+    private void computeNewMinimumSize() {
+        final int columns = this.territory.getColumnCount();
+        final int rows = this.territory.getRowCount();
+        gridPane.setMinSize(TILE_SIZE*columns+INSET, TILE_SIZE*rows+INSET);
+        gridPane.setMaxSize(TILE_SIZE*columns+INSET, TILE_SIZE*rows+INSET);
+    }
+
+    private void configureSquareSizedTiles() {
+        final int columns = this.territory.getColumnCount();
+        final int rows = this.territory.getRowCount();
         for(int i = 0; i < columns; i++) {
             final ColumnConstraints column = new ColumnConstraints();
             column.setPercentWidth(100.0 / columns);
@@ -146,7 +156,11 @@ public class LegacyUISyncer extends Application implements HamsterStateListener 
             grid.getRowConstraints().add(row);
         }
         grid.setAlignment(Pos.CENTER);
+    }
 
+    private void initTileViewsFromTerritory() {
+        final int columns = this.territory.getColumnCount();
+        final int rows = this.territory.getRowCount();
         territoryTile = new TerritoryTilePane[columns][rows];
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < rows; j++) {
@@ -162,9 +176,6 @@ public class LegacyUISyncer extends Application implements HamsterStateListener 
                 }
             }
         }
-        gridPane.setMinSize(TILE_SIZE*columns+INSET, TILE_SIZE*rows+INSET);
-        gridPane.setMaxSize(TILE_SIZE*columns+INSET, TILE_SIZE*rows+INSET);
-        lock.release();
     }
 
     public static void start() {
