@@ -61,4 +61,8 @@ public final class Location {
         return new Location(this.row + movementVector.getDeltaRow(), this.column + movementVector.getDelteColumn());
     }
 
+    public static Location from(final int row, final int column) {
+        return new Location(row, column);
+    }
+
 }

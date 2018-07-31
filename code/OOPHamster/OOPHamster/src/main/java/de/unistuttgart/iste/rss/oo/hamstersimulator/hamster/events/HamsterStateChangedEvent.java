@@ -1,4 +1,6 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events;
+
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 
 public abstract class HamsterStateChangedEvent {
     private final Hamster hamster;

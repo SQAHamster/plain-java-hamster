@@ -1,4 +1,7 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.territory;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events;
+
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
 
 public abstract class TerritoryTileEvent extends TerritoryEvent {
 

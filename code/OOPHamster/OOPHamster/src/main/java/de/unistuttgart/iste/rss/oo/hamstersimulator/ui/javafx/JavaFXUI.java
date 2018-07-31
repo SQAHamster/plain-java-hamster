@@ -1,10 +1,10 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.TerritoryListener;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.TerritoryResizedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.TileAddedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.TileRemovedEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TerritoryListener;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TerritoryResizedEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileAddedEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileRemovedEvent;
 import javafx.application.Application;
 import javafx.beans.binding.DoubleBinding;
 import javafx.geometry.Pos;

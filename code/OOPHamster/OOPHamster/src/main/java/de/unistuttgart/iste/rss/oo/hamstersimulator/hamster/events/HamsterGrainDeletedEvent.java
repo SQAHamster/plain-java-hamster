@@ -1,5 +1,6 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Grain;
 
 public class HamsterGrainDeletedEvent extends HamsterStateChangedEvent {

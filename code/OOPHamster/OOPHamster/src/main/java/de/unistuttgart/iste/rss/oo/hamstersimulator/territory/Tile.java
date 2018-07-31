@@ -7,6 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileContentAddedEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileContentRemovedEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileListener;
 
 public class Tile {
 
@@ -104,6 +107,13 @@ public class Tile {
     private void notifyContentRemoved(final TileContentRemovedEvent e) {
         for (final TileListener observer : tileObservers) {
             observer.contentItemRemoved(e);
+        }
+    }
+
+    public void dispose() {
+        final Collection<TileContent> content = new LinkedList<>(this.content);
+        for (final TileContent item : content) {
+            this.removeObjectFromContent(item);
         }
     }
 }

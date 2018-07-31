@@ -1,7 +1,8 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events;
 
 import java.util.Optional;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
 
 public class HamsterMovedEvent extends HamsterStateChangedEvent {

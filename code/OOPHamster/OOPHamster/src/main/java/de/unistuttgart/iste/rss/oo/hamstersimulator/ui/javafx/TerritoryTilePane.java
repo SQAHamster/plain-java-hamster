@@ -5,27 +5,24 @@ import java.util.Map;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterChangedDirectionEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterStateChangedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterStateListener;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterChangedDirectionEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterStateChangedEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterStateListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.TileContentAddedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.TileContentRemovedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.TileListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Wall;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileContentAddedEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileContentRemovedEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileListener;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 public class TerritoryTilePane extends Pane {
 
     private static final Image hamsterImage = new Image("Hamster24.png");
-    private static final Image wallImage = new Image("Wall32.png", 40, 40, true, true);
+    private static final Image wallImage = new Image("Wall32.png", 39, 39, true, true);
     private static final Map<Integer, Image> cornImages = new HashMap<>();
     private static final Color[] hamsterColors = new Color[] {
             Color.BLUE,
@@ -110,56 +107,6 @@ public class TerritoryTilePane extends Pane {
         });
     }
 
-    private Image getColoredHamsterImage(final Hamster hamster) {
-        int colorIndex;
-        if (hamsterToColorPos.containsKey(hamster)) {
-            colorIndex = hamsterToColorPos.get(hamster);
-        } else {
-            colorIndex = getIndexOfColorForHamster(hamster);
-            hamsterToColorPos.put(hamster, colorIndex);
-        }
-        return changeColor(hamsterImage, hamsterColors[colorIndex]);
-    }
-
-    private Image changeColor(final Image hamsterImage, final Color color) {
-        final int width = (int)hamsterImage.getWidth();
-        final int height = (int)hamsterImage.getHeight();
-        //Creating a writable image
-        final WritableImage wImage = new WritableImage(width, height);
-
-        //Reading color from the loaded image
-        final PixelReader pixelReader = hamsterImage.getPixelReader();
-
-        //getting the pixel writer
-        final PixelWriter writer = wImage.getPixelWriter();
-
-        //Reading the color of the image
-        for(int y = 0; y < height; y++) {
-            for(int x = 0; x < width; x++) {
-                //Retrieving the color of the pixel of the loaded image
-                final Color originalColor = pixelReader.getColor(x, y);
-                Color newColor;
-                if (originalColor.getBlue() == 1.0) {
-                    newColor = Color.color(color.getRed(), color.getGreen(), color.getBlue(), originalColor.getOpacity());
-                } else {
-                    newColor = originalColor;
-                }
-                //Setting the color to the writable image
-                writer.setColor(x, y, newColor);
-            }
-        }
-        return wImage;
-    }
-
-    private int getIndexOfColorForHamster(final Hamster hamster) {
-        for (int i = 0; i < hamsterColors.length; i++) {
-            if (!hamsterToColorPos.containsValue(i)) {
-                return i;
-            }
-        }
-        throw new RuntimeException("No more colors for hamster available.");
-    }
-
     void removeHamster(final Hamster hamster) {
         final ImageView view = hamsterImageViews.remove(hamster);
         JavaFXUtil.blockingExecuteOnFXThread(() -> getChildren().remove(view));
@@ -175,7 +122,7 @@ public class TerritoryTilePane extends Pane {
         JavaFXUtil.blockingExecuteOnFXThread(() -> getChildren().remove(this.wallView));
     }
 
-    public void updateGrains() {
+    void updateGrains() {
         final int count = tile.countObjectsOfType(Grain.class);
         if (count < 1) {
             grainView.setVisible(false);
@@ -228,6 +175,26 @@ public class TerritoryTilePane extends Pane {
     private void addTileListener() {
         this.tile.addTileListener(tileListener);
 
+    }
+
+    private Image getColoredHamsterImage(final Hamster hamster) {
+        int colorIndex;
+        if (hamsterToColorPos.containsKey(hamster)) {
+            colorIndex = hamsterToColorPos.get(hamster);
+        } else {
+            colorIndex = getIndexOfColorForHamster(hamster);
+            hamsterToColorPos.put(hamster, colorIndex);
+        }
+        return JavaFXUtil.changeColor(hamsterImage, hamsterColors[colorIndex]);
+    }
+
+    private int getIndexOfColorForHamster(final Hamster hamster) {
+        for (int i = 0; i < hamsterColors.length; i++) {
+            if (!hamsterToColorPos.containsValue(i)) {
+                return i;
+            }
+        }
+        throw new RuntimeException("No more colors for hamster available.");
     }
 
     public void dispose() {

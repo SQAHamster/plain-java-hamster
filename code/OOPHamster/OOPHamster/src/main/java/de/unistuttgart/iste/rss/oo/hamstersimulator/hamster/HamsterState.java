@@ -6,6 +6,12 @@ import java.util.List;
 import java.util.Optional;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterChangedDirectionEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterGrainAddedEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterGrainDeletedEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterMovedEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterStateChangedEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterStateListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
 
