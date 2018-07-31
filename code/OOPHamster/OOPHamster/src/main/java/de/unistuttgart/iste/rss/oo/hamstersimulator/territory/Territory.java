@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TerritoryListener;
@@ -60,6 +59,10 @@ public class Territory {
                 newHamsterPosition.getRow() < this.getRowCount();
     }
 
+    public TerritoryBuilder getTerritoryBuilder() {
+        return new TerritoryBuilder(this.simulator, this);
+    }
+
     public void loadTerritoryFromFile(final String territoryFile) {
         TerritoryLoader.loader(this).loadFromFile(territoryFile);
     }
@@ -70,31 +73,7 @@ public class Territory {
         initNewTileStore(newColumnCount, newRowCount);
         notifyResized(new TerritoryResizedEvent(this, getColumnCount(), getRowCount()));
         createNewTiles();
-        return this;
-    }
-
-    public Territory wallAt(final int row, final int column) {
-        this.getTileAt(new Location(row, column)).addObjectToContent(new Wall());
-        return this;
-    }
-
-    public Territory defaultHamsterAt(final int row, final int column, final Direction direction, final int grainCount) {
-        getDefaultHamster().getCurrentPosition().ifPresent(pos -> this.getTileAt(pos).removeObjectFromContent(this.getDefaultHamster()));
-        this.getDefaultHamster().reset();
-        this.getDefaultHamster().init(
-                Location.from(row, column),
-                direction,
-                grainCount);
-        this.getTileAt(new Location(row, column)).addObjectToContent(this.defaultHamster);
-        return this;
-    }
-
-    public Territory grainAt(final int row, final int column) {
-        return this.grainAt(row,column,1);
-    }
-
-    public Territory grainAt(final int row, final int column, final int grainCount) {
-        this.putNewGrain(this.getTileAt(new Location(row, column)), grainCount);
+        // TODO: Throw new Territory Reset Event to allow Undo at most until this point!
         return this;
     }
 
@@ -112,26 +91,6 @@ public class Territory {
         });
     }
 
-    private void createNewTiles() {
-        for (int row = 0; row < this.getRowCount(); row++) {
-            for (int column = 0; column < this.getColumnCount(); column++) {
-                final Tile newTile = Tile.createEmptyTile(this, Location.from(row, column));
-                setTile(newTile);
-                notifyTileCreated(new TileAddedEvent(this, newTile));
-                for (final TileListener listener : this.listeners) {
-                    newTile.addTileListener(listener);
-                }
-            }
-        }
-    }
-
-    private void initNewTileStore(final int newColumnCount, final int newRowCount) {
-        this.columnCount = newColumnCount;
-        this.rowCount = newRowCount;
-        this.tiles.clear();
-        this.tiles.ensureCapacity(getRowCount() * getColumnCount());
-    }
-
     private void disposeAllExistingTiles() {
         if (this.tiles != null) {
             forAllTilesDo(t -> {
@@ -145,14 +104,28 @@ public class Territory {
         }
     }
 
-    private int getListIndexFromLocation(final Location location) {
-        return location.getRow() * columnCount + location.getColumn();
+    private void initNewTileStore(final int newColumnCount, final int newRowCount) {
+        this.columnCount = newColumnCount;
+        this.rowCount = newRowCount;
+        this.tiles.clear();
+        this.tiles.ensureCapacity(getRowCount() * getColumnCount());
     }
 
-    private void putNewGrain(final Tile tile, final int count) {
-        for (int i = 0; i < count; i++) {
-            tile.addObjectToContent(new Grain());
+    private void createNewTiles() {
+        for (int row = 0; row < this.getRowCount(); row++) {
+            for (int column = 0; column < this.getColumnCount(); column++) {
+                final Tile newTile = Tile.createEmptyTile(this, Location.from(row, column));
+                setTile(newTile);
+                notifyTileCreated(new TileAddedEvent(this, newTile));
+                for (final TileListener listener : this.listeners) {
+                    newTile.addTileListener(listener);
+                }
+            }
         }
+    }
+
+    private int getListIndexFromLocation(final Location location) {
+        return location.getRow() * columnCount + location.getColumn();
     }
 
     private void forAllTilesDo(final Consumer<Tile> operation) {

@@ -37,6 +37,7 @@ public class Hamster extends TileContent {
     }
 
     public void init(final Location initialPosition, final Direction direction, final int grainInMouth) {
+        this.state.reset();
         this.stateChanger.setDirection(direction);
         for (int i = 0; i < grainInMouth; i++) {
             this.stateChanger.addGrainToMouth(new Grain());
@@ -109,10 +110,6 @@ public class Hamster extends TileContent {
 
     public Direction getDirection() {
         return this.state.getDirection();
-    }
-
-    public void reset() {
-        this.state.reset();
     }
 
     /*
