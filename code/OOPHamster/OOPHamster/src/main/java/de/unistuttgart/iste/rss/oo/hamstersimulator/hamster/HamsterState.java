@@ -13,22 +13,43 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterMovedE
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterStateChangedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterStateListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Grain;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TerritoryListener;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileContentAddedEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileContentRemovedEvent;
 
 public class HamsterState {
+    private final Territory territory;
     private Optional<Tile> currentTile;
     private Direction direction;
     private final List<Grain> grainInMouth;
     private final List<HamsterStateListener> stateListener = new LinkedList<>();
     private final Hamster hamster;
+    private final TerritoryListener territoryListener = new TerritoryListener() {
 
-    public HamsterState(final Hamster hamster, final Tile startTile, final Direction direction,
-            final List<Grain> grainInMouth) {
+        @Override
+        public void contentItemAdded(final TileContentAddedEvent e) {
+            if (e.getNewContent() == HamsterState.this.hamster) {
+                HamsterState.this.updateCurrentTile(Optional.of(e.getTile()));
+            }
+        }
+
+        @Override
+        public void contentItemRemoved(final TileContentRemovedEvent e) {
+            if (e.getRemovedContent() == HamsterState.this.hamster) {
+                HamsterState.this.updateCurrentTile(Optional.empty());
+            }
+        }
+    };
+
+    public HamsterState(final Territory territory, final Hamster hamster) {
         super();
+        this.territory = territory;
         this.hamster = hamster;
         this.currentTile = Optional.empty();
-        this.direction = direction;
-        this.grainInMouth = new LinkedList<>(grainInMouth);
+        this.grainInMouth = new LinkedList<>();
+        this.territory.addTerritoryListener(territoryListener);
     }
 
     public Optional<Tile> getCurrentTile() {
@@ -44,21 +65,6 @@ public class HamsterState {
     }
 
     private class HamsterStateChangerImpl implements HamsterStateChanger {
-
-        /* (non-Javadoc)
-         * @see de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.IHamsterStateChanger#setCurrentTile(java.util.Optional)
-         */
-        @Override
-        public void setCurrentTile(final Optional<Tile> newTile) {
-            assert HamsterState.this.currentTile.isPresent() && HamsterState.this.currentTile.get().hasObjectInContent(HamsterState.this.hamster);
-            assert newTile.isPresent() && newTile.get().canEnter();
-
-            final Optional<Tile> oldTile = HamsterState.this.currentTile;
-            oldTile.ifPresent(t -> t.removeObjectFromContent(HamsterState.this.hamster));
-            HamsterState.this.currentTile = newTile;
-            newTile.ifPresent(t -> t.addObjectToContent(HamsterState.this.hamster));
-            fireStateChangedEvent(new HamsterMovedEvent(HamsterState.this.hamster, oldTile, HamsterState.this.currentTile));
-        }
 
         /* (non-Javadoc)
          * @see de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.IHamsterStateChanger#setDirection(de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction)
@@ -79,7 +85,6 @@ public class HamsterState {
             assert HamsterState.this.currentTile.orElseThrow(IllegalStateException::new).hasObjectInContent(newGrain);
 
             HamsterState.this.grainInMouth.add(newGrain);
-            HamsterState.this.currentTile.orElseThrow(IllegalStateException::new).removeObjectFromContent(newGrain);
             fireStateChangedEvent(new HamsterGrainAddedEvent(HamsterState.this.hamster, newGrain));
         }
 
@@ -125,9 +130,25 @@ public class HamsterState {
         this.stateListener.remove(listener);
     }
 
+    void reset() {
+        this.currentTile = Optional.empty();
+        this.grainInMouth.clear();
+        this.stateListener.clear();
+    }
+
     private void fireStateChangedEvent(final HamsterStateChangedEvent event) {
         for (final HamsterStateListener listener : stateListener) {
             listener.onStateChanged(event);
         }
     }
+
+    private void updateCurrentTile(final Optional<Tile> newTile) {
+        assert HamsterState.this.currentTile.isPresent() && HamsterState.this.currentTile.get().hasObjectInContent(HamsterState.this.hamster);
+        assert newTile.isPresent() && newTile.get().canEnter();
+
+        final Optional<Tile> oldTile = HamsterState.this.currentTile;
+        HamsterState.this.currentTile = newTile;
+        fireStateChangedEvent(new HamsterMovedEvent(HamsterState.this.hamster, oldTile, HamsterState.this.currentTile));
+    }
+
 }

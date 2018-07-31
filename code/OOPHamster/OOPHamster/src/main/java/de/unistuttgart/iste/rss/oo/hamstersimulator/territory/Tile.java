@@ -53,6 +53,9 @@ public class Tile {
     }
 
     public void removeObjectFromContent(final TileContent objectToRemove) {
+        if (!this.hasObjectInContent(objectToRemove)) {
+            throw new IllegalArgumentException("Object to be removed not found in tile contents");
+        }
         this.content.remove(objectToRemove);
         this.notifyContentRemoved(new TileContentRemovedEvent(this, objectToRemove));
     }

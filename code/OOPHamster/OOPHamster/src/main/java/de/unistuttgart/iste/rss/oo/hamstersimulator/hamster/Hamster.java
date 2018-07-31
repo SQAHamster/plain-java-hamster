@@ -1,6 +1,5 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster;
 
-import java.util.LinkedList;
 import java.util.Optional;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
@@ -18,8 +17,6 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.TileContent;
 public class Hamster extends TileContent {
 
     private final HamsterSimulator simulator;
-    private final Location initialPosition;
-
     private final HamsterState state;
     private final HamsterStateChanger stateChanger;
 
@@ -30,14 +27,21 @@ public class Hamster extends TileContent {
     public Hamster(final HamsterSimulator simulator, final Location initialPosition, final Direction direction, final int grainInMouth) {
         super();
         this.simulator = simulator;
-        this.initialPosition = initialPosition;
-        final LinkedList<Grain> myGrain = new LinkedList<>();
-        for (int i = 0; i < grainInMouth; i++) {
-            myGrain.add(new Grain());
-        }
-        this.state = new HamsterState(this, simulator.getTerritory().getTileAt(this.initialPosition), direction, myGrain);
+        this.state = new HamsterState(this.simulator.getTerritory(), this);
         this.stateChanger = this.state.getStateChanger();
-        this.stateChanger.setCurrentTile(Optional.of(this.simulator.getTerritory().getTileAt(initialPosition)));
+        init(initialPosition, direction, grainInMouth);
+    }
+
+    public Hamster(final HamsterSimulator simulator) {
+        this(simulator,null,Direction.NORTH,0);
+    }
+
+    public void init(final Location initialPosition, final Direction direction, final int grainInMouth) {
+        this.stateChanger.setDirection(direction);
+        for (int i = 0; i < grainInMouth; i++) {
+            this.stateChanger.addGrainToMouth(new Grain());
+        }
+        Optional.ofNullable(initialPosition).ifPresent(pos -> this.simulator.getTerritory().getTileAt(pos).addObjectToContent(Hamster.this));
     }
 
     Hamster(final HamsterSimulator simulator, final Location initialPosition, final Direction direction) {
@@ -103,12 +107,12 @@ public class Hamster extends TileContent {
         return this.state.getCurrentTile().map(t -> t.getTileLocation());
     }
 
-    public Location getInitialPosition() {
-        return this.initialPosition;
-    }
-
     public Direction getDirection() {
         return this.state.getDirection();
+    }
+
+    public void reset() {
+        this.state.reset();
     }
 
     /*

@@ -1,7 +1,5 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.commands.hamster;
 
-import java.util.Optional;
-
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterStateChanger;
@@ -22,17 +20,21 @@ public class MoveCommand extends HamsterCommand {
 
         final LocationVector movementVector = hamster.getDirection().getMovementVector();
         final Location newHamsterPosition = this.hamster.getCurrentPosition().get().translate(movementVector);
-        this.previousHamsterTile = this.territory.getTileAt(newHamsterPosition);
+        this.previousHamsterTile = this.territory.getTileAt(this.hamster.getCurrentPosition().get());
 
         assert this.territory.isLocationInTerritory(newHamsterPosition);
-
         final Tile newTile = territory.getTileAt(newHamsterPosition);
-        this.stateChanger.setCurrentTile(Optional.of(newTile));
+
+        this.previousHamsterTile.removeObjectFromContent(this.hamster);
+        newTile.addObjectToContent(this.hamster);
     }
 
     @Override
     public void undo() {
-        this.stateChanger.setCurrentTile(Optional.of(previousHamsterTile));
+        assert this.hamster.getCurrentPosition().isPresent();
+
+        this.territory.getTileAt(this.hamster.getCurrentPosition().get()).removeObjectFromContent(this.hamster);
+        this.previousHamsterTile.addObjectToContent(this.hamster);
     }
 
 }

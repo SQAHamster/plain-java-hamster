@@ -30,8 +30,8 @@ public class Territory {
      */
     public Territory(final HamsterSimulator simulator) {
         super();
-        this.simulator = simulator;
         this.setSize(0, 0);
+        this.simulator = simulator;
     }
 
     public int getRowCount() {
@@ -49,6 +49,9 @@ public class Territory {
     }
 
     public Hamster getDefaultHamster() {
+        if (this.defaultHamster == null) {
+            this.defaultHamster = new Hamster(simulator);
+        }
         return this.defaultHamster;
     }
 
@@ -62,6 +65,7 @@ public class Territory {
     }
 
     public Territory setSize(final int newColumnCount, final int newRowCount) {
+        assert newColumnCount >= 0 && newRowCount >= 0;
         disposeAllExistingTiles();
         initNewTileStore(newColumnCount, newRowCount);
         notifyResized(new TerritoryResizedEvent(this, getColumnCount(), getRowCount()));
@@ -75,14 +79,10 @@ public class Territory {
     }
 
     public Territory defaultHamsterAt(final int row, final int column, final Direction direction, final int grainCount) {
-        if (this.defaultHamster != null) {
-            this.getTileAt(defaultHamster.getCurrentPosition().get()).removeObjectFromContent(this.defaultHamster);
-            // TODO: hamster.dispose!
-            this.defaultHamster = null;
-        }
-        this.defaultHamster = new Hamster(
-                simulator,
-                new Location(row, column),
+        getDefaultHamster().getCurrentPosition().ifPresent(pos -> this.getTileAt(pos).removeObjectFromContent(this.getDefaultHamster()));
+        this.getDefaultHamster().reset();
+        this.getDefaultHamster().init(
+                Location.from(row, column),
                 direction,
                 grainCount);
         this.getTileAt(new Location(row, column)).addObjectToContent(this.defaultHamster);
