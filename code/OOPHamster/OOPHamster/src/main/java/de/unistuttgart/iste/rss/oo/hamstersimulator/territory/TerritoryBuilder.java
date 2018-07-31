@@ -1,6 +1,11 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.territory;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.territory.PutContentsCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.territory.RemoveContentsCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 
@@ -11,37 +16,46 @@ public class TerritoryBuilder {
 
     public TerritoryBuilder(final HamsterSimulator simulator, final Territory territory) {
         super();
-        this.simulator = simulator;
         this.territory = territory;
+        this.simulator = new HamsterSimulator();
     }
 
     public TerritoryBuilder wallAt(final int row, final int column) {
-        this.territory.getTileAt(new Location(row, column)).addObjectToContent(new Wall());
+        this.simulator.getCommandStack()
+        .execute(new PutContentsCommand(this.territory.getTileAt(new Location(row, column)), new Wall()));
         return this;
     }
 
-    public TerritoryBuilder defaultHamsterAt(final int row, final int column, final Direction direction, final int grainCount) {
-        this.territory.getDefaultHamster().getCurrentPosition().ifPresent(pos -> territory.getTileAt(pos).removeObjectFromContent(this.territory.getDefaultHamster()));
+    public TerritoryBuilder defaultHamsterAt(final int row, final int column, final Direction direction,
+            final int grainCount) {
+        this.territory.getDefaultHamster().getCurrentPosition().ifPresent(pos -> {
+            this.simulator.getCommandStack().execute(new RemoveContentsCommand(
+                    this.territory.getTileAt(new Location(row, column)), this.territory.getDefaultHamster()));
+        });
         this.territory.getDefaultHamster().init(
-                Location.from(row, column),
+                null,
                 direction,
                 grainCount);
-        this.territory.getTileAt(new Location(row, column)).addObjectToContent(this.territory.getDefaultHamster());
+        this.simulator.getCommandStack().execute(new PutContentsCommand(
+                this.territory.getTileAt(new Location(row, column)), this.territory.getDefaultHamster()));
         return this;
     }
 
     public TerritoryBuilder grainAt(final int row, final int column) {
-        return this.grainAt(row,column,1);
+        return this.grainAt(row, column, 1);
     }
 
     public TerritoryBuilder grainAt(final int row, final int column, final int grainCount) {
-        this.putNewGrain(this.territory.getTileAt(new Location(row, column)), grainCount);
+        this.simulator.getCommandStack().execute(new PutContentsCommand(
+                this.territory.getTileAt(new Location(row, column)), createNewGrain(grainCount)));
         return this;
     }
 
-    private void putNewGrain(final Tile tile, final int count) {
+    private Collection<TileContent> createNewGrain(final int count) {
+        final Collection<TileContent> result = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
-            tile.addObjectToContent(new Grain());
+            result.add(new Grain());
         }
+        return result;
     }
 }

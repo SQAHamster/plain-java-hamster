@@ -48,6 +48,9 @@ public class Tile {
     }
 
     public void addObjectToContent(final TileContent newObject) {
+        if (this.hasObjectInContent(newObject)) {
+            throw new IllegalArgumentException("Object to not be already in the contents.");
+        }
         this.content.add(newObject);
         this.notifyContentAdded(new TileContentAddedEvent(this, newObject));
     }
