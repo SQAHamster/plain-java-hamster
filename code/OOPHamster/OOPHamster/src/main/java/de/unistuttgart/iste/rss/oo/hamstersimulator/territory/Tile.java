@@ -82,7 +82,7 @@ public class Tile {
         return count;
     }
 
-    public Location getTileLocation() {
+    public Location getLocation() {
         return tileLocation;
     }
 

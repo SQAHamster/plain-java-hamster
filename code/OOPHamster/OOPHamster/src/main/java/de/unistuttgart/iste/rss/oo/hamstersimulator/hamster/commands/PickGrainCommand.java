@@ -1,8 +1,7 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.commands.hamster;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.HamsterStateChanger;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster.HamsterStateChanger;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Grain;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
 
 public class PickGrainCommand extends HamsterCommand {
@@ -10,15 +9,15 @@ public class PickGrainCommand extends HamsterCommand {
     private Grain pickedGrain;
     private Tile currentTile;
 
-    public PickGrainCommand(final Territory territory, final HamsterStateChanger stateChanger) {
-        super(territory, stateChanger);
+    public PickGrainCommand(final HamsterStateChanger stateChanger) {
+        super(stateChanger);
     }
 
     @Override
     public void execute() {
-        assert this.hamster.getCurrentPosition().isPresent();
+        assert this.hamster.getCurrentTile().isPresent();
 
-        this.currentTile = this.territory.getTileAt(this.hamster.getCurrentPosition().get());
+        this.currentTile = this.getTerritory().getTileAt(this.hamster.getCurrentTile().get().getLocation());
         this.pickedGrain = this.currentTile.getAnyContentOfType(Grain.class);
         this.currentTile.removeObjectFromContent(this.pickedGrain);
         this.stateChanger.addGrainToMouth(this.pickedGrain);

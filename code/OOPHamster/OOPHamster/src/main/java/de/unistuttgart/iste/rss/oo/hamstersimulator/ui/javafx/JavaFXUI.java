@@ -122,8 +122,8 @@ public class JavaFXUI extends Application {
         @Override
         public void tileRemoved(final TileRemovedEvent e) {
             JavaFXUtil.blockingExecuteOnFXThread(() -> {
-                territoryTile[e.getTile().getTileLocation().getColumn()][e.getTile().getTileLocation().getRow()].dispose();
-                territoryTile[e.getTile().getTileLocation().getColumn()][e.getTile().getTileLocation().getRow()] = null;
+                territoryTile[e.getTile().getLocation().getColumn()][e.getTile().getLocation().getRow()].dispose();
+                territoryTile[e.getTile().getLocation().getColumn()][e.getTile().getLocation().getRow()] = null;
                 // TODO: grid.remove(territoryTile[e.getTile().getTileLocation().getColumn()][e.getTile().getTileLocation().getRow()],e.getTile().getTileLocation().getColumn(),e.getTile().getTileLocation().getRow());
             });
         }
@@ -131,8 +131,8 @@ public class JavaFXUI extends Application {
         @Override
         public void tileAdded(final TileAddedEvent e) {
             JavaFXUtil.blockingExecuteOnFXThread(() -> {
-                territoryTile[e.getTile().getTileLocation().getColumn()][e.getTile().getTileLocation().getRow()] = new TerritoryTilePane(e.getTile());
-                grid.add(territoryTile[e.getTile().getTileLocation().getColumn()][e.getTile().getTileLocation().getRow()],e.getTile().getTileLocation().getColumn(),e.getTile().getTileLocation().getRow());
+                territoryTile[e.getTile().getLocation().getColumn()][e.getTile().getLocation().getRow()] = new TerritoryTilePane(e.getTile());
+                grid.add(territoryTile[e.getTile().getLocation().getColumn()][e.getTile().getLocation().getRow()],e.getTile().getLocation().getColumn(),e.getTile().getLocation().getRow());
             });
         }
 

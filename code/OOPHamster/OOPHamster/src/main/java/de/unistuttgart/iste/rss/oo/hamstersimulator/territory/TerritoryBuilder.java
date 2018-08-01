@@ -2,12 +2,12 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.territory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.territory.PutContentsCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.territory.RemoveContentsCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.PutContentsCommand;
 
 public class TerritoryBuilder {
 
@@ -17,7 +17,7 @@ public class TerritoryBuilder {
     public TerritoryBuilder(final HamsterSimulator simulator, final Territory territory) {
         super();
         this.territory = territory;
-        this.simulator = new HamsterSimulator();
+        this.simulator = simulator;
     }
 
     public TerritoryBuilder wallAt(final int row, final int column) {
@@ -26,18 +26,11 @@ public class TerritoryBuilder {
         return this;
     }
 
-    public TerritoryBuilder defaultHamsterAt(final int row, final int column, final Direction direction,
-            final int grainCount) {
-        this.territory.getDefaultHamster().getCurrentPosition().ifPresent(pos -> {
-            this.simulator.getCommandStack().execute(new RemoveContentsCommand(
-                    this.territory.getTileAt(new Location(row, column)), this.territory.getDefaultHamster()));
-        });
+    public TerritoryBuilder defaultHamsterAt(final int row, final int column, final Direction direction, final int grainCount) {
         this.territory.getDefaultHamster().init(
-                null,
+                Optional.of(this.territory.getTileAt(new Location(row, column))),
                 direction,
                 grainCount);
-        this.simulator.getCommandStack().execute(new PutContentsCommand(
-                this.territory.getTileAt(new Location(row, column)), this.territory.getDefaultHamster()));
         return this;
     }
 

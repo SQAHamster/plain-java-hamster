@@ -154,10 +154,10 @@ public class TerritoryTilePane extends Pane {
 
     private void configureStyle() {
         getStyleClass().add("game-grid-cell");
-        if (tile.getTileLocation().getColumn() == 0) {
+        if (tile.getLocation().getColumn() == 0) {
             getStyleClass().add("first-column");
         }
-        if (tile.getTileLocation().getRow() == 0) {
+        if (tile.getLocation().getRow() == 0) {
             getStyleClass().add("first-row");
         }
     }

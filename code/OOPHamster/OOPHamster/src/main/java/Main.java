@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.Optional;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
@@ -52,8 +53,8 @@ public class Main {
 
     private static void exampleRun(final HamsterSimulator simulator) {
         final Hamster paule = simulator.getTerritory().getDefaultHamster();
-        final Hamster willi = new Hamster(simulator, new Location(1, 3), Direction.WEST, 0);
-        final Hamster marry = new Hamster(simulator, new Location(1, 2), Direction.EAST, 0);
+        final Hamster willi = new Hamster(simulator, Optional.of(simulator.getTerritory().getTileAt(Location.from(1, 3))), Direction.WEST, 0);
+        final Hamster marry = new Hamster(simulator, Optional.of(simulator.getTerritory().getTileAt(Location.from(1, 2))), Direction.EAST, 0);
         paule.addHamsterStateListener(e -> System.out.println(e));
         while (!paule.grainAvailable() && paule.frontIsClear()) {
             paule.move();

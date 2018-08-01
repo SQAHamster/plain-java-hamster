@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.commands.territory;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
