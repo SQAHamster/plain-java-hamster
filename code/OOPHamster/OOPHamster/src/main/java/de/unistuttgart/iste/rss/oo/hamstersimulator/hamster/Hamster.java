@@ -49,6 +49,7 @@ public class Hamster extends TileContent {
 
         this.simulator = simulator;
         this.grainInMouth = new LinkedList<>();
+        this.direction = Direction.NORTH;
         notifyHamsterCreated(this);
         init(initialTile, direction, grainInMouth);
     }
@@ -79,6 +80,8 @@ public class Hamster extends TileContent {
         }
 
         public void setDirection(final Direction direction) {
+            assert direction != null;
+
             final Direction oldDirection = Hamster.this.direction;
             Hamster.this.direction = direction;
             fireStateChangedEvent(new HamsterChangedDirectionEvent(Hamster.this, oldDirection, Hamster.this.direction));

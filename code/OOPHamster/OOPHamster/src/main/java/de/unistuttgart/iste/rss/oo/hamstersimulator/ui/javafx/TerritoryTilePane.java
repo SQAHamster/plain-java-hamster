@@ -133,6 +133,8 @@ public class TerritoryTilePane extends Pane {
     }
 
     private double getRotationForDirection(final Direction direction) {
+        assert direction != null;
+
         switch (direction) {
         case EAST:
             return 0;

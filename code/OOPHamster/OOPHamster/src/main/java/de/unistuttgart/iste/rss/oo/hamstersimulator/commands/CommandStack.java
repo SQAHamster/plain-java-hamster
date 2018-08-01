@@ -1,5 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,10 +19,21 @@ public class CommandStack {
         command.execute();
         this.executedCommands.add(command);
 
+        delay();
+
+    }
+
+    public void delay() {
         try {
             Thread.sleep(1000);
         } catch (final InterruptedException e) { }
+    }
 
+    public void undoAll() {
+        final List<Command> reversedList = new ArrayList<>(executedCommands);
+        Collections.reverse(reversedList);
+        reversedList.stream().forEach(command -> {command.undo(); delay();});
+        this.executedCommands.clear();
     }
 
 }

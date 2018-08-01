@@ -25,6 +25,8 @@ public class InitDefaultHamsterCommand extends HamsterCommand {
 
     @Override
     public void execute() {
+        assert this.hamster.getDirection() != null;
+
         this.previousDirection = this.hamster.getDirection();
         this.previousTile = this.hamster.getCurrentTile();
         this.previousGrains = this.hamster.getGrainInMouth().size();
@@ -44,7 +46,7 @@ public class InitDefaultHamsterCommand extends HamsterCommand {
     public void undo() {
         this.stateChanger.setDirection(this.previousDirection);
         this.stateChanger.setCurrentTile(this.previousTile);
-        while(this.hamster.grainAvailable()) {
+        while(!this.hamster.getGrainInMouth().isEmpty()) {
             this.stateChanger.removeGrainFromMouth(this.stateChanger.getAnyGrain());
         }
         for (int i = 0; i < this.previousGrains; i++) {

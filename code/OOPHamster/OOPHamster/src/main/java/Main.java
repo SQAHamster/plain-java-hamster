@@ -49,6 +49,7 @@ public class Main {
 
         exampleRun(simulator);
         //        stateObserverDisposable.dispose();
+        simulator.getCommandStack().undoAll();
     }
 
     private static void exampleRun(final HamsterSimulator simulator) {
