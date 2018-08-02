@@ -1,6 +1,5 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,16 +16,15 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.PutGrainCom
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.TurnLeftCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterCreatedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterCreatedListener;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterGrainAddedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterGrainDeletedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterStateChangedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterStateListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.TileContent;
+import javafx.beans.property.ReadOnlyListProperty;
+import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.collections.FXCollections;
 
 public class Hamster extends TileContent {
 
@@ -35,10 +33,9 @@ public class Hamster extends TileContent {
     private final HamsterSimulator simulator;
 
     private final ReadOnlyObjectWrapper<Optional<Tile>> currentTile = new ReadOnlyObjectWrapper<>();
-    private final ReadOnlyObjectWrapper<Direction> direction = new ReadOnlyObjectWrapper<Direction>();
-    private final List<Grain> grainInMouth;
+    private final ReadOnlyObjectWrapper<Direction> direction = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyListWrapper<Grain> grainInMouth = new ReadOnlyListWrapper<>();
 
-    private final List<HamsterStateListener> stateListener = new LinkedList<>();
     private final HamsterStateChanger hamsterStateAccess = new HamsterStateChanger();
 
     /*
@@ -51,7 +48,7 @@ public class Hamster extends TileContent {
         assert initialTile != null;
 
         this.simulator = simulator;
-        this.grainInMouth = new LinkedList<>();
+        this.grainInMouth.set(FXCollections.observableArrayList());
         this.direction.set(Direction.NORTH);
         this.currentTile.set(Optional.empty());
         notifyHamsterCreated(this);
@@ -151,8 +148,12 @@ public class Hamster extends TileContent {
         return this.currentTile.getReadOnlyProperty();
     }
 
+    public ReadOnlyListProperty<Grain> grainInMouthProperty() {
+        return this.grainInMouth.getReadOnlyProperty();
+    }
+
     public List<Grain> getGrainInMouth() {
-        return Collections.unmodifiableList(grainInMouth);
+        return Collections.unmodifiableList(grainInMouth.get());
     }
 
     /*
@@ -177,14 +178,12 @@ public class Hamster extends TileContent {
             assert !Hamster.this.getGrainInMouth().contains(newGrain);
 
             Hamster.this.grainInMouth.add(newGrain);
-            fireStateChangedEvent(new HamsterGrainAddedEvent(Hamster.this, newGrain));
         }
 
         public void removeGrainFromMouth(final Grain grainToRemove) {
             assert Hamster.this.grainInMouth.contains(grainToRemove);
 
             Hamster.this.grainInMouth.remove(grainToRemove);
-            fireStateChangedEvent(new HamsterGrainDeletedEvent(Hamster.this, grainToRemove));
         }
 
         public Grain getAnyGrain() {
@@ -204,20 +203,6 @@ public class Hamster extends TileContent {
     /*
      * OO-Design Methods
      */
-    public void addHamsterStateListener(final HamsterStateListener listener) {
-        if (listener == null) {
-            throw new IllegalArgumentException("No listener object specified");
-        }
-        this.stateListener.add(listener);
-    }
-
-    public void removeHamsterStateListener(final HamsterStateListener listener) {
-        if (listener == null) {
-            throw new IllegalArgumentException("No listener object specified");
-        }
-        this.stateListener.remove(listener);
-    }
-
     @Override
     public String toString() {
         return "Hamster";
@@ -226,12 +211,6 @@ public class Hamster extends TileContent {
     @Override
     protected boolean blocksEntrance() {
         return false;
-    }
-
-    private void fireStateChangedEvent(final HamsterStateChangedEvent event) {
-        for (final HamsterStateListener listener : new ArrayList<>(stateListener)) {
-            listener.onStateChanged(event);
-        }
     }
 
     public static void addHamsterCreatedListener(final HamsterCreatedListener listener) {

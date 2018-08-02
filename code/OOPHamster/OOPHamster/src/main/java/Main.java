@@ -5,13 +5,10 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterStateListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 public class Main {
-
-    public static HamsterStateListener l;
 
     public static void main(final String[] args) throws IOException {
         final String territoryFile = "/Users/snowball/test.ter";
@@ -56,7 +53,6 @@ public class Main {
         final Hamster paule = simulator.getTerritory().getDefaultHamster();
         final Hamster willi = new Hamster(simulator, Optional.of(simulator.getTerritory().getTileAt(Location.from(1, 3))), Direction.WEST, 0);
         final Hamster marry = new Hamster(simulator, Optional.of(simulator.getTerritory().getTileAt(Location.from(1, 2))), Direction.EAST, 0);
-        paule.addHamsterStateListener(e -> System.out.println(e));
         while (!paule.grainAvailable() && paule.frontIsClear()) {
             paule.move();
         }
