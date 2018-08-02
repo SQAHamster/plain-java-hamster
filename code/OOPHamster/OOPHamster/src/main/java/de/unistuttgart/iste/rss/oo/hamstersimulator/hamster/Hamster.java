@@ -19,7 +19,6 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterCreate
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterCreatedListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterGrainAddedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterGrainDeletedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterMovedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterStateChangedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterStateListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Grain;
@@ -35,7 +34,7 @@ public class Hamster extends TileContent {
 
     private final HamsterSimulator simulator;
 
-    private Optional<Tile> currentTile = Optional.empty();
+    private final ReadOnlyObjectWrapper<Optional<Tile>> currentTile = new ReadOnlyObjectWrapper<>();
     private final ReadOnlyObjectWrapper<Direction> direction = new ReadOnlyObjectWrapper<Direction>();
     private final List<Grain> grainInMouth;
 
@@ -54,6 +53,7 @@ public class Hamster extends TileContent {
         this.simulator = simulator;
         this.grainInMouth = new LinkedList<>();
         this.direction.set(Direction.NORTH);
+        this.currentTile.set(Optional.empty());
         notifyHamsterCreated(this);
         init(initialTile, direction, grainInMouth);
     }
@@ -114,7 +114,13 @@ public class Hamster extends TileContent {
     public boolean frontIsClear() {
         final LocationVector movementVector = this.getDirection().getMovementVector();
         final Location potentialNewLocation = this.getCurrentTile().orElseThrow(IllegalStateException::new).getLocation().translate(movementVector);
-        return this.currentTile.get().getTerritory().getTileAt(potentialNewLocation).canEnter();
+        final Tile currentTile = this.getCurrentTile().orElseThrow(IllegalArgumentException::new);
+
+        if (!currentTile.getTerritory().isLocationInTerritory(potentialNewLocation)) {
+            return false;
+        }
+
+        return currentTile.getTerritory().getTileAt(potentialNewLocation).canEnter();
     }
 
     public boolean grainAvailable() {
@@ -126,11 +132,11 @@ public class Hamster extends TileContent {
     }
 
     public Optional<Tile> getCurrentTile() {
-        return currentTile;
+        return this.currentTile.get();
     }
 
     public Territory getCurrentTerritory() {
-        return currentTile.orElseThrow(IllegalStateException::new).getTerritory();
+        return this.getCurrentTile().orElseThrow(IllegalStateException::new).getTerritory();
     }
 
     public Direction getDirection() {
@@ -139,6 +145,10 @@ public class Hamster extends TileContent {
 
     public ReadOnlyObjectProperty<Direction> directionProperty() {
         return this.direction.getReadOnlyProperty();
+    }
+
+    public ReadOnlyObjectProperty<Optional<Tile>> currentTileProperty() {
+        return this.currentTile.getReadOnlyProperty();
     }
 
     public List<Grain> getGrainInMouth() {
@@ -184,13 +194,10 @@ public class Hamster extends TileContent {
 
         public void setCurrentTile(final Optional<Tile> newTile) {
             assert newTile != null;
-            assert !Hamster.this.currentTile.isPresent() || Hamster.this.currentTile.get().hasObjectInContent(Hamster.this);
+            assert !Hamster.this.currentTile.get().isPresent() || Hamster.this.currentTile.get().get().hasObjectInContent(Hamster.this);
             assert !newTile.isPresent() || newTile.get().canEnter();
 
-            final Optional<Tile> oldTile = Hamster.this.currentTile;
-            Hamster.this.currentTile = newTile;
-
-            fireStateChangedEvent(new HamsterMovedEvent(Hamster.this, oldTile, Hamster.this.currentTile));
+            Hamster.this.currentTile.set(newTile);
         }
     }
 

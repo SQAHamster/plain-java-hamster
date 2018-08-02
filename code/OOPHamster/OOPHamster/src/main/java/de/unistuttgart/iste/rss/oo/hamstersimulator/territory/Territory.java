@@ -8,9 +8,6 @@ import java.util.function.Consumer;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterMovedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterStateChangedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterStateListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TerritoryListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TerritoryResizedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileAddedEvent;
@@ -36,16 +33,9 @@ public class Territory {
         this.simulator = simulator;
         Hamster.addHamsterCreatedListener(createdEvent -> {
             final Hamster newHamster = createdEvent.getHamster();
-            newHamster.addHamsterStateListener(new HamsterStateListener() {
-
-                @Override
-                public void onStateChanged(final HamsterStateChangedEvent e) {
-                    if (e instanceof HamsterMovedEvent) {
-                        final HamsterMovedEvent moveEvent = (HamsterMovedEvent)e;
-                        moveEvent.getOldTile().ifPresent(tile -> tile.removeObjectFromContent(e.getHamster()));
-                        moveEvent.getNewTile().ifPresent(tile -> tile.addObjectToContent(moveEvent.getHamster()));
-                    }
-                }
+            newHamster.currentTileProperty().addListener((property, oldValue, newValue) -> {
+                oldValue.ifPresent(tile -> tile.removeObjectFromContent(newHamster));
+                newValue.ifPresent(tile -> tile.addObjectToContent(newHamster));
             });
         });
     }
