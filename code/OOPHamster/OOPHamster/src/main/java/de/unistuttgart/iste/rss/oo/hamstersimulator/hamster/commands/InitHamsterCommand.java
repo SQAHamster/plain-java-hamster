@@ -7,7 +7,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster.HamsterState
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
 
-public class InitDefaultHamsterCommand extends HamsterCommand {
+public class InitHamsterCommand extends HamsterCommand {
 
     private Direction previousDirection;
     private final Direction newDirection;
@@ -16,7 +16,7 @@ public class InitDefaultHamsterCommand extends HamsterCommand {
     private int previousGrains;
     private final Optional<Tile> newTile;
 
-    public InitDefaultHamsterCommand(final HamsterStateChanger hamsterStateAccess, final Optional<Tile> newTile, final Direction newDirection, final int newGrainCount) {
+    public InitHamsterCommand(final HamsterStateChanger hamsterStateAccess, final Optional<Tile> newTile, final Direction newDirection, final int newGrainCount) {
         super(hamsterStateAccess);
         this.newDirection = newDirection;
         this.newGrainCount = newGrainCount;

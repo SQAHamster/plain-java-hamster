@@ -14,6 +14,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Wall;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileContentAddedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileContentRemovedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileListener;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -43,6 +44,7 @@ public class TerritoryTilePane extends Pane {
     private final ImageView grainView;
     private final ImageView wallView;
 
+    private ChangeListener<Direction> directionChangedListener;
     private final HamsterStateListener hamsterListener = new HamsterStateListener() {
 
         @Override
@@ -99,18 +101,25 @@ public class TerritoryTilePane extends Pane {
                 view.resizeRelocate(8, 8, 24, 24);
                 hamsterImageViews.put(hamster, view);
                 hamster.addHamsterStateListener(hamsterListener);
+                this.directionChangedListener = (property, oldValue, newValue) -> this.updateHamsterRotation(hamster);
+                hamster.directionProperty().addListener(directionChangedListener);
                 getChildren().add(view);
-            } else {
-                view = hamsterImageViews.get(hamster);
             }
-            view.setRotate(getRotationForDirection(hamster.getDirection()));
+            updateHamsterRotation(hamster);
         });
+    }
+
+    void updateHamsterRotation(final Hamster hamster) {
+        if (hamsterImageViews.containsKey(hamster)) {
+            this.hamsterImageViews.get(hamster).setRotate(getRotationForDirection(hamster.getDirection()));
+        }
     }
 
     void removeHamster(final Hamster hamster) {
         final ImageView view = hamsterImageViews.remove(hamster);
         JavaFXUtil.blockingExecuteOnFXThread(() -> getChildren().remove(view));
         hamster.removeHamsterStateListener(hamsterListener);
+        hamster.directionProperty().removeListener(directionChangedListener);
         hamsterToColorPos.remove(hamster);
     }
 
