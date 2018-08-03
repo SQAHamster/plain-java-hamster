@@ -7,17 +7,18 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeBaseComman
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Grain;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.commands.SetCurrentTileCommand;
 
 public class InitHamsterCommand extends CompositeBaseCommand {
 
     public InitHamsterCommand(final PropertyMap<Hamster> hamsterState, final Optional<Tile> newTile, final Direction newDirection, final int newGrainCount) {
         super();
         this.compositeCommandBuilder.add(
-                new SetCurrentTileCommand(hamsterState, Optional.empty()),
+                new SetCurrentTileCommand<Hamster>(hamsterState, Optional.empty()),
                 new SetDirectionCommand(hamsterState, newDirection),
-                new SetCurrentTileCommand(hamsterState, newTile));
+                new SetCurrentTileCommand<Hamster>(hamsterState, newTile));
         IntStream.of(1,newGrainCount).forEach(i -> this.compositeCommandBuilder.add(new AddGrainCommand(hamsterState, new Grain())));
     }
 

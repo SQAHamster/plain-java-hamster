@@ -1,5 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.territory;
 
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class TerritoryLoader {
     }
 
     private void setSizeFromStrings(final String[] lines) {
-        territory.setSize(Integer.parseInt(lines[0]), Integer.parseInt(lines[1]));
+        territory.setSize(new Dimension(Integer.parseInt(lines[0]), Integer.parseInt(lines[1])));
     }
 
     private void buildTiles(final String[] lines) {

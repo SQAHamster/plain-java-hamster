@@ -1,6 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.territory;
 
-import java.util.ArrayList;
+import java.awt.Dimension;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -9,20 +9,24 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TerritoryListener;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TerritoryResizedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileAddedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileRemovedEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
+import javafx.beans.property.ReadOnlyListWrapper;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.collections.FXCollections;
 import javafx.collections.SetChangeListener;
 
 public class Territory {
 
+    private final ReadOnlyObjectWrapper<Dimension> territorySize = new ReadOnlyObjectWrapper<Dimension>(this, "territorySize", new Dimension(0, 0));
+    private final ReadOnlyListWrapper<Tile> tiles = new ReadOnlyListWrapper<Tile>(this, "tiles", FXCollections.observableArrayList());
+
     private final HamsterSimulator simulator;
     private final List<TerritoryListener> listeners = new LinkedList<>();
-    private final ArrayList<Tile> tiles = new ArrayList<>();
     private Hamster defaultHamster;
-    private int rowCount;
-    private int columnCount;
 
     /**
      *
@@ -30,7 +34,8 @@ public class Territory {
      */
     public Territory(final HamsterSimulator simulator) {
         super();
-        this.setSize(0, 0);
+        this.setSize(new Dimension(0, 0));
+
         this.simulator = simulator;
         Hamster.hamsterSetProperty().addListener(new SetChangeListener<Hamster>() {
 
@@ -49,11 +54,11 @@ public class Territory {
     }
 
     public int getRowCount() {
-        return this.rowCount;
+        return this.territorySize.get().height;
     }
 
     public int getColumnCount() {
-        return this.columnCount;
+        return this.territorySize.get().width;
     }
 
     public Tile getTileAt(final Location location) {
@@ -82,11 +87,10 @@ public class Territory {
         TerritoryLoader.loader(this).loadFromFile(territoryFile);
     }
 
-    public Territory setSize(final int newColumnCount, final int newRowCount) {
-        assert newColumnCount >= 0 && newRowCount >= 0;
+    public Territory setSize(final Dimension newSize) {
+        assert newSize.width >= 0 && newSize.height >= 0;
         disposeAllExistingTiles();
-        initNewTileStore(newColumnCount, newRowCount);
-        notifyResized(new TerritoryResizedEvent(this, getColumnCount(), getRowCount()));
+        initNewTileStore(newSize);
         createNewTiles();
         // TODO: Throw new Territory Reset Event to allow Undo at most until this point!
         return this;
@@ -106,6 +110,10 @@ public class Territory {
         });
     }
 
+    public ReadOnlyObjectProperty<Dimension> territorySizeProperty() {
+        return this.territorySize.getReadOnlyProperty();
+    }
+
     private void disposeAllExistingTiles() {
         if (this.tiles != null) {
             forAllTilesDo(t -> {
@@ -119,11 +127,9 @@ public class Territory {
         }
     }
 
-    private void initNewTileStore(final int newColumnCount, final int newRowCount) {
-        this.columnCount = newColumnCount;
-        this.rowCount = newRowCount;
+    private void initNewTileStore(final Dimension newSize) {
+        this.territorySize.set(newSize);
         this.tiles.clear();
-        this.tiles.ensureCapacity(getRowCount() * getColumnCount());
     }
 
     private void createNewTiles() {
@@ -140,7 +146,7 @@ public class Territory {
     }
 
     private int getListIndexFromLocation(final Location location) {
-        return location.getRow() * columnCount + location.getColumn();
+        return location.getRow() * this.getColumnCount() + location.getColumn();
     }
 
     private void forAllTilesDo(final Consumer<Tile> operation) {
@@ -153,12 +159,6 @@ public class Territory {
 
     private void setTile(final Tile newTile) {
         tiles.add(getListIndexFromLocation(newTile.getLocation()), newTile);
-    }
-
-    private void notifyResized(final TerritoryResizedEvent e) {
-        for (final TerritoryListener listener : listeners) {
-            listener.territoryResized(e);
-        }
     }
 
     private void notifyTileCreated(final TileAddedEvent e) {

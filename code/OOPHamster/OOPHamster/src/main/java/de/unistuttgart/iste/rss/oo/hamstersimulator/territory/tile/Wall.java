@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.territory;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile;
 
 public class Wall extends TileContent {
 

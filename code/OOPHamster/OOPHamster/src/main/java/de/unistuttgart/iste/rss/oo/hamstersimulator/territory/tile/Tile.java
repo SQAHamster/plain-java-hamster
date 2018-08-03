@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.territory;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileContentAddedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileContentRemovedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileListener;
@@ -30,7 +31,7 @@ public class Tile {
         return new Tile(territory, location, Arrays.asList(new Wall()));
     }
 
-    static Tile createEmptyTile(final Territory territory, final Location location) {
+    public static Tile createEmptyTile(final Territory territory, final Location location) {
         return new Tile(territory, location, Collections.emptyList());
     }
 

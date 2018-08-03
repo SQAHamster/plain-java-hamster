@@ -2,7 +2,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Grain;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
 
 public class AddGrainCommand extends HamsterCommand {
 

@@ -1,7 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 
 public abstract class TileCommand extends Command {
 

@@ -8,6 +8,9 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.PutContentsCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.TileContent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Wall;
 
 public class TerritoryBuilder {
 

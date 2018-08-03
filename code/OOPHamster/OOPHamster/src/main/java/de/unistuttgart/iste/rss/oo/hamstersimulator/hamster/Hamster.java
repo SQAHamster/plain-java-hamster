@@ -15,12 +15,12 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.InitHamsterCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.PickGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.PutGrainCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.TurnLeftCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.MoveCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Grain;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.TurnLeftCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.TileContent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.TileContent;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -47,7 +47,6 @@ public class Hamster extends TileContent {
 
     private final HamsterSimulator simulator;
 
-    private final ReadOnlyObjectWrapper<Optional<Tile>> currentTile = new ReadOnlyObjectWrapper<>(this,"currentTile", Optional.empty());
     private final ReadOnlyObjectWrapper<Direction> direction = new ReadOnlyObjectWrapper<>(this, "direction", Direction.NORTH);
     private final ReadOnlyListWrapper<Grain> grainInMouth = new ReadOnlyListWrapper<>(this, "grainInMouth", FXCollections.observableArrayList());
     private final PropertyMap<Hamster> propertyMap = new PropertyMap<>(this, currentTile, direction, grainInMouth);
@@ -156,14 +155,6 @@ public class Hamster extends TileContent {
 
     public Direction getDirection() {
         return direction.get();
-    }
-
-    public ReadOnlyObjectProperty<Optional<Tile>> currentTileProperty() {
-        return this.currentTile.getReadOnlyProperty();
-    }
-
-    public Optional<Tile> getCurrentTile() {
-        return this.currentTile.get();
     }
 
     public ReadOnlyListProperty<Grain> grainInMouthProperty() {

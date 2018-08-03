@@ -2,7 +2,6 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TerritoryListener;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TerritoryResizedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileAddedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileRemovedEvent;
 import javafx.application.Application;
@@ -61,6 +60,13 @@ public class JavaFXUI extends Application {
         this.territory = territory;
         JavaFXUtil.blockingExecuteOnFXThread(() -> initGamefield());
         this.territory.addTerritoryListener(territoryListener);
+        this.territory.territorySizeProperty().addListener((property, oldValue, newValue) -> {
+            JavaFXUtil.blockingExecuteOnFXThread(() -> {
+                configureSquareSizedTiles();
+                territoryTile = new TerritoryTilePane[newValue.width][newValue.height];
+            });
+        });
+
     }
 
     private BorderPane getRootScene() {
@@ -136,12 +142,5 @@ public class JavaFXUI extends Application {
             });
         }
 
-        @Override
-        public void territoryResized(final TerritoryResizedEvent e) {
-            JavaFXUtil.blockingExecuteOnFXThread(() -> {
-                configureSquareSizedTiles();
-                territoryTile = new TerritoryTilePane[e.getColumnCount()][e.getRowCount()];
-            });
-        }
     };
 }

@@ -5,12 +5,13 @@ import java.util.Map;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Grain;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Wall;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileContentAddedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileContentRemovedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileListener;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.TileContent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Wall;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -185,7 +186,7 @@ public class TerritoryTilePane extends Pane {
         return JavaFXUtil.changeColor(hamsterImage, hamsterColors[colorIndex]);
     }
 
-    private int getIndexOfColorForHamster(final Hamster hamster) {
+    private int getIndexOfColorForHamster(final TileContent hamster) {
         for (int i = 0; i < hamsterColors.length; i++) {
             if (!hamsterToColorPos.containsValue(i)) {
                 return i;
