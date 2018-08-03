@@ -1,11 +1,10 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 
 public class SetTerritorySizeCommand extends TerritoryCommand {
@@ -13,10 +12,9 @@ public class SetTerritorySizeCommand extends TerritoryCommand {
     private final Dimension newDimension;
     private Dimension oldDimension;
 
-    public SetTerritorySizeCommand(final PropertyMap<Territory> territoryState, final Dimension newDimension) {
-        super(territoryState);
+    public SetTerritorySizeCommand(final Dimension newDimension) {
+        super();
         this.newDimension = newDimension;
-
     }
 
     @Override
@@ -45,7 +43,7 @@ public class SetTerritorySizeCommand extends TerritoryCommand {
     }
 
     private void forAllTilesDo(final Consumer<Tile> operation) {
-        this.entityState.<Tile> getListProperty("tiles").get().forEach(tile -> operation.accept(tile));
+        new ArrayList<>(this.entityState.<Tile> getListProperty("tiles").get()).forEach(tile -> operation.accept(tile));
     }
 
     private void createNewTiles() {
@@ -63,6 +61,11 @@ public class SetTerritorySizeCommand extends TerritoryCommand {
 
     private int getListIndexFromLocation(final Location location) {
         return location.getRow() * this.entityState.<Dimension> getObjectProperty("territorySize").get().width + location.getColumn();
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return new SetTerritorySizeCommand(newDimension);
     }
 
 }

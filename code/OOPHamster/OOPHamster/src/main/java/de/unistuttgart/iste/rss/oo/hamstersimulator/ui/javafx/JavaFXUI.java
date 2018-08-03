@@ -41,6 +41,20 @@ public class JavaFXUI extends Application {
 
     @Override
     public void start(final Stage primaryStage) throws Exception {
+        prepareStage(primaryStage);
+
+        mySingleton = this;
+        initLatch.countDown();
+    }
+
+    public void prepareStage(final Stage primaryStage) {
+        final Stage secondStage = new Stage();
+        final BorderPane root2 = getRootScene();
+        final Scene scene2 = new Scene(root2, 300, 250);
+        secondStage.setScene(scene2);
+        scene2.getStylesheets().add("game.css");
+        secondStage.show();
+
         primaryStage.setTitle("Hamster Simulator");
         final BorderPane root = getRootScene();
         final Scene scene = new Scene(root, 300, 250);
@@ -53,9 +67,6 @@ public class JavaFXUI extends Application {
         final DoubleBinding prop = gridPane.minHeightProperty().add(toolbar.heightProperty()).add(offset);
         primaryStage.minHeightProperty().bind(prop);
         primaryStage.minWidthProperty().bind(gridPane.minWidthProperty());
-
-        mySingleton = this;
-        initLatch.countDown();
     }
 
     public void init(final Territory territory) {

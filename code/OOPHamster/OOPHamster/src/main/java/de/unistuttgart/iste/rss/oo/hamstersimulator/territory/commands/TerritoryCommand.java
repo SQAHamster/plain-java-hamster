@@ -1,14 +1,18 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EntityCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.InjectableCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 
-public abstract class TerritoryCommand extends EntityCommand<Territory> {
-    private final Territory territory;
+public abstract class TerritoryCommand extends EntityCommand<Territory>
+implements InjectableCommand<Territory> {
 
-    public TerritoryCommand(final PropertyMap<Territory> territoryState) {
-        super(territoryState);
+    private Territory territory;
+
+    @Override
+    public void setContext(final PropertyMap<Territory> territoryState) {
+        this.entityState = territoryState;
         this.territory = territoryState.getPropertyOwner();
     }
 

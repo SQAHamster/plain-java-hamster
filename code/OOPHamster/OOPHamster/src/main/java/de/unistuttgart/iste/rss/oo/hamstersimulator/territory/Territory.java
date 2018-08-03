@@ -6,6 +6,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.awt.Dimension;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.InjectableCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
@@ -90,7 +91,9 @@ public class Territory {
 
     public void setSize(final Dimension newDimension) {
         checkArgument(newDimension.width >= 0 && newDimension.height >= 0, "New Territory dimensions need to be positive!");
-        this.simulator.getCommandStack().execute(new SetTerritorySizeCommand(territoryState, newDimension));
+        final SetTerritorySizeCommand command = new SetTerritorySizeCommand(newDimension);
+        command.setContext(territoryState);
+        this.simulator.getCommandStack().execute(command);
     }
 
     public ReadOnlyObjectProperty<Dimension> territorySizeProperty() {
@@ -101,8 +104,11 @@ public class Territory {
         return this.tiles.getReadOnlyProperty();
     }
 
+    public void setContextFor(final InjectableCommand<Territory> command) {
+        command.setContext(this.territoryState);
+    }
+
     private int getListIndexFromLocation(final Location location) {
         return location.getRow() * this.getColumnCount() + location.getColumn();
     }
-
 }
