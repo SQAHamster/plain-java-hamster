@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.commands;
 
 import java.util.Arrays;
 import java.util.Collection;

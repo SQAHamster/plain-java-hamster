@@ -4,11 +4,12 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.awt.Dimension;
-import java.util.function.Consumer;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.SetTerritorySizeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
@@ -21,6 +22,7 @@ public class Territory {
 
     private final ReadOnlyObjectWrapper<Dimension> territorySize = new ReadOnlyObjectWrapper<Dimension>(this, "territorySize", new Dimension(0, 0));
     private final ReadOnlyListWrapper<Tile> tiles = new ReadOnlyListWrapper<Tile>(this, "tiles", FXCollections.observableArrayList());
+    private final PropertyMap<Territory> territoryState = new PropertyMap<Territory>(this, territorySize, tiles);
 
     private final HamsterSimulator simulator;
     private Hamster defaultHamster;
@@ -85,14 +87,9 @@ public class Territory {
         TerritoryLoader.loader(this).loadFromFile(territoryFile);
     }
 
-    public Territory setSize(final Dimension newSize) {
-        checkArgument(newSize.width >= 0 && newSize.height >= 0, "New Territory dimensions need to be positive!");
-
-        disposeAllExistingTiles();
-        initNewTileStore(newSize);
-        createNewTiles();
-        // TODO: Throw new Territory Reset Event to allow Undo at most until this point!
-        return this;
+    public void setSize(final Dimension newDimension) {
+        checkArgument(newDimension.width >= 0 && newDimension.height >= 0, "New Territory dimensions need to be positive!");
+        this.simulator.getCommandStack().execute(new SetTerritorySizeCommand(territoryState, newDimension));
     }
 
     public ReadOnlyObjectProperty<Dimension> territorySizeProperty() {
@@ -103,43 +100,8 @@ public class Territory {
         return this.tiles.getReadOnlyProperty();
     }
 
-    private void disposeAllExistingTiles() {
-        if (this.tiles != null) {
-            forAllTilesDo(t -> {
-                t.dispose();
-                this.tiles.remove(t);
-            });
-        }
-    }
-
-    private void initNewTileStore(final Dimension newSize) {
-        this.territorySize.set(newSize);
-        this.tiles.clear();
-    }
-
-    private void createNewTiles() {
-        for (int row = 0; row < this.getRowCount(); row++) {
-            for (int column = 0; column < this.getColumnCount(); column++) {
-                final Tile newTile = Tile.createEmptyTile(this, Location.from(row, column));
-                setTile(newTile);
-            }
-        }
-    }
-
     private int getListIndexFromLocation(final Location location) {
         return location.getRow() * this.getColumnCount() + location.getColumn();
-    }
-
-    private void forAllTilesDo(final Consumer<Tile> operation) {
-        for (int row = 0; row < this.getRowCount(); row++) {
-            for (int column = 0; column < this.getColumnCount(); column++) {
-                operation.accept(this.getTileAt(Location.from(row,column)));
-            }
-        }
-    }
-
-    private void setTile(final Tile newTile) {
-        tiles.add(getListIndexFromLocation(newTile.getLocation()), newTile);
     }
 
 }

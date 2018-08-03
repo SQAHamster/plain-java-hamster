@@ -1,8 +1,9 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile;
 
-import java.util.Arrays;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
@@ -17,19 +18,17 @@ public class Tile {
     private final Territory territory;
     private final Location tileLocation;
 
-    private Tile(final Territory territory, final Location tileLocation, final Collection<? extends TileContent> initialContent) {
+    private Tile(final Territory territory, final Location tileLocation) {
         super();
+        checkNotNull(territory);
+        checkNotNull(tileLocation);
+        checkArgument(territory.isLocationInTerritory(tileLocation));
         this.territory = territory;
         this.tileLocation = tileLocation;
-        this.content.addAll(initialContent);
-    }
-
-    static Tile createWall(final Territory territory, final Location location) {
-        return new Tile(territory, location, Arrays.asList(new Wall()));
     }
 
     public static Tile createEmptyTile(final Territory territory, final Location location) {
-        return new Tile(territory, location, Collections.emptyList());
+        return new Tile(territory, location);
     }
 
     public Territory getTerritory() {
@@ -45,27 +44,8 @@ public class Tile {
         return true;
     }
 
-    public void addObjectToContent(final TileContent newObject) {
-        if (this.hasObjectInContent(newObject)) {
-            throw new IllegalArgumentException("Object to not be already in the contents.");
-        }
-        this.content.add(newObject);
-    }
-
-    public void removeObjectFromContent(final TileContent objectToRemove) {
-        if (!this.hasObjectInContent(objectToRemove)) {
-            throw new IllegalArgumentException("Object to be removed not found in tile contents");
-        }
-        this.content.remove(objectToRemove);
-    }
-
     public boolean hasObjectInContent(final TileContent content) {
         return this.content.contains(content);
-    }
-
-    @Override
-    public String toString() {
-        return "Tile [tileLocation=" + tileLocation + ", content=" + content + "]";
     }
 
     public int countObjectsOfType(final Class<?> clazz) {
@@ -96,10 +76,26 @@ public class Tile {
         throw new RuntimeException();
     }
 
+
+    public void addObjectToContent(final TileContent newObject) {
+        checkArgument(!this.hasObjectInContent(newObject), "Object to not be already in the contents.");
+        this.content.add(newObject);
+    }
+
+    public void removeObjectFromContent(final TileContent objectToRemove) {
+        checkArgument(this.hasObjectInContent(objectToRemove), "Object to be removed not found in tile contents");
+        this.content.remove(objectToRemove);
+    }
+
     public void dispose() {
         final Collection<TileContent> content = new LinkedList<>(this.content);
         for (final TileContent item : content) {
             this.removeObjectFromContent(item);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Tile [tileLocation=" + tileLocation + ", content=" + content + "]";
     }
 }
