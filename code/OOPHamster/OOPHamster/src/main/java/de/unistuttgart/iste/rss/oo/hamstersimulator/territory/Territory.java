@@ -1,5 +1,8 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.territory;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.Dimension;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,10 +12,9 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TerritoryListener;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileAddedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileListener;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileRemovedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
+import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -34,9 +36,10 @@ public class Territory {
      */
     public Territory(final HamsterSimulator simulator) {
         super();
-        this.setSize(new Dimension(0, 0));
+        checkNotNull(simulator, "Simulator not allowed to be null.");
 
         this.simulator = simulator;
+        this.setSize(new Dimension(0, 0));
         Hamster.hamsterSetProperty().addListener(new SetChangeListener<Hamster>() {
 
             @Override
@@ -62,7 +65,7 @@ public class Territory {
     }
 
     public Tile getTileAt(final Location location) {
-        assert isLocationInTerritory(location);
+        checkArgument(isLocationInTerritory(location), "Location has to be in territory!");
 
         return tiles.get(getListIndexFromLocation(location));
     }
@@ -88,7 +91,8 @@ public class Territory {
     }
 
     public Territory setSize(final Dimension newSize) {
-        assert newSize.width >= 0 && newSize.height >= 0;
+        checkArgument(newSize.width >= 0 && newSize.height >= 0, "New Territory dimensions need to be positive!");
+
         disposeAllExistingTiles();
         initNewTileStore(newSize);
         createNewTiles();
@@ -114,6 +118,10 @@ public class Territory {
         return this.territorySize.getReadOnlyProperty();
     }
 
+    public ReadOnlyListProperty<Tile> tilesProperty() {
+        return this.tiles.getReadOnlyProperty();
+    }
+
     private void disposeAllExistingTiles() {
         if (this.tiles != null) {
             forAllTilesDo(t -> {
@@ -122,7 +130,6 @@ public class Territory {
                     t.removeTileListener(listener);
                 }
                 this.tiles.remove(t);
-                notifyTileRemoved(new TileRemovedEvent(this, t));
             });
         }
     }
@@ -137,7 +144,6 @@ public class Territory {
             for (int column = 0; column < this.getColumnCount(); column++) {
                 final Tile newTile = Tile.createEmptyTile(this, Location.from(row, column));
                 setTile(newTile);
-                notifyTileCreated(new TileAddedEvent(this, newTile));
                 for (final TileListener listener : this.listeners) {
                     newTile.addTileListener(listener);
                 }
@@ -161,15 +167,4 @@ public class Territory {
         tiles.add(getListIndexFromLocation(newTile.getLocation()), newTile);
     }
 
-    private void notifyTileCreated(final TileAddedEvent e) {
-        for (final TerritoryListener listener : listeners) {
-            listener.tileAdded(e);
-        }
-    }
-
-    private void notifyTileRemoved(final TileRemovedEvent e) {
-        for (final TerritoryListener listener : listeners) {
-            listener.tileRemoved(e);
-        }
-    }
 }

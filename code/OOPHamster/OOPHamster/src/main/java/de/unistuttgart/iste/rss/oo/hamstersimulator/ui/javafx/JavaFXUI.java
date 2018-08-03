@@ -1,11 +1,10 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TerritoryListener;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileAddedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileRemovedEvent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 import javafx.application.Application;
 import javafx.beans.binding.DoubleBinding;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -59,14 +58,40 @@ public class JavaFXUI extends Application {
     public void init(final Territory territory) {
         this.territory = territory;
         JavaFXUtil.blockingExecuteOnFXThread(() -> initGamefield());
-        this.territory.addTerritoryListener(territoryListener);
         this.territory.territorySizeProperty().addListener((property, oldValue, newValue) -> {
             JavaFXUtil.blockingExecuteOnFXThread(() -> {
                 configureSquareSizedTiles();
                 territoryTile = new TerritoryTilePane[newValue.width][newValue.height];
             });
         });
+        this.territory.tilesProperty().addListener(new ListChangeListener<Tile>() {
 
+            @Override
+            public void onChanged(final Change<? extends Tile> change) {
+                JavaFXUtil.blockingExecuteOnFXThread(() -> {
+                    while (change.next()) {
+                        if (change.wasAdded()) {
+                            change.getAddedSubList().forEach(tile -> {
+                                territoryTile[tile.getLocation().getColumn()][tile.getLocation()
+                                                                              .getRow()] = new TerritoryTilePane(tile);
+                                grid.add(territoryTile[tile.getLocation().getColumn()][tile.getLocation().getRow()],
+                                        tile.getLocation().getColumn(), tile.getLocation().getRow());
+                            });
+                        }
+                        if (change.wasRemoved()) {
+                            change.getRemoved().forEach(tile -> {
+                                territoryTile[tile.getLocation().getColumn()][tile.getLocation().getRow()].dispose();
+                                territoryTile[tile.getLocation().getColumn()][tile.getLocation().getRow()] = null;
+                                // TODO:
+                                // grid.remove(territoryTile[e.getTile().getTileLocation().getColumn()][e.getTile().getTileLocation().getRow()],e.getTile().getTileLocation().getColumn(),e.getTile().getTileLocation().getRow());
+                            });
+                        }
+                    }
+                });
+
+            }
+
+        });
     }
 
     private BorderPane getRootScene() {
@@ -122,25 +147,4 @@ public class JavaFXUI extends Application {
     public static void start() {
         new Thread(()->Application.launch(JavaFXUI.class)).start();
     }
-
-    private final TerritoryListener territoryListener = new TerritoryListener() {
-
-        @Override
-        public void tileRemoved(final TileRemovedEvent e) {
-            JavaFXUtil.blockingExecuteOnFXThread(() -> {
-                territoryTile[e.getTile().getLocation().getColumn()][e.getTile().getLocation().getRow()].dispose();
-                territoryTile[e.getTile().getLocation().getColumn()][e.getTile().getLocation().getRow()] = null;
-                // TODO: grid.remove(territoryTile[e.getTile().getTileLocation().getColumn()][e.getTile().getTileLocation().getRow()],e.getTile().getTileLocation().getColumn(),e.getTile().getTileLocation().getRow());
-            });
-        }
-
-        @Override
-        public void tileAdded(final TileAddedEvent e) {
-            JavaFXUtil.blockingExecuteOnFXThread(() -> {
-                territoryTile[e.getTile().getLocation().getColumn()][e.getTile().getLocation().getRow()] = new TerritoryTilePane(e.getTile());
-                grid.add(territoryTile[e.getTile().getLocation().getColumn()][e.getTile().getLocation().getRow()],e.getTile().getLocation().getColumn(),e.getTile().getLocation().getRow());
-            });
-        }
-
-    };
 }
