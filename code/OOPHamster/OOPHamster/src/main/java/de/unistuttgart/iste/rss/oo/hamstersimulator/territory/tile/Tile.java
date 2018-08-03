@@ -4,26 +4,23 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileContentAddedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileContentRemovedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileListener;
+import javafx.beans.property.ReadOnlySetProperty;
+import javafx.beans.property.ReadOnlySetWrapper;
+import javafx.collections.FXCollections;
 
 public class Tile {
 
-    private final Location tileLocation;
-    private final Collection<TileContent> content;
+    private final ReadOnlySetWrapper<TileContent> content = new ReadOnlySetWrapper<TileContent>(this, "content", FXCollections.observableSet());
     private final Territory territory;
-    private final List<TileListener> tileObservers = new LinkedList<>();
+    private final Location tileLocation;
 
     private Tile(final Territory territory, final Location tileLocation, final Collection<? extends TileContent> initialContent) {
         super();
         this.territory = territory;
         this.tileLocation = tileLocation;
-        this.content = new LinkedList<TileContent>();
         this.content.addAll(initialContent);
     }
 
@@ -53,7 +50,6 @@ public class Tile {
             throw new IllegalArgumentException("Object to not be already in the contents.");
         }
         this.content.add(newObject);
-        this.notifyContentAdded(new TileContentAddedEvent(this, newObject));
     }
 
     public void removeObjectFromContent(final TileContent objectToRemove) {
@@ -61,7 +57,6 @@ public class Tile {
             throw new IllegalArgumentException("Object to be removed not found in tile contents");
         }
         this.content.remove(objectToRemove);
-        this.notifyContentRemoved(new TileContentRemovedEvent(this, objectToRemove));
     }
 
     public boolean hasObjectInContent(final TileContent content) {
@@ -83,6 +78,10 @@ public class Tile {
         return count;
     }
 
+    public ReadOnlySetProperty<TileContent> contentProperty() {
+        return this.content.getReadOnlyProperty();
+    }
+
     public Location getLocation() {
         return tileLocation;
     }
@@ -95,26 +94,6 @@ public class Tile {
             }
         }
         throw new RuntimeException();
-    }
-
-    public void addTileListener(final TileListener listener) {
-        this.tileObservers.add(listener);
-    }
-
-    public void removeTileListener(final TileListener listener) {
-        this.tileObservers.remove(listener);
-    }
-
-    private void notifyContentAdded(final TileContentAddedEvent e) {
-        for (final TileListener observer : tileObservers) {
-            observer.contentItemAdded(e);
-        }
-    }
-
-    private void notifyContentRemoved(final TileContentRemovedEvent e) {
-        for (final TileListener observer : tileObservers) {
-            observer.contentItemRemoved(e);
-        }
     }
 
     public void dispose() {

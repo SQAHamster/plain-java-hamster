@@ -4,15 +4,11 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.awt.Dimension;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.function.Consumer;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TerritoryListener;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
@@ -27,7 +23,6 @@ public class Territory {
     private final ReadOnlyListWrapper<Tile> tiles = new ReadOnlyListWrapper<Tile>(this, "tiles", FXCollections.observableArrayList());
 
     private final HamsterSimulator simulator;
-    private final List<TerritoryListener> listeners = new LinkedList<>();
     private Hamster defaultHamster;
 
     /**
@@ -100,20 +95,6 @@ public class Territory {
         return this;
     }
 
-    public void addTerritoryListener(final TerritoryListener listener) {
-        this.listeners.add(listener);
-        forAllTilesDo(t -> {
-            t.addTileListener(listener);
-        });
-    }
-
-    public void removeTerritoryListener(final TerritoryListener listener) {
-        this.listeners.remove(listener);
-        forAllTilesDo(t -> {
-            t.removeTileListener(listener);
-        });
-    }
-
     public ReadOnlyObjectProperty<Dimension> territorySizeProperty() {
         return this.territorySize.getReadOnlyProperty();
     }
@@ -126,9 +107,6 @@ public class Territory {
         if (this.tiles != null) {
             forAllTilesDo(t -> {
                 t.dispose();
-                for (final TileListener listener : this.listeners) {
-                    t.removeTileListener(listener);
-                }
                 this.tiles.remove(t);
             });
         }
@@ -144,9 +122,6 @@ public class Territory {
             for (int column = 0; column < this.getColumnCount(); column++) {
                 final Tile newTile = Tile.createEmptyTile(this, Location.from(row, column));
                 setTile(newTile);
-                for (final TileListener listener : this.listeners) {
-                    newTile.addTileListener(listener);
-                }
             }
         }
     }

@@ -5,14 +5,12 @@ import java.util.Map;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileContentAddedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileContentRemovedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.TileContent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Wall;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.SetChangeListener;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -45,29 +43,30 @@ public class TerritoryTilePane extends Pane {
     private ChangeListener<Direction> directionChangedListener;
 
 
-    private final TileListener tileListener = new TileListener() {
+    private final SetChangeListener<TileContent> tileListener = new SetChangeListener<TileContent>(){
 
         @Override
-        public void contentItemRemoved(final TileContentRemovedEvent e) {
-            if (e.getRemovedContent() instanceof Wall) {
-                removeWall();
-            } else if (e.getRemovedContent() instanceof Hamster) {
-                removeHamster((Hamster) e.getRemovedContent());
-            } else if (e.getRemovedContent() instanceof Grain) {
-                updateGrains();
+        public void onChanged(final Change<? extends TileContent> change) {
+            if (change.wasAdded()) {
+                if (change.getElementAdded() instanceof Wall) {
+                    showWall();
+                } else if (change.getElementAdded() instanceof Hamster) {
+                    showHamster((Hamster) change.getElementAdded());
+                } else if (change.getElementAdded() instanceof Grain) {
+                    updateGrains();
+                }
+            }
+            if (change.wasRemoved()) {
+                if (change.getElementRemoved() instanceof Wall) {
+                    removeWall();
+                } else if (change.getElementRemoved() instanceof Hamster) {
+                    removeHamster((Hamster) change.getElementRemoved());
+                } else if (change.getElementRemoved() instanceof Grain) {
+                    updateGrains();
+                }
             }
         }
 
-        @Override
-        public void contentItemAdded(final TileContentAddedEvent e) {
-            if (e.getNewContent() instanceof Wall) {
-                showWall();
-            } else if (e.getNewContent() instanceof Hamster) {
-                showHamster((Hamster) e.getNewContent());
-            } else if (e.getNewContent() instanceof Grain) {
-                updateGrains();
-            }
-        }
     };
 
     TerritoryTilePane(final Tile tile) {
@@ -170,11 +169,6 @@ public class TerritoryTilePane extends Pane {
         }
     }
 
-    private void addTileListener() {
-        this.tile.addTileListener(tileListener);
-
-    }
-
     private Image getColoredHamsterImage(final Hamster hamster) {
         int colorIndex;
         if (hamsterToColorPos.containsKey(hamster)) {
@@ -195,7 +189,11 @@ public class TerritoryTilePane extends Pane {
         throw new RuntimeException("No more colors for hamster available.");
     }
 
+    private void addTileListener() {
+        this.tile.contentProperty().addListener(this.tileListener);
+    }
+
     public void dispose() {
-        this.tile.removeTileListener(tileListener);
+        this.tile.contentProperty().removeListener(this.tileListener);
     }
 }
