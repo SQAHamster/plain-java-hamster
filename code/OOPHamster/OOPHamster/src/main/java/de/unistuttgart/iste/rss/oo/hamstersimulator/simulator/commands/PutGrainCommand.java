@@ -5,7 +5,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.DropGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.commands.PutContentsCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.commands.AddContentsCommand;
 
 public class PutGrainCommand extends HamsterCompositeBaseCommand {
 
@@ -23,7 +23,7 @@ public class PutGrainCommand extends HamsterCompositeBaseCommand {
         this.grainDropped = this.hamster.getGrainInMouth().get(0);
         builder.add(
                 new DropGrainCommand(hamsterState, this.grainDropped),
-                new PutContentsCommand(this.currentTile.getState(), this.grainDropped)
+                new AddContentsCommand(this.currentTile.getState(), this.grainDropped)
                 );
     }
 }

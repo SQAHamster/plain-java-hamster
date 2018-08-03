@@ -10,15 +10,15 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.TileContent;
 
-public class PutContentsCommand extends TileCommand {
+public class AddContentsCommand extends TileCommand {
 
     private final Collection<TileContent> contentToPut = new LinkedList<>();
 
-    public PutContentsCommand(final PropertyMap<Tile> tileState, final TileContent ... contents) {
+    public AddContentsCommand(final PropertyMap<Tile> tileState, final TileContent ... contents) {
         this(tileState, Arrays.asList(contents));
     }
 
-    public PutContentsCommand(final PropertyMap<Tile> tileState, final Collection<? extends TileContent> newContent) {
+    public AddContentsCommand(final PropertyMap<Tile> tileState, final Collection<? extends TileContent> newContent) {
         super(tileState);
         contentToPut.addAll(newContent);
     }

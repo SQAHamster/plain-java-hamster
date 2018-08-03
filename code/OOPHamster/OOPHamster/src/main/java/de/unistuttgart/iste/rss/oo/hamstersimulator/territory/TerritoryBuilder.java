@@ -10,7 +10,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.TileContent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Wall;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.commands.PutContentsCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.commands.AddContentsCommand;
 
 public class TerritoryBuilder {
 
@@ -25,7 +25,7 @@ public class TerritoryBuilder {
 
     public TerritoryBuilder wallAt(final int row, final int column) {
         this.simulator.getCommandStack()
-        .execute(new PutContentsCommand(this.territory.getTileAt(new Location(row, column)).getState(), new Wall()));
+        .execute(new AddContentsCommand(this.territory.getTileAt(new Location(row, column)).getState(), new Wall()));
         return this;
     }
 
@@ -42,7 +42,7 @@ public class TerritoryBuilder {
     }
 
     public TerritoryBuilder grainAt(final int row, final int column, final int grainCount) {
-        this.simulator.getCommandStack().execute(new PutContentsCommand(
+        this.simulator.getCommandStack().execute(new AddContentsCommand(
                 this.territory.getTileAt(new Location(row, column)).getState(), createNewGrain(grainCount)));
         return this;
     }
