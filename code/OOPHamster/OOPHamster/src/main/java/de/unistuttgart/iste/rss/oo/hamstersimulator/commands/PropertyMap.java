@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.SetProperty;
 
 public class PropertyMap <T> {
     private final Map<String, Property<?>> editableProperties;
@@ -47,6 +48,13 @@ public class PropertyMap <T> {
         assert editableProperties.containsKey(name);
 
         return (ListProperty<G>) editableProperties.get(name);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <G> SetProperty<G> getSetProperty(final String name) {
+        assert editableProperties.containsKey(name);
+
+        return (SetProperty<G>) editableProperties.get(name);
     }
 
 }

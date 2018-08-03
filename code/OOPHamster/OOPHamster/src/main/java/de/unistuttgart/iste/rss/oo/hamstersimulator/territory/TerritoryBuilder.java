@@ -25,7 +25,7 @@ public class TerritoryBuilder {
 
     public TerritoryBuilder wallAt(final int row, final int column) {
         this.simulator.getCommandStack()
-        .execute(new PutContentsCommand(this.territory.getTileAt(new Location(row, column)), new Wall()));
+        .execute(new PutContentsCommand(this.territory.getTileAt(new Location(row, column)).getState(), new Wall()));
         return this;
     }
 
@@ -43,7 +43,7 @@ public class TerritoryBuilder {
 
     public TerritoryBuilder grainAt(final int row, final int column, final int grainCount) {
         this.simulator.getCommandStack().execute(new PutContentsCommand(
-                this.territory.getTileAt(new Location(row, column)), createNewGrain(grainCount)));
+                this.territory.getTileAt(new Location(row, column)).getState(), createNewGrain(grainCount)));
         return this;
     }
 

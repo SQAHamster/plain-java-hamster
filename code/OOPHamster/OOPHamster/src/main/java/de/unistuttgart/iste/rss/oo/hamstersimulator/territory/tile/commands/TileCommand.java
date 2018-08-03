@@ -1,21 +1,17 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.commands;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EntityCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 
-public abstract class TileCommand extends Command {
+public abstract class TileCommand extends EntityCommand<Tile> {
 
-    private final Tile tile;
-
-    public TileCommand(final Tile tile) {
-        super();
-        this.tile = tile;
+    public TileCommand(final PropertyMap<Tile> tileState) {
+        super(tileState);
     }
 
     public Tile getTile() {
-        return tile;
+        return this.entityState.getPropertyOwner();
     }
-
-
 
 }

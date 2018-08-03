@@ -19,7 +19,7 @@ public class InitHamsterCommand extends CompositeBaseCommand {
                 new SetCurrentTileCommand<Hamster>(hamsterState, Optional.empty()),
                 new SetDirectionCommand(hamsterState, newDirection),
                 new SetCurrentTileCommand<Hamster>(hamsterState, newTile));
-        IntStream.of(1,newGrainCount).forEach(i -> this.compositeCommandBuilder.add(new AddGrainCommand(hamsterState, new Grain())));
+        IntStream.range(1, newGrainCount).forEach(i -> this.compositeCommandBuilder.add(new AddGrainCommand(hamsterState, new Grain())));
     }
 
 }
