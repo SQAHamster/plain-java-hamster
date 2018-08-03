@@ -1,57 +1,24 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands;
 
 import java.util.Optional;
+import java.util.stream.IntStream;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeBaseCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster.HamsterStateChanger;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
 
-public class InitHamsterCommand extends HamsterCommand {
+public class InitHamsterCommand extends CompositeBaseCommand {
 
-    private Direction previousDirection;
-    private final Direction newDirection;
-    private final int newGrainCount;
-    private Optional<Tile> previousTile;
-    private int previousGrains;
-    private final Optional<Tile> newTile;
-
-    public InitHamsterCommand(final HamsterStateChanger hamsterStateAccess, final Optional<Tile> newTile, final Direction newDirection, final int newGrainCount) {
-        super(hamsterStateAccess);
-        this.newDirection = newDirection;
-        this.newGrainCount = newGrainCount;
-        this.newTile = newTile;
-    }
-
-    @Override
-    public void execute() {
-        assert this.hamster.getDirection() != null;
-
-        this.previousDirection = this.hamster.getDirection();
-        this.previousTile = this.hamster.getCurrentTile();
-        this.previousGrains = this.hamster.getGrainInMouth().size();
-
-        this.stateChanger.setDirection(newDirection);
-        this.stateChanger.setCurrentTile(this.newTile);
-        while(!this.hamster.getGrainInMouth().isEmpty()) {
-            this.stateChanger.removeGrainFromMouth(this.stateChanger.getAnyGrain());
-        }
-        for (int i = 0; i < this.newGrainCount; i++) {
-            this.stateChanger.addGrainToMouth(new Grain());
-        }
-        // TODO: this.stateListener.clear();
-    }
-
-    @Override
-    public void undo() {
-        this.stateChanger.setDirection(this.previousDirection);
-        this.stateChanger.setCurrentTile(Optional.empty());
-        while(!this.hamster.getGrainInMouth().isEmpty()) {
-            this.stateChanger.removeGrainFromMouth(this.stateChanger.getAnyGrain());
-        }
-        for (int i = 0; i < this.previousGrains; i++) {
-            this.stateChanger.addGrainToMouth(new Grain());
-        }
+    public InitHamsterCommand(final PropertyMap<Hamster> hamsterState, final Optional<Tile> newTile, final Direction newDirection, final int newGrainCount) {
+        super();
+        this.compositeCommandBuilder.add(
+                new SetCurrentTileCommand(hamsterState, Optional.empty()),
+                new SetDirectionCommand(hamsterState, newDirection),
+                new SetCurrentTileCommand(hamsterState, newTile));
+        IntStream.of(1,newGrainCount).forEach(i -> this.compositeCommandBuilder.add(new AddGrainCommand(hamsterState, new Grain())));
     }
 
 }

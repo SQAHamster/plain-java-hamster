@@ -1,23 +1,22 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EntityCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster.HamsterStateChanger;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 
-abstract class HamsterCommand extends Command {
-    protected final HamsterStateChanger stateChanger;
+abstract class HamsterCommand extends EntityCommand<Hamster> {
+
     protected final Hamster hamster;
 
-    public HamsterCommand(final HamsterStateChanger stateChanger) {
-        super();
-        this.stateChanger = stateChanger;
-        this.hamster = stateChanger.getHamster();
+    public HamsterCommand(final PropertyMap<Hamster> hamsterProperties) {
+        super(hamsterProperties);
+        this.hamster = hamsterProperties.getPropertyOwner();
     }
 
     protected Territory getTerritory() {
-        assert this.hamster.getCurrentTile().isPresent();
+        assert this.entityState.getPropertyOwner().getCurrentTile().isPresent();
 
-        return this.hamster.getCurrentTerritory();
+        return this.entityState.getPropertyOwner().getCurrentTerritory();
     }
 }

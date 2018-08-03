@@ -4,18 +4,19 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 
-public class TurnLeftCommand extends HamsterCommand {
+public class SetDirectionCommand extends HamsterCommand {
 
     private Direction previousDirection;
+    private final Direction newDirection;
 
-    public TurnLeftCommand(final PropertyMap<Hamster> hamsterState) {
+    public SetDirectionCommand(final PropertyMap<Hamster> hamsterState, final Direction newDirection) {
         super(hamsterState);
+        this.newDirection = newDirection;
     }
 
     @Override
     public void execute() {
         this.previousDirection = this.hamster.getDirection();
-        final Direction newDirection = previousDirection.left();
         this.entityState.getObjectProperty("direction").set(newDirection);
     }
 

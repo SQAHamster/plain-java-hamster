@@ -8,14 +8,15 @@ import java.util.List;
 import java.util.Optional;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.InitHamsterCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.MoveCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.PickGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.PutGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.TurnLeftCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.MoveCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
@@ -46,11 +47,10 @@ public class Hamster extends TileContent {
 
     private final HamsterSimulator simulator;
 
-    private final ReadOnlyObjectWrapper<Optional<Tile>> currentTile = new ReadOnlyObjectWrapper<>();
-    private final ReadOnlyObjectWrapper<Direction> direction = new ReadOnlyObjectWrapper<>();
-    private final ReadOnlyListWrapper<Grain> grainInMouth = new ReadOnlyListWrapper<>();
-
-    private final HamsterStateChanger hamsterStateAccess = new HamsterStateChanger();
+    private final ReadOnlyObjectWrapper<Optional<Tile>> currentTile = new ReadOnlyObjectWrapper<>(this,"currentTile", Optional.empty());
+    private final ReadOnlyObjectWrapper<Direction> direction = new ReadOnlyObjectWrapper<>(this, "direction", Direction.NORTH);
+    private final ReadOnlyListWrapper<Grain> grainInMouth = new ReadOnlyListWrapper<>(this, "grainInMouth", FXCollections.observableArrayList());
+    private final PropertyMap<Hamster> propertyMap = new PropertyMap<>(this, currentTile, direction, grainInMouth);
 
     /*
      * Constructors
@@ -64,7 +64,6 @@ public class Hamster extends TileContent {
         checkArgument(grainInMouth >= 0, "Grain in mouth needs to be zero or greater.");
 
         this.simulator = simulator;
-        this.grainInMouth.set(FXCollections.observableArrayList());
         this.direction.set(direction);
         this.currentTile.set(initialTile);
         hamsterSet.add(this);
@@ -87,23 +86,23 @@ public class Hamster extends TileContent {
      * Commands
      */
     public void init(final Optional<Tile> initialTile, final Direction direction, final int grainInMouth) {
-        this.simulator.getCommandStack().execute(new InitHamsterCommand(hamsterStateAccess, initialTile, direction, grainInMouth));
+        this.simulator.getCommandStack().execute(new InitHamsterCommand(propertyMap, initialTile, direction, grainInMouth));
     }
 
     public void move() {
-        this.simulator.getCommandStack().execute(new MoveCommand(hamsterStateAccess));
+        this.simulator.getCommandStack().execute(new MoveCommand(propertyMap));
     }
 
     public void turnLeft() {
-        this.simulator.getCommandStack().execute(new TurnLeftCommand(hamsterStateAccess));
+        this.simulator.getCommandStack().execute(new TurnLeftCommand(propertyMap));
     }
 
     public void pickGrain() {
-        this.simulator.getCommandStack().execute(new PickGrainCommand(hamsterStateAccess));
+        this.simulator.getCommandStack().execute(new PickGrainCommand(propertyMap));
     }
 
     public void putGrain() {
-        this.simulator.getCommandStack().execute(new PutGrainCommand(hamsterStateAccess));
+        this.simulator.getCommandStack().execute(new PutGrainCommand(propertyMap));
     }
 
     public void readNumber() {
@@ -173,43 +172,6 @@ public class Hamster extends TileContent {
 
     public List<Grain> getGrainInMouth() {
         return Collections.unmodifiableList(grainInMouth.get());
-    }
-
-    /*
-     * State changers
-     */
-    public class HamsterStateChanger {
-
-        public Hamster getHamster() {
-            return Hamster.this;
-        }
-
-        public void setDirection(final Direction direction) {
-            assert direction != null;
-            Hamster.this.direction.set(direction);
-        }
-
-        public void addGrainToMouth(final Grain newGrain) {
-            assert !Hamster.this.getGrainInMouth().contains(newGrain);
-            Hamster.this.grainInMouth.add(newGrain);
-        }
-
-        public void removeGrainFromMouth(final Grain grainToRemove) {
-            assert Hamster.this.grainInMouth.contains(grainToRemove);
-            Hamster.this.grainInMouth.remove(grainToRemove);
-        }
-
-        public Grain getAnyGrain() {
-            assert Hamster.this.grainInMouth.size() > 0;
-            return Hamster.this.grainInMouth.get(0);
-        }
-
-        public void setCurrentTile(final Optional<Tile> newTile) {
-            assert newTile != null;
-            assert !Hamster.this.currentTile.get().isPresent() || Hamster.this.currentTile.get().get().hasObjectInContent(Hamster.this);
-            assert !newTile.isPresent() || newTile.get().canEnter();
-            Hamster.this.currentTile.set(newTile);
-        }
     }
 
     /*

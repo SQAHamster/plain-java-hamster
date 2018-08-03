@@ -1,6 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster.HamsterStateChanger;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
 
@@ -9,8 +10,8 @@ public class PutGrainCommand extends HamsterCommand {
     private Grain grainDropped;
     private Tile currentTile;
 
-    public PutGrainCommand(final HamsterStateChanger stateChanger) {
-        super(stateChanger);
+    public PutGrainCommand(final PropertyMap<Hamster> hamsterState) {
+        super(hamsterState);
     }
 
     @Override
@@ -19,15 +20,15 @@ public class PutGrainCommand extends HamsterCommand {
         assert !this.hamster.getGrainInMouth().isEmpty();
 
         this.currentTile = this.getTerritory().getTileAt(this.hamster.getCurrentTile().get().getLocation());
-        this.grainDropped = this.stateChanger.getAnyGrain();
+        this.grainDropped = this.entityState.<Grain> getListProperty("grainInMouth").get(0);
         this.currentTile.addObjectToContent(this.grainDropped);
-        this.stateChanger.removeGrainFromMouth(this.grainDropped);
+        this.entityState.getListProperty("grainInMouth").remove(this.grainDropped);
     }
 
     @Override
     public void undo() {
         this.currentTile.removeObjectFromContent(this.grainDropped);
-        this.stateChanger.addGrainToMouth(this.grainDropped);
+        this.entityState.getListProperty("grainInMouth").add(this.grainDropped);
     }
 
 }
