@@ -13,6 +13,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TerritoryRe
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileAddedEvent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.events.TileRemovedEvent;
+import javafx.collections.SetChangeListener;
 
 public class Territory {
 
@@ -31,12 +32,19 @@ public class Territory {
         super();
         this.setSize(0, 0);
         this.simulator = simulator;
-        Hamster.addHamsterCreatedListener(createdEvent -> {
-            final Hamster newHamster = createdEvent.getHamster();
-            newHamster.currentTileProperty().addListener((property, oldValue, newValue) -> {
-                oldValue.ifPresent(tile -> tile.removeObjectFromContent(newHamster));
-                newValue.ifPresent(tile -> tile.addObjectToContent(newHamster));
-            });
+        Hamster.hamsterSetProperty().addListener(new SetChangeListener<Hamster>() {
+
+            @Override
+            public void onChanged(final Change<? extends Hamster> change) {
+                if (change.wasAdded()) {
+                    final Hamster newHamster = change.getElementAdded();
+                    newHamster.currentTileProperty().addListener((property, oldValue, newValue) -> {
+                        oldValue.ifPresent(tile -> tile.removeObjectFromContent(newHamster));
+                        newValue.ifPresent(tile -> tile.addObjectToContent(newHamster));
+                    });
+                    newHamster.getCurrentTile().ifPresent(t -> t.addObjectToContent(newHamster));
+                }
+            }
         });
     }
 

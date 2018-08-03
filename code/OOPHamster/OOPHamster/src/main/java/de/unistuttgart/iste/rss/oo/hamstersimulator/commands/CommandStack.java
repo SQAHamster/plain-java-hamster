@@ -25,7 +25,7 @@ public class CommandStack {
 
     public void delay() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(200);
         } catch (final InterruptedException e) { }
     }
 

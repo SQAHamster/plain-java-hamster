@@ -45,7 +45,7 @@ public class InitHamsterCommand extends HamsterCommand {
     @Override
     public void undo() {
         this.stateChanger.setDirection(this.previousDirection);
-        this.stateChanger.setCurrentTile(this.previousTile);
+        this.stateChanger.setCurrentTile(Optional.empty());
         while(!this.hamster.getGrainInMouth().isEmpty()) {
             this.stateChanger.removeGrainFromMouth(this.stateChanger.getAnyGrain());
         }

@@ -1,7 +1,9 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,8 +16,6 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.MoveCommand
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.PickGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.PutGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.TurnLeftCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterCreatedEvent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.events.HamsterCreatedListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Tile;
@@ -24,11 +24,25 @@ import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlySetProperty;
+import javafx.beans.property.ReadOnlySetWrapper;
 import javafx.collections.FXCollections;
 
 public class Hamster extends TileContent {
 
-    private static final List<HamsterCreatedListener> creationListener = new LinkedList<>();
+    /*
+     * Static part of class, provides a hamster registry
+     */
+    private static final ReadOnlySetWrapper<Hamster> hamsterSet = new ReadOnlySetWrapper<Hamster>();
+
+    static {
+        hamsterSet.set(FXCollections.observableSet());
+    }
+
+    public static ReadOnlySetProperty<Hamster> hamsterSetProperty() {
+        return hamsterSet.getReadOnlyProperty();
+
+    }
 
     private final HamsterSimulator simulator;
 
@@ -45,13 +59,15 @@ public class Hamster extends TileContent {
     public Hamster(final HamsterSimulator simulator, final Optional<Tile> initialTile, final Direction direction, final int grainInMouth) {
         super();
 
-        assert initialTile != null;
+        checkNotNull(initialTile);
+        checkNotNull(direction);
+        checkArgument(grainInMouth >= 0, "Grain in mouth needs to be zero or greater.");
 
         this.simulator = simulator;
         this.grainInMouth.set(FXCollections.observableArrayList());
-        this.direction.set(Direction.NORTH);
-        this.currentTile.set(Optional.empty());
-        notifyHamsterCreated(this);
+        this.direction.set(direction);
+        this.currentTile.set(initialTile);
+        hamsterSet.add(this);
         init(initialTile, direction, grainInMouth);
     }
 
@@ -64,16 +80,16 @@ public class Hamster extends TileContent {
     }
 
     public Hamster(final HamsterSimulator simulator) {
-        this(simulator,Optional.empty(),Direction.NORTH,0);
-    }
-
-    public void init(final Optional<Tile> initialTile, final Direction direction, final int grainInMouth) {
-        this.simulator.getCommandStack().execute(new InitHamsterCommand(hamsterStateAccess, initialTile, direction, grainInMouth));
+        this(simulator, Optional.empty(), Direction.NORTH, 0);
     }
 
     /*
      * Commands
      */
+    public void init(final Optional<Tile> initialTile, final Direction direction, final int grainInMouth) {
+        this.simulator.getCommandStack().execute(new InitHamsterCommand(hamsterStateAccess, initialTile, direction, grainInMouth));
+    }
+
     public void move() {
         this.simulator.getCommandStack().execute(new MoveCommand(hamsterStateAccess));
     }
@@ -128,24 +144,27 @@ public class Hamster extends TileContent {
         return this.getGrainInMouth().isEmpty();
     }
 
-    public Optional<Tile> getCurrentTile() {
-        return this.currentTile.get();
-    }
-
     public Territory getCurrentTerritory() {
         return this.getCurrentTile().orElseThrow(IllegalStateException::new).getTerritory();
+    }
+
+    /*
+     * Read-Only (observable) Properties
+     */
+    public ReadOnlyObjectProperty<Direction> directionProperty() {
+        return this.direction.getReadOnlyProperty();
     }
 
     public Direction getDirection() {
         return direction.get();
     }
 
-    public ReadOnlyObjectProperty<Direction> directionProperty() {
-        return this.direction.getReadOnlyProperty();
-    }
-
     public ReadOnlyObjectProperty<Optional<Tile>> currentTileProperty() {
         return this.currentTile.getReadOnlyProperty();
+    }
+
+    public Optional<Tile> getCurrentTile() {
+        return this.currentTile.get();
     }
 
     public ReadOnlyListProperty<Grain> grainInMouthProperty() {
@@ -167,22 +186,16 @@ public class Hamster extends TileContent {
 
         public void setDirection(final Direction direction) {
             assert direction != null;
-
-            //final Direction oldDirection = Hamster.this.direction;
-            //Hamster.this.direction = direction;
-            //fireStateChangedEvent(new HamsterChangedDirectionEvent(Hamster.this, oldDirection, Hamster.this.direction));
             Hamster.this.direction.set(direction);
         }
 
         public void addGrainToMouth(final Grain newGrain) {
             assert !Hamster.this.getGrainInMouth().contains(newGrain);
-
             Hamster.this.grainInMouth.add(newGrain);
         }
 
         public void removeGrainFromMouth(final Grain grainToRemove) {
             assert Hamster.this.grainInMouth.contains(grainToRemove);
-
             Hamster.this.grainInMouth.remove(grainToRemove);
         }
 
@@ -195,7 +208,6 @@ public class Hamster extends TileContent {
             assert newTile != null;
             assert !Hamster.this.currentTile.get().isPresent() || Hamster.this.currentTile.get().get().hasObjectInContent(Hamster.this);
             assert !newTile.isPresent() || newTile.get().canEnter();
-
             Hamster.this.currentTile.set(newTile);
         }
     }
@@ -212,19 +224,4 @@ public class Hamster extends TileContent {
     protected boolean blocksEntrance() {
         return false;
     }
-
-    public static void addHamsterCreatedListener(final HamsterCreatedListener listener) {
-        creationListener.add(listener);
-    }
-
-    public static void removeHamsterCreatedListener(final HamsterCreatedListener listener) {
-        creationListener.remove(listener);
-    }
-
-    private static void notifyHamsterCreated(final Hamster hamster) {
-        for (final HamsterCreatedListener listener : creationListener) {
-            listener.hamsterCreated(new HamsterCreatedEvent(hamster));
-        }
-    }
-
 }
