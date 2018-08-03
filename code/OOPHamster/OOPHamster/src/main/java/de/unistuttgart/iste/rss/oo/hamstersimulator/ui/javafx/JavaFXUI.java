@@ -1,5 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 
+import java.util.concurrent.CountDownLatch;
+
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 import javafx.application.Application;
@@ -28,12 +30,12 @@ public class JavaFXUI extends Application {
     private GridPane grid;
     public static JavaFXUI mySingleton = null;
 
+    private static final CountDownLatch initLatch = new CountDownLatch(1);
+
     public static JavaFXUI getSingleton() {
-        while (mySingleton == null) {
-            try {
-                Thread.sleep(100);
-            } catch (final InterruptedException e) { }
-        }
+        try {
+            initLatch.await();
+        } catch (final InterruptedException e) { }
         return mySingleton;
     }
 
@@ -53,6 +55,7 @@ public class JavaFXUI extends Application {
         primaryStage.minWidthProperty().bind(gridPane.minWidthProperty());
 
         mySingleton = this;
+        initLatch.countDown();
     }
 
     public void init(final Territory territory) {
