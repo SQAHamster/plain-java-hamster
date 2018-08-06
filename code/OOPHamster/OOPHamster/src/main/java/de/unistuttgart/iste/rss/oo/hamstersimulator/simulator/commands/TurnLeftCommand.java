@@ -1,9 +1,11 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.SetDirectionCommand;
 
 public class TurnLeftCommand extends HamsterCompositeBaseCommand {
 
@@ -14,7 +16,7 @@ public class TurnLeftCommand extends HamsterCompositeBaseCommand {
     @Override
     protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
         final Direction newDirection = this.hamster.getDirection().left();
-        builder.add(new SetDirectionCommand(this.hamsterState, newDirection));
+        builder.add(new UnidirectionalUpdatePropertyCommand<Hamster>(this.hamsterState, new PropertyCommandSpecification("direction", newDirection, ActionKind.SET)));
     }
 
 }
