@@ -11,9 +11,8 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.InitHamsterCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.InitHamsterCommandParameter;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.GameCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.InitHamsterCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.InitHamsterCommandParameter;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
@@ -26,7 +25,7 @@ import javafx.beans.property.ReadOnlySetProperty;
 import javafx.beans.property.ReadOnlySetWrapper;
 import javafx.collections.FXCollections;
 
-public class Hamster extends TileContent {
+public abstract class Hamster extends TileContent {
 
     /*
      * Static part of class, provides a hamster registry
@@ -39,7 +38,6 @@ public class Hamster extends TileContent {
 
     public static ReadOnlySetProperty<Hamster> hamsterSetProperty() {
         return hamsterSet.getReadOnlyProperty();
-
     }
 
     private final ReadOnlyObjectWrapper<Direction> direction = new ReadOnlyObjectWrapper<>(this, "direction", Direction.NORTH);
@@ -55,7 +53,6 @@ public class Hamster extends TileContent {
 
         hamsterSet.add(this);
     }
-
 
     /*
      * Read-Only (observable) Properties
@@ -79,9 +76,9 @@ public class Hamster extends TileContent {
     /*
      * Commands
      */
-
-    public GameCommand getInitializeHamsterCommand(final Optional<Territory> territory, final Optional<Location> location, final Direction newDirection, final int newGrainCount) {
-        return new InitHamsterCommand(this, territory, new InitHamsterCommandParameter(location, newDirection, newGrainCount));
+    public CommandInterface getInitializeHamsterCommand(final Territory territory, final Optional<Location> location,
+            final Direction direction, final int grainCount) {
+        return new InitHamsterCommand(this, territory, new InitHamsterCommandParameter(location, direction, grainCount));
     }
 
     public CommandInterface getRemoveGrainCommand(final Grain grain) {

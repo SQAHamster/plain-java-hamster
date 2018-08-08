@@ -1,9 +1,15 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandStack;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.Optional;
+
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.GameCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.InitHamsterCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.InitHamsterCommandParameter;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.MoveCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.PickGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.PutGrainCommand;
@@ -14,24 +20,39 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 
 public class GameHamster extends Hamster {
 
+    public GameHamster() {}
+
+    public GameHamster(final Territory territory, final Location location, final Direction newDirection, final int newGrainCount) {
+        super();
+        init(territory, location, newDirection, newGrainCount);
+    }
     /*
      * Commands
      */
 
-    public void move(final CommandStack<GameCommand> stack) {
-        stack.execute(new MoveCommand(this));
+    public void init(final Territory territory, final Location location, final Direction newDirection, final int newGrainCount) {
+        checkNotNull(territory);
+        checkNotNull(location);
+        checkNotNull(newDirection);
+        checkArgument(newGrainCount >= 0);
+
+        territory.getCommandStack().execute(new InitHamsterCommand(this, territory, new InitHamsterCommandParameter(Optional.of(location), newDirection, newGrainCount)));
     }
 
-    public void turnLeft(final CommandStack<GameCommand> stack) {
-        stack.execute(new TurnLeftCommand(this));
+    public void move() {
+        this.getCurrentTerritory().getCommandStack().execute(new MoveCommand(this));
     }
 
-    public void pickGrain(final CommandStack<GameCommand> stack) {
-        stack.execute(new PickGrainCommand(this));
+    public void turnLeft() {
+        this.getCurrentTerritory().getCommandStack().execute(new TurnLeftCommand(this));
     }
 
-    public void putGrain(final CommandStack<GameCommand> stack) {
-        stack.execute(new PutGrainCommand(this));
+    public void pickGrain() {
+        this.getCurrentTerritory().getCommandStack().execute(new PickGrainCommand(this));
+    }
+
+    public void putGrain() {
+        this.getCurrentTerritory().getCommandStack().execute(new PutGrainCommand(this));
     }
 
     public void readNumber() {

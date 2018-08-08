@@ -33,7 +33,7 @@ public class TerritoryBuilder {
 
     public TerritoryBuilder defaultHamsterAt(final Optional<Location> location, final Direction direction, final int grainCount) {
         final CommandInterface initCommand = this.territory.getDefaultHamster().getInitializeHamsterCommand(
-                Optional.of(this.territory),
+                this.territory,
                 location,
                 direction,
                 grainCount);
