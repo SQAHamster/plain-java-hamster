@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.util.Optional;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
@@ -13,41 +12,26 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 public class Main {
 
     public static void main(final String[] args) throws IOException, CloneNotSupportedException {
-        final String territoryFile = "/Users/snowball/test.ter";
-        final HamsterSimulator simulator = new HamsterSimulator();
-
         JavaFXUI.start();
-        JavaFXUI.getSingleton().init(simulator.getTerritory());
 
+        final String territoryFile = "/Users/snowball/test.ter";
+        final Territory territory = new Territory();
+        final CommandStack editStack = new CommandStack();
+        final CommandStack gameStack = new CommandStack();
 
-        //        class MyFlowableOnSubscribe implements FlowableOnSubscribe<HamsterStateChangedEvent> {
-        //            @Override
-        //            public void subscribe(final FlowableEmitter<HamsterStateChangedEvent> source) throws Exception {
-        //                final HamsterStateListener listener = event -> source.onNext(event);
-        //                paule.addHamsterStateListener(listener);
-        //                l = listener;
-        //            }
-        //        }
-        //        final MyFlowableOnSubscribe fos = new MyFlowableOnSubscribe();
-        //
-        //        final Flowable<HamsterStateChangedEvent> hamsterStateObservable =
-        //                Flowable.create(fos, BackpressureStrategy.BUFFER).
-        //                doOnCancel(()->System.out.println("Canceled")).
-        //                doOnComplete(()->System.out.println("Completed")).
-        //                doFinally(()->paule.removeHamsterStateListener(l));
-        //
-        //        final Disposable stateObserverDisposable = hamsterStateObservable.subscribe(System.out::println);
+        JavaFXUI.getSingleton().init(territory);
 
-        final Territory territory = simulator.getTerritory();
-        simulator.getCommandStack().execute(TerritoryLoader.loader(territory).loadFromFile(territoryFile));
+        editStack.execute(TerritoryLoader.loader(territory).loadFromFile(territoryFile));
+        delay(1000);
+        exampleRun(territory, gameStack);
+        delay(2000);
+        gameStack.undoAll();
+    }
+
+    protected static void delay(final int delay) {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(delay);
         } catch (final InterruptedException e) { }
-
-
-        exampleRun(territory, simulator.getCommandStack());
-        //        stateObserverDisposable.dispose();
-        simulator.getCommandStack().undoAll();
     }
 
     private static void exampleRun(final Territory territory, final CommandStack commandStack) {

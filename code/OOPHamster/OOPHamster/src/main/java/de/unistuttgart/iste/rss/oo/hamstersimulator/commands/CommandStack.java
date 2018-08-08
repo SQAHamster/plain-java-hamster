@@ -5,13 +5,11 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
-
 public class CommandStack {
 
     private final List<Command> executedCommands = new LinkedList<>();
 
-    public CommandStack(final HamsterSimulator hamsterSimulator) {
+    public CommandStack() {
         super();
     }
 
@@ -32,7 +30,7 @@ public class CommandStack {
     public void undoAll() {
         final List<Command> reversedList = new ArrayList<>(executedCommands);
         Collections.reverse(reversedList);
-        reversedList.stream().forEach(command -> {command.undo(); delay();});
+        reversedList.stream().forEach(command -> command.undo());
         this.executedCommands.clear();
     }
 
