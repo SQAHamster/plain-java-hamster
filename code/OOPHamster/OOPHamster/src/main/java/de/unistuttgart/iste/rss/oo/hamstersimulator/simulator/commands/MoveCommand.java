@@ -16,6 +16,7 @@ public class MoveCommand extends HamsterCompositeBaseCommand {
     @Override
     protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
         assert this.hamster.getCurrentTile().isPresent();
+
         final LocationVector movementVector = hamster.getDirection().getMovementVector();
         final Location newHamsterPosition = this.hamster.getCurrentTile().get().getLocation().translate(movementVector);
 

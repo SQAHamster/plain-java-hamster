@@ -29,6 +29,11 @@ public abstract class CompositeBaseCommand extends Command {
     protected class CompositeCommandBuilder {
         private final List<Command> commandsToExecute = Lists.newLinkedList();
 
+        public CompositeCommandBuilder add(final List<Command> commands) {
+            commandsToExecute.addAll(commands);
+            return this;
+        }
+
         public CompositeCommandBuilder add(final Command ... commands ) {
             for (final Command command : commands) {
                 commandsToExecute.add(command);

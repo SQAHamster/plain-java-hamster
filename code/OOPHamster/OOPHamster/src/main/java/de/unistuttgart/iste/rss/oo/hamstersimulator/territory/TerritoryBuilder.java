@@ -1,34 +1,43 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.territory;
 
+import java.awt.Dimension;
+import java.util.LinkedList;
 import java.util.Optional;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeBaseCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Wall;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.commands.AddGrainsToTileCommand;
 
 public class TerritoryBuilder {
 
     private final Territory territory;
-    private final HamsterSimulator simulator;
+    private final LinkedList<Command> commands = new LinkedList<>();
 
-    public TerritoryBuilder(final HamsterSimulator simulator, final Territory territory) {
+    TerritoryBuilder(final Territory territory) {
         super();
         this.territory = territory;
-        this.simulator = simulator;
     }
 
-    public TerritoryBuilder wallAt(final Location location) {
-        this.simulator.getCommandStack().execute(this.territory.getTileAt(location).getAddContentCommand(new Wall()));
+    public TerritoryBuilder initializeTerritory(final Dimension size) {
+        this.commands.add(this.territory.getSetTerritorySizeCommand(size));
         return this;
     }
 
-    public TerritoryBuilder defaultHamsterAt(final int row, final int column, final Direction direction, final int grainCount) {
-        this.territory.getDefaultHamster().init(
-                Optional.of(this.territory.getTileAt(new Location(row, column))),
+    public TerritoryBuilder wallAt(final Location location) {
+        this.commands.add(this.territory.getAddContentCommand(location, new Wall()));
+        return this;
+    }
+
+    public TerritoryBuilder defaultHamsterAt(final Optional<Location> location, final Direction direction, final int grainCount) {
+        final Command initCommand = this.territory.getDefaultHamster().getInitializeHamsterCommand(
+                Optional.of(this.territory),
+                location,
                 direction,
                 grainCount);
+        this.commands.add(initCommand);
         return this;
     }
 
@@ -37,9 +46,19 @@ public class TerritoryBuilder {
     }
 
     public TerritoryBuilder grainAt(final Location location, final int grainCount) {
-        this.simulator.getCommandStack().execute(new AddGrainsToTileCommand(
-                this.territory.getTileAt(location), grainCount));
+        for (int i = 0; i < grainCount; i++) {
+            this.commands.add(this.territory.getAddContentCommand(location, new Grain()));
+        }
         return this;
+    }
+
+    public CompositeBaseCommand build() {
+        return new CompositeBaseCommand() {
+            @Override
+            protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
+                builder.add(commands);
+            }
+        };
     }
 
 }

@@ -1,16 +1,19 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.territory;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.awt.Dimension;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.AddContentToTileCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.ModifyContentOfTileCommandParameter;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.RemoveContentFromTileCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.SetTerritorySizeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.TileContent;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -23,19 +26,16 @@ public class Territory {
     private final ReadOnlyListWrapper<Tile> tiles = new ReadOnlyListWrapper<Tile>(this, "tiles", FXCollections.observableArrayList());
     private final PropertyMap<Territory> territoryState = new PropertyMap<Territory>(this, territorySize, tiles);
 
-    private final HamsterSimulator simulator;
-    private Hamster defaultHamster;
+    private final Hamster defaultHamster;
 
     /**
      *
      * @param territoryFileName
      */
-    public Territory(final HamsterSimulator simulator) {
+    public Territory() {
         super();
-        checkNotNull(simulator, "Simulator not allowed to be null.");
 
-        this.simulator = simulator;
-        this.setSize(new Dimension(0, 0));
+        this.defaultHamster = new Hamster();
     }
 
     public int getRowCount() {
@@ -53,9 +53,6 @@ public class Territory {
     }
 
     public Hamster getDefaultHamster() {
-        if (this.defaultHamster == null) {
-            this.defaultHamster = new Hamster(simulator);
-        }
         return this.defaultHamster;
     }
 
@@ -64,18 +61,17 @@ public class Territory {
                 newHamsterPosition.getRow() < this.getRowCount();
     }
 
-    public TerritoryBuilder getTerritoryBuilder() {
-        return new TerritoryBuilder(this.simulator, this);
-    }
-
-    public void loadTerritoryFromFile(final String territoryFile) {
-        TerritoryLoader.loader(this).loadFromFile(territoryFile);
-    }
-
-    public void setSize(final Dimension newDimension) {
+    public Command getSetTerritorySizeCommand(final Dimension newDimension) {
         checkArgument(newDimension.width >= 0 && newDimension.height >= 0, "New Territory dimensions need to be positive!");
-        final SetTerritorySizeCommand command = new SetTerritorySizeCommand(this.territoryState, newDimension);
-        this.simulator.getCommandStack().execute(command);
+        return new SetTerritorySizeCommand(this.territoryState, newDimension);
+    }
+
+    public Command getAddContentCommand(final Location location, final TileContent content) {
+        return new AddContentToTileCommand(this, new ModifyContentOfTileCommandParameter(location, content));
+    }
+
+    public Command getRemoveContentCommand(final Location location, final TileContent content) {
+        return new RemoveContentFromTileCommand(this, new ModifyContentOfTileCommandParameter(location, content));
     }
 
     public ReadOnlyObjectProperty<Dimension> territorySizeProperty() {
@@ -84,6 +80,10 @@ public class Territory {
 
     public ReadOnlyListProperty<Tile> tilesProperty() {
         return this.tiles.getReadOnlyProperty();
+    }
+
+    TerritoryBuilder getTerritoryBuilder() {
+        return new TerritoryBuilder(this);
     }
 
     private int getListIndexFromLocation(final Location location) {

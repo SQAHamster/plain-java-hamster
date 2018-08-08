@@ -12,7 +12,7 @@ public class TurnLeftCommand extends HamsterCompositeBaseCommand {
     @Override
     protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
         final Direction newDirection = this.hamster.getDirection().left();
-        this.hamster.getSetDirectionCommand(newDirection);
+        builder.add(this.hamster.getSetDirectionCommand(newDirection));
     }
 
 }

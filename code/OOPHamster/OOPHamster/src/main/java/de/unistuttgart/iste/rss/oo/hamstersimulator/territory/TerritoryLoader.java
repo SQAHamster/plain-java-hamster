@@ -10,44 +10,45 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 
 public class TerritoryLoader {
 
-    private final Territory territory;
     private final TerritoryBuilder territoryBuilder;
+    private Dimension loadedTerritoryDimensions;
 
-    private TerritoryLoader(final Territory territory) {
+    private TerritoryLoader(final TerritoryBuilder territoryBuilder) {
         super();
-        this.territory = territory;
-        this.territoryBuilder = this.territory.getTerritoryBuilder();
+        this.territoryBuilder = territoryBuilder;
     }
 
     public static TerritoryLoader loader(final Territory territory) {
-        return new TerritoryLoader(territory);
+        return new TerritoryLoader(territory.getTerritoryBuilder());
     }
 
-    public Territory loadFromFile(final String territoryFile) {
+    public Command loadFromFile(final String territoryFile) {
         final List<String> list = readLinesFromTerritoryFile(territoryFile);
         final String[] lines = list.toArray(new String[]{});
         setSizeFromStrings(lines);
         final String[] territoryDefinition = Arrays.copyOfRange(lines,2,lines.length);
         buildTiles(territoryDefinition);
 
-        return this.territory;
+        return this.territoryBuilder.build();
     }
 
     private void setSizeFromStrings(final String[] lines) {
-        territory.setSize(new Dimension(Integer.parseInt(lines[0]), Integer.parseInt(lines[1])));
+        this.loadedTerritoryDimensions = new Dimension(Integer.parseInt(lines[0]), Integer.parseInt(lines[1]));
+        this.territoryBuilder.initializeTerritory(this.loadedTerritoryDimensions);
     }
 
     private void buildTiles(final String[] lines) {
         final LinkedList<Location> grainLocations = new LinkedList<Location>();
         Optional<Location> defaultHamsterLocation = Optional.empty();
         Optional<Direction> defaultHamsterDirection = Optional.empty();
-        for (int row = 0; row < territory.getRowCount(); row++) {
-            for (int column = 0; column < territory.getColumnCount(); column++) {
+        for (int row = 0; row < this.loadedTerritoryDimensions.height; row++) {
+            for (int column = 0; column < this.loadedTerritoryDimensions.width; column++) {
                 final Location currentLocation = new Location(row,column);
                 final char tileCode = lines[row].charAt(column);
                 createTileAt(currentLocation, tileCode);
@@ -83,8 +84,8 @@ public class TerritoryLoader {
                 }
             }
         }
-        final int initialGrainCount = Integer.parseInt(lines[territory.getRowCount() + grainLocations.size()]);
-        territoryBuilder.defaultHamsterAt(defaultHamsterLocation.get().getRow(), defaultHamsterLocation.get().getColumn(), defaultHamsterDirection.get(), initialGrainCount);
+        final int initialGrainCount = Integer.parseInt(lines[this.loadedTerritoryDimensions.height + grainLocations.size()]);
+        territoryBuilder.defaultHamsterAt(Optional.of(defaultHamsterLocation.get()), defaultHamsterDirection.get(), initialGrainCount);
         placeGrain(lines, grainLocations);
     }
 
@@ -113,7 +114,7 @@ public class TerritoryLoader {
     private void placeGrain(final String[] lines, final LinkedList<Location> grainLocations) {
         for (int i = 0; i < grainLocations.size(); i++) {
             final Location location = grainLocations.get(i);
-            final int count = Integer.parseInt(lines[territory.getRowCount() + i]);
+            final int count = Integer.parseInt(lines[this.loadedTerritoryDimensions.height + i]);
             territoryBuilder.grainAt(location, count);
         }
     }

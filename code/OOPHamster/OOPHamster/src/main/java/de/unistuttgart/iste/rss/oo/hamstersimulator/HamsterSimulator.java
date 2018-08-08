@@ -11,7 +11,7 @@ public class HamsterSimulator {
     public HamsterSimulator() {
         super();
         this.commandStack = new CommandStack(this);
-        this.territory = new Territory(this);
+        this.territory = new Territory();
     }
 
     public Territory getTerritory() {

@@ -1,14 +1,11 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
@@ -50,8 +47,6 @@ public class Hamster extends TileContent {
 
     }
 
-    private final HamsterSimulator simulator;
-
     private final ReadOnlyObjectWrapper<Direction> direction = new ReadOnlyObjectWrapper<>(this, "direction", Direction.NORTH);
     private final ReadOnlyListWrapper<Grain> grainInMouth = new ReadOnlyListWrapper<>(this, "grainInMouth", FXCollections.observableArrayList());
     private final PropertyMap<Hamster> propertyMap = new PropertyMap<>(this, currentTile, direction, grainInMouth);
@@ -60,53 +55,30 @@ public class Hamster extends TileContent {
      * Constructors
      */
     // TODO: Fixme, make private by using a creational pattern
-    public Hamster(final HamsterSimulator simulator, final Optional<Tile> initialTile, final Direction direction, final int grainInMouth) {
+    public Hamster() {
         super();
 
-        checkNotNull(initialTile);
-        checkNotNull(direction);
-        checkArgument(grainInMouth >= 0, "Grain in mouth needs to be zero or greater.");
-
-        this.simulator = simulator;
-        this.direction.set(direction);
-        this.currentTile.set(initialTile);
         hamsterSet.add(this);
-        init(initialTile, direction, grainInMouth);
-    }
-
-    Hamster(final HamsterSimulator simulator, final Optional<Tile> initialTile, final Direction direction) {
-        this(simulator, initialTile, direction, 0);
-    }
-
-    Hamster(final HamsterSimulator simulator, final Optional<Tile> initialTile) {
-        this(simulator, initialTile, Direction.NORTH, 0);
-    }
-
-    public Hamster(final HamsterSimulator simulator) {
-        this(simulator, Optional.empty(), Direction.NORTH, 0);
     }
 
     /*
      * Commands
      */
-    public void init(final Optional<Tile> initialTile, final Direction direction, final int grainInMouth) {
-        this.simulator.getCommandStack().execute(new InitHamsterCommand(this, new InitHamsterCommandParameter(initialTile, direction, grainInMouth)));
+
+    public void move(final CommandStack stack) {
+        stack.execute(new MoveCommand(this));
     }
 
-    public void move() {
-        this.simulator.getCommandStack().execute(new MoveCommand(this));
+    public void turnLeft(final CommandStack stack) {
+        stack.execute(new TurnLeftCommand(this));
     }
 
-    public void turnLeft() {
-        this.simulator.getCommandStack().execute(new TurnLeftCommand(this));
+    public void pickGrain(final CommandStack stack) {
+        stack.execute(new PickGrainCommand(this));
     }
 
-    public void pickGrain() {
-        this.simulator.getCommandStack().execute(new PickGrainCommand(this));
-    }
-
-    public void putGrain() {
-        this.simulator.getCommandStack().execute(new PutGrainCommand(this));
+    public void putGrain(final CommandStack stack) {
+        stack.execute(new PutGrainCommand(this));
     }
 
     public void readNumber() {
@@ -173,6 +145,10 @@ public class Hamster extends TileContent {
     /*
      * Commands
      */
+
+    public Command getInitializeHamsterCommand(final Optional<Territory> territory, final Optional<Location> location, final Direction newDirection, final int newGrainCount) {
+        return new InitHamsterCommand(this, territory, new InitHamsterCommandParameter(location, newDirection, newGrainCount));
+    }
 
     public Command getRemoveGrainCommand(final Grain grain) {
         return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.propertyMap, "grainInMouth", grain, ActionKind.REMOVE);
