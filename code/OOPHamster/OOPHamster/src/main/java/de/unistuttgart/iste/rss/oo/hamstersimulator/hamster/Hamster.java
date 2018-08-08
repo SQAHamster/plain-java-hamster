@@ -13,6 +13,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.InitHamsterCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.InitHamsterCommandParameter;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.MoveCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.PickGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.PutGrainCommand;
@@ -85,7 +86,7 @@ public class Hamster extends TileContent {
      * Commands
      */
     public void init(final Optional<Tile> initialTile, final Direction direction, final int grainInMouth) {
-        this.simulator.getCommandStack().execute(new InitHamsterCommand(propertyMap, initialTile, direction, grainInMouth));
+        this.simulator.getCommandStack().execute(new InitHamsterCommand(propertyMap, new InitHamsterCommandParameter(initialTile, direction, grainInMouth)));
     }
 
     public void move() {

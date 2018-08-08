@@ -5,6 +5,8 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification.ActionKind;
+
 public abstract class CompositeBaseCommand extends Command {
 
     private List<Command> commandsToExecute = Lists.newLinkedList();
@@ -34,4 +36,13 @@ public abstract class CompositeBaseCommand extends Command {
             return this;
         }
     }
+
+    protected <G> UnidirectionalUpdatePropertyCommand<G> createPropertyUpdateCommand(
+            final PropertyMap<G> entity,
+            final String propertyName,
+            final Object value,
+            final ActionKind action) {
+        return new UnidirectionalUpdatePropertyCommand<G>(entity, new PropertyCommandSpecification(propertyName, value, action));
+    }
+
 }
