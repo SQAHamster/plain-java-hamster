@@ -4,34 +4,29 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification.ActionKind;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 
-public class SetTerritorySizeCommand extends TerritoryCommand {
+public class SetTerritorySizeCommand extends UnidirectionalUpdatePropertyCommand<Territory> {
 
-    private final Dimension newDimension;
-    private Dimension oldDimension;
-
-    public SetTerritorySizeCommand(final Dimension newDimension) {
-        super();
-        this.newDimension = newDimension;
+    public SetTerritorySizeCommand(final PropertyMap<Territory> entityState, final Dimension newDimension) {
+        super(entityState, new PropertyCommandSpecification("territorySize", newDimension, ActionKind.SET));
     }
 
     @Override
     protected void execute() {
-        this.oldDimension = this.entityState.<Dimension> getObjectProperty("territorySize").get();
         disposeAllExistingTiles();
-        initNewTileStore(newDimension);
+        super.execute();
+        initNewTileStore((Dimension) this.spec.getNewValue());
         createNewTiles();
     }
 
-    @Override
-    protected void undo() {
-        this.entityState.getObjectProperty("territorySize").set(oldDimension);
-    }
-
     private void initNewTileStore(final Dimension newDimension) {
-        this.entityState.getObjectProperty("territorySize").set(newDimension);
         this.entityState.<Tile> getListProperty("tiles").clear();
     }
 
@@ -49,7 +44,7 @@ public class SetTerritorySizeCommand extends TerritoryCommand {
     private void createNewTiles() {
         for (int row = 0; row < this.entityState.<Dimension> getObjectProperty("territorySize").get().height; row++) {
             for (int column = 0; column < this.entityState.<Dimension> getObjectProperty("territorySize").get().width; column++) {
-                final Tile newTile = Tile.createEmptyTile(this.getTerritory(), Location.from(row, column));
+                final Tile newTile = Tile.createEmptyTile(this.entityState.getPropertyOwner(), Location.from(row, column));
                 setTile(newTile);
             }
         }
@@ -61,11 +56,6 @@ public class SetTerritorySizeCommand extends TerritoryCommand {
 
     private int getListIndexFromLocation(final Location location) {
         return location.getRow() * this.entityState.<Dimension> getObjectProperty("territorySize").get().width + location.getColumn();
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return new SetTerritorySizeCommand(newDimension);
     }
 
 }

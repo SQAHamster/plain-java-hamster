@@ -91,8 +91,7 @@ public class Territory {
 
     public void setSize(final Dimension newDimension) {
         checkArgument(newDimension.width >= 0 && newDimension.height >= 0, "New Territory dimensions need to be positive!");
-        final SetTerritorySizeCommand command = new SetTerritorySizeCommand(newDimension);
-        command.setContext(territoryState);
+        final SetTerritorySizeCommand command = new SetTerritorySizeCommand(this.territoryState, newDimension);
         this.simulator.getCommandStack().execute(command);
     }
 

@@ -6,7 +6,7 @@ import javafx.beans.value.WritableSetValue;
 
 public class UnidirectionalUpdatePropertyCommand<T> extends EntityCommand<T> {
 
-    private final PropertyCommandSpecification spec;
+    protected final PropertyCommandSpecification spec;
     private Object oldValue;
 
     public UnidirectionalUpdatePropertyCommand(final PropertyMap<T> entity, final PropertyCommandSpecification spec) {

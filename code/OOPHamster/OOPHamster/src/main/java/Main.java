@@ -1,4 +1,3 @@
-import java.awt.Dimension;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -7,7 +6,6 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.SetTerritorySizeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 public class Main {
@@ -39,18 +37,6 @@ public class Main {
         //        final Disposable stateObserverDisposable = hamsterStateObservable.subscribe(System.out::println);
 
         final Territory territory = simulator.getTerritory();
-        final Territory territory2 = new Territory(simulator);
-        final SetTerritorySizeCommand resizeCommand = new SetTerritorySizeCommand(new Dimension(5,5));
-        final SetTerritorySizeCommand resizeCommand2 = (SetTerritorySizeCommand) resizeCommand.clone();
-        territory.setContextFor(resizeCommand);
-        territory2.setContextFor(resizeCommand2);
-        simulator.getCommandStack().execute(resizeCommand2);
-        simulator.getCommandStack().execute(resizeCommand);
-
-        System.out.println(territory.territorySizeProperty());
-        System.out.println(territory2.territorySizeProperty());
-
-        // territory.setSize(6, 3).defaultHamsterAt(1, 1, Direction.EAST, 0).wallAt(0, 0).wallAt(1, 5).wallAt(1,0).grainAt(1, 4, 2);
         territory.loadTerritoryFromFile(territoryFile);
         try {
             Thread.sleep(2000);
