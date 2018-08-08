@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Optional;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
@@ -12,6 +13,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import javafx.beans.property.ReadOnlySetProperty;
 import javafx.beans.property.ReadOnlySetWrapper;
 import javafx.collections.FXCollections;
+import javafx.collections.SetChangeListener;
 
 public class Tile {
 
@@ -23,11 +25,36 @@ public class Tile {
 
     private Tile(final Territory territory, final Location tileLocation) {
         super();
+
         checkNotNull(territory);
         checkNotNull(tileLocation);
         checkArgument(territory.isLocationInTerritory(tileLocation));
+
         this.territory = territory;
         this.tileLocation = tileLocation;
+
+        this.content.addListener(new SetChangeListener<TileContent>() {
+
+            @Override
+            public void onChanged(final Change<? extends TileContent> change) {
+                if (change.wasAdded()) {
+                    if (!change.getElementAdded().getCurrentTile().isPresent()) {
+                        change.getElementAdded().setCurrentTile(Optional.of(Tile.this));
+                    } else {
+                        change.getElementAdded().getCurrentTile().ifPresent(tile -> {
+                            if (tile != Tile.this) {
+                                change.getElementAdded().setCurrentTile(Optional.of(Tile.this));
+                            }
+                        });
+                    }
+                }
+                if (change.wasRemoved()) {
+                    if (change.getElementRemoved().getCurrentTile().isPresent()) {
+                        change.getElementRemoved().setCurrentTile(Optional.empty());
+                    }
+                }
+            }
+        });
     }
 
     public static Tile createEmptyTile(final Territory territory, final Location location) {
