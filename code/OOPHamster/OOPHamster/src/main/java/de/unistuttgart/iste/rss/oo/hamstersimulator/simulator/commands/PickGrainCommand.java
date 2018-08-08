@@ -1,9 +1,5 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification.ActionKind;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
@@ -13,8 +9,8 @@ public class PickGrainCommand extends HamsterCompositeBaseCommand {
     private Grain pickedGrain;
     private Tile currentTile;
 
-    public PickGrainCommand(final PropertyMap<Hamster> hamsterState) {
-        super(hamsterState);
+    public PickGrainCommand(final Hamster hamster) {
+        super(hamster);
     }
 
     @Override
@@ -23,8 +19,8 @@ public class PickGrainCommand extends HamsterCompositeBaseCommand {
         this.currentTile = this.hamster.getCurrentTerritory().getTileAt(this.hamster.getCurrentTile().get().getLocation());
         this.pickedGrain = this.currentTile.getAnyContentOfType(Grain.class);
         builder.add(
-                new UnidirectionalUpdatePropertyCommand<Tile>(this.currentTile.getState(), new PropertyCommandSpecification("content", this.pickedGrain, ActionKind.REMOVE)),
-                new UnidirectionalUpdatePropertyCommand<Hamster>(hamsterState, new PropertyCommandSpecification("grainInMouth", this.pickedGrain, ActionKind.ADD)));
+                this.currentTile.getRemoveContentCommand(this.pickedGrain),
+                hamster.getAddGrainCommand(this.pickedGrain));
     }
 
 }

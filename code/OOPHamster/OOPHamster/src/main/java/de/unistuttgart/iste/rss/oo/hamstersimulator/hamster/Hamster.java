@@ -8,7 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
@@ -86,23 +90,23 @@ public class Hamster extends TileContent {
      * Commands
      */
     public void init(final Optional<Tile> initialTile, final Direction direction, final int grainInMouth) {
-        this.simulator.getCommandStack().execute(new InitHamsterCommand(propertyMap, new InitHamsterCommandParameter(initialTile, direction, grainInMouth)));
+        this.simulator.getCommandStack().execute(new InitHamsterCommand(this, new InitHamsterCommandParameter(initialTile, direction, grainInMouth)));
     }
 
     public void move() {
-        this.simulator.getCommandStack().execute(new MoveCommand(propertyMap));
+        this.simulator.getCommandStack().execute(new MoveCommand(this));
     }
 
     public void turnLeft() {
-        this.simulator.getCommandStack().execute(new TurnLeftCommand(propertyMap));
+        this.simulator.getCommandStack().execute(new TurnLeftCommand(this));
     }
 
     public void pickGrain() {
-        this.simulator.getCommandStack().execute(new PickGrainCommand(propertyMap));
+        this.simulator.getCommandStack().execute(new PickGrainCommand(this));
     }
 
     public void putGrain() {
-        this.simulator.getCommandStack().execute(new PutGrainCommand(propertyMap));
+        this.simulator.getCommandStack().execute(new PutGrainCommand(this));
     }
 
     public void readNumber() {
@@ -164,6 +168,30 @@ public class Hamster extends TileContent {
 
     public List<Grain> getGrainInMouth() {
         return Collections.unmodifiableList(grainInMouth.get());
+    }
+
+    /*
+     * Commands
+     */
+
+    public Command getRemoveGrainCommand(final Grain grain) {
+        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.propertyMap, "grainInMouth", grain, ActionKind.REMOVE);
+    }
+
+    public Command getAddGrainCommand(final Grain grain) {
+        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.propertyMap, "grainInMouth", grain, ActionKind.ADD);
+    }
+
+    public Command getSetDirectionCommand(final Direction direction) {
+        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.propertyMap, "direction", direction, ActionKind.SET);
+    }
+
+    public Command getSetCurrentTileCommand(final Optional<Tile> newTile) {
+        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.propertyMap, "currentTile", newTile, ActionKind.SET);
+    }
+
+    public Command getCommandFromSpecification(final PropertyCommandSpecification spec) {
+        return new UnidirectionalUpdatePropertyCommand<Hamster>(this.propertyMap, spec);
     }
 
     /*

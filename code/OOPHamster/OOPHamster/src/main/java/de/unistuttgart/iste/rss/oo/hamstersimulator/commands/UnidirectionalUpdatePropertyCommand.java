@@ -1,5 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification.ActionKind;
 import javafx.beans.property.Property;
 import javafx.beans.value.WritableListValue;
 import javafx.beans.value.WritableSetValue;
@@ -71,5 +72,13 @@ public class UnidirectionalUpdatePropertyCommand<T> extends EntityCommand<T> {
             }
             break;
         }
+    }
+
+    public static <G> UnidirectionalUpdatePropertyCommand<G> createPropertyUpdateCommand(
+            final PropertyMap<G> entity,
+            final String propertyName,
+            final Object value,
+            final ActionKind action) {
+        return new UnidirectionalUpdatePropertyCommand<G>(entity, new PropertyCommandSpecification(propertyName, value, action));
     }
 }

@@ -11,13 +11,11 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.SetTerritorySizeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.TileContent;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
-import javafx.collections.SetChangeListener;
 
 public class Territory {
 
@@ -38,20 +36,6 @@ public class Territory {
 
         this.simulator = simulator;
         this.setSize(new Dimension(0, 0));
-        Hamster.hamsterSetProperty().addListener(new SetChangeListener<Hamster>() {
-
-            @Override
-            public void onChanged(final Change<? extends Hamster> change) {
-                if (change.wasAdded()) {
-                    final Hamster newHamster = change.getElementAdded();
-                    newHamster.currentTileProperty().addListener((property, oldValue, newValue) -> {
-                        oldValue.ifPresent(tile -> tile.getState().<TileContent> getSetProperty("content").remove(newHamster));
-                        newValue.ifPresent(tile -> tile.getState().<TileContent> getSetProperty("content").add(newHamster));
-                    });
-                    newHamster.getCurrentTile().ifPresent(tile -> tile.getState().<TileContent> getSetProperty("content").add(newHamster));
-                }
-            }
-        });
     }
 
     public int getRowCount() {

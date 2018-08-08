@@ -7,7 +7,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import javafx.beans.property.ReadOnlySetProperty;
@@ -113,12 +117,29 @@ public class Tile {
         }
     }
 
+    /*
+     * Commands
+     */
+
+    public Command getAddContentCommand(final TileContent content) {
+        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.tileState, "content", content, ActionKind.ADD);
+    }
+
+    public Command getRemoveContentCommand(final TileContent content) {
+        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.tileState, "content", content, ActionKind.REMOVE);
+    }
+
+    public Command getCommandFromSpecification(final PropertyCommandSpecification spec) {
+        return new UnidirectionalUpdatePropertyCommand<Tile>(this.tileState, spec);
+    }
+
     @Override
     public String toString() {
         return "Tile [tileLocation=" + tileLocation + ", content=" + content + "]";
     }
 
-    public PropertyMap<Tile> getState() {
+    PropertyMap<Tile> getState() {
         return this.tileState;
     }
+
 }
