@@ -35,6 +35,14 @@ public abstract class CompositeBaseCommand extends Command {
             }
             return this;
         }
+
+        public <G> CompositeCommandBuilder addPropertyUpdateCommand(final PropertyMap<G> entity,
+                final String propertyName,
+                final Object value,
+                final ActionKind action) {
+            commandsToExecute.add(createPropertyUpdateCommand(entity, propertyName, value, action));
+            return this;
+        }
     }
 
     protected <G> UnidirectionalUpdatePropertyCommand<G> createPropertyUpdateCommand(
