@@ -1,11 +1,13 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.DropGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.commands.AddContentsCommand;
 
 public class PutGrainCommand extends HamsterCompositeBaseCommand {
 
@@ -23,7 +25,7 @@ public class PutGrainCommand extends HamsterCompositeBaseCommand {
         this.grainDropped = this.hamster.getGrainInMouth().get(0);
         builder.add(
                 new DropGrainCommand(hamsterState, this.grainDropped),
-                new AddContentsCommand(this.currentTile.getState(), this.grainDropped)
+                new UnidirectionalUpdatePropertyCommand<Tile>(this.currentTile.getState(), new PropertyCommandSpecification("content", this.grainDropped, ActionKind.ADD))
                 );
     }
 }

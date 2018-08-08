@@ -90,7 +90,7 @@ public class TerritoryLoader {
 
     private void createTileAt(final Location currentLocation, final char tileCode) {
         if (tileCode == '#') {
-            this.territoryBuilder.wallAt(currentLocation.getRow(), currentLocation.getColumn());
+            this.territoryBuilder.wallAt(currentLocation);
         }
     }
 
@@ -114,7 +114,7 @@ public class TerritoryLoader {
         for (int i = 0; i < grainLocations.size(); i++) {
             final Location location = grainLocations.get(i);
             final int count = Integer.parseInt(lines[territory.getRowCount() + i]);
-            territoryBuilder.grainAt(location.getRow(), location.getColumn(), count);
+            territoryBuilder.grainAt(location, count);
         }
     }
 
