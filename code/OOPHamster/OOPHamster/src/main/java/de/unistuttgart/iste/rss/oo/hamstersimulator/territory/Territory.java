@@ -6,7 +6,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.awt.Dimension;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.HamsterSimulator;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.InjectableCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
@@ -101,10 +100,6 @@ public class Territory {
 
     public ReadOnlyListProperty<Tile> tilesProperty() {
         return this.tiles.getReadOnlyProperty();
-    }
-
-    public void setContextFor(final InjectableCommand<Territory> command) {
-        command.setContext(this.territoryState);
     }
 
     private int getListIndexFromLocation(final Location location) {

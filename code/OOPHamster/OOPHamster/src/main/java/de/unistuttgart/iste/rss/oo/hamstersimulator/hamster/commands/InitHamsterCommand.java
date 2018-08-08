@@ -19,9 +19,10 @@ public class InitHamsterCommand extends CompositeBaseCommand {
         super();
         this.compositeCommandBuilder.add(
                 new UnidirectionalUpdatePropertyCommand<Hamster>(hamsterState, new PropertyCommandSpecification("currentTile", Optional.empty(), ActionKind.SET)),
-                new SetDirectionCommand(hamsterState, newDirection),
+                new UnidirectionalUpdatePropertyCommand<Hamster>(hamsterState, new PropertyCommandSpecification("direction", newDirection, ActionKind.SET)),
                 new UnidirectionalUpdatePropertyCommand<Hamster>(hamsterState, new PropertyCommandSpecification("currentTile", newTile, ActionKind.SET)));
-        IntStream.range(1, newGrainCount).forEach(i -> this.compositeCommandBuilder.add(new AddGrainCommand(hamsterState, new Grain())));
+        IntStream.range(0, newGrainCount).forEach(i -> this.compositeCommandBuilder.add(
+                new UnidirectionalUpdatePropertyCommand<Hamster>(hamsterState, new PropertyCommandSpecification("grainInMouth", new Grain(), ActionKind.ADD))));
     }
 
 }

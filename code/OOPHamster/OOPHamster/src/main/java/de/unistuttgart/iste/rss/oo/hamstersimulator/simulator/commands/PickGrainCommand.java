@@ -5,7 +5,6 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpec
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.commands.AddGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 
@@ -25,7 +24,7 @@ public class PickGrainCommand extends HamsterCompositeBaseCommand {
         this.pickedGrain = this.currentTile.getAnyContentOfType(Grain.class);
         builder.add(
                 new UnidirectionalUpdatePropertyCommand<Tile>(this.currentTile.getState(), new PropertyCommandSpecification("content", this.pickedGrain, ActionKind.REMOVE)),
-                new AddGrainCommand(hamsterState, pickedGrain));
+                new UnidirectionalUpdatePropertyCommand<Hamster>(hamsterState, new PropertyCommandSpecification("grainInMouth", this.pickedGrain, ActionKind.ADD)));
     }
 
 }
