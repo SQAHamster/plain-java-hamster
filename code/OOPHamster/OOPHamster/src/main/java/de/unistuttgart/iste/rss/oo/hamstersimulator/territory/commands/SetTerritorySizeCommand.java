@@ -19,7 +19,7 @@ public class SetTerritorySizeCommand extends UnidirectionalUpdatePropertyCommand
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         disposeAllExistingTiles();
         super.execute();
         initNewTileStore((Dimension) this.spec.getNewValue());

@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 
@@ -24,18 +23,18 @@ public class TerritoryLoader {
         this.territoryBuilder = territoryBuilder;
     }
 
-    public static TerritoryLoader loader(final Territory territory) {
+    public static TerritoryLoader initializeFor(final Territory territory) {
         return new TerritoryLoader(territory.getTerritoryBuilder());
     }
 
-    public Command loadFromFile(final String territoryFile) {
+    public void loadFromFile(final String territoryFile) {
         final List<String> list = readLinesFromTerritoryFile(territoryFile);
         final String[] lines = list.toArray(new String[]{});
         setSizeFromStrings(lines);
         final String[] territoryDefinition = Arrays.copyOfRange(lines,2,lines.length);
         buildTiles(territoryDefinition);
 
-        return this.territoryBuilder.build();
+        this.territoryBuilder.build();
     }
 
     private void setSizeFromStrings(final String[] lines) {

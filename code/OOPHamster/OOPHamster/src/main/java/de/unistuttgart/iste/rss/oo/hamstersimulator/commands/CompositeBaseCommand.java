@@ -7,35 +7,35 @@ import com.google.common.collect.Lists;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification.ActionKind;
 
-public abstract class CompositeBaseCommand extends Command {
+public abstract class CompositeBaseCommand implements CommandInterface {
 
-    private List<Command> commandsToExecute = Lists.newLinkedList();
+    private List<CommandInterface> commandsToExecute = Lists.newLinkedList();
     protected CompositeCommandBuilder compositeCommandBuilder = new CompositeCommandBuilder();
 
     @Override
-    protected void execute() {
+    public void execute() {
         buildBeforeFirstExecution(compositeCommandBuilder);
         commandsToExecute = ImmutableList.copyOf(compositeCommandBuilder.commandsToExecute);
         commandsToExecute.forEach(command -> command.execute());
     }
 
     @Override
-    protected void undo() {
+    public void undo() {
         commandsToExecute.forEach(command -> command.undo());
     }
 
     protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {};
 
     protected class CompositeCommandBuilder {
-        private final List<Command> commandsToExecute = Lists.newLinkedList();
+        private final List<CommandInterface> commandsToExecute = Lists.newLinkedList();
 
-        public CompositeCommandBuilder add(final List<Command> commands) {
+        public CompositeCommandBuilder add(final List<CommandInterface> commands) {
             commandsToExecute.addAll(commands);
             return this;
         }
 
-        public CompositeCommandBuilder add(final Command ... commands ) {
-            for (final Command command : commands) {
+        public CompositeCommandBuilder add(final CommandInterface ... commands ) {
+            for (final CommandInterface command : commands) {
                 commandsToExecute.add(command);
             }
             return this;

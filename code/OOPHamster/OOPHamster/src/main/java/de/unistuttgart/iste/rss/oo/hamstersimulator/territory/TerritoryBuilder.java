@@ -4,7 +4,7 @@ import java.awt.Dimension;
 import java.util.LinkedList;
 import java.util.Optional;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeBaseCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
@@ -14,7 +14,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Wall;
 public class TerritoryBuilder {
 
     private final Territory territory;
-    private final LinkedList<Command> commands = new LinkedList<>();
+    private final LinkedList<CommandInterface> commands = new LinkedList<>();
 
     TerritoryBuilder(final Territory territory) {
         super();
@@ -32,7 +32,7 @@ public class TerritoryBuilder {
     }
 
     public TerritoryBuilder defaultHamsterAt(final Optional<Location> location, final Direction direction, final int grainCount) {
-        final Command initCommand = this.territory.getDefaultHamster().getInitializeHamsterCommand(
+        final CommandInterface initCommand = this.territory.getDefaultHamster().getInitializeHamsterCommand(
                 Optional.of(this.territory),
                 location,
                 direction,
@@ -52,13 +52,14 @@ public class TerritoryBuilder {
         return this;
     }
 
-    public CompositeBaseCommand build() {
-        return new CompositeBaseCommand() {
-            @Override
-            protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
-                builder.add(commands);
-            }
-        };
+    public void build() {
+        this.territory.getCommandStack().execute(
+                new CompositeBaseCommand() {
+                    @Override
+                    protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
+                        builder.add(commands);
+                    }
+                });
     }
 
 }

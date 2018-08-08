@@ -1,13 +1,13 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeBaseCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.GameHamster;
 
-public abstract class HamsterCompositeBaseCommand extends CompositeBaseCommand {
+public abstract class HamsterCompositeBaseCommand extends CompositeBaseCommand implements GameCommand {
 
-    protected final Hamster hamster;
+    protected final GameHamster hamster;
 
-    public HamsterCompositeBaseCommand(final Hamster hamster) {
+    public HamsterCompositeBaseCommand(final GameHamster hamster) {
         super();
         this.hamster = hamster;
     }

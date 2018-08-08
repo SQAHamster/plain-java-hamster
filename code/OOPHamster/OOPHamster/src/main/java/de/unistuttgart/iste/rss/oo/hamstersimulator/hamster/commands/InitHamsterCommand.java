@@ -5,11 +5,12 @@ import java.util.stream.IntStream;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeBaseCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.GameCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 
-public class InitHamsterCommand extends CompositeBaseCommand {
+public class InitHamsterCommand extends CompositeBaseCommand implements GameCommand {
 
     protected InitHamsterCommandParameter specification;
     private final Hamster hamster;

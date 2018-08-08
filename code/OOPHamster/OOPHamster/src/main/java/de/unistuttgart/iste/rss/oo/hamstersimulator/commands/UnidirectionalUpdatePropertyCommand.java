@@ -17,7 +17,7 @@ public class UnidirectionalUpdatePropertyCommand<T> extends EntityCommand<T> {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    protected void execute() {
+    public void execute() {
         final Property<Object> property = this.entityState.getProperty(this.spec.getPropertyName());
         switch (spec.getActionKind()) {
         case SET:
@@ -47,7 +47,7 @@ public class UnidirectionalUpdatePropertyCommand<T> extends EntityCommand<T> {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    protected void undo() {
+    public void undo() {
         final Property<Object> property = this.entityState.getProperty(this.spec.getPropertyName());
         switch (spec.getActionKind()) {
         case SET:

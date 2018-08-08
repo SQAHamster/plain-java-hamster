@@ -1,6 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
 
-public abstract class EntityCommand<T> extends Command {
+public abstract class EntityCommand<T> implements CommandInterface {
 
     protected PropertyMap<T> entityState;
 

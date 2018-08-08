@@ -5,15 +5,15 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CommandStack {
+public class CommandStack <CommandType extends CommandInterface> {
 
-    private final List<Command> executedCommands = new LinkedList<>();
+    private final List<CommandType> executedCommands = new LinkedList<>();
 
     public CommandStack() {
         super();
     }
 
-    public void execute(final Command command) {
+    public void execute(final CommandType command) {
         command.execute();
         this.executedCommands.add(command);
 
@@ -28,7 +28,7 @@ public class CommandStack {
     }
 
     public void undoAll() {
-        final List<Command> reversedList = new ArrayList<>(executedCommands);
+        final List<CommandType> reversedList = new ArrayList<>(executedCommands);
         Collections.reverse(reversedList);
         reversedList.stream().forEach(command -> command.undo());
         this.executedCommands.clear();

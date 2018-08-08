@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
@@ -121,15 +121,15 @@ public class Tile {
      * Commands
      */
 
-    public Command getAddContentCommand(final TileContent content) {
+    public CommandInterface getAddContentCommand(final TileContent content) {
         return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.tileState, "content", content, ActionKind.ADD);
     }
 
-    public Command getRemoveContentCommand(final TileContent content) {
+    public CommandInterface getRemoveContentCommand(final TileContent content) {
         return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.tileState, "content", content, ActionKind.REMOVE);
     }
 
-    public Command getCommandFromSpecification(final PropertyCommandSpecification spec) {
+    public CommandInterface getCommandFromSpecification(final PropertyCommandSpecification spec) {
         return new UnidirectionalUpdatePropertyCommand<Tile>(this.tileState, spec);
     }
 

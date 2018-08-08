@@ -1,11 +1,11 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.GameHamster;
 
 public class TurnLeftCommand extends HamsterCompositeBaseCommand {
 
-    public TurnLeftCommand(final Hamster hamster) {
+    public TurnLeftCommand(final GameHamster hamster) {
         super(hamster);
     }
 

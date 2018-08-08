@@ -4,12 +4,12 @@ import java.util.Optional;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.GameHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 
 public class MoveCommand extends HamsterCompositeBaseCommand {
 
-    public MoveCommand(final Hamster hamster) {
+    public MoveCommand(final GameHamster hamster) {
         super(hamster);
     }
 
