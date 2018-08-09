@@ -1,33 +1,30 @@
+import java.io.Console;
+
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractBaseCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.GameHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.TerritoryLoader;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 public abstract class SimpleHamsterGame {
 
     private static final String territoryFile = "territories/example01.ter";
 
-    protected final Territory territory;
+    protected final TerritoryWrapper territory;
+    protected final GamefieldWrapper gamefield;
     protected GameHamster paule;
+    protected Console console = System.console();
 
     public SimpleHamsterGame() {
         final CommandStack<AbstractBaseCommand<?>> editStack = new CommandStack<>();
-        this.territory = new Territory(editStack);
+        this.territory = new TerritoryWrapper(new Territory(editStack), territoryFile);
+        this.gamefield = new GamefieldWrapper(this.territory);
+        paule = GameHamster.fromInternalHamster(territory.getTerritory().getDefaultHamster());
         run();
     }
 
     abstract void run();
 
-    void showGamefield() {
-        JavaFXUI.getSingleton().init(territory);
-    }
-
-    void initializeTerritory() {
-        TerritoryLoader.initializeFor(territory).loadFromFile(territoryFile);
-        paule = GameHamster.fromInternalHamster(territory.getDefaultHamster());
-    }
 
     public static void main(final String[] args) {
         JavaFXUI.start();
