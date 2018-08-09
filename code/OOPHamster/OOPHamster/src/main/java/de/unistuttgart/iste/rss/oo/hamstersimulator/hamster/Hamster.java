@@ -4,15 +4,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandInterface;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification.ActionKind;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractBaseCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.PropertyCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.PropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.InitHamsterCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.InitHamsterCommandParameter;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.InitHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
@@ -80,29 +80,25 @@ public class Hamster extends TileContent {
     /*
      * Commands
      */
-    public CommandInterface getInitializeHamsterCommand(final Territory territory, final Optional<Location> location,
+    public AbstractBaseCommand<InitHamsterCommandSpecification> getInitializeHamsterCommand(final Territory territory, final Optional<Location> location,
             final Direction direction, final int grainCount) {
-        return new InitHamsterCommand(this, territory, new InitHamsterCommandParameter(location, direction, grainCount));
+        return new InitHamsterCommand(this, territory, new InitHamsterCommandSpecification(location, direction, grainCount));
     }
 
-    public CommandInterface getRemoveGrainCommand(final Grain grain) {
+    public AbstractBaseCommand<PropertyCommandSpecification> getRemoveGrainCommand(final Grain grain) {
         return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.propertyMap, "grainInMouth", grain, ActionKind.REMOVE);
     }
 
-    public CommandInterface getAddGrainCommand(final Grain grain) {
+    public AbstractBaseCommand<PropertyCommandSpecification> getAddGrainCommand(final Grain grain) {
         return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.propertyMap, "grainInMouth", grain, ActionKind.ADD);
     }
 
-    public CommandInterface getSetDirectionCommand(final Direction direction) {
+    public AbstractBaseCommand<PropertyCommandSpecification> getSetDirectionCommand(final Direction direction) {
         return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.propertyMap, "direction", direction, ActionKind.SET);
     }
 
-    public CommandInterface getSetCurrentTileCommand(final Optional<Tile> newTile) {
+    public AbstractBaseCommand<PropertyCommandSpecification> getSetCurrentTileCommand(final Optional<Tile> newTile) {
         return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.propertyMap, "currentTile", newTile, ActionKind.SET);
-    }
-
-    public CommandInterface getCommandFromSpecification(final PropertyCommandSpecification spec) {
-        return new UnidirectionalUpdatePropertyCommand<Hamster>(this.propertyMap, spec);
     }
 
     /*

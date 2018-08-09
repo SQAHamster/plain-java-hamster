@@ -1,16 +1,17 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CompositeCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 
-public class PickGrainCommand extends HamsterCompositeBaseCommand {
+public class PickGrainCommand extends HamsterCompositeBaseCommand<CompositeCommandSpecification> {
 
     private Grain pickedGrain;
     private Tile currentTile;
 
     public PickGrainCommand(final Hamster hamster) {
-        super(hamster);
+        super(hamster, new CompositeCommandSpecification());
     }
 
     @Override

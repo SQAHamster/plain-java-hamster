@@ -4,20 +4,18 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeBaseComman
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 
-public class AddContentToTileCommand extends CompositeBaseCommand {
+public class AddContentToTileCommand extends CompositeBaseCommand<ModifyContentOfTileCommandSpecification> {
 
-    private final ModifyContentOfTileCommandParameter spec;
     private final Territory territory;
 
-    public AddContentToTileCommand(final Territory territory, final ModifyContentOfTileCommandParameter spec) {
-        super();
+    public AddContentToTileCommand(final Territory territory, final ModifyContentOfTileCommandSpecification spec) {
+        super(spec);
         this.territory = territory;
-        this.spec = spec;
     }
 
     @Override
     protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
-        final Tile tile = this.territory.getTileAt(this.spec.getLocation());
-        builder.add(tile.getAddContentCommand(this.spec.getTileContent()));
+        final Tile tile = this.territory.getTileAt(getSpecification().getLocation());
+        builder.add(tile.getAddContentCommand(getSpecification().getTileContent()));
     }
 }

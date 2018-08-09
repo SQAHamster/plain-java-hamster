@@ -1,6 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
 
-public interface CommandInterface {
-    public abstract void execute();
-    public abstract void undo();
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CommandSpecification;
+
+public interface CommandInterface<T extends CommandSpecification> {
+    public T getSpecification();
 }

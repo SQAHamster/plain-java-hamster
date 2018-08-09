@@ -5,12 +5,17 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification.ActionKind;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.PropertyCommandSpecification.ActionKind;
 
-public abstract class CompositeBaseCommand implements CommandInterface {
+public abstract class CompositeBaseCommand<T extends CommandSpecification> extends AbstractBaseCommand<T> implements CommandInterface<T> {
 
-    private List<CommandInterface> commandsToExecute = Lists.newLinkedList();
+    private List<AbstractBaseCommand<?>> commandsToExecute = Lists.newLinkedList();
     protected CompositeCommandBuilder compositeCommandBuilder = new CompositeCommandBuilder();
+
+    public CompositeBaseCommand(final T specification) {
+        super(specification);
+    }
 
     @Override
     public void execute() {
@@ -24,18 +29,16 @@ public abstract class CompositeBaseCommand implements CommandInterface {
         commandsToExecute.forEach(command -> command.undo());
     }
 
-    protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {};
-
     protected class CompositeCommandBuilder {
-        private final List<CommandInterface> commandsToExecute = Lists.newLinkedList();
+        private final List<AbstractBaseCommand<?>> commandsToExecute = Lists.newLinkedList();
 
-        public CompositeCommandBuilder add(final List<CommandInterface> commands) {
+        public CompositeCommandBuilder add(final List<AbstractBaseCommand<?>> commands) {
             commandsToExecute.addAll(commands);
             return this;
         }
 
-        public CompositeCommandBuilder add(final CommandInterface ... commands ) {
-            for (final CommandInterface command : commands) {
+        public CompositeCommandBuilder add(final AbstractBaseCommand<?> ... commands ) {
+            for (final AbstractBaseCommand<?> command : commands) {
                 commandsToExecute.add(command);
             }
             return this;
@@ -50,4 +53,5 @@ public abstract class CompositeBaseCommand implements CommandInterface {
         }
     }
 
+    protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {};
 }

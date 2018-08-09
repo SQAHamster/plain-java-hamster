@@ -1,6 +1,6 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification;
 
-public class PropertyCommandSpecification {
+public class PropertyCommandSpecification implements CommandSpecification {
 
     public enum ActionKind {
         SET, ADD, REMOVE
@@ -27,6 +27,11 @@ public class PropertyCommandSpecification {
 
     public Object getNewValue() {
         return newValue;
+    }
+
+    @Override
+    public void visit(final SpecificationVisitor visitor) {
+        visitor.vist(this);
     }
 
 }

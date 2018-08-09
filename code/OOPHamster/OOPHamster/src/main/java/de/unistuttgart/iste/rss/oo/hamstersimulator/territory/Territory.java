@@ -4,13 +4,14 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.awt.Dimension;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandInterface;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractBaseCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.PropertyCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.AddContentToTileCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.ModifyContentOfTileCommandParameter;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.ModifyContentOfTileCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.RemoveContentFromTileCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.SetTerritorySizeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
@@ -27,14 +28,14 @@ public class Territory {
     private final ReadOnlyListWrapper<Tile> tiles = new ReadOnlyListWrapper<Tile>(this, "tiles", FXCollections.observableArrayList());
     private final PropertyMap<Territory> territoryState = new PropertyMap<Territory>(this, territorySize, tiles);
     private final Hamster defaultHamster;
-    private final CommandStack<? extends CommandInterface> commandStack;
+    private final CommandStack<AbstractBaseCommand<?>> commandStack;
 
     /**
      *
      * @param editStack
      * @param territoryFileName
      */
-    public Territory(final CommandStack<? extends CommandInterface> commandStack) {
+    public Territory(final CommandStack<AbstractBaseCommand<?>> commandStack) {
         super();
 
         this.defaultHamster = new Hamster();
@@ -42,7 +43,7 @@ public class Territory {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends CommandInterface> CommandStack<T> getCommandStack() {
+    public <T extends AbstractBaseCommand<?>> CommandStack<T> getCommandStack() {
         return (CommandStack<T>) commandStack;
     }
 
@@ -69,17 +70,17 @@ public class Territory {
                 newHamsterPosition.getRow() < this.getRowCount();
     }
 
-    public CommandInterface getSetTerritorySizeCommand(final Dimension newDimension) {
+    public AbstractBaseCommand<PropertyCommandSpecification> getSetTerritorySizeCommand(final Dimension newDimension) {
         checkArgument(newDimension.width >= 0 && newDimension.height >= 0, "New Territory dimensions need to be positive!");
         return new SetTerritorySizeCommand(this.territoryState, newDimension);
     }
 
-    public CommandInterface getAddContentCommand(final Location location, final TileContent content) {
-        return new AddContentToTileCommand(this, new ModifyContentOfTileCommandParameter(location, content));
+    public AbstractBaseCommand<ModifyContentOfTileCommandSpecification> getAddContentCommand(final Location location, final TileContent content) {
+        return new AddContentToTileCommand(this, new ModifyContentOfTileCommandSpecification(location, content));
     }
 
-    public CommandInterface getRemoveContentCommand(final Location location, final TileContent content) {
-        return new RemoveContentFromTileCommand(this, new ModifyContentOfTileCommandParameter(location, content));
+    public AbstractBaseCommand<ModifyContentOfTileCommandSpecification> getRemoveContentCommand(final Location location, final TileContent content) {
+        return new RemoveContentFromTileCommand(this, new ModifyContentOfTileCommandSpecification(location, content));
     }
 
     public ReadOnlyObjectProperty<Dimension> territorySizeProperty() {

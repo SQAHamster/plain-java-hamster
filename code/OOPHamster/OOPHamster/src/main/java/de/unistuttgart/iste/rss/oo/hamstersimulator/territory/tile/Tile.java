@@ -7,11 +7,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandInterface;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification.ActionKind;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractBaseCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.PropertyCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.PropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import javafx.beans.property.ReadOnlySetProperty;
@@ -121,16 +121,12 @@ public class Tile {
      * Commands
      */
 
-    public CommandInterface getAddContentCommand(final TileContent content) {
+    public AbstractBaseCommand<PropertyCommandSpecification> getAddContentCommand(final TileContent content) {
         return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.tileState, "content", content, ActionKind.ADD);
     }
 
-    public CommandInterface getRemoveContentCommand(final TileContent content) {
+    public AbstractBaseCommand<PropertyCommandSpecification> getRemoveContentCommand(final TileContent content) {
         return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.tileState, "content", content, ActionKind.REMOVE);
-    }
-
-    public CommandInterface getCommandFromSpecification(final PropertyCommandSpecification spec) {
-        return new UnidirectionalUpdatePropertyCommand<Tile>(this.tileState, spec);
     }
 
     @Override

@@ -4,20 +4,18 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeBaseComman
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 
-public class RemoveContentFromTileCommand extends CompositeBaseCommand {
+public class RemoveContentFromTileCommand extends CompositeBaseCommand<ModifyContentOfTileCommandSpecification> {
 
-    private final ModifyContentOfTileCommandParameter spec;
     private final Territory territory;
 
-    public RemoveContentFromTileCommand(final Territory territory, final ModifyContentOfTileCommandParameter spec) {
-        super();
+    public RemoveContentFromTileCommand(final Territory territory, final ModifyContentOfTileCommandSpecification spec) {
+        super(spec);
         this.territory = territory;
-        this.spec = spec;
     }
 
     @Override
     protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
-        final Tile tile = this.territory.getTileAt(this.spec.getLocation());
-        builder.add(tile.getRemoveContentCommand(this.spec.getTileContent()));
+        final Tile tile = this.territory.getTileAt(getSpecification().getLocation());
+        builder.add(tile.getRemoveContentCommand(getSpecification().getTileContent()));
     }
 }

@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CommandStack <CommandType extends CommandInterface> {
+public class CommandStack <CommandType extends AbstractBaseCommand<?>> {
 
     private final List<CommandType> executedCommands = new LinkedList<>();
 

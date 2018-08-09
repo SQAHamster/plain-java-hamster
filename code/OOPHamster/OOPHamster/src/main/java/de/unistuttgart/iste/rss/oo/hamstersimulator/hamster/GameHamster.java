@@ -9,7 +9,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.InitHamsterCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.InitHamsterCommandParameter;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.InitHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.MoveCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.PickGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.PutGrainCommand;
@@ -48,7 +48,7 @@ public class GameHamster {
         checkNotNull(newDirection);
         checkArgument(newGrainCount >= 0);
 
-        territory.getCommandStack().execute(new InitHamsterCommand(this.hamster, territory, new InitHamsterCommandParameter(Optional.of(location), newDirection, newGrainCount)));
+        territory.getCommandStack().execute(new InitHamsterCommand(this.hamster, territory, new InitHamsterCommandSpecification(Optional.of(location), newDirection, newGrainCount)));
     }
 
     public void move() {

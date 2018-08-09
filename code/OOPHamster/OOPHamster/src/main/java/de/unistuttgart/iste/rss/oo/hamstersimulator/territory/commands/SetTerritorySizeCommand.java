@@ -4,10 +4,10 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.PropertyCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.PropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
@@ -22,7 +22,7 @@ public class SetTerritorySizeCommand extends UnidirectionalUpdatePropertyCommand
     public void execute() {
         disposeAllExistingTiles();
         super.execute();
-        initNewTileStore((Dimension) this.spec.getNewValue());
+        initNewTileStore((Dimension) getSpecification().getNewValue());
         createNewTiles();
     }
 

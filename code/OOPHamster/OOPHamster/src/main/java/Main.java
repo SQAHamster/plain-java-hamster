@@ -1,6 +1,6 @@
 import java.io.IOException;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandInterface;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractBaseCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
@@ -15,7 +15,7 @@ public class Main {
         JavaFXUI.start();
 
         final String territoryFile = "/Users/snowball/test.ter";
-        final CommandStack<CommandInterface> editStack = new CommandStack<>();
+        final CommandStack<AbstractBaseCommand<?>> editStack = new CommandStack<>();
         final Territory territory = new Territory(editStack);
 
         JavaFXUI.getSingleton().init(territory);
