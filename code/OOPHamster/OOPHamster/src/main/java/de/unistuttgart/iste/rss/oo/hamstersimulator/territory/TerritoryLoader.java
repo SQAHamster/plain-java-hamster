@@ -95,10 +95,12 @@ public class TerritoryLoader {
     }
 
     private List<String> readLinesFromTerritoryFile(final String territoryFileName) {
-        final File file = new File(territoryFileName);
+        final ClassLoader classLoader = getClass().getClassLoader();
+        final File file = new File(classLoader.getResource(territoryFileName).getFile());
+
         final List<String> list = new ArrayList<String>();
 
-        try ( Scanner input = new Scanner(file) )
+        try (Scanner input = new Scanner(file))
         {
             while (input.hasNextLine()) {
                 list.add(input.nextLine());

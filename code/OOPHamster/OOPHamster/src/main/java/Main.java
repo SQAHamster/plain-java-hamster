@@ -22,7 +22,7 @@ public class Main {
 
         TerritoryLoader.initializeFor(territory).loadFromFile(territoryFile);
 
-        delay(1000);
+        delay(10000);
         exampleRun(territory);
         delay(2000);
         territory.getCommandStack().undoAll();
