@@ -25,7 +25,7 @@ import javafx.beans.property.ReadOnlySetProperty;
 import javafx.beans.property.ReadOnlySetWrapper;
 import javafx.collections.FXCollections;
 
-public abstract class Hamster extends TileContent {
+public class Hamster extends TileContent {
 
     /*
      * Static part of class, provides a hamster registry
@@ -71,6 +71,10 @@ public abstract class Hamster extends TileContent {
 
     public List<Grain> getGrainInMouth() {
         return Collections.unmodifiableList(grainInMouth.get());
+    }
+
+    public Territory getCurrentTerritory() {
+        return this.getCurrentTile().orElseThrow(IllegalStateException::new).getTerritory();
     }
 
     /*

@@ -35,7 +35,7 @@ public class Main {
     }
 
     private static void exampleRun(final Territory territory) {
-        final GameHamster paule = territory.getDefaultHamster();
+        final GameHamster paule = GameHamster.fromInternalHamster(territory.getDefaultHamster());
         final GameHamster willi = new GameHamster(territory, Location.from(1, 3), Direction.WEST, 0);
         final GameHamster marry = new GameHamster(territory, Location.from(1, 2), Direction.EAST, 0);
 

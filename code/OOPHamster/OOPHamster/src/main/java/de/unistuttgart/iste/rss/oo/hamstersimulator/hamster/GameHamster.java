@@ -18,17 +18,29 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
 
-public class GameHamster extends Hamster {
+public class GameHamster {
 
-    public GameHamster() {}
+    private final Hamster hamster;
+
+    public GameHamster() {
+        super();
+        this.hamster = new Hamster();
+    }
+
+
 
     public GameHamster(final Territory territory, final Location location, final Direction newDirection, final int newGrainCount) {
-        super();
+        this();
         init(territory, location, newDirection, newGrainCount);
     }
     /*
      * Commands
      */
+
+    private GameHamster(final Hamster hamster) {
+        super();
+        this.hamster = hamster;
+    }
 
     public void init(final Territory territory, final Location location, final Direction newDirection, final int newGrainCount) {
         checkNotNull(territory);
@@ -36,47 +48,47 @@ public class GameHamster extends Hamster {
         checkNotNull(newDirection);
         checkArgument(newGrainCount >= 0);
 
-        territory.getCommandStack().execute(new InitHamsterCommand(this, territory, new InitHamsterCommandParameter(Optional.of(location), newDirection, newGrainCount)));
+        territory.getCommandStack().execute(new InitHamsterCommand(this.hamster, territory, new InitHamsterCommandParameter(Optional.of(location), newDirection, newGrainCount)));
     }
 
     public void move() {
-        this.getCurrentTerritory().getCommandStack().execute(new MoveCommand(this));
+        this.hamster.getCurrentTerritory().getCommandStack().execute(new MoveCommand(this.hamster));
     }
 
     public void turnLeft() {
-        this.getCurrentTerritory().getCommandStack().execute(new TurnLeftCommand(this));
+        this.hamster.getCurrentTerritory().getCommandStack().execute(new TurnLeftCommand(this.hamster));
     }
 
     public void pickGrain() {
-        this.getCurrentTerritory().getCommandStack().execute(new PickGrainCommand(this));
+        this.hamster.getCurrentTerritory().getCommandStack().execute(new PickGrainCommand(this.hamster));
     }
 
     public void putGrain() {
-        this.getCurrentTerritory().getCommandStack().execute(new PutGrainCommand(this));
+        this.hamster.getCurrentTerritory().getCommandStack().execute(new PutGrainCommand(this.hamster));
     }
 
     public void readNumber() {
         // TODO - implement Hamster.readNumber
-        throw new UnsupportedOperationException();
+
     }
 
     public void readString() {
         // TODO - implement Hamster.readString
-        throw new UnsupportedOperationException();
+
     }
 
-    public void write() {
+    public void write(final String text) {
         // TODO - implement Hamster.write
-        throw new UnsupportedOperationException();
+        System.out.println(text);
     }
 
     /*
      * Queries
      */
     public boolean frontIsClear() {
-        final LocationVector movementVector = this.getDirection().getMovementVector();
-        final Location potentialNewLocation = this.getCurrentTile().orElseThrow(IllegalStateException::new).getLocation().translate(movementVector);
-        final Tile currentTile = this.getCurrentTile().orElseThrow(IllegalArgumentException::new);
+        final LocationVector movementVector = this.hamster.getDirection().getMovementVector();
+        final Location potentialNewLocation = this.hamster.getCurrentTile().orElseThrow(IllegalStateException::new).getLocation().translate(movementVector);
+        final Tile currentTile = this.hamster.getCurrentTile().orElseThrow(IllegalArgumentException::new);
 
         if (!currentTile.getTerritory().isLocationInTerritory(potentialNewLocation)) {
             return false;
@@ -86,15 +98,14 @@ public class GameHamster extends Hamster {
     }
 
     public boolean grainAvailable() {
-        return this.getCurrentTile().orElseThrow(IllegalStateException::new).countObjectsOfType(Grain.class) > 0;
+        return this.hamster.getCurrentTile().orElseThrow(IllegalStateException::new).countObjectsOfType(Grain.class) > 0;
     }
 
     public boolean mouthEmpty() {
-        return this.getGrainInMouth().isEmpty();
+        return this.hamster.getGrainInMouth().isEmpty();
     }
 
-    public Territory getCurrentTerritory() {
-        return this.getCurrentTile().orElseThrow(IllegalStateException::new).getTerritory();
+    public static GameHamster fromInternalHamster(final Hamster hamster) {
+        return new GameHamster(hamster);
     }
-
 }

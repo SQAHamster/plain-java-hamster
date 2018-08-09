@@ -8,7 +8,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.GameHamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.AddContentToTileCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.ModifyContentOfTileCommandParameter;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.RemoveContentFromTileCommand;
@@ -26,7 +26,7 @@ public class Territory {
     private final ReadOnlyObjectWrapper<Dimension> territorySize = new ReadOnlyObjectWrapper<Dimension>(this, "territorySize", new Dimension(0, 0));
     private final ReadOnlyListWrapper<Tile> tiles = new ReadOnlyListWrapper<Tile>(this, "tiles", FXCollections.observableArrayList());
     private final PropertyMap<Territory> territoryState = new PropertyMap<Territory>(this, territorySize, tiles);
-    private final GameHamster defaultHamster;
+    private final Hamster defaultHamster;
     private final CommandStack<? extends CommandInterface> commandStack;
 
     /**
@@ -37,7 +37,7 @@ public class Territory {
     public Territory(final CommandStack<? extends CommandInterface> commandStack) {
         super();
 
-        this.defaultHamster = new GameHamster();
+        this.defaultHamster = new Hamster();
         this.commandStack = commandStack;
     }
 
@@ -60,7 +60,7 @@ public class Territory {
         return tiles.get(getListIndexFromLocation(location));
     }
 
-    public GameHamster getDefaultHamster() {
+    public Hamster getDefaultHamster() {
         return this.defaultHamster;
     }
 
