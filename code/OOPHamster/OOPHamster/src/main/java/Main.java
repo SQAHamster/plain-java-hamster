@@ -17,8 +17,9 @@ public class Main {
 
         final String territoryFile = "territories/example01.ter";
         final EditCommandStack<Command> editStack = new EditCommandStack<>();
+        final GameCommandStack<Command> gameStack = new GameCommandStack<>();
         final Territory territory = new Territory(editStack);
-        final Territory t2 = new Territory(new GameCommandStack<Command>());
+        final Territory t2 = new Territory(gameStack);
 
         JavaFXUI.getSingleton().init(t2);
 
@@ -27,10 +28,13 @@ public class Main {
         t2.getCommandStack().execute(editStack.cloneCommandsInto(t2));
 
 
-        delay(10000);
+        delay(1000);
+        gameStack.startGame();
         exampleRun(t2);
-        delay(2000);
-        territory.getCommandStack().undoAll();
+        gameStack.stopGame();
+
+        delay(1000);
+        t2.getCommandStack().undoAll();
     }
 
     protected static void delay(final int delay) {

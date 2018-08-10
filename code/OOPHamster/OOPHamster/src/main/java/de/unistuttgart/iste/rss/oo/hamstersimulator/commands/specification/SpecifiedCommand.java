@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification;
 
 public interface SpecifiedCommand<T extends CommandSpecification> {
     public T getSpecification();

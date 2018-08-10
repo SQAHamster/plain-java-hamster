@@ -1,8 +1,8 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractCompositeCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.SpecifiedCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.SpecifiedCommand;
 
 abstract class AbstractTerritoryCompositeBaseCommand<T extends CommandSpecification> extends AbstractCompositeCommand implements SpecifiedCommand<T> {
 

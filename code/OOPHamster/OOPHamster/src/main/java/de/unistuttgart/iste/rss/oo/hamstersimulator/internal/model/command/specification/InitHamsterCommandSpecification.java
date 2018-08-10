@@ -2,8 +2,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.spec
 
 import java.util.Optional;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.SpecificationVisitor;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 

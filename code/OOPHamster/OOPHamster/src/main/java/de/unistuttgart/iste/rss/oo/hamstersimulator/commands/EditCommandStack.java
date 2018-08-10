@@ -5,6 +5,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CompositeCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.SpecifiedCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.AddGrainsToTileCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.AddWallToTileCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.ClearTileCommand;
@@ -16,6 +19,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.speci
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.ClearTileCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitializeTerritoryCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.SpecificationVisitor;
 
 public class EditCommandStack<T extends Command> extends CommandStack<T> {
 

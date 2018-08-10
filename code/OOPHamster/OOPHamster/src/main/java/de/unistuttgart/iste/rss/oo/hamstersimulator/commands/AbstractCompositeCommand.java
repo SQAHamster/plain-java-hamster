@@ -6,7 +6,7 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
 import javafx.beans.property.Property;
 
 public abstract class AbstractCompositeCommand extends Command {
@@ -53,5 +53,9 @@ public abstract class AbstractCompositeCommand extends Command {
         }
     }
 
-    protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {};
+    protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {}
+
+    public List<Command> getCommandsToExecute() {
+        return Collections.unmodifiableList(this.commandsToExecute);
+    };
 }

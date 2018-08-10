@@ -1,7 +1,11 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractCompositeCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.SpecificationVisitor;
 
 public class CompositeCommandSpecification implements CommandSpecification {
 
@@ -14,7 +18,7 @@ public class CompositeCommandSpecification implements CommandSpecification {
 
     public List<CommandSpecification> getSpecifications() {
         final List<CommandSpecification> result = new LinkedList<>();
-        for (final Command command : this.myParent.commandsToExecute) {
+        for (final Command command : this.myParent.getCommandsToExecute()) {
             final SpecifiedCommand<?> currentCommand = (SpecifiedCommand<?>) command;
             result .add(currentCommand.getSpecification());
         }

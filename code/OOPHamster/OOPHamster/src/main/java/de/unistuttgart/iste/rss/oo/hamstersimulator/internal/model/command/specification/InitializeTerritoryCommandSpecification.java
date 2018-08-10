@@ -2,8 +2,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.spec
 
 import java.awt.Dimension;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.SpecificationVisitor;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CommandSpecification;
 
 public final class InitializeTerritoryCommandSpecification implements CommandSpecification {
 
