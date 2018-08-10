@@ -12,8 +12,8 @@ public abstract class TileContent {
     public TileContent() {
         super();
         this.currentTile.addListener((property, oldValue, newValue) -> {
-            oldValue.ifPresent(tile -> tile.getState().getSetProperty("content").remove(this));
-            newValue.ifPresent(tile -> tile.getState().getSetProperty("content").add(this));
+            oldValue.ifPresent(tile -> tile.content.remove(this));
+            newValue.ifPresent(tile -> tile.content.add(this));
         });
     }
 

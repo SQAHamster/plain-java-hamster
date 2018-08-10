@@ -2,6 +2,8 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes;
 
 public final class Location {
 
+    public static final Location ORIGIN = Location.from(0,0);
+
     @Override
     public String toString() {
         return "Location [row=" + row + ", column=" + column + "]";

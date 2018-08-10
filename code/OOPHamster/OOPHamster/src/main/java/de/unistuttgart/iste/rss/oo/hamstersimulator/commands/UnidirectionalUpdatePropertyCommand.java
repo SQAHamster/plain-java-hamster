@@ -1,42 +1,44 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.PropertyCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.PropertyCommandSpecification.ActionKind;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
 import javafx.beans.property.Property;
 import javafx.beans.value.WritableListValue;
 import javafx.beans.value.WritableSetValue;
 
-public class UnidirectionalUpdatePropertyCommand<T> extends EntityCommand<T> {
+public class UnidirectionalUpdatePropertyCommand<T> extends Command {
 
     private Object oldValue;
+    private final Property<T> property;
+    private final UnidirectionalUpdatePropertyCommandSpecification specification;
 
-    public UnidirectionalUpdatePropertyCommand(final PropertyMap<T> entity, final PropertyCommandSpecification spec) {
-        super(entity, spec);
+    public UnidirectionalUpdatePropertyCommand(final Property<T> property, final UnidirectionalUpdatePropertyCommandSpecification spec) {
+        super();
+        this.property = property;
+        this.specification = spec;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void execute() {
-        final Property<Object> property = this.entityState.getProperty(getSpecification().getPropertyName());
-        switch (getSpecification().getActionKind()) {
+        switch (this.specification.getActionKind()) {
         case SET:
             this.oldValue = property.getValue();
-            property.setValue(getSpecification().getNewValue());
+            property.setValue((T)this.specification.getNewValue());
             break;
         case ADD:
             if (property instanceof WritableSetValue) {
-                ((WritableSetValue) property).add(getSpecification().getNewValue());
+                ((WritableSetValue) property).add(this.specification.getNewValue());
             } else if (property instanceof WritableListValue) {
-                ((WritableListValue) property).add(getSpecification().getNewValue());
+                ((WritableListValue) property).add(this.specification.getNewValue());
             } else {
                 throw new UnsupportedOperationException();
             }
             break;
         case REMOVE:
             if (property instanceof WritableSetValue) {
-                ((WritableSetValue) property).remove(getSpecification().getNewValue());
+                ((WritableSetValue) property).remove(this.specification.getNewValue());
             } else if (property instanceof WritableListValue) {
-                ((WritableListValue) property).remove(getSpecification().getNewValue());
+                ((WritableListValue) property).remove(this.specification.getNewValue());
             } else {
                 throw new UnsupportedOperationException();
             }
@@ -47,25 +49,24 @@ public class UnidirectionalUpdatePropertyCommand<T> extends EntityCommand<T> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void undo() {
-        final Property<Object> property = this.entityState.getProperty(getSpecification().getPropertyName());
-        switch (getSpecification().getActionKind()) {
+        switch (this.specification.getActionKind()) {
         case SET:
-            property.setValue(this.oldValue);
+            property.setValue((T)this.oldValue);
             break;
         case ADD:
             if (property instanceof WritableSetValue) {
-                ((WritableSetValue) property).remove(getSpecification().getNewValue());
+                ((WritableSetValue) property).remove(this.specification.getNewValue());
             } else if (property instanceof WritableListValue) {
-                ((WritableListValue) property).remove(getSpecification().getNewValue());
+                ((WritableListValue) property).remove(this.specification.getNewValue());
             } else {
                 throw new UnsupportedOperationException();
             }
             break;
         case REMOVE:
             if (property instanceof WritableSetValue) {
-                ((WritableSetValue) property).add(getSpecification().getNewValue());
+                ((WritableSetValue) property).add(this.specification.getNewValue());
             } else if (property instanceof WritableListValue) {
-                ((WritableListValue) property).add(getSpecification().getNewValue());
+                ((WritableListValue) property).add(this.specification.getNewValue());
             } else {
                 throw new UnsupportedOperationException();
             }
@@ -74,11 +75,11 @@ public class UnidirectionalUpdatePropertyCommand<T> extends EntityCommand<T> {
     }
 
     public static <G> UnidirectionalUpdatePropertyCommand<G> createPropertyUpdateCommand(
-            final PropertyMap<G> entity,
+            final Property<G> property,
             final String propertyName,
             final Object value,
             final ActionKind action) {
-        return new UnidirectionalUpdatePropertyCommand<G>(entity, new PropertyCommandSpecification(propertyName, value, action));
+        return new UnidirectionalUpdatePropertyCommand<G>(property, new UnidirectionalUpdatePropertyCommandSpecification(propertyName, value, action));
     }
 
 }

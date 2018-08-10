@@ -1,9 +1,9 @@
 import java.io.Console;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractBaseCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandStack;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.GameHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.model.GameHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 public abstract class SimpleHamsterGame {
@@ -16,7 +16,7 @@ public abstract class SimpleHamsterGame {
     protected Console console = System.console();
 
     public SimpleHamsterGame() {
-        final CommandStack<AbstractBaseCommand<?>> editStack = new CommandStack<>();
+        final CommandStack<Command> editStack = new CommandStack<>();
         this.territory = new TerritoryWrapper(new Territory(editStack), territoryFile);
         this.gamefield = new GamefieldWrapper(this.territory);
         paule = GameHamster.fromInternalHamster(territory.getTerritory().getDefaultHamster());

@@ -4,15 +4,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractBaseCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.PropertyCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.PropertyCommandSpecification.ActionKind;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.InitHamsterCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.InitHamsterCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.model.InitHamsterCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.model.InitHamsterCommandSpecification;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -38,7 +36,6 @@ public class Hamster extends TileContent {
 
     private final ReadOnlyObjectWrapper<Direction> direction = new ReadOnlyObjectWrapper<>(this, "direction", Direction.NORTH);
     private final ReadOnlyListWrapper<Grain> grainInMouth = new ReadOnlyListWrapper<>(this, "grainInMouth", FXCollections.observableArrayList());
-    private final PropertyMap<Hamster> propertyMap = new PropertyMap<>(this, currentTile, direction, grainInMouth);
 
     /*
      * Constructors
@@ -57,12 +54,12 @@ public class Hamster extends TileContent {
         return this.direction.getReadOnlyProperty();
     }
 
-    public Direction getDirection() {
-        return direction.get();
-    }
-
     public ReadOnlyListProperty<Grain> grainInMouthProperty() {
         return this.grainInMouth.getReadOnlyProperty();
+    }
+
+    public Direction getDirection() {
+        return direction.get();
     }
 
     public List<Grain> getGrainInMouth() {
@@ -76,25 +73,25 @@ public class Hamster extends TileContent {
     /*
      * Commands
      */
-    public AbstractBaseCommand<InitHamsterCommandSpecification> getInitializeHamsterCommand(final Territory territory, final Optional<Location> location,
+    public Command getInitializeHamsterCommand(final Territory territory, final Optional<Location> location,
             final Direction direction, final int grainCount) {
         return new InitHamsterCommand(this, territory, new InitHamsterCommandSpecification(location, direction, grainCount));
     }
 
-    public AbstractBaseCommand<PropertyCommandSpecification> getRemoveGrainCommand(final Grain grain) {
-        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.propertyMap, "grainInMouth", grain, ActionKind.REMOVE);
+    public Command getRemoveGrainCommand(final Grain grain) {
+        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.grainInMouth, "grainInMouth", grain, ActionKind.REMOVE);
     }
 
-    public AbstractBaseCommand<PropertyCommandSpecification> getAddGrainCommand(final Grain grain) {
-        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.propertyMap, "grainInMouth", grain, ActionKind.ADD);
+    public Command getAddGrainCommand(final Grain grain) {
+        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.grainInMouth, "grainInMouth", grain, ActionKind.ADD);
     }
 
-    public AbstractBaseCommand<PropertyCommandSpecification> getSetDirectionCommand(final Direction direction) {
-        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.propertyMap, "direction", direction, ActionKind.SET);
+    public Command getSetDirectionCommand(final Direction direction) {
+        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.direction, "direction", direction, ActionKind.SET);
     }
 
-    public AbstractBaseCommand<PropertyCommandSpecification> getSetCurrentTileCommand(final Optional<Tile> newTile) {
-        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.propertyMap, "currentTile", newTile, ActionKind.SET);
+    public Command getSetCurrentTileCommand(final Optional<Tile> newTile) {
+        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.currentTile, "currentTile", newTile, ActionKind.SET);
     }
 
     /*

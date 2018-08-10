@@ -1,17 +1,16 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.model;
 
 import java.util.Optional;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CompositeCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Tile;
 
-public class MoveCommand extends HamsterCompositeBaseCommand<CompositeCommandSpecification> {
+public class MoveCommand extends AbstractHamsterCompositeBaseCommand {
 
     public MoveCommand(final Hamster hamster) {
-        super(hamster, new CompositeCommandSpecification());
+        super(hamster);
     }
 
     @Override

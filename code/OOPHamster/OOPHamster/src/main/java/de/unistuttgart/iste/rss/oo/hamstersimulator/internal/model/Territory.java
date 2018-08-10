@@ -3,16 +3,12 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.awt.Dimension;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractBaseCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandStack;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.PropertyCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.AddContentToTileCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.ModifyContentOfTileCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.RemoveContentFromTileCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands.SetTerritorySizeCommand;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -21,18 +17,18 @@ import javafx.collections.FXCollections;
 
 public class Territory {
 
-    private final ReadOnlyObjectWrapper<Dimension> territorySize = new ReadOnlyObjectWrapper<Dimension>(this, "territorySize", new Dimension(0, 0));
-    private final ReadOnlyListWrapper<Tile> tiles = new ReadOnlyListWrapper<Tile>(this, "tiles", FXCollections.observableArrayList());
-    private final PropertyMap<Territory> territoryState = new PropertyMap<Territory>(this, territorySize, tiles);
+    final ReadOnlyObjectWrapper<Dimension> territorySize = new ReadOnlyObjectWrapper<Dimension>(this, "territorySize", new Dimension(0, 0));
+    final ReadOnlyListWrapper<Tile> tiles = new ReadOnlyListWrapper<Tile>(this, "tiles", FXCollections.observableArrayList());
+
     private final Hamster defaultHamster;
-    private final CommandStack<AbstractBaseCommand<?>> commandStack;
+    private final CommandStack<? extends Command> commandStack;
 
     /**
      *
      * @param editStack
      * @param territoryFileName
      */
-    public Territory(final CommandStack<AbstractBaseCommand<?>> commandStack) {
+    public Territory(final CommandStack<Command> commandStack) {
         super();
 
         this.defaultHamster = new Hamster();
@@ -40,7 +36,7 @@ public class Territory {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends AbstractBaseCommand<?>> CommandStack<T> getCommandStack() {
+    public <T extends Command> CommandStack<T> getCommandStack() {
         return (CommandStack<T>) commandStack;
     }
 
@@ -67,19 +63,6 @@ public class Territory {
                 newHamsterPosition.getRow() < this.getRowCount();
     }
 
-    public AbstractBaseCommand<PropertyCommandSpecification> getSetTerritorySizeCommand(final Dimension newDimension) {
-        checkArgument(newDimension.width >= 0 && newDimension.height >= 0, "New Territory dimensions need to be positive!");
-        return new SetTerritorySizeCommand(this.territoryState, newDimension);
-    }
-
-    public AbstractBaseCommand<ModifyContentOfTileCommandSpecification> getAddContentCommand(final Location location, final TileContent content) {
-        return new AddContentToTileCommand(this, new ModifyContentOfTileCommandSpecification(location, content));
-    }
-
-    public AbstractBaseCommand<ModifyContentOfTileCommandSpecification> getRemoveContentCommand(final Location location, final TileContent content) {
-        return new RemoveContentFromTileCommand(this, new ModifyContentOfTileCommandSpecification(location, content));
-    }
-
     public ReadOnlyObjectProperty<Dimension> territorySizeProperty() {
         return this.territorySize.getReadOnlyProperty();
     }
@@ -88,8 +71,13 @@ public class Territory {
         return this.tiles.getReadOnlyProperty();
     }
 
-    TerritoryBuilder getTerritoryBuilder() {
+    public TerritoryBuilder getTerritoryBuilder() {
         return new TerritoryBuilder(this);
+    }
+
+    Stream<Location> getAllLocationsFromTo(final Location from, final Location to) {
+        final Stream<Stream<Location>> stream = IntStream.range(from.getRow(), to.getRow()+1).mapToObj(row -> IntStream.range(from.getColumn(), to.getColumn()+1).mapToObj(column -> Location.from(row, column)));
+        return stream.flatMap(s -> s);
     }
 
     private int getListIndexFromLocation(final Location location) {

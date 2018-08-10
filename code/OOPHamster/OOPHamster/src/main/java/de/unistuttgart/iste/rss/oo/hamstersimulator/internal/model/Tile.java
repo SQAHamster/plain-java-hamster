@@ -7,11 +7,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractBaseCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.PropertyMap;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.PropertyCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.PropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import javafx.beans.property.ReadOnlySetProperty;
 import javafx.beans.property.ReadOnlySetWrapper;
@@ -20,13 +15,12 @@ import javafx.collections.SetChangeListener;
 
 public class Tile {
 
-    private final ReadOnlySetWrapper<TileContent> content = new ReadOnlySetWrapper<TileContent>(this, "content", FXCollections.observableSet());
-    private final PropertyMap<Tile> tileState = new PropertyMap<Tile>(this, content);
+    final ReadOnlySetWrapper<TileContent> content = new ReadOnlySetWrapper<TileContent>(this, "content", FXCollections.observableSet());
 
     private final Territory territory;
     private final Location tileLocation;
 
-    private Tile(final Territory territory, final Location tileLocation) {
+    Tile(final Territory territory, final Location tileLocation) {
         super();
 
         checkNotNull(territory);
@@ -58,10 +52,6 @@ public class Tile {
                 }
             }
         });
-    }
-
-    public static Tile createEmptyTile(final Territory territory, final Location location) {
-        return new Tile(territory, location);
     }
 
     public Territory getTerritory() {
@@ -116,25 +106,9 @@ public class Tile {
         }
     }
 
-    /*
-     * Commands
-     */
-
-    public AbstractBaseCommand<PropertyCommandSpecification> getAddContentCommand(final TileContent content) {
-        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.tileState, "content", content, ActionKind.ADD);
-    }
-
-    public AbstractBaseCommand<PropertyCommandSpecification> getRemoveContentCommand(final TileContent content) {
-        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.tileState, "content", content, ActionKind.REMOVE);
-    }
-
     @Override
     public String toString() {
         return "Tile [tileLocation=" + tileLocation + ", content=" + content + "]";
-    }
-
-    PropertyMap<Tile> getState() {
-        return this.tileState;
     }
 
 }

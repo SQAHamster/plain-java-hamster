@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.model;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -12,12 +12,6 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Tile;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.InitHamsterCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.InitHamsterCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.MoveCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.PickGrainCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.PutGrainCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.TurnLeftCommand;
 
 public class GameHamster {
 

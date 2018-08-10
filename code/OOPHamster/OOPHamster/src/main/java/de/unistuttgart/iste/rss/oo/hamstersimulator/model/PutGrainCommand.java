@@ -1,17 +1,16 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.model;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CompositeCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Tile;
 
-public class PutGrainCommand extends HamsterCompositeBaseCommand<CompositeCommandSpecification> {
+public class PutGrainCommand extends AbstractHamsterCompositeBaseCommand {
 
     private Grain grainDropped;
     private Tile currentTile;
 
     public PutGrainCommand(final Hamster hamster) {
-        super(hamster, new CompositeCommandSpecification());
+        super(hamster);
     }
 
     @Override
