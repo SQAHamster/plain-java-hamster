@@ -24,11 +24,11 @@ public class Main {
         gameTerritory.showUI();
         editTerritory.loadFromFile(territoryFile);
         editTerritory.cloneInto(gameTerritory);
-        gameTerritory.runGame(territory -> Main.exampleRun(territory));
+        gameTerritory.runGame(Main::exampleRun);
         gameTerritory.reset();
     }
 
-    private static void exampleRun(final Territory territory) {
+    public static void exampleRun(final Territory territory) {
         final Hamster paule = territory.getDefaultHamster();
         final Hamster willi = new Hamster(territory, Location.from(1, 3), Direction.WEST, 0);
         final Hamster marry = new Hamster(territory, Location.from(1, 2), Direction.EAST, 0);
