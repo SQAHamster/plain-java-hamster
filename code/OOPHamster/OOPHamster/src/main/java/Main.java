@@ -5,9 +5,9 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EditCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.GameHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.TerritoryLoader;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.model.GameHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 public class Main {

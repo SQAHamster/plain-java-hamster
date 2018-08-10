@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.model;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
