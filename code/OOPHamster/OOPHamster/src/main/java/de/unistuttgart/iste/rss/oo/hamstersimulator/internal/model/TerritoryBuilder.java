@@ -8,10 +8,10 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractSpecifiedCo
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.AddGrainsToTileCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.AddWallToTileCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.InitHamsterCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.InitializeTerritoryCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.AddGrainsToTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.AddWallToTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitHamsterCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitializeTerritoryCommandSpecification;
 
 public class TerritoryBuilder {
 

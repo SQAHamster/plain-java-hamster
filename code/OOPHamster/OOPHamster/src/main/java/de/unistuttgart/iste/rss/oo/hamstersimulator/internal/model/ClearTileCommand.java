@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.ClearTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.ClearTileCommandSpecification;
 
 public class ClearTileCommand extends AbstractTerritoryCompositeBaseCommand<ClearTileCommandSpecification> {
 

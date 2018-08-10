@@ -6,7 +6,7 @@ import java.util.stream.IntStream;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.SpecifiedCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.InitHamsterCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitHamsterCommandSpecification;
 
 public class InitHamsterCommand extends AbstractHamsterCompositeBaseCommand implements SpecifiedCommand<InitHamsterCommandSpecification> {
 

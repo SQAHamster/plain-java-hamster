@@ -6,8 +6,8 @@ import java.util.stream.Stream;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.ClearTileCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.InitializeTerritoryCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.ClearTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitializeTerritoryCommandSpecification;
 
 public class InitializeTerritoryCommand extends AbstractTerritoryCompositeBaseCommand<InitializeTerritoryCommandSpecification> {
 

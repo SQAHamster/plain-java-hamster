@@ -17,7 +17,11 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.PutGrainComma
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Tile;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.TurnLeftCommand;
+<<<<<<< Upstream, based on branch 'master' of ssh://git@git.rss.iste.uni-stuttgart.de:22222/Teaching/pse.git
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.InitHamsterCommandSpecification;
+=======
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitHamsterCommandSpecification;
+>>>>>>> 2ff6a74 Simple rename
 
 public class GameHamster {
 

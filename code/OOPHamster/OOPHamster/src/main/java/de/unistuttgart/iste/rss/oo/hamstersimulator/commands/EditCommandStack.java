@@ -11,11 +11,11 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.ClearTileComm
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InitHamsterCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InitializeTerritoryCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.AddGrainsToTileCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.AddWallToTileCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.ClearTileCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.InitHamsterCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.InitializeTerritoryCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.AddGrainsToTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.AddWallToTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.ClearTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitHamsterCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitializeTerritoryCommandSpecification;
 
 public class EditCommandStack<T extends Command> extends CommandStack<T> {
 

@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification;
 
 import java.util.Optional;
 

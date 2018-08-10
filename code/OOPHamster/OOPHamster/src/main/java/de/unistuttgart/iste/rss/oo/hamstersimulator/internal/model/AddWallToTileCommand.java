@@ -2,7 +2,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.AddWallToTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.AddWallToTileCommandSpecification;
 
 public class AddWallToTileCommand extends AbstractTerritoryCompositeBaseCommand<AddWallToTileCommandSpecification> {
 
