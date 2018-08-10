@@ -1,5 +1,3 @@
-import java.io.IOException;
-
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EditCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
@@ -11,7 +9,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 public class Main {
 
-    public static void main(final String[] args) throws IOException, CloneNotSupportedException {
+    public static void main(final String[] args) {
         JavaFXUI.start();
 
         final String territoryFile = "territories/example01.ter";
