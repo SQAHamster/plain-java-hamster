@@ -10,7 +10,7 @@ public class GamefieldWrapper {
     }
 
     public void show() {
-        JavaFXUI.getSingleton().init(territory.getTerritory());
+        JavaFXUI.init(territory.getTerritory());
     }
 
 }

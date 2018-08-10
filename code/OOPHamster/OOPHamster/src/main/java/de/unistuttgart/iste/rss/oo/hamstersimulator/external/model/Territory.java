@@ -43,8 +43,8 @@ public class Territory {
         this.internalTerritory.getCommandStack().undoAll();
     }
 
-    public void showUI() {
-        JavaFXUI.getSingleton().init(this.internalTerritory);
+    public void displayInNewGameWindow() {
+        JavaFXUI.init(this.internalTerritory);
     }
 
     public void loadFromFile(final String territoryFile) {

@@ -1,5 +1,4 @@
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EditCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
@@ -13,15 +12,11 @@ public class Main {
         JavaFXUI.start();
 
         final String territoryFile = "territories/example01.ter";
-        final EditCommandStack<Command> editStack = new EditCommandStack<>();
         final GameCommandStack<Command> gameStack = new GameCommandStack<>();
-
-        final Territory editTerritory = new Territory(editStack);
         final Territory gameTerritory = new Territory(gameStack);
 
-        gameTerritory.showUI();
-        editTerritory.loadFromFile(territoryFile);
-        editTerritory.cloneInto(gameTerritory);
+        gameTerritory.displayInNewGameWindow();
+        gameTerritory.loadFromFile(territoryFile);
         gameTerritory.runGame(Main::exampleRun);
         gameTerritory.reset();
     }
