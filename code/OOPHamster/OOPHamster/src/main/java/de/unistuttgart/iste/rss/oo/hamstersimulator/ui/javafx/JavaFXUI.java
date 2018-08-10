@@ -2,8 +2,8 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 
 import java.util.concurrent.CountDownLatch;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Tile;
 import javafx.application.Application;
 import javafx.beans.binding.DoubleBinding;
 import javafx.collections.ListChangeListener;
@@ -52,7 +52,7 @@ public class JavaFXUI extends Application {
         final BorderPane root2 = getRootScene();
         final Scene scene2 = new Scene(root2, 300, 250);
         secondStage.setScene(scene2);
-        scene2.getStylesheets().add("game.css");
+        scene2.getStylesheets().add("css/game.css");
         secondStage.show();
 
         primaryStage.setTitle("Hamster Simulator");
@@ -60,7 +60,7 @@ public class JavaFXUI extends Application {
         final Scene scene = new Scene(root, 300, 250);
         primaryStage.setScene(scene);
 
-        scene.getStylesheets().add("game.css");
+        scene.getStylesheets().add("css/game.css");
         primaryStage.show();
 
         final double offset = primaryStage.getHeight() - scene.getHeight();

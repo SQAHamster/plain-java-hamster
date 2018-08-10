@@ -1,5 +1,5 @@
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.TerritoryLoader;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.TerritoryLoader;
 
 public class TerritoryWrapper {
     private final Territory territory;

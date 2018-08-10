@@ -5,8 +5,8 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.GameHamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.TerritoryLoader;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.TerritoryLoader;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 public class Main {
@@ -14,7 +14,7 @@ public class Main {
     public static void main(final String[] args) throws IOException, CloneNotSupportedException {
         JavaFXUI.start();
 
-        final String territoryFile = "/Users/snowball/test.ter";
+        final String territoryFile = "territories/example01.ter";
         final CommandStack<AbstractBaseCommand<?>> editStack = new CommandStack<>();
         final Territory territory = new Territory(editStack);
 

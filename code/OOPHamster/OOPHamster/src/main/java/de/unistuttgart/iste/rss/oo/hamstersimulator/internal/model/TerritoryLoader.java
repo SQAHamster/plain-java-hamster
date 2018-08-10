@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.territory;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
 import java.awt.Dimension;
 import java.io.File;

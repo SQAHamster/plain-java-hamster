@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.hamster;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,10 +13,6 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.InitHamsterCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.InitHamsterCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.TileContent;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;

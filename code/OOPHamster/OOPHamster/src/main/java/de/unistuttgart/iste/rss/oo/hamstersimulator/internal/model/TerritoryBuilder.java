@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.territory;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
 import java.awt.Dimension;
 import java.util.LinkedList;
@@ -10,8 +10,6 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.Compo
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands.InitHamsterCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Wall;
 
 public class TerritoryBuilder {
 

@@ -1,9 +1,9 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CompositeCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Grain;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Tile;
 
 public class PutGrainCommand extends HamsterCompositeBaseCommand<CompositeCommandSpecification> {
 

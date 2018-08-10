@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
 public class Grain extends TileContent {
 

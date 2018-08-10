@@ -3,10 +3,10 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.simulator.commands;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Grain;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Tile;
 
 public class InitHamsterCommand extends HamsterCompositeBaseCommand<InitHamsterCommandSpecification> {
 

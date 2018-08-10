@@ -3,7 +3,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.territory.commands;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.SpecificationVisitor;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.TileContent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.TileContent;
 
 public final class ModifyContentOfTileCommandSpecification implements CommandSpecification  {
     private final Location location;

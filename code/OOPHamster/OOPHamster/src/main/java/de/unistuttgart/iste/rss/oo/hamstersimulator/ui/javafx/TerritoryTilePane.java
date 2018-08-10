@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Grain;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Tile;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.TileContent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.tile.Wall;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Grain;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Tile;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.TileContent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Wall;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.SetChangeListener;
 import javafx.scene.image.Image;
@@ -18,8 +18,8 @@ import javafx.scene.paint.Color;
 
 public class TerritoryTilePane extends Pane {
 
-    private static final Image hamsterImage = new Image("Hamster24.png");
-    private static final Image wallImage = new Image("Wall32.png", 39, 39, true, true);
+    private static final Image hamsterImage = new Image("images/Hamster24.png");
+    private static final Image wallImage = new Image("images/Wall32.png", 39, 39, true, true);
     private static final Map<Integer, Image> cornImages = new HashMap<>();
     private static final Color[] hamsterColors = new Color[] {
             Color.BLUE,
@@ -145,7 +145,7 @@ public class TerritoryTilePane extends Pane {
 
     private static void loadCornImages() {
         for (int i = 1; i < 13; i++) {
-            cornImages.put(i, new Image(i + "Corn32.png"));
+            cornImages.put(i, new Image("images/"+ i + "Corn32.png"));
         }
     }
 

@@ -3,7 +3,7 @@ import java.io.Console;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractBaseCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.hamster.GameHamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.territory.Territory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 public abstract class SimpleHamsterGame {
