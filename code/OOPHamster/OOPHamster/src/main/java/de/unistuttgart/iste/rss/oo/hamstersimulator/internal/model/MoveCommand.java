@@ -1,11 +1,11 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.model;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
 import java.util.Optional;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Tile;
 
 public class MoveCommand extends AbstractHamsterCompositeBaseCommand {
 
@@ -23,7 +23,7 @@ public class MoveCommand extends AbstractHamsterCompositeBaseCommand {
         assert this.hamster.getCurrentTerritory().isLocationInTerritory(newHamsterPosition);
         final Tile newTile = this.hamster.getCurrentTerritory().getTileAt(newHamsterPosition);
 
-        builder.add(this.hamster.getSetCurrentTileCommand(Optional.of(newTile)));
+        builder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.hamster.currentTile, "currentTile", Optional.of(newTile), ActionKind.SET));
     }
 
 }

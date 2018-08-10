@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.model;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
 import java.util.Optional;
 

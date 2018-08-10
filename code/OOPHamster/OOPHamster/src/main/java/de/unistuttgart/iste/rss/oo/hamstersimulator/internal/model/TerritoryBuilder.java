@@ -8,8 +8,6 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractCompositeCo
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.model.InitHamsterCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.model.InitHamsterCommandSpecification;
 
 public class TerritoryBuilder {
 

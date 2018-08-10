@@ -2,15 +2,8 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.model.InitHamsterCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.model.InitHamsterCommandSpecification;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -34,8 +27,8 @@ public class Hamster extends TileContent {
         return hamsterSet.getReadOnlyProperty();
     }
 
-    private final ReadOnlyObjectWrapper<Direction> direction = new ReadOnlyObjectWrapper<>(this, "direction", Direction.NORTH);
-    private final ReadOnlyListWrapper<Grain> grainInMouth = new ReadOnlyListWrapper<>(this, "grainInMouth", FXCollections.observableArrayList());
+    final ReadOnlyObjectWrapper<Direction> direction = new ReadOnlyObjectWrapper<>(this, "direction", Direction.NORTH);
+    final ReadOnlyListWrapper<Grain> grainInMouth = new ReadOnlyListWrapper<>(this, "grainInMouth", FXCollections.observableArrayList());
 
     /*
      * Constructors
@@ -68,30 +61,6 @@ public class Hamster extends TileContent {
 
     public Territory getCurrentTerritory() {
         return this.getCurrentTile().orElseThrow(IllegalStateException::new).getTerritory();
-    }
-
-    /*
-     * Commands
-     */
-    public Command getInitializeHamsterCommand(final Territory territory, final Optional<Location> location,
-            final Direction direction, final int grainCount) {
-        return new InitHamsterCommand(this, territory, new InitHamsterCommandSpecification(location, direction, grainCount));
-    }
-
-    public Command getRemoveGrainCommand(final Grain grain) {
-        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.grainInMouth, "grainInMouth", grain, ActionKind.REMOVE);
-    }
-
-    public Command getAddGrainCommand(final Grain grain) {
-        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.grainInMouth, "grainInMouth", grain, ActionKind.ADD);
-    }
-
-    public Command getSetDirectionCommand(final Direction direction) {
-        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.direction, "direction", direction, ActionKind.SET);
-    }
-
-    public Command getSetCurrentTileCommand(final Optional<Tile> newTile) {
-        return UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.currentTile, "currentTile", newTile, ActionKind.SET);
     }
 
     /*
