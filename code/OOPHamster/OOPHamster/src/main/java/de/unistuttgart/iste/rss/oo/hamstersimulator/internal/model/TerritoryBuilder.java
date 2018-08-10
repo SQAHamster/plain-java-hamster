@@ -4,7 +4,7 @@ import java.awt.Dimension;
 import java.util.LinkedList;
 import java.util.Optional;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractCompositeCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractSpecifiedCompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
@@ -34,7 +34,7 @@ public class TerritoryBuilder {
     }
 
     public TerritoryBuilder defaultHamsterAt(final Optional<Location> location, final Direction direction, final int grainCount) {
-        this.commands.add(new InitHamsterCommand(this.territory.getDefaultHamster(), this.territory, new InitHamsterCommandSpecification(location, direction, grainCount)));
+        this.commands.add(new InitHamsterCommand(this.territory, new InitHamsterCommandSpecification(location, direction, grainCount)));
         return this;
     }
 
@@ -49,7 +49,7 @@ public class TerritoryBuilder {
 
     public void build() {
         this.territory.getCommandStack().execute(
-                new AbstractCompositeCommand() {
+                new AbstractSpecifiedCompositeCommand() {
                     @Override
                     protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
                         builder.add(commands);

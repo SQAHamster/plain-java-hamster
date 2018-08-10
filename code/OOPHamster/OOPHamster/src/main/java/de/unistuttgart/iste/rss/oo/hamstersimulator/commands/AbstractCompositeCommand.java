@@ -11,7 +11,7 @@ import javafx.beans.property.Property;
 
 public abstract class AbstractCompositeCommand extends Command {
 
-    private List<Command> commandsToExecute = Lists.newLinkedList();
+    List<Command> commandsToExecute = Lists.newLinkedList();
     protected CompositeCommandBuilder compositeCommandBuilder = new CompositeCommandBuilder();
 
     @Override

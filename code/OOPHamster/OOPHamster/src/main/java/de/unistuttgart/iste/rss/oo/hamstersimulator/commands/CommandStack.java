@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CommandStack <T extends Command> {
+public abstract class CommandStack <T extends Command> {
 
-    private final List<T> executedCommands = new LinkedList<>();
+    protected final List<T> executedCommands = new LinkedList<>();
 
     public CommandStack() {
         super();

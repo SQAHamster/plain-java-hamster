@@ -4,13 +4,10 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdat
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.AddWallToTileCommandSpecification;
 
-public class AddWallToTileCommand extends AbstractTerritoryCompositeBaseCommand {
-
-    private final AddWallToTileCommandSpecification specification;
+public class AddWallToTileCommand extends AbstractTerritoryCompositeBaseCommand<AddWallToTileCommandSpecification> {
 
     public AddWallToTileCommand(final Territory territory, final AddWallToTileCommandSpecification spec) {
-        super(territory);
-        this.specification = spec;
+        super(territory, spec);
     }
 
     @Override

@@ -1,7 +1,8 @@
 import java.io.IOException;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandStack;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EditCommandStack;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
@@ -15,15 +16,19 @@ public class Main {
         JavaFXUI.start();
 
         final String territoryFile = "territories/example01.ter";
-        final CommandStack<Command> editStack = new CommandStack<>();
+        final EditCommandStack<Command> editStack = new EditCommandStack<>();
         final Territory territory = new Territory(editStack);
+        final Territory t2 = new Territory(new GameCommandStack<Command>());
 
-        JavaFXUI.getSingleton().init(territory);
+        JavaFXUI.getSingleton().init(t2);
 
         TerritoryLoader.initializeFor(territory).loadFromFile(territoryFile);
 
+        t2.getCommandStack().execute(editStack.cloneCommandsInto(t2));
+
+
         delay(10000);
-        exampleRun(territory);
+        exampleRun(t2);
         delay(2000);
         territory.getCommandStack().undoAll();
     }

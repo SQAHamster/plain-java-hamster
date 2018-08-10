@@ -8,13 +8,10 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdat
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.ClearTileCommandSpecification;
 
-public class ClearTileCommand extends AbstractTerritoryCompositeBaseCommand {
-
-    private final ClearTileCommandSpecification specification;
+public class ClearTileCommand extends AbstractTerritoryCompositeBaseCommand<ClearTileCommandSpecification> {
 
     public ClearTileCommand(final Territory territory, final ClearTileCommandSpecification spec) {
-        super(territory);
-        this.specification = spec;
+        super(territory, spec);
     }
 
     @Override

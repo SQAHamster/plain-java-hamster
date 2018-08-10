@@ -4,12 +4,12 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdat
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.AddGrainsToTileCommandSpecification;
 
-public class AddGrainsToTileCommand extends AbstractTerritoryCompositeBaseCommand {
+public class AddGrainsToTileCommand extends AbstractTerritoryCompositeBaseCommand<AddGrainsToTileCommandSpecification> {
 
     private final AddGrainsToTileCommandSpecification specification;
 
     public AddGrainsToTileCommand(final Territory territory, final AddGrainsToTileCommandSpecification spec) {
-        super(territory);
+        super(territory, spec);
         this.specification = spec;
     }
 

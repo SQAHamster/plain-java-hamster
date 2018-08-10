@@ -21,4 +21,9 @@ public final class AddGrainsToTileCommandSpecification extends AbstractTerritory
     public void visit(final SpecificationVisitor visitor) {
         visitor.visit(this);
     }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

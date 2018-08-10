@@ -9,13 +9,10 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.ClearTileCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.InitializeTerritoryCommandSpecification;
 
-public class InitializeTerritoryCommand extends AbstractTerritoryCompositeBaseCommand {
-
-    private final InitializeTerritoryCommandSpecification specification;
+public class InitializeTerritoryCommand extends AbstractTerritoryCompositeBaseCommand<InitializeTerritoryCommandSpecification> {
 
     public InitializeTerritoryCommand(final Territory territory, final InitializeTerritoryCommandSpecification spec) {
-        super(territory);
-        this.specification = spec;
+        super(territory, spec);
     }
 
     @Override

@@ -2,10 +2,12 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspeci
 
 import java.util.Optional;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.SpecificationVisitor;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 
-public final class InitHamsterCommandSpecification {
+public final class InitHamsterCommandSpecification implements CommandSpecification {
 
     private final Optional<Location> location;
     private final Direction newDirection;
@@ -27,6 +29,16 @@ public final class InitHamsterCommandSpecification {
 
     public int getNewGrainCount() {
         return newGrainCount;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    @Override
+    public void visit(final SpecificationVisitor visitor) {
+        visitor.visit(this);
     }
 
 }

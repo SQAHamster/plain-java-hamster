@@ -3,14 +3,19 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.SpecifiedCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.InitHamsterCommandSpecification;
 
-public class InitHamsterCommand extends AbstractHamsterCompositeBaseCommand {
+public class InitHamsterCommand extends AbstractHamsterCompositeBaseCommand implements SpecifiedCommand<InitHamsterCommandSpecification> {
 
     private final Territory territory;
     private final InitHamsterCommandSpecification specification;
+
+    public InitHamsterCommand(final Territory territory, final InitHamsterCommandSpecification specification) {
+        this(territory.getDefaultHamster(), territory, specification);
+    }
 
     public InitHamsterCommand(final Hamster hamster, final Territory territory, final InitHamsterCommandSpecification specification) {
         super(hamster);
@@ -30,6 +35,11 @@ public class InitHamsterCommand extends AbstractHamsterCompositeBaseCommand {
         IntStream.range(0, this.specification.getNewGrainCount()).forEach(i -> this.compositeCommandBuilder.add(
                 UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.hamster.grainInMouth, new Grain(), ActionKind.ADD)));
 
+    }
+
+    @Override
+    public InitHamsterCommandSpecification getSpecification() {
+        return this.specification;
     }
 
 }
