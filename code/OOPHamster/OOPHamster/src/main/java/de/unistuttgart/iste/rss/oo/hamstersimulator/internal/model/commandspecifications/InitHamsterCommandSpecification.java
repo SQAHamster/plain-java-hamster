@@ -1,11 +1,11 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications;
 
 import java.util.Optional;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 
-public class InitHamsterCommandSpecification {
+public final class InitHamsterCommandSpecification {
 
     private final Optional<Location> location;
     private final Direction newDirection;

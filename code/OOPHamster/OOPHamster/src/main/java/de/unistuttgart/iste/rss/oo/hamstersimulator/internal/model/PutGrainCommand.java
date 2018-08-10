@@ -17,7 +17,7 @@ public class PutGrainCommand extends AbstractHamsterCompositeBaseCommand {
         final Tile currentTile = this.hamster.getCurrentTerritory().getTileAt(this.hamster.getCurrentTile().get().getLocation());
         this.grainDropped = this.hamster.getGrainInMouth().get(0);
         builder.add(
-                UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.hamster.grainInMouth, "grainInMouth", this.grainDropped, ActionKind.REMOVE),
-                UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(currentTile.content, "content", this.grainDropped, ActionKind.ADD));
+                UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.hamster.grainInMouth, this.grainDropped, ActionKind.REMOVE),
+                UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(currentTile.content, this.grainDropped, ActionKind.ADD));
     }
 }

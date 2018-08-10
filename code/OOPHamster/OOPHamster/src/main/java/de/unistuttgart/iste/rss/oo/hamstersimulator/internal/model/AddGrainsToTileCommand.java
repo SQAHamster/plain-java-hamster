@@ -2,6 +2,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.AddGrainsToTileCommandSpecification;
 
 public class AddGrainsToTileCommand extends AbstractTerritoryCompositeBaseCommand {
 
@@ -16,7 +17,7 @@ public class AddGrainsToTileCommand extends AbstractTerritoryCompositeBaseComman
     protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
         final Tile tile = this.territory.getTileAt(this.specification.getLocation());
         for (int i = 0; i < this.specification.getAmount(); i++) {
-            this.compositeCommandBuilder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(tile.content, "content", new Grain(), ActionKind.ADD));
+            this.compositeCommandBuilder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(tile.content, new Grain(), ActionKind.ADD));
         }
     }
 

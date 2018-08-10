@@ -76,10 +76,9 @@ public class UnidirectionalUpdatePropertyCommand<T> extends Command {
 
     public static <G> UnidirectionalUpdatePropertyCommand<G> createPropertyUpdateCommand(
             final Property<G> property,
-            final String propertyName,
             final Object value,
             final ActionKind action) {
-        return new UnidirectionalUpdatePropertyCommand<G>(property, new UnidirectionalUpdatePropertyCommandSpecification(propertyName, value, action));
+        return new UnidirectionalUpdatePropertyCommand<G>(property, new UnidirectionalUpdatePropertyCommandSpecification(value, action));
     }
 
 }

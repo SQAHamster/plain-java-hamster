@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.ClearTileCommandSpecification;
 
 public class ClearTileCommand extends AbstractTerritoryCompositeBaseCommand {
 
@@ -21,7 +22,7 @@ public class ClearTileCommand extends AbstractTerritoryCompositeBaseCommand {
         final Tile tile = this.territory.getTileAt(this.specification.getLocation());
         final List<Command> commands = tile.content.stream().
                 filter(content -> content.getClass() != Hamster.class).
-                map(content -> UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(tile.content, "content", content, ActionKind.REMOVE)).
+                map(content -> UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(tile.content, content, ActionKind.REMOVE)).
                 collect(Collectors.toList());
         builder.add(commands);
     }

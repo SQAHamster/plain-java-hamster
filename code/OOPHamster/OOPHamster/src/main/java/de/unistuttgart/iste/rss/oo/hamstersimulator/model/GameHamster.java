@@ -11,13 +11,13 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InitHamsterCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InitHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.MoveCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.PickGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.PutGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Tile;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.TurnLeftCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.InitHamsterCommandSpecification;
 
 public class GameHamster {
 

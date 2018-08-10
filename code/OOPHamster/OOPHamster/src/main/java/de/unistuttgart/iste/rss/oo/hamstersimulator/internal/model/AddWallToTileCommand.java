@@ -2,6 +2,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.AddWallToTileCommandSpecification;
 
 public class AddWallToTileCommand extends AbstractTerritoryCompositeBaseCommand {
 
@@ -15,7 +16,7 @@ public class AddWallToTileCommand extends AbstractTerritoryCompositeBaseCommand 
     @Override
     protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
         final Tile tile = this.territory.getTileAt(this.specification.getLocation());
-        this.compositeCommandBuilder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(tile.content, "content", new Wall(), ActionKind.ADD));
+        this.compositeCommandBuilder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(tile.content, new Wall(), ActionKind.ADD));
     }
 
 }

@@ -1,10 +1,10 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.SpecificationVisitor;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 
-public class AddGrainsToTileCommandSpecification extends AbstractTerritoryTileCommandSpecification implements CommandSpecification {
+public final class AddGrainsToTileCommandSpecification extends AbstractTerritoryTileCommandSpecification implements CommandSpecification {
 
     private final int amount;
 

@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 

@@ -1,17 +1,21 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications;
 
 import java.awt.Dimension;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.SpecificationVisitor;
 
-public class InitializeTerritoryCommandSpecification implements CommandSpecification {
+public final class InitializeTerritoryCommandSpecification implements CommandSpecification {
 
-    final Dimension dimension;
+    private final Dimension dimension;
 
     public InitializeTerritoryCommandSpecification(final Dimension dimension) {
         super();
         this.dimension = dimension;
+    }
+
+    public Dimension getDimension() {
+        return dimension;
     }
 
     @Override

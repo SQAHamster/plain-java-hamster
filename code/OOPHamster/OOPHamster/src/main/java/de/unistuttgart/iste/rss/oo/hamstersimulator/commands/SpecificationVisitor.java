@@ -1,9 +1,9 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.AddGrainsToTileCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.AddWallToTileCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.ClearTileCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InitializeTerritoryCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.AddGrainsToTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.AddWallToTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.ClearTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.commandspecifications.InitializeTerritoryCommandSpecification;
 
 public interface SpecificationVisitor {
 

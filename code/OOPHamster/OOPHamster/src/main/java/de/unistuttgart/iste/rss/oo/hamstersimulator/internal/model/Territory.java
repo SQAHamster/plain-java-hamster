@@ -83,4 +83,8 @@ public class Territory {
     private int getListIndexFromLocation(final Location location) {
         return location.getRow() * this.getColumnCount() + location.getColumn();
     }
+
+    public Dimension getSize() {
+        return this.territorySize.get();
+    }
 }

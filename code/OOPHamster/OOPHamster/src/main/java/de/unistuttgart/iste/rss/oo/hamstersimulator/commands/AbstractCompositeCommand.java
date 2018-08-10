@@ -1,5 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
@@ -22,7 +23,9 @@ public abstract class AbstractCompositeCommand extends Command {
 
     @Override
     public void undo() {
-        commandsToExecute.forEach(command -> command.undo());
+        final List<Command> undoCommands = Lists.newArrayList(commandsToExecute);
+        Collections.reverse(undoCommands);
+        undoCommands.stream().forEach(command -> command.undo());
     }
 
     public class CompositeCommandBuilder {
@@ -45,7 +48,7 @@ public abstract class AbstractCompositeCommand extends Command {
                 final String propertyName,
                 final Object value,
                 final ActionKind action) {
-            commandsToExecute.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(property, propertyName, value, action));
+            commandsToExecute.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(property, value, action));
             return this;
         }
     }

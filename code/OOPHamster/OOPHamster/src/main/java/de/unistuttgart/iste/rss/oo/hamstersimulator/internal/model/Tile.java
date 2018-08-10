@@ -1,6 +1,5 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Collection;
@@ -25,7 +24,6 @@ public class Tile {
 
         checkNotNull(territory);
         checkNotNull(tileLocation);
-        checkArgument(territory.isLocationInTerritory(tileLocation));
 
         this.territory = territory;
         this.tileLocation = tileLocation;
