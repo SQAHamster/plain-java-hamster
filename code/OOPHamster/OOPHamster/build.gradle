@@ -1,0 +1,23 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'de.unistuttgart.iste.rss'
+version = '0.0.1-SNAPSHOT'
+
+description = """Hamster Simulator"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+repositories {
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+
+dependencies {
+    compile group: 'io.reactivex.rxjava2', name: 'rxjava', version:'2.1.16'
+    compile group: 'com.google.guava', name: 'guava', version:'26.0-jre'
+    testCompile group: 'junit', name: 'junit', version:'3.8.1'
+}

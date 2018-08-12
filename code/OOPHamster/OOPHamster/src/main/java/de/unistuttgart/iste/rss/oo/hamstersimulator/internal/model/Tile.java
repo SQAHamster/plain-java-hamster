@@ -1,6 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static de.unistuttgart.iste.rss.oo.hamstersimulator.util.Preconditions.checkNotNull;
 
 import java.util.Collection;
 import java.util.LinkedList;

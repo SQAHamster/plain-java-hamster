@@ -1,35 +1,34 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
 import javafx.beans.property.Property;
 
 public abstract class AbstractCompositeCommand extends Command {
 
-    List<Command> commandsToExecute = Lists.newLinkedList();
+    List<Command> commandsToExecute = new LinkedList<>();
     protected CompositeCommandBuilder compositeCommandBuilder = new CompositeCommandBuilder();
 
     @Override
     public void execute() {
         buildBeforeFirstExecution(compositeCommandBuilder);
-        commandsToExecute = ImmutableList.copyOf(compositeCommandBuilder.commandsToExecute);
+        commandsToExecute = Collections.unmodifiableList(new ArrayList<>(compositeCommandBuilder.commandsToExecute));
         commandsToExecute.forEach(command -> command.execute());
     }
 
     @Override
     public void undo() {
-        final List<Command> undoCommands = Lists.newArrayList(commandsToExecute);
+        final List<Command> undoCommands = new ArrayList<>(commandsToExecute);
         Collections.reverse(undoCommands);
         undoCommands.stream().forEach(command -> command.undo());
     }
 
     public class CompositeCommandBuilder {
-        private final List<Command> commandsToExecute = Lists.newLinkedList();
+        private final List<Command> commandsToExecute = new LinkedList<>();
 
         public CompositeCommandBuilder add(final List<Command> commands) {
             commandsToExecute.addAll(commands);

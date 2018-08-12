@@ -1,5 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
@@ -26,10 +27,15 @@ public class JavaFXUI extends Application {
         initLatch.countDown();
     }
 
-    public static void init(final Territory territory) {
+    public static void openSceneFor(final Territory territory) {
         JavaFXUtil.blockingExecuteOnFXThread(() -> {
-            final Stage stage = new TerritoryStage(territory);
-            stage.show();
+            Stage stage;
+            try {
+                stage = new TerritoryStage(territory);
+                stage.show();
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
         });
     }
 

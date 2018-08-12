@@ -1,7 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import static de.unistuttgart.iste.rss.oo.hamstersimulator.util.Preconditions.checkArgument;
+import static de.unistuttgart.iste.rss.oo.hamstersimulator.util.Preconditions.checkNotNull;
 
 import java.util.Optional;
 

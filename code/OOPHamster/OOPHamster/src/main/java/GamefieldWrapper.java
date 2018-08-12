@@ -10,7 +10,7 @@ public class GamefieldWrapper {
     }
 
     public void show() {
-        JavaFXUI.init(territory.getTerritory());
+        JavaFXUI.openSceneFor(territory.getTerritory());
     }
 
 }

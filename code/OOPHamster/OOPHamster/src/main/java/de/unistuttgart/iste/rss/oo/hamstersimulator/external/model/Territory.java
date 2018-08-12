@@ -44,7 +44,7 @@ public class Territory {
     }
 
     public void displayInNewGameWindow() {
-        JavaFXUI.init(this.internalTerritory);
+        JavaFXUI.openSceneFor(this.internalTerritory);
     }
 
     public void loadFromFile(final String territoryFile) {
@@ -58,6 +58,7 @@ public class Territory {
         hamsterProgram.accept(this);
         gameStack.stopGame();
         delay(1000);
+        gameStack.reset();
     }
 
     protected static void delay(final int delay) {

@@ -1,11 +1,10 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
+import static de.unistuttgart.iste.rss.oo.hamstersimulator.util.Preconditions.checkArgument;
+import static de.unistuttgart.iste.rss.oo.hamstersimulator.util.Preconditions.checkState;
 
+import java.util.Arrays;
 import java.util.Collection;
-
-import com.google.common.collect.Lists;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InitHamsterCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.MoveCommand;
@@ -20,7 +19,7 @@ public class GameCommandStack<T extends Command> extends CommandStack<T> {
     }
 
     private Mode currentMode = Mode.INITIALIZING;
-    private final Collection<Class<?>> allowedGameCommands = Lists.newArrayList(MoveCommand.class, PickGrainCommand.class, PutGrainCommand.class, TurnLeftCommand.class, InitHamsterCommand.class);
+    private final Collection<Class<?>> allowedGameCommands = Arrays.asList(MoveCommand.class, PickGrainCommand.class, PutGrainCommand.class, TurnLeftCommand.class, InitHamsterCommand.class);;
 
     public void startGame() {
         currentMode = Mode.RUNNING;
@@ -36,6 +35,10 @@ public class GameCommandStack<T extends Command> extends CommandStack<T> {
         checkState(!(currentMode == Mode.STOPPED));
         checkArgument(currentMode == Mode.INITIALIZING || allowedGameCommands.contains(command.getClass()), "Only game commands may be executed in game mode!");
         super.execute(command);
+    }
+
+    public void reset() {
+        currentMode = Mode.INITIALIZING;
     }
 
 }

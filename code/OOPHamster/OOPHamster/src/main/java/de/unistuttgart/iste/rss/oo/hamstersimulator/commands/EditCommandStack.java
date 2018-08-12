@@ -1,6 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static de.unistuttgart.iste.rss.oo.hamstersimulator.util.Preconditions.checkArgument;
 
 import java.util.LinkedList;
 import java.util.List;

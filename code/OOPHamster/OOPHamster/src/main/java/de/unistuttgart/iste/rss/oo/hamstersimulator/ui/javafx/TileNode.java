@@ -16,7 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
-public class TerritoryTilePane extends Pane {
+public class TileNode extends Pane {
 
     private static final Image hamsterImage = new Image("images/Hamster24.png");
     private static final Image wallImage = new Image("images/Wall32.png", 39, 39, true, true);
@@ -29,7 +29,6 @@ public class TerritoryTilePane extends Pane {
             Color.MAGENTA,
             Color.RED
     };
-    private static final Map<Hamster,Integer> hamsterToColorPos = new HashMap<>();
 
     static {
         loadCornImages();
@@ -69,9 +68,12 @@ public class TerritoryTilePane extends Pane {
 
     };
 
-    TerritoryTilePane(final Tile tile) {
+    private final GameSceneController parent;
+
+    TileNode(final GameSceneController gameSceneController, final Tile tile) {
         super();
         this.tile = tile;
+        this.parent = gameSceneController;
         this.grainView = new ImageView();
         getChildren().add(grainView);
         this.wallView = new ImageView(wallImage);
@@ -106,7 +108,7 @@ public class TerritoryTilePane extends Pane {
         final ImageView view = hamsterImageViews.remove(hamster);
         JavaFXUtil.blockingExecuteOnFXThread(() -> getChildren().remove(view));
         hamster.directionProperty().removeListener(directionChangedListener);
-        hamsterToColorPos.remove(hamster);
+        parent.hamsterToColorPos.remove(hamster);
     }
 
     void showWall() {
@@ -171,18 +173,18 @@ public class TerritoryTilePane extends Pane {
 
     private Image getColoredHamsterImage(final Hamster hamster) {
         int colorIndex;
-        if (hamsterToColorPos.containsKey(hamster)) {
-            colorIndex = hamsterToColorPos.get(hamster);
+        if (parent.hamsterToColorPos.containsKey(hamster)) {
+            colorIndex = parent.hamsterToColorPos.get(hamster);
         } else {
             colorIndex = getIndexOfColorForHamster(hamster);
-            hamsterToColorPos.put(hamster, colorIndex);
+            parent.hamsterToColorPos.put(hamster, colorIndex);
         }
         return JavaFXUtil.changeColor(hamsterImage, hamsterColors[colorIndex]);
     }
 
     private int getIndexOfColorForHamster(final TileContent hamster) {
         for (int i = 0; i < hamsterColors.length; i++) {
-            if (!hamsterToColorPos.containsValue(i)) {
+            if (!parent.hamsterToColorPos.containsValue(i)) {
                 return i;
             }
         }
