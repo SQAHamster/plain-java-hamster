@@ -31,10 +31,10 @@ public class InitHamsterCommand extends AbstractHamsterCompositeBaseCommand impl
         this.specification.getLocation().ifPresent(location -> {
             final Tile tile = this.territory.getTileAt(this.specification.getLocation().get());
             builder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.hamster.currentTile, Optional.of(tile), ActionKind.SET));
+            builder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(tile.content, this.hamster, ActionKind.ADD));
         });
         IntStream.range(0, this.specification.getNewGrainCount()).forEach(i -> this.compositeCommandBuilder.add(
                 UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.hamster.grainInMouth, new Grain(), ActionKind.ADD)));
-
     }
 
     @Override

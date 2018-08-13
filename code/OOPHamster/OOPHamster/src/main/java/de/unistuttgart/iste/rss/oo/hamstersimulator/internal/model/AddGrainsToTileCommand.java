@@ -17,7 +17,9 @@ public class AddGrainsToTileCommand extends AbstractTerritoryCompositeBaseComman
     protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
         final Tile tile = this.territory.getTileAt(this.specification.getLocation());
         for (int i = 0; i < this.specification.getAmount(); i++) {
-            this.compositeCommandBuilder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(tile.content, new Grain(), ActionKind.ADD));
+            final TileContent newContent = new Grain();
+            this.compositeCommandBuilder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(tile.content, newContent, ActionKind.ADD));
+            this.compositeCommandBuilder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(newContent.currentTile, tile, ActionKind.SET));
         }
     }
 

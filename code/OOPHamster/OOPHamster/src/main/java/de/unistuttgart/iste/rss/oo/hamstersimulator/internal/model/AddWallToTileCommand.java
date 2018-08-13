@@ -13,7 +13,9 @@ public class AddWallToTileCommand extends AbstractTerritoryCompositeBaseCommand<
     @Override
     protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
         final Tile tile = this.territory.getTileAt(this.specification.getLocation());
-        this.compositeCommandBuilder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(tile.content, new Wall(), ActionKind.ADD));
+        final TileContent newWall = new Wall();
+        this.compositeCommandBuilder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(tile.content, newWall, ActionKind.ADD));
+        this.compositeCommandBuilder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(newWall.currentTile, tile, ActionKind.SET));
     }
 
 }

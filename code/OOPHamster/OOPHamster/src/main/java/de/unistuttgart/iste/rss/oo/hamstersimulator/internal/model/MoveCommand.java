@@ -23,7 +23,9 @@ public class MoveCommand extends AbstractHamsterCompositeBaseCommand {
         assert this.hamster.getCurrentTerritory().isLocationInTerritory(newHamsterPosition);
         final Tile newTile = this.hamster.getCurrentTerritory().getTileAt(newHamsterPosition);
 
+        builder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.hamster.getCurrentTile().get().content, this.hamster, ActionKind.REMOVE));
         builder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.hamster.currentTile, Optional.of(newTile), ActionKind.SET));
+        builder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(newTile.content, this.hamster, ActionKind.ADD));
     }
 
 }

@@ -1,5 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
+import java.util.Optional;
+
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
 
@@ -18,6 +20,7 @@ public class PutGrainCommand extends AbstractHamsterCompositeBaseCommand {
         this.grainDropped = this.hamster.getGrainInMouth().get(0);
         builder.add(
                 UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.hamster.grainInMouth, this.grainDropped, ActionKind.REMOVE),
-                UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(currentTile.content, this.grainDropped, ActionKind.ADD));
+                UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(currentTile.content, this.grainDropped, ActionKind.ADD),
+                UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.grainDropped.currentTile, Optional.of(currentTile), ActionKind.SET));
     }
 }
