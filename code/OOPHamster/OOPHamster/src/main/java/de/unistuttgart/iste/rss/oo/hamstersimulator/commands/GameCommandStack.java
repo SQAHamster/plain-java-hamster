@@ -12,10 +12,10 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.MoveCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.PickGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.PutGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.TurnLeftCommand;
-import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleDoubleProperty;
 
 public class GameCommandStack<T extends Command> extends CommandStack<T> {
 
@@ -24,7 +24,7 @@ public class GameCommandStack<T extends Command> extends CommandStack<T> {
     }
 
     private final ReadOnlyObjectWrapper<Mode> state = new ReadOnlyObjectWrapper<Mode>(this, "state", Mode.INITIALIZING);
-    protected final ReadOnlyIntegerWrapper speed = new ReadOnlyIntegerWrapper(this, "speed", 1);
+    protected final SimpleDoubleProperty speed = new SimpleDoubleProperty(this, "speed", 5.0);
 
     private final Semaphore pauseLock = new Semaphore(1, true);
 
@@ -45,13 +45,13 @@ public class GameCommandStack<T extends Command> extends CommandStack<T> {
 
     public void delay() {
         try {
-            Thread.sleep(this.speed.get() * 200);
+            Thread.sleep((int)(this.speed.get() * 200.0d));
         } catch (final InterruptedException e) {
         }
     }
 
-    public void setSpeed(final int speed) {
-        assert speed > 0 && speed < 10;
+    public void setSpeed(final double speed) {
+        assert speed > 0 && speed <= 10;
         this.speed.set(speed);
     }
 
@@ -112,8 +112,8 @@ public class GameCommandStack<T extends Command> extends CommandStack<T> {
         return this.state.getReadOnlyProperty();
     }
 
-    public ReadOnlyIntegerProperty speedProperty() {
-        return this.speed.getReadOnlyProperty();
+    public DoubleProperty speedProperty() {
+        return this.speed;
     }
 
 }

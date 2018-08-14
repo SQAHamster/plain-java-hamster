@@ -68,6 +68,7 @@ public class GameSceneController {
         this.pause.disableProperty().bind(Bindings.createBooleanBinding(() -> commandStack.stateProperty().get() == Mode.RUNNING, commandStack.stateProperty()).not());
         this.undo.disableProperty().bind(this.commandStack.canUndoProperty().not());
         this.redo.disableProperty().bind(this.commandStack.canRedoProperty().not());
+        this.speed.valueProperty().bindBidirectional(this.commandStack.speedProperty());
     }
 
 }

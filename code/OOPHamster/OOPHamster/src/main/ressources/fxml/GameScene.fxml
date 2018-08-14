@@ -54,7 +54,7 @@
                </graphic>
             </Button>
             <Separator maxWidth="30.0" orientation="VERTICAL" prefWidth="30.0" />
-            <Slider fx:id="speed" />
+            <Slider fx:id="speed" min="1" max="10" />
         </items>
       </ToolBar>
    </top>
