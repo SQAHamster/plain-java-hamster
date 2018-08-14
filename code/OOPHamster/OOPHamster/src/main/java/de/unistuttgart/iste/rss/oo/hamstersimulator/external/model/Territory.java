@@ -53,7 +53,6 @@ public class Territory {
 
     public void runGame(final Consumer<Territory> hamsterProgram) {
         final GameCommandStack<Command> gameStack = (GameCommandStack<Command>) this.internalTerritory.getCommandStack();
-        delay(1000);
         gameStack.startGame();
         hamsterProgram.accept(this);
         gameStack.stopGame();

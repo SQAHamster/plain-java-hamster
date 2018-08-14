@@ -12,10 +12,14 @@ public abstract class AbstractCompositeCommand extends Command {
 
     List<Command> commandsToExecute = new LinkedList<>();
     protected CompositeCommandBuilder compositeCommandBuilder = new CompositeCommandBuilder();
+    private boolean isBuilt = false;
 
     @Override
     public void execute() {
-        buildBeforeFirstExecution(compositeCommandBuilder);
+        if (!isBuilt) {
+            buildBeforeFirstExecution(compositeCommandBuilder);
+            isBuilt = true;
+        }
         commandsToExecute = Collections.unmodifiableList(new ArrayList<>(compositeCommandBuilder.commandsToExecute));
         commandsToExecute.forEach(command -> command.execute());
     }

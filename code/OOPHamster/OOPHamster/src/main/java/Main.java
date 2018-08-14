@@ -23,7 +23,6 @@ public class Main {
         gameTerritory.displayInNewGameWindow();
         editTerritory.cloneInto(gameTerritory);
         gameTerritory.runGame(Main::exampleRun);
-        editTerritory.cloneInto(gameTerritory);
     }
 
     public static void exampleRun(final Territory territory) {

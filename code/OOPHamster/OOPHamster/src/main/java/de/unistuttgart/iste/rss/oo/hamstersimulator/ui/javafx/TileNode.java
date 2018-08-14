@@ -98,15 +98,14 @@ public class TileNode extends Pane {
             view.resizeRelocate(8, 8, 24, 24);
             hamsterImageViews.put(hamster, view);
             view.rotateProperty().bind(Bindings.createDoubleBinding(() -> getRotationForDirection(hamster.getDirection()), hamster.directionProperty()));
+            JavaFXUtil.blockingExecuteOnFXThread(() -> {
+                this.imageGroup.getChildren().add(hamsterImageViews.get(hamster));
+            });
         }
-        JavaFXUtil.blockingExecuteOnFXThread(() -> {
-            this.imageGroup.getChildren().add(hamsterImageViews.get(hamster));
-        });
     }
 
     private void removeHamster(final Hamster hamster) {
         final ImageView view = hamsterImageViews.remove(hamster);
-        parent.hamsterToColorPos.remove(hamster);
         JavaFXUtil.blockingExecuteOnFXThread(() -> this.imageGroup.getChildren().remove(view));
     }
 
@@ -141,13 +140,14 @@ public class TileNode extends Pane {
         if (parent.hamsterToColorPos.containsKey(hamster)) {
             colorIndex = parent.hamsterToColorPos.get(hamster);
         } else {
-            colorIndex = getIndexOfColorForHamster(hamster);
+            colorIndex = getIndexOfColorForHamster();
+            assert !parent.hamsterToColorPos.containsValue(colorIndex);
             parent.hamsterToColorPos.put(hamster, colorIndex);
         }
         return JavaFXUtil.changeColor(hamsterImage, hamsterColors[colorIndex]);
     }
 
-    private int getIndexOfColorForHamster(final TileContent hamster) {
+    private int getIndexOfColorForHamster() {
         for (int i = 0; i < hamsterColors.length; i++) {
             if (!parent.hamsterToColorPos.containsValue(i)) {
                 return i;

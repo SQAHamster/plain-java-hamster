@@ -10,11 +10,9 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 
-<BorderPane fx:id="root" fx:controller="de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.GameSceneController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.181" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.GameSceneController">
    <top>
       <ToolBar fx:id="toolbar" prefHeight="30.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
@@ -37,7 +35,7 @@
                </graphic>
             </Button>
             <Separator orientation="VERTICAL" />
-            <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Button">
+            <Button fx:id="undo" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#undo" text="Button">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -46,7 +44,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Button">
+            <Button fx:id="redo" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#redo" text="Button">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -63,7 +61,7 @@
    <center>
       <SplitPane fx:id="splitPane" dividerPositions="0.5" BorderPane.alignment="CENTER">
          <items>
-         	<StackPane fx:id="hamsterPane" styleClass="game-grid" alignment="CENTER">
+         	<StackPane fx:id="hamsterPane" alignment="CENTER" styleClass="game-grid">
             	<HamsterTerritoryGrid fx:id="hamsterGrid" />
             </StackPane>
             <ListView prefHeight="200.0" prefWidth="200.0" />

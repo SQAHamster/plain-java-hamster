@@ -49,6 +49,7 @@ public class HamsterTerritoryGrid extends GridPane {
         configureSquareSizedTiles(this.gridSize.get());
         this.gridSize.addListener((obj, oldValue, newValue) -> {
             configureSquareSizedTiles(newValue);
+            hamsterToColorPos.clear();
         });
     }
 
