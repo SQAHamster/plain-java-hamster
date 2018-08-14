@@ -17,7 +17,7 @@ public class PickGrainCommand extends AbstractHamsterCompositeBaseCommand {
     protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
         assert this.hamster.getCurrentTile().isPresent();
         final Tile currentTile = this.hamster.getCurrentTerritory().getTileAt(this.hamster.getCurrentTile().get().getLocation());
-        this.pickedGrain = currentTile.getAnyContentOfType(Grain.class);
+        this.pickedGrain = (Grain) currentTile.getContent().stream().filter(content -> content instanceof Grain).findFirst().get();
         builder.add(
                 UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(currentTile.content, this.pickedGrain, ActionKind.REMOVE),
                 UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.hamster.grainInMouth, this.pickedGrain, ActionKind.ADD),

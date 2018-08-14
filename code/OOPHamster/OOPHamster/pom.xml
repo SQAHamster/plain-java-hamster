@@ -24,10 +24,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.fxmisc.easybind/easybind -->
 		<dependency>
-			<groupId>eu.lestard</groupId>
-			<artifactId>grid</artifactId>
-			<version>0.2.0</version>
+			<groupId>org.fxmisc.easybind</groupId>
+			<artifactId>easybind</artifactId>
+			<version>1.0.3</version>
 		</dependency>
+
 	</dependencies>
 </project>

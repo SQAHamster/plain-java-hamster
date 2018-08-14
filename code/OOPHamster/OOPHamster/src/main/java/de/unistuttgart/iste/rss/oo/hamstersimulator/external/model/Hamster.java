@@ -8,7 +8,6 @@ import java.util.Optional;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InitHamsterCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.MoveCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.PickGrainCommand;
@@ -84,18 +83,18 @@ public class Hamster {
      */
     public boolean frontIsClear() {
         final LocationVector movementVector = this.internalHamster.getDirection().getMovementVector();
-        final Location potentialNewLocation = this.internalHamster.getCurrentTile().orElseThrow(IllegalStateException::new).getLocation().translate(movementVector);
         final Tile currentTile = this.internalHamster.getCurrentTile().orElseThrow(IllegalArgumentException::new);
+        final Location potentialNewLocation = currentTile.getLocation().translate(movementVector);
 
         if (!currentTile.getTerritory().isLocationInTerritory(potentialNewLocation)) {
             return false;
         }
 
-        return currentTile.getTerritory().getTileAt(potentialNewLocation).canEnter();
+        return !currentTile.getTerritory().getTileAt(potentialNewLocation).isBlocked();
     }
 
     public boolean grainAvailable() {
-        return this.internalHamster.getCurrentTile().orElseThrow(IllegalStateException::new).countObjectsOfType(Grain.class) > 0;
+        return this.internalHamster.getCurrentTile().orElseThrow(IllegalStateException::new).getGrainCount() > 0;
     }
 
     public boolean mouthEmpty() {

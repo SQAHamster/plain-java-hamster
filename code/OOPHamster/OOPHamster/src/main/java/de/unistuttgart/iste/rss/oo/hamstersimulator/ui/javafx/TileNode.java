@@ -4,13 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Tile;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.TileContent;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Wall;
-import javafx.beans.value.ChangeListener;
-import javafx.collections.SetChangeListener;
+import javafx.beans.binding.Bindings;
+import javafx.collections.ListChangeListener;
+import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -34,99 +33,81 @@ public class TileNode extends Pane {
         loadCornImages();
     }
 
-    private final Tile tile;
+    private static void loadCornImages() {
+        for (int i = 1; i < 13; i++) {
+            cornImages.put(i, new Image("images/"+ i + "Corn32.png"));
+        }
+    }
+
+    private final GameSceneController parent;
+    private final Group imageGroup;
+    private ImageView wallView;
+    private ImageView grainView;
     private final Map<Hamster, ImageView> hamsterImageViews = new HashMap<>();
-    private final ImageView grainView;
-    private final ImageView wallView;
+    private final Tile tile;
 
-    private ChangeListener<Direction> directionChangedListener;
-
-
-    private final SetChangeListener<TileContent> tileListener = new SetChangeListener<TileContent>(){
+    private final ListChangeListener<TileContent> tileListener = new ListChangeListener<TileContent>(){
 
         @Override
         public void onChanged(final Change<? extends TileContent> change) {
-            if (change.wasAdded()) {
-                if (change.getElementAdded() instanceof Wall) {
-                    showWall();
-                } else if (change.getElementAdded() instanceof Hamster) {
-                    showHamster((Hamster) change.getElementAdded());
-                } else if (change.getElementAdded() instanceof Grain) {
-                    updateGrains();
+            while(change.next()) {
+                if (change.wasAdded()) {
+                    change.getAddedSubList().forEach(tileContent -> addHamster((Hamster)tileContent));
                 }
-            }
-            if (change.wasRemoved()) {
-                if (change.getElementRemoved() instanceof Wall) {
-                    removeWall();
-                } else if (change.getElementRemoved() instanceof Hamster) {
-                    removeHamster((Hamster) change.getElementRemoved());
-                } else if (change.getElementRemoved() instanceof Grain) {
-                    updateGrains();
+                if (change.wasRemoved()) {
+                    change.getRemoved().forEach(tileContent -> removeHamster((Hamster)tileContent));
                 }
             }
         }
 
     };
 
-    private final GameSceneController parent;
 
     TileNode(final GameSceneController gameSceneController, final Tile tile) {
         super();
+
         this.tile = tile;
         this.parent = gameSceneController;
-        this.grainView = new ImageView();
-        getChildren().add(grainView);
-        this.wallView = new ImageView(wallImage);
+
         configureStyle();
-        initViewFromTile();
-        addTileListener();
+        this.imageGroup = new Group();
+        this.getChildren().add(this.imageGroup);
+        configureWallImageView();
+        configureGrainImageView();
+
+        addHamsterListListener();
     }
 
-    void showHamster(final Hamster hamster) {
+    private void configureGrainImageView() {
+        this.grainView = new ImageView();
+        this.imageGroup.getChildren().add(grainView);
+        grainView.visibleProperty().bind(Bindings.createBooleanBinding(() -> tile.getGrainCount() > 0, tile.grainCountProperty()));
+        grainView.imageProperty().bind(Bindings.createObjectBinding(() -> tile.getGrainCount() <= 12 ? cornImages.get(tile.getGrainCount()) : cornImages.get(12), tile.grainCountProperty()));
+    }
+
+    private void configureWallImageView() {
+        this.wallView = new ImageView(wallImage);
+        this.imageGroup.getChildren().add(wallView);
+        wallView.visibleProperty().bind(tile.isBlockedProperty());
+    }
+
+    private void addHamster(final Hamster hamster) {
+        if (!hamsterImageViews.containsKey(hamster)) {
+            final Image coloredHamsterImage = getColoredHamsterImage(hamster);
+            final ImageView view = new ImageView(coloredHamsterImage);
+            view.resizeRelocate(8, 8, 24, 24);
+            hamsterImageViews.put(hamster, view);
+            view.rotateProperty().bind(Bindings.createDoubleBinding(() -> getRotationForDirection(hamster.getDirection()), hamster.directionProperty()));
+        }
         JavaFXUtil.blockingExecuteOnFXThread(() -> {
-            ImageView view;
-            if (!hamsterImageViews.containsKey(hamster)) {
-                final Image coloredHamsterImage = getColoredHamsterImage(hamster);
-                view = new ImageView(coloredHamsterImage);
-                view.resizeRelocate(8, 8, 24, 24);
-                hamsterImageViews.put(hamster, view);
-                this.directionChangedListener = (property, oldValue, newValue) -> this.updateHamsterRotation(hamster);
-                hamster.directionProperty().addListener(directionChangedListener);
-                getChildren().add(view);
-            }
-            updateHamsterRotation(hamster);
+            this.imageGroup.getChildren().add(hamsterImageViews.get(hamster));
         });
     }
 
-    void updateHamsterRotation(final Hamster hamster) {
-        if (hamsterImageViews.containsKey(hamster)) {
-            this.hamsterImageViews.get(hamster).setRotate(getRotationForDirection(hamster.getDirection()));
-        }
-    }
-
-    void removeHamster(final Hamster hamster) {
+    private void removeHamster(final Hamster hamster) {
         final ImageView view = hamsterImageViews.remove(hamster);
-        JavaFXUtil.blockingExecuteOnFXThread(() -> getChildren().remove(view));
-        hamster.directionProperty().removeListener(directionChangedListener);
         parent.hamsterToColorPos.remove(hamster);
-    }
-
-    void showWall() {
-        JavaFXUtil.blockingExecuteOnFXThread(() -> getChildren().add(this.wallView));
-    }
-
-    void removeWall() {
-        JavaFXUtil.blockingExecuteOnFXThread(() -> getChildren().remove(this.wallView));
-    }
-
-    void updateGrains() {
-        final int count = tile.countObjectsOfType(Grain.class);
-        if (count < 1) {
-            grainView.setVisible(false);
-        } else {
-            grainView.setVisible(true);
-            grainView.setImage(cornImages.get(count < 12 ? count : 12));
-        }
+        JavaFXUtil.blockingExecuteOnFXThread(() -> this.imageGroup.getChildren().remove(view));
     }
 
     private double getRotationForDirection(final Direction direction) {
@@ -145,29 +126,13 @@ public class TileNode extends Pane {
         throw new RuntimeException("Invalid direction!");
     }
 
-    private static void loadCornImages() {
-        for (int i = 1; i < 13; i++) {
-            cornImages.put(i, new Image("images/"+ i + "Corn32.png"));
-        }
-    }
-
     private void configureStyle() {
-        getStyleClass().add("game-grid-cell");
+        this.getStyleClass().add("game-grid-cell");
         if (tile.getLocation().getColumn() == 0) {
-            getStyleClass().add("first-column");
+            this.getStyleClass().add("first-column");
         }
         if (tile.getLocation().getRow() == 0) {
-            getStyleClass().add("first-row");
-        }
-    }
-
-    private void initViewFromTile() {
-        if (!tile.canEnter()) {
-            this.showWall();
-        }
-        updateGrains();
-        if (tile.countObjectsOfType(Hamster.class) > 0) {
-            this.showHamster(tile.getAnyContentOfType(Hamster.class));
+            this.getStyleClass().add("first-row");
         }
     }
 
@@ -191,11 +156,11 @@ public class TileNode extends Pane {
         throw new RuntimeException("No more colors for hamster available.");
     }
 
-    private void addTileListener() {
-        this.tile.contentProperty().addListener(this.tileListener);
+    private void addHamsterListListener() {
+        this.tile.hamstersProperty().addListener(this.tileListener);
     }
 
     public void dispose() {
-        this.tile.contentProperty().removeListener(this.tileListener);
+        this.tile.hamstersProperty().removeListener(this.tileListener);
     }
 }

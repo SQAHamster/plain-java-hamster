@@ -7,10 +7,6 @@ public class Grain extends TileContent {
         return "Grain";
     }
 
-    public Grain() {
-        super();
-    }
-
     @Override
     protected boolean blocksEntrance() {
         return false;

@@ -3,16 +3,29 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 import static de.unistuttgart.iste.rss.oo.hamstersimulator.util.Preconditions.checkNotNull;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
-import javafx.beans.property.ReadOnlySetProperty;
-import javafx.beans.property.ReadOnlySetWrapper;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyListProperty;
+import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.collections.FXCollections;
+import javafx.collections.transformation.FilteredList;
 
 public class Tile {
 
-    final ReadOnlySetWrapper<TileContent> content = new ReadOnlySetWrapper<TileContent>(this, "content", FXCollections.observableSet());
+    final ReadOnlyListWrapper<TileContent> content = new ReadOnlyListWrapper<TileContent>(this, "content", FXCollections.observableArrayList());
+    final ReadOnlyIntegerWrapper grainCount = new ReadOnlyIntegerWrapper(this, "grainCount", 0);
+    final ReadOnlyBooleanWrapper isBlocked = new ReadOnlyBooleanWrapper(this, "isBlocked", false);
+    private final ReadOnlyListWrapper<TileContent> grainSublist;
+    private final ReadOnlyListWrapper<TileContent> blockerSublist;
+    private final ReadOnlyListWrapper<TileContent> hamsterSublist;
 
     private final Territory territory;
     private final Location tileLocation;
@@ -25,51 +38,53 @@ public class Tile {
 
         this.territory = territory;
         this.tileLocation = tileLocation;
+
+        this.grainSublist = new ReadOnlyListWrapper<TileContent>(new FilteredList<TileContent>(content, c -> c instanceof Grain));
+        this.blockerSublist = new ReadOnlyListWrapper<TileContent>(new FilteredList<TileContent>(content, c -> c.blocksEntrance()));
+        this.hamsterSublist = new ReadOnlyListWrapper<TileContent>(new FilteredList<TileContent>(content, c -> c instanceof Hamster));
+
+        this.grainCount.bind(this.grainSublist.sizeProperty());
+        this.isBlocked.bind(Bindings.createBooleanBinding(() -> this.blockerSublist.size() > 0, this.blockerSublist.sizeProperty()));
     }
 
     public Territory getTerritory() {
         return territory;
     }
 
-    public boolean canEnter() {
-        for (final TileContent c : content) {
-            if (c.blocksEntrance()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean hasObjectInContent(final TileContent content) {
-        return this.content.contains(content);
-    }
-
-    public int countObjectsOfType(final Class<?> clazz) {
-        int count = 0;
-        for (final TileContent c : content) {
-            if (clazz.isInstance(c)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public ReadOnlySetProperty<TileContent> contentProperty() {
-        return this.content.getReadOnlyProperty();
-    }
-
     public Location getLocation() {
         return tileLocation;
     }
 
-    @SuppressWarnings("unchecked")
-    public <R extends TileContent> R getAnyContentOfType(final Class<?> clazz) {
-        for (final TileContent c : content) {
-            if (clazz.isInstance(c)) {
-                return (R)c;
-            }
-        }
-        throw new RuntimeException();
+    public int getGrainCount() {
+        return this.grainCount.get();
+    }
+
+    public boolean isBlocked() {
+        return isBlocked.get();
+    }
+
+    public List<TileContent> getContent() {
+        return Collections.unmodifiableList(this.content.get());
+    }
+
+    public List<? extends TileContent> getHamsters() {
+        return Collections.unmodifiableList(this.hamsterSublist.get());
+    }
+
+    public ReadOnlyIntegerProperty grainCountProperty() {
+        return this.grainCount.getReadOnlyProperty();
+    }
+
+    public ReadOnlyBooleanProperty isBlockedProperty() {
+        return this.isBlocked.getReadOnlyProperty();
+    }
+
+    public ReadOnlyListProperty<TileContent> contentProperty() {
+        return this.content.getReadOnlyProperty();
+    }
+
+    public ReadOnlyListProperty<TileContent> hamstersProperty() {
+        return this.hamsterSublist.getReadOnlyProperty();
     }
 
     public void dispose() {
