@@ -2,13 +2,13 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
 import static de.unistuttgart.iste.rss.oo.hamstersimulator.util.Preconditions.checkArgument;
 
-import java.awt.Dimension;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -17,7 +17,7 @@ import javafx.collections.FXCollections;
 
 public class Territory {
 
-    final ReadOnlyObjectWrapper<Dimension> territorySize = new ReadOnlyObjectWrapper<Dimension>(this, "territorySize", new Dimension(0, 0));
+    final ReadOnlyObjectWrapper<Size> territorySize = new ReadOnlyObjectWrapper<Size>(this, "territorySize", new Size(0, 0));
     final ReadOnlyListWrapper<Tile> tiles = new ReadOnlyListWrapper<Tile>(this, "tiles", FXCollections.observableArrayList());
 
     private final Hamster defaultHamster;
@@ -41,11 +41,11 @@ public class Territory {
     }
 
     public int getRowCount() {
-        return this.territorySize.get().height;
+        return this.territorySize.get().getRowCount();
     }
 
     public int getColumnCount() {
-        return this.territorySize.get().width;
+        return this.territorySize.get().getColumnCount();
     }
 
     public Tile getTileAt(final Location location) {
@@ -63,7 +63,7 @@ public class Territory {
                 newHamsterPosition.getRow() < this.getRowCount();
     }
 
-    public ReadOnlyObjectProperty<Dimension> territorySizeProperty() {
+    public ReadOnlyObjectProperty<Size> territorySizeProperty() {
         return this.territorySize.getReadOnlyProperty();
     }
 
@@ -84,7 +84,7 @@ public class Territory {
         return location.getRow() * this.getColumnCount() + location.getColumn();
     }
 
-    public Dimension getSize() {
+    public Size getSize() {
         return this.territorySize.get();
     }
 }

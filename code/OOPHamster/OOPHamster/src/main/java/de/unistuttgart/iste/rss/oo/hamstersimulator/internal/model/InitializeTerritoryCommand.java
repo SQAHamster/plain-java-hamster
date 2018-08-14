@@ -1,11 +1,11 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
-import java.awt.Dimension;
 import java.util.stream.Stream;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.ClearTileCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitializeTerritoryCommandSpecification;
 
@@ -22,13 +22,13 @@ public class InitializeTerritoryCommand extends AbstractTerritoryCompositeBaseCo
             getAllLocations(this.territory.getSize()).map(location -> this.territory.getTileAt(location)).forEach(tile -> builder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.territory.tiles, tile, ActionKind.REMOVE)));
         }
 
-        builder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.territory.territorySize, this.specification.getDimension(), ActionKind.SET));
+        builder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.territory.territorySize, this.specification.getSize(), ActionKind.SET));
 
-        getAllLocations(this.specification.getDimension()).forEach(location -> builder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.territory.tiles, new Tile(this.territory, location), ActionKind.ADD)));
+        getAllLocations(this.specification.getSize()).forEach(location -> builder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.territory.tiles, new Tile(this.territory, location), ActionKind.ADD)));
     }
 
-    private Stream<Location> getAllLocations(final Dimension territoryDimension) {
-        return this.territory.getAllLocationsFromTo(Location.ORIGIN, Location.from(territoryDimension.height-1, territoryDimension.width-1));
+    private Stream<Location> getAllLocations(final Size territoryDimension) {
+        return this.territory.getAllLocationsFromTo(Location.ORIGIN, Location.from(territoryDimension.getRowCount()-1, territoryDimension.getColumnCount()-1));
     }
 
 }

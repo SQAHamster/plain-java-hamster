@@ -1,20 +1,19 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification;
 
-import java.awt.Dimension;
-
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
 
 public final class InitializeTerritoryCommandSpecification implements CommandSpecification {
 
-    private final Dimension dimension;
+    private final Size size;
 
-    public InitializeTerritoryCommandSpecification(final Dimension dimension) {
+    public InitializeTerritoryCommandSpecification(final Size size) {
         super();
-        this.dimension = dimension;
+        this.size = size;
     }
 
-    public Dimension getDimension() {
-        return dimension;
+    public Size getSize() {
+        return size;
     }
 
     @Override

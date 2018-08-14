@@ -31,7 +31,7 @@ public class JavaFXUI extends Application {
         JavaFXUtil.blockingExecuteOnFXThread(() -> {
             Stage stage;
             try {
-                stage = new TerritoryStage(territory);
+                stage = new HamsterGameStage(territory);
                 stage.show();
             } catch (final IOException e) {
                 e.printStackTrace();

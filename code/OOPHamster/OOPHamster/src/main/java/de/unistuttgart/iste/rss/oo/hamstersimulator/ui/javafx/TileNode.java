@@ -39,7 +39,7 @@ public class TileNode extends Pane {
         }
     }
 
-    private final GameSceneController parent;
+    private final HamsterTerritoryGrid parent;
     private final Group imageGroup;
     private ImageView wallView;
     private ImageView grainView;
@@ -63,11 +63,11 @@ public class TileNode extends Pane {
     };
 
 
-    TileNode(final GameSceneController gameSceneController, final Tile tile) {
+    TileNode(final HamsterTerritoryGrid hamsterTerritoryGrid, final Tile tile) {
         super();
 
         this.tile = tile;
-        this.parent = gameSceneController;
+        this.parent = hamsterTerritoryGrid;
 
         configureStyle();
         this.imageGroup = new Group();
