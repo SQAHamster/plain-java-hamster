@@ -82,7 +82,7 @@ public class Hamster {
     }
 
     public void write(final String text) {
-        commandStack.execute(new WriteCommand(this.game, new WriteCommandSpecification(text)));
+        commandStack.execute(new WriteCommand(this.game, new WriteCommandSpecification(text, this.internalHamster)));
     }
 
     /*

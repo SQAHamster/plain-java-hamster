@@ -19,7 +19,7 @@ public class TileNode extends StackPane {
     private static final Image hamsterImage = new Image("images/Hamster24.png");
     private static final Image wallImage = new Image("images/Wall32.png", 39, 39, true, true);
     private static final Map<Integer, Image> cornImages = new HashMap<>();
-    private static final Color[] hamsterColors = new Color[] {
+    static final Color[] hamsterColors = new Color[] {
             Color.BLUE,
             Color.GREEN,
             Color.YELLOW,

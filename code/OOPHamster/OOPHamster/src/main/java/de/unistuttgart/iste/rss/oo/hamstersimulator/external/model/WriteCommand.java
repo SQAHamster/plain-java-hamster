@@ -4,6 +4,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractCompositeCo
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.SpecifiedCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LogEntry;
 
 public class WriteCommand extends AbstractCompositeCommand implements SpecifiedCommand<WriteCommandSpecification> {
 
@@ -18,7 +19,7 @@ public class WriteCommand extends AbstractCompositeCommand implements SpecifiedC
 
     @Override
     protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
-        builder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.game.gameLog, this.specification.getMessage(), ActionKind.ADD));
+        builder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.game.gameLog, new LogEntry(this.specification.getMessage(),this.specification.getSender()), ActionKind.ADD));
     }
 
     @Override
