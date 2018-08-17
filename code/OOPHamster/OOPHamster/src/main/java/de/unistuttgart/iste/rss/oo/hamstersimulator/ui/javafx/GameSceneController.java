@@ -3,8 +3,9 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mode;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -25,21 +26,11 @@ public class GameSceneController {
     @FXML private HamsterTerritoryGrid hamsterGrid;
     @FXML private SplitPane splitPane;
 
-    private Territory territory;
     private GameCommandStack<Command> commandStack;
+    private HamsterGame game;
 
     @FXML
     private void initialize() {
-        //this.splitPane.maxHeightProperty().bind(this.root.heightProperty());
-        //this.splitPane.maxWidthProperty().bind(this.root.widthProperty());
-        //final DoubleBinding prop = splitPane.minHeightProperty().add(toolbar.heightProperty()).add(30);
-        //this.root.minHeightProperty().bind(splitPane.heightProperty().add(toolbar.heightProperty()).add(30));
-        //this.root.minWidthProperty().bind(splitPane.widthProperty());
-        //this.hamsterGrid.prefHeightProperty().bind(this.splitPane.heightProperty());
-        //this.hamsterGrid.maxHeightProperty().bind(this.splitPane.heightProperty());
-        // this.hamsterGrid.setMaxWidth(Double.MAX_VALUE);
-        //        this.hamsterPane.minWidthProperty().bind(this.hamsterGrid.minWidthProperty());
-        //        this.hamsterPane.minHeightProperty().bind(this.hamsterGrid.minHeightProperty());
     }
 
     @FXML
@@ -62,14 +53,15 @@ public class GameSceneController {
         commandStack.resume();
     }
 
-    public void connectToTerritory(final Territory territory) {
-        this.territory = territory;
-        this.hamsterGrid.bindToTerritory(territory);
-        this.commandStack = ((GameCommandStack<Command>)this.territory.getCommandStack());
+    public void connectToGame(final HamsterGame hamsterGame) {
+        this.game = hamsterGame;
+        this.hamsterGrid.bindToTerritory(game.getInternalTerritory());
+        this.commandStack = game.getCommandStack();
+        final BooleanBinding runningBinding = Bindings.createBooleanBinding(() -> commandStack.stateProperty().get() == Mode.RUNNING, commandStack.stateProperty());
         this.play.disableProperty().bind(Bindings.createBooleanBinding(() -> commandStack.stateProperty().get() == Mode.PAUSED, commandStack.stateProperty()).not());
-        this.pause.disableProperty().bind(Bindings.createBooleanBinding(() -> commandStack.stateProperty().get() == Mode.RUNNING, commandStack.stateProperty()).not());
-        this.undo.disableProperty().bind(this.commandStack.canUndoProperty().not());
-        this.redo.disableProperty().bind(this.commandStack.canRedoProperty().not());
+        this.pause.disableProperty().bind(runningBinding.not());
+        this.undo.disableProperty().bind(this.commandStack.canUndoProperty().not().or(runningBinding));
+        this.redo.disableProperty().bind(this.commandStack.canRedoProperty().not().or(runningBinding));
         this.speed.valueProperty().bindBidirectional(this.commandStack.speedProperty());
     }
 

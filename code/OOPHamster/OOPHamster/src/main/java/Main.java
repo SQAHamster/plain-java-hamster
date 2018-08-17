@@ -1,9 +1,7 @@
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EditCommandStack;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
@@ -12,17 +10,11 @@ public class Main {
     public static void main(final String[] args) {
         JavaFXUI.start();
 
-        final String territoryFile = "territories/example01.ter";
-        final GameCommandStack<Command> gameStack = new GameCommandStack<>();
-        final Territory gameTerritory = new Territory(gameStack);
-        final EditCommandStack<Command> editStack = new EditCommandStack<>();
-        final Territory editTerritory = new Territory(editStack);
-        //        editTerritory.displayInNewGameWindow();
-        editTerritory.loadFromFile(territoryFile);
+        final HamsterGame game = new HamsterGame();
+        game.initialize();
 
-        gameTerritory.displayInNewGameWindow();
-        editTerritory.cloneInto(gameTerritory);
-        gameTerritory.runGame(Main::exampleRun);
+        game.displayInNewGameWindow();
+        game.runGame(Main::exampleRun);
     }
 
     public static void exampleRun(final Territory territory) {

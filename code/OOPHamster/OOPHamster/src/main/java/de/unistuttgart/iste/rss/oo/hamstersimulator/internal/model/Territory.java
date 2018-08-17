@@ -2,11 +2,6 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
 import static de.unistuttgart.iste.rss.oo.hamstersimulator.util.Preconditions.checkArgument;
 
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
 import javafx.beans.property.ReadOnlyListProperty;
@@ -21,46 +16,20 @@ public class Territory {
     final ReadOnlyListWrapper<Tile> tiles = new ReadOnlyListWrapper<Tile>(this, "tiles", FXCollections.observableArrayList());
 
     private final Hamster defaultHamster;
-    private final CommandStack<? extends Command> commandStack;
 
     /**
      *
      * @param editStack
      * @param territoryFileName
      */
-    public Territory(final CommandStack<Command> commandStack) {
+    public Territory() {
         super();
 
         this.defaultHamster = new Hamster();
-        this.commandStack = commandStack;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends Command> CommandStack<T> getCommandStack() {
-        return (CommandStack<T>) commandStack;
-    }
-
-    public int getRowCount() {
-        return this.territorySize.get().getRowCount();
-    }
-
-    public int getColumnCount() {
-        return this.territorySize.get().getColumnCount();
-    }
-
-    public Tile getTileAt(final Location location) {
-        checkArgument(isLocationInTerritory(location), "Location has to be in territory!");
-
-        return tiles.get(getListIndexFromLocation(location));
-    }
-
-    public Hamster getDefaultHamster() {
-        return this.defaultHamster;
-    }
-
-    public boolean isLocationInTerritory(final Location newHamsterPosition) {
-        return newHamsterPosition.getColumn() < this.getColumnCount() &&
-                newHamsterPosition.getRow() < this.getRowCount();
+    public Size getSize() {
+        return this.territorySize.get();
     }
 
     public ReadOnlyObjectProperty<Size> territorySizeProperty() {
@@ -71,20 +40,26 @@ public class Territory {
         return this.tiles.getReadOnlyProperty();
     }
 
+    public Tile getTileAt(final Location location) {
+        checkArgument(isLocationInTerritory(location), "Location has to be in territory!");
+
+        return tiles.get(getListIndexFromLocation(location));
+    }
+
+    public boolean isLocationInTerritory(final Location newHamsterPosition) {
+        return newHamsterPosition.getColumn() < this.territorySize.get().getColumnCount() &&
+                newHamsterPosition.getRow() < this.territorySize.get().getRowCount();
+    }
+
+    public Hamster getDefaultHamster() {
+        return this.defaultHamster;
+    }
+
     public TerritoryBuilder getTerritoryBuilder() {
         return new TerritoryBuilder(this);
     }
 
-    Stream<Location> getAllLocationsFromTo(final Location from, final Location to) {
-        final Stream<Stream<Location>> stream = IntStream.range(from.getRow(), to.getRow()+1).mapToObj(row -> IntStream.range(from.getColumn(), to.getColumn()+1).mapToObj(column -> Location.from(row, column)));
-        return stream.flatMap(s -> s);
-    }
-
     private int getListIndexFromLocation(final Location location) {
-        return location.getRow() * this.getColumnCount() + location.getColumn();
-    }
-
-    public Size getSize() {
-        return this.territorySize.get();
+        return location.getRow() * this.territorySize.get().getColumnCount() + location.getColumn();
     }
 }

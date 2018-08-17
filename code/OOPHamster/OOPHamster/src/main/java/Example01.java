@@ -3,8 +3,8 @@ class Example01 extends SimpleHamsterGame {
 
     @Override
     void run() {
-        gamefield.show();
-        territory.initialize();
+        game.initialize();
+        game.displayInNewGameWindow();
 
         paule.move();
         paule.move();

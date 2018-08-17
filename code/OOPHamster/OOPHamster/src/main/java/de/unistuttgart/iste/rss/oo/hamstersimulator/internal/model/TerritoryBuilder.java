@@ -47,14 +47,13 @@ public class TerritoryBuilder {
         return this.grainAt(location, 1);
     }
 
-    public void build() {
-        this.territory.getCommandStack().execute(
-                new AbstractSpecifiedCompositeCommand() {
-                    @Override
-                    protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
-                        builder.add(commands);
-                    }
-                });
+    public Command build() {
+        return new AbstractSpecifiedCompositeCommand() {
+            @Override
+            protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
+                builder.add(commands);
+            }
+        };
     }
 
 }

@@ -2,7 +2,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 
 import java.io.IOException;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,10 +13,10 @@ class HamsterGameStage extends Stage {
 
     private GameSceneController sceneController;
 
-    public HamsterGameStage(final Territory territory) throws IOException {
+    public HamsterGameStage(final HamsterGame hamsterGame) throws IOException {
         super();
         prepareStage();
-        sceneController.connectToTerritory(territory);
+        sceneController.connectToGame(hamsterGame);
     }
 
     public void prepareStage() throws IOException {

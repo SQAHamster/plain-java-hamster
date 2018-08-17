@@ -1,5 +1,8 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes;
 
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 public final class Location {
 
     public static final Location ORIGIN = Location.from(0,0);
@@ -65,6 +68,11 @@ public final class Location {
 
     public static Location from(final int row, final int column) {
         return new Location(row, column);
+    }
+
+    public static Stream<Location> getAllLocationsFromTo(final Location from, final Location to) {
+        final Stream<Stream<Location>> stream = IntStream.range(from.getRow(), to.getRow()+1).mapToObj(row -> IntStream.range(from.getColumn(), to.getColumn()+1).mapToObj(column -> Location.from(row, column)));
+        return stream.flatMap(s -> s);
     }
 
 }

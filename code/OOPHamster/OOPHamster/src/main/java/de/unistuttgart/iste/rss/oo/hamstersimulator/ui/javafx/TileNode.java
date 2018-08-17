@@ -70,7 +70,7 @@ public class TileNode extends StackPane {
         configureStyle();
         configureWallImageView();
         configureGrainImageView();
-
+        tile.getHamsters().forEach(hamster -> addHamster((Hamster) hamster));
         addHamsterListListener();
     }
 

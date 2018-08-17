@@ -5,6 +5,8 @@ import static de.unistuttgart.iste.rss.oo.hamstersimulator.util.Preconditions.ch
 
 import java.util.Optional;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
@@ -19,6 +21,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.speci
 public class Hamster {
 
     private final de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster internalHamster;
+    private GameCommandStack<Command> commandStack;
 
     public Hamster() {
         super();
@@ -30,9 +33,10 @@ public class Hamster {
         init(territory, location, newDirection, newGrainCount);
     }
 
-    private Hamster(final de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster hamster) {
+    private Hamster(final Territory territory) {
         super();
-        this.internalHamster = hamster;
+        this.internalHamster = territory.getInternalTerritory().getDefaultHamster();
+        this.commandStack = territory.getGame().getCommandStack();
     }
 
     /*
@@ -43,24 +47,25 @@ public class Hamster {
         checkNotNull(location);
         checkNotNull(newDirection);
         checkArgument(newGrainCount >= 0);
+        this.commandStack = territory.getGame().getCommandStack();
 
-        territory.getInternalTerritory().getCommandStack().execute(new InitHamsterCommand(this.internalHamster, territory.getInternalTerritory(), new InitHamsterCommandSpecification(Optional.of(location), newDirection, newGrainCount)));
+        commandStack.execute(new InitHamsterCommand(this.internalHamster, territory.getInternalTerritory(), new InitHamsterCommandSpecification(Optional.of(location), newDirection, newGrainCount)));
     }
 
     public void move() {
-        this.internalHamster.getCurrentTerritory().getCommandStack().execute(new MoveCommand(this.internalHamster));
+        commandStack.execute(new MoveCommand(this.internalHamster));
     }
 
     public void turnLeft() {
-        this.internalHamster.getCurrentTerritory().getCommandStack().execute(new TurnLeftCommand(this.internalHamster));
+        commandStack.execute(new TurnLeftCommand(this.internalHamster));
     }
 
     public void pickGrain() {
-        this.internalHamster.getCurrentTerritory().getCommandStack().execute(new PickGrainCommand(this.internalHamster));
+        commandStack.execute(new PickGrainCommand(this.internalHamster));
     }
 
     public void putGrain() {
-        this.internalHamster.getCurrentTerritory().getCommandStack().execute(new PutGrainCommand(this.internalHamster));
+        commandStack.execute(new PutGrainCommand(this.internalHamster));
     }
 
     public void readNumber() {
@@ -101,7 +106,7 @@ public class Hamster {
         return this.internalHamster.getGrainInMouth().isEmpty();
     }
 
-    public static Hamster fromInternalHamster(final de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster hamster) {
-        return new Hamster(hamster);
+    public static Hamster fromInternalDefaultHamster(final Territory territory) {
+        return new Hamster(territory);
     }
 }

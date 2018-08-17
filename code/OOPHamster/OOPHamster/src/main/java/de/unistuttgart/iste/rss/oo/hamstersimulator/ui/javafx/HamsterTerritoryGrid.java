@@ -59,6 +59,7 @@ public class HamsterTerritoryGrid extends StackPane {
         this.gridSize.addListener((obj, oldValue, newValue) -> {
             configureSquareSizedTiles(newValue);
             hamsterToColorPos.clear();
+            this.territory.tilesProperty().forEach(tile -> addTileNode(tile));
         });
     }
 

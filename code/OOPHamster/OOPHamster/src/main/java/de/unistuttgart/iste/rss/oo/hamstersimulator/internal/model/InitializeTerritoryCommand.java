@@ -16,7 +16,7 @@ public class InitializeTerritoryCommand extends AbstractTerritoryCompositeBaseCo
 
     @Override
     protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
-        if (this.territory.getRowCount() > 0 && this.territory.getColumnCount() > 0) {
+        if (this.territory.getSize().getRowCount() > 0 && this.territory.getSize().getColumnCount() > 0) {
             getAllLocations(this.territory.getSize()).map(location -> this.territory.getTileAt(location)).forEach(tile -> builder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.territory.tiles, tile, ActionKind.REMOVE)));
         }
 
@@ -26,7 +26,7 @@ public class InitializeTerritoryCommand extends AbstractTerritoryCompositeBaseCo
     }
 
     private Stream<Location> getAllLocations(final Size territoryDimension) {
-        return this.territory.getAllLocationsFromTo(Location.ORIGIN, Location.from(territoryDimension.getRowCount()-1, territoryDimension.getColumnCount()-1));
+        return Location.getAllLocationsFromTo(Location.ORIGIN, Location.from(territoryDimension.getRowCount()-1, territoryDimension.getColumnCount()-1));
     }
 
 }

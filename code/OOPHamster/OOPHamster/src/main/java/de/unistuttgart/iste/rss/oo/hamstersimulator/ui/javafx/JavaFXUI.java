@@ -3,7 +3,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -27,11 +27,11 @@ public class JavaFXUI extends Application {
         initLatch.countDown();
     }
 
-    public static void openSceneFor(final Territory territory) {
+    public static void openSceneFor(final HamsterGame hamsterGame) {
         JavaFXUtil.blockingExecuteOnFXThread(() -> {
             Stage stage;
             try {
-                stage = new HamsterGameStage(territory);
+                stage = new HamsterGameStage(hamsterGame);
                 stage.show();
             } catch (final IOException e) {
                 e.printStackTrace();
