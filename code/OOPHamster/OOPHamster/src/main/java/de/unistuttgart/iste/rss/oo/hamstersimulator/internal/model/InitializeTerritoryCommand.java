@@ -6,7 +6,6 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdat
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.ClearTileCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitializeTerritoryCommandSpecification;
 
 public class InitializeTerritoryCommand extends AbstractTerritoryCompositeBaseCommand<InitializeTerritoryCommandSpecification> {
@@ -18,7 +17,6 @@ public class InitializeTerritoryCommand extends AbstractTerritoryCompositeBaseCo
     @Override
     protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
         if (this.territory.getRowCount() > 0 && this.territory.getColumnCount() > 0) {
-            getAllLocations(this.territory.getSize()).forEach(location -> builder.add(new ClearTileCommand(this.territory, new ClearTileCommandSpecification(location))));
             getAllLocations(this.territory.getSize()).map(location -> this.territory.getTileAt(location)).forEach(tile -> builder.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(this.territory.tiles, tile, ActionKind.REMOVE)));
         }
 

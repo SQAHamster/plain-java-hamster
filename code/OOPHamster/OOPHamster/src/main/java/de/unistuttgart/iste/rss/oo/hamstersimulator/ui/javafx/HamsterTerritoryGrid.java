@@ -16,20 +16,14 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 
 public class HamsterTerritoryGrid extends StackPane {
 
-    private static final double MINIMUM_TILE_SIZE = 2.0;
+    private static final double MINIMUM_TILE_SIZE = 20.0;
 
     final Map<Hamster,Integer> hamsterToColorPos = new HashMap<>();
 
@@ -60,9 +54,6 @@ public class HamsterTerritoryGrid extends StackPane {
         this.setAlignment(Pos.CENTER);
         this.hamsterGrid = new GridPane();
         this.hamsterGrid.getStyleClass().add("game-grid");
-        this.hamsterGrid.setBorder(new Border(new BorderStroke(Color.BLACK,
-                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-        this.hamsterGrid.setGridLinesVisible(true);
         this.getChildren().add(this.hamsterGrid);
         configureSquareSizedTiles(this.gridSize.get());
         this.gridSize.addListener((obj, oldValue, newValue) -> {
@@ -85,16 +76,18 @@ public class HamsterTerritoryGrid extends StackPane {
     private void configureSquareSizedTiles(final Size size) {
         final int columns = size.getColumnCount();
         final int rows = size.getRowCount();
-        final NumberBinding pixPerCellWidth = this.widthProperty().divide(columns);
-        final NumberBinding pixPerCellHeight = this.heightProperty().divide(rows);
+        final NumberBinding pixPerCellWidth = this.widthProperty().divide(columns == 0 ? 1 : columns);
+        final NumberBinding pixPerCellHeight = this.heightProperty().divide(rows == 0 ? 1 : rows);
         this.squaredSize = Bindings.min(pixPerCellHeight, pixPerCellWidth);
 
+        this.hamsterGrid.getColumnConstraints().clear();
         for (int i = 0; i < columns; i++) {
             final ColumnConstraints column = new ColumnConstraints();
             column.setPercentWidth(100.0 / columns);
             this.hamsterGrid.getColumnConstraints().add(column);
         }
 
+        this.hamsterGrid.getRowConstraints().clear();
         for (int i = 0; i < rows; i++) {
             final RowConstraints row = new RowConstraints();
             row.setPercentHeight(100.0 / rows);
@@ -114,8 +107,8 @@ public class HamsterTerritoryGrid extends StackPane {
 
     private void removeTileNode(final Tile tile) {
         getTileNodeAt(tile.getLocation()).dispose();
+        JavaFXUtil.blockingExecuteOnFXThread(() -> this.hamsterGrid.getChildren().remove(getTileNodeAt(tile.getLocation())));
         setTileNodeAt(tile.getLocation(), null);
-        Platform.runLater(() -> this.hamsterGrid.getChildren().remove(getTileNodeAt(tile.getLocation())));
     }
 
     private TileNode getTileNodeAt(final Location location) {

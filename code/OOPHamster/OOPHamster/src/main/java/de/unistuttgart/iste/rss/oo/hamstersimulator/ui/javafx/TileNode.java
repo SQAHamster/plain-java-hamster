@@ -42,7 +42,7 @@ public class TileNode extends StackPane {
     private ImageView wallView;
     private ImageView grainView;
     private final Map<Hamster, ImageView> hamsterImageViews = new HashMap<>();
-    private final Tile tile;
+    final Tile tile;
 
     private final ListChangeListener<TileContent> tileListener = new ListChangeListener<TileContent>(){
 
@@ -81,7 +81,7 @@ public class TileNode extends StackPane {
         grainView.fitHeightProperty().bind(this.heightProperty());
         grainView.fitWidthProperty().bind(this.widthProperty());
         grainView.setPreserveRatio(true);
-        //this.getChildren().add(grainView);
+        this.getChildren().add(grainView);
     }
 
     private void configureWallImageView() {
