@@ -12,9 +12,9 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
 
-<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.GameSceneController">
+<BorderPane fx:id="root" minHeight="150.0" minWidth="200.0" prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.GameSceneController">
    <top>
-      <ToolBar fx:id="toolbar" prefHeight="30.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <ToolBar fx:id="toolbar" prefHeight="30.0" BorderPane.alignment="CENTER">
         <items>
           <Button fx:id="play" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#startGame">
                <graphic>
@@ -54,17 +54,17 @@
                </graphic>
             </Button>
             <Separator maxWidth="30.0" orientation="VERTICAL" prefWidth="30.0" />
-            <Slider fx:id="speed" min="1" max="10" />
+            <Slider fx:id="speed" max="10" min="1" />
         </items>
       </ToolBar>
    </top>
    <center>
       <SplitPane fx:id="splitPane" dividerPositions="0.5" BorderPane.alignment="CENTER">
          <items>
-         	<StackPane fx:id="hamsterPane" alignment="CENTER" styleClass="game-grid">
-            	<HamsterTerritoryGrid fx:id="hamsterGrid" />
+           	<HamsterTerritoryGrid fx:id="hamsterGrid" />
+           	<StackPane>
+            	<ListView />
             </StackPane>
-            <ListView prefHeight="200.0" prefWidth="200.0" />
          </items>
       </SplitPane>
    </center>

@@ -9,13 +9,12 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Tile;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.TileContent;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ListChangeListener;
-import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
-public class TileNode extends Pane {
+public class TileNode extends StackPane {
 
     private static final Image hamsterImage = new Image("images/Hamster24.png");
     private static final Image wallImage = new Image("images/Wall32.png", 39, 39, true, true);
@@ -40,7 +39,6 @@ public class TileNode extends Pane {
     }
 
     private final HamsterTerritoryGrid parent;
-    private final Group imageGroup;
     private ImageView wallView;
     private ImageView grainView;
     private final Map<Hamster, ImageView> hamsterImageViews = new HashMap<>();
@@ -70,8 +68,6 @@ public class TileNode extends Pane {
         this.parent = hamsterTerritoryGrid;
 
         configureStyle();
-        this.imageGroup = new Group();
-        this.getChildren().add(this.imageGroup);
         configureWallImageView();
         configureGrainImageView();
 
@@ -80,33 +76,41 @@ public class TileNode extends Pane {
 
     private void configureGrainImageView() {
         this.grainView = new ImageView();
-        this.imageGroup.getChildren().add(grainView);
         grainView.visibleProperty().bind(Bindings.createBooleanBinding(() -> tile.getGrainCount() > 0, tile.grainCountProperty()));
         grainView.imageProperty().bind(Bindings.createObjectBinding(() -> tile.getGrainCount() <= 12 ? cornImages.get(tile.getGrainCount()) : cornImages.get(12), tile.grainCountProperty()));
+        grainView.fitHeightProperty().bind(this.heightProperty());
+        grainView.fitWidthProperty().bind(this.widthProperty());
+        grainView.setPreserveRatio(true);
+        //this.getChildren().add(grainView);
     }
 
     private void configureWallImageView() {
         this.wallView = new ImageView(wallImage);
-        this.imageGroup.getChildren().add(wallView);
         wallView.visibleProperty().bind(tile.isBlockedProperty());
+        wallView.fitHeightProperty().bind(this.heightProperty());
+        wallView.fitWidthProperty().bind(this.widthProperty());
+        wallView.setPreserveRatio(false);
+        this.getChildren().add(wallView);
     }
 
     private void addHamster(final Hamster hamster) {
         if (!hamsterImageViews.containsKey(hamster)) {
             final Image coloredHamsterImage = getColoredHamsterImage(hamster);
             final ImageView view = new ImageView(coloredHamsterImage);
-            view.resizeRelocate(8, 8, 24, 24);
+            view.fitHeightProperty().bind(this.heightProperty().multiply(0.7));
+            view.fitWidthProperty().bind(this.widthProperty().multiply(0.7));
+            view.setPreserveRatio(true);
             hamsterImageViews.put(hamster, view);
             view.rotateProperty().bind(Bindings.createDoubleBinding(() -> getRotationForDirection(hamster.getDirection()), hamster.directionProperty()));
             JavaFXUtil.blockingExecuteOnFXThread(() -> {
-                this.imageGroup.getChildren().add(hamsterImageViews.get(hamster));
+                this.getChildren().add(hamsterImageViews.get(hamster));
             });
         }
     }
 
     private void removeHamster(final Hamster hamster) {
         final ImageView view = hamsterImageViews.remove(hamster);
-        JavaFXUtil.blockingExecuteOnFXThread(() -> this.imageGroup.getChildren().remove(view));
+        JavaFXUtil.blockingExecuteOnFXThread(() -> this.getChildren().remove(view));
     }
 
     private double getRotationForDirection(final Direction direction) {

@@ -56,7 +56,6 @@ public class Territory {
         gameStack.startGame();
         hamsterProgram.accept(this);
         gameStack.stopGame();
-        delay(1000);
         gameStack.reset();
     }
 
