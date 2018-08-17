@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.Semaphore;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.WriteCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InitHamsterCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.MoveCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.PickGrainCommand;
@@ -29,7 +30,7 @@ public class GameCommandStack<T extends Command> extends CommandStack<T> {
     private final Semaphore pauseLock = new Semaphore(1, true);
 
     private final Collection<Class<?>> allowedGameCommands = Arrays.asList(MoveCommand.class, PickGrainCommand.class,
-            PutGrainCommand.class, TurnLeftCommand.class, InitHamsterCommand.class);
+            PutGrainCommand.class, TurnLeftCommand.class, InitHamsterCommand.class, WriteCommand.class);
     private Thread executingThread;
 
     public void startGame() {

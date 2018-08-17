@@ -8,6 +8,7 @@ import java.util.List;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CompositeCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.SpecifiedCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.WriteCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.AddGrainsToTileCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.AddWallToTileCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.ClearTileCommand;
@@ -77,6 +78,11 @@ public class EditCommandStack<T extends Command> extends CommandStack<T> {
             } catch (final CloneNotSupportedException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        @Override
+        public void visit(final WriteCommandSpecification writeCommandSpecification) {
+            throw new UnsupportedOperationException();
         }
 
         @Override

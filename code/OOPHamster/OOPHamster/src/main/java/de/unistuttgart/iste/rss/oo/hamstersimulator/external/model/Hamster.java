@@ -22,6 +22,7 @@ public class Hamster {
 
     private final de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster internalHamster;
     private GameCommandStack<Command> commandStack;
+    private HamsterGame game;
 
     public Hamster() {
         super();
@@ -36,6 +37,7 @@ public class Hamster {
     private Hamster(final Territory territory) {
         super();
         this.internalHamster = territory.getInternalTerritory().getDefaultHamster();
+        this.game = territory.getGame();
         this.commandStack = territory.getGame().getCommandStack();
     }
 
@@ -47,6 +49,7 @@ public class Hamster {
         checkNotNull(location);
         checkNotNull(newDirection);
         checkArgument(newGrainCount >= 0);
+        this.game = territory.getGame();
         this.commandStack = territory.getGame().getCommandStack();
 
         commandStack.execute(new InitHamsterCommand(this.internalHamster, territory.getInternalTerritory(), new InitHamsterCommandSpecification(Optional.of(location), newDirection, newGrainCount)));
@@ -79,8 +82,7 @@ public class Hamster {
     }
 
     public void write(final String text) {
-        // TODO - implement Hamster.write
-        System.out.println(text);
+        commandStack.execute(new WriteCommand(this.game, new WriteCommandSpecification(text)));
     }
 
     /*

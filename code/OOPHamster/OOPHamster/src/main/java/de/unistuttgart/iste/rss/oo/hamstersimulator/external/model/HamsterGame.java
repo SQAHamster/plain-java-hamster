@@ -8,6 +8,9 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameTerritory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.TerritoryLoader;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
+import javafx.beans.property.ReadOnlyListProperty;
+import javafx.beans.property.ReadOnlyListWrapper;
+import javafx.collections.FXCollections;
 
 public class HamsterGame {
 
@@ -15,6 +18,7 @@ public class HamsterGame {
 
     private final Territory territory = new Territory(this);
     private final GameCommandStack<Command> commandStack = new GameCommandStack<Command>();
+    final ReadOnlyListWrapper<String> gameLog = new ReadOnlyListWrapper<String>(this, "log", FXCollections.observableArrayList());
 
     public GameTerritory getInternalTerritory() {
         return territory.getInternalTerritory();
@@ -22,6 +26,10 @@ public class HamsterGame {
 
     public Territory getTerritory() {
         return territory;
+    }
+
+    public ReadOnlyListProperty<String> logProperty() {
+        return this.gameLog.getReadOnlyProperty();
     }
 
     public void initialize() {

@@ -6,6 +6,7 @@ class Example01 extends SimpleHamsterGame {
         game.initialize();
         game.displayInNewGameWindow();
 
+        paule.write("Hallo!");
         paule.move();
         paule.move();
         paule.pickGrain();

@@ -1,6 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CompositeCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.WriteCommandSpecification;
 
 public interface SpecificationVisitor {
 
@@ -10,5 +11,6 @@ public interface SpecificationVisitor {
     void visit(final InitializeTerritoryCommandSpecification initializeTerritoryCommandSpecification);
     void visit(final InitHamsterCommandSpecification initHamsterCommandSpecification);
     void visit(CompositeCommandSpecification compositeCommandSpecification);
+    void visit(WriteCommandSpecification writeCommandSpecification);
 
 }

@@ -2,7 +2,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractCompositeCommand;
 
-abstract class AbstractHamsterCompositeBaseCommand extends AbstractCompositeCommand {
+public abstract class AbstractHamsterCompositeBaseCommand extends AbstractCompositeCommand {
 
     protected final Hamster hamster;
 
