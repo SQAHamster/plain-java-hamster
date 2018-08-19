@@ -5,6 +5,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LogEntry;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
@@ -26,12 +27,14 @@ public class GameSceneController {
         protected void updateItem(final LogEntry item, final boolean empty) {
             super.updateItem(item, empty);
             if (!empty) {
-                setText(item.getMessage());
-                if (hamsterGrid.hamsterToColorPos.containsKey(item.getHamster())) {
-                    setTextFill(TileNode.hamsterColors[hamsterGrid.hamsterToColorPos.get(item.getHamster())]);
-                } else {
-                    setTextFill(Color.BLACK);
-                }
+                Platform.runLater(() -> {
+                    setText(item.getMessage());
+                    if (hamsterGrid.hamsterToColorPos.containsKey(item.getHamster())) {
+                        setTextFill(TileNode.hamsterColors[hamsterGrid.hamsterToColorPos.get(item.getHamster())]);
+                    } else {
+                        setTextFill(Color.BLACK);
+                    }
+                });
             }
         }
     }

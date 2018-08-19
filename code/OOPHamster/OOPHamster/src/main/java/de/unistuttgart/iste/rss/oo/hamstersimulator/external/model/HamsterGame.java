@@ -17,8 +17,8 @@ public class HamsterGame {
 
     private static final String DEFAULT_HAMSTER_TERRITORY = "territories/example01.ter";
 
-    private final Territory territory = new Territory(this);
     private final GameCommandStack<Command> commandStack = new GameCommandStack<Command>();
+    private final Territory territory = new Territory(this);
     final ReadOnlyListWrapper<LogEntry> gameLog = new ReadOnlyListWrapper<LogEntry>(this, "log", FXCollections.observableArrayList());
 
     public GameTerritory getInternalTerritory() {
@@ -35,7 +35,7 @@ public class HamsterGame {
 
     public void initialize() {
         initialize(DEFAULT_HAMSTER_TERRITORY);
-        this.getCommandStack().startGame();
+        //this.getCommandStack().startGame();
     }
 
     public void initialize(final String territoryFile) {
