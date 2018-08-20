@@ -1,7 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameTerritory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.TerritoryLoader;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.GameTerritory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
 
 public class Territory {
 

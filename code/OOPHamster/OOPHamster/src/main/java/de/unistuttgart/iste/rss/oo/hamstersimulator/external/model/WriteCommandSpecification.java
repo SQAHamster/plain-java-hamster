@@ -6,13 +6,13 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.speci
 public class WriteCommandSpecification implements CommandSpecification {
 
     private final String message;
-    private final de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster sender;
+    private final de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.Hamster sender;
 
-    public de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster getSender() {
+    public de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.Hamster getSender() {
         return sender;
     }
 
-    public WriteCommandSpecification(final String message, final de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster internalHamster) {
+    public WriteCommandSpecification(final String message, final de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.Hamster internalHamster) {
         super();
         this.message = message;
         this.sender = internalHamster;

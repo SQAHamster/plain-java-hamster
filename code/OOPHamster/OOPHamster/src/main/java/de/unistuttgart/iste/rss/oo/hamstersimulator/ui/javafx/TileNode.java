@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Tile;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.TileContent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Tile;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TileContent;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ListChangeListener;
 import javafx.scene.image.Image;

@@ -1,9 +1,12 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster;
 
 import java.util.Collections;
 import java.util.List;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Grain;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TileContent;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -59,7 +62,7 @@ public class Hamster extends TileContent {
         return Collections.unmodifiableList(grainInMouth.get());
     }
 
-    public Territory getCurrentTerritory() {
+    public ReadOnlyTerritory getCurrentTerritory() {
         return this.getCurrentTile().orElseThrow(IllegalStateException::new).getTerritory();
     }
 

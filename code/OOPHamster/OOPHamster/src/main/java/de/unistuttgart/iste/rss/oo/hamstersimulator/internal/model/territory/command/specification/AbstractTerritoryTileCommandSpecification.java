@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 

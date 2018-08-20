@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,8 +24,8 @@ public class TerritoryLoader {
         this.territoryBuilder = territoryBuilder;
     }
 
-    public static TerritoryLoader initializeFor(final Territory territory) {
-        return new TerritoryLoader(territory.getTerritoryBuilder());
+    public static TerritoryLoader initializeFor(final EditorTerritory territory) {
+        return new TerritoryLoader(new TerritoryBuilder(territory));
     }
 
     public Command loadFromFile(final String territoryFile) {

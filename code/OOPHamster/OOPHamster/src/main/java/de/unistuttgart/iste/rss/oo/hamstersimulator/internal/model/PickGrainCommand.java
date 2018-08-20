@@ -4,6 +4,9 @@ import java.util.Optional;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdatePropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Grain;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Tile;
 
 public class PickGrainCommand extends AbstractHamsterCompositeBaseCommand {
 

@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory;
 
 import static de.unistuttgart.iste.rss.oo.hamstersimulator.util.Preconditions.checkNotNull;
 
@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.Hamster;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
@@ -27,10 +28,10 @@ public class Tile {
     private final ReadOnlyListWrapper<TileContent> blockerSublist;
     private final ReadOnlyListWrapper<TileContent> hamsterSublist;
 
-    private final Territory territory;
+    private final ReadOnlyTerritory territory;
     private final Location tileLocation;
 
-    Tile(final Territory territory, final Location tileLocation) {
+    Tile(final ReadOnlyTerritory territory, final Location tileLocation) {
         super();
 
         checkNotNull(territory);
@@ -47,7 +48,7 @@ public class Tile {
         this.isBlocked.bind(Bindings.createBooleanBinding(() -> this.blockerSublist.size() > 0, this.blockerSublist.sizeProperty()));
     }
 
-    public Territory getTerritory() {
+    public ReadOnlyTerritory getTerritory() {
         return territory;
     }
 

@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory;
 
 import java.util.LinkedList;
 import java.util.Optional;
@@ -8,28 +8,29 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.Abstr
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.AddGrainsToTileCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.AddWallToTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InitHamsterCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitHamsterCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitializeTerritoryCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification.AddGrainsToTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification.AddWallToTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification.InitializeTerritoryCommandSpecification;
 
 public class TerritoryBuilder {
 
-    private final Territory territory;
+    private final EditorTerritory territory;
     private final LinkedList<Command> commands = new LinkedList<>();
 
-    TerritoryBuilder(final Territory territory) {
+    TerritoryBuilder(final EditorTerritory territory) {
         super();
         this.territory = territory;
     }
 
     public TerritoryBuilder initializeTerritory(final Size size) {
-        this.commands.add(new InitializeTerritoryCommand(this.territory, new InitializeTerritoryCommandSpecification(size)));
+        this.commands.add(this.territory.getCommandFromSpecification(new InitializeTerritoryCommandSpecification(size)));
         return this;
     }
 
     public TerritoryBuilder wallAt(final Location location) {
-        this.commands.add(new AddWallToTileCommand(this.territory, new AddWallToTileCommandSpecification(location)));
+        this.commands.add(this.territory.getCommandFromSpecification(new AddWallToTileCommandSpecification(location)));
         return this;
     }
 
@@ -39,7 +40,7 @@ public class TerritoryBuilder {
     }
 
     public TerritoryBuilder grainAt(final Location location, final int grainCount) {
-        this.commands.add(new AddGrainsToTileCommand(this.territory, new AddGrainsToTileCommandSpecification(location, grainCount)));
+        this.commands.add(this.territory.getCommandFromSpecification(new AddGrainsToTileCommandSpecification(location, grainCount)));
         return this;
     }
 

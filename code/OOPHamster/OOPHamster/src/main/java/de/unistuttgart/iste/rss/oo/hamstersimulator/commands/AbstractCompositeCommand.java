@@ -47,13 +47,26 @@ public abstract class AbstractCompositeCommand extends Command {
         }
 
         public <G> CompositeCommandBuilder addPropertyUpdateCommand(
-                final Property<Object> property,
-                final String propertyName,
+                final Property<G> property,
                 final Object value,
                 final ActionKind action) {
             commandsToExecute.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(property, value, action));
             return this;
         }
+        
+        public <G> void newSetPropertyCommand (final Property<G> property, final Object value) {
+            this.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(property, value, ActionKind.SET));
+        }
+
+        public <G> void newAddToPropertyCommand (final Property<G> property, final Object value) {
+            this.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(property, value, ActionKind.ADD));
+        }
+
+        public <G> void newRemoveFromPropertyCommand (final Property<G> property, final Object value) {
+            this.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(property, value, ActionKind.REMOVE));
+        }
+        
+    
     }
 
     protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {}

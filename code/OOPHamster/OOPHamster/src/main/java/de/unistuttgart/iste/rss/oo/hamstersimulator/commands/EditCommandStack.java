@@ -14,23 +14,23 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.AddWallToTile
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.ClearTileCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InitHamsterCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InitializeTerritoryCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.AddGrainsToTileCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.AddWallToTileCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.ClearTileCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitHamsterCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitializeTerritoryCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.SpecificationVisitor;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification.AddGrainsToTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification.AddWallToTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification.ClearTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification.InitializeTerritoryCommandSpecification;
 
 public class EditCommandStack<T extends Command> extends CommandStack<T> {
 
     private class CloneVisitor implements SpecificationVisitor {
 
         private Command result;
-        private final Territory territory;
+        private final ReadOnlyTerritory territory;
 
 
-        public CloneVisitor(final Territory territory) {
+        public CloneVisitor(final ReadOnlyTerritory territory) {
             super();
             this.territory = territory;
         }
@@ -109,7 +109,7 @@ public class EditCommandStack<T extends Command> extends CommandStack<T> {
         super.execute(command);
     }
 
-    public Command cloneCommandsInto(final Territory territory) {
+    public Command cloneCommandsInto(final ReadOnlyTerritory territory) {
         final List<Command> copiedCommands = new LinkedList<>();
 
         for (final Command command : this.executedCommands) {

@@ -7,17 +7,21 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.UnidirectionalUpdat
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.SpecifiedCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitHamsterCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Grain;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Tile;
 
 public class InitHamsterCommand extends AbstractHamsterCompositeBaseCommand implements SpecifiedCommand<InitHamsterCommandSpecification> {
 
-    private final Territory territory;
+    private final ReadOnlyTerritory territory;
     private final InitHamsterCommandSpecification specification;
 
-    public InitHamsterCommand(final Territory territory, final InitHamsterCommandSpecification specification) {
+    public InitHamsterCommand(final ReadOnlyTerritory territory, final InitHamsterCommandSpecification specification) {
         this(territory.getDefaultHamster(), territory, specification);
     }
 
-    public InitHamsterCommand(final Hamster hamster, final Territory territory, final InitHamsterCommandSpecification specification) {
+    public InitHamsterCommand(final Hamster hamster, final ReadOnlyTerritory territory, final InitHamsterCommandSpecification specification) {
         super(hamster);
         this.territory = territory;
         this.specification = specification;

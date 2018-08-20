@@ -1,6 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.Hamster;
 
 public class LogEntry {
 
