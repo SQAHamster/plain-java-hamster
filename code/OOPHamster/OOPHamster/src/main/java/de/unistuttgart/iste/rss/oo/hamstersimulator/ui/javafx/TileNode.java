@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Tile;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TileContent;
 import javafx.beans.binding.Bindings;
@@ -41,7 +41,7 @@ public class TileNode extends StackPane {
     private final HamsterTerritoryGrid parent;
     private ImageView wallView;
     private ImageView grainView;
-    private final Map<Hamster, ImageView> hamsterImageViews = new HashMap<>();
+    private final Map<ReadOnlyHamster, ImageView> hamsterImageViews = new HashMap<>();
     final Tile tile;
 
     private final ListChangeListener<TileContent> tileListener = new ListChangeListener<TileContent>(){
@@ -50,10 +50,10 @@ public class TileNode extends StackPane {
         public void onChanged(final Change<? extends TileContent> change) {
             while(change.next()) {
                 if (change.wasAdded()) {
-                    change.getAddedSubList().forEach(tileContent -> addHamster((Hamster)tileContent));
+                    change.getAddedSubList().forEach(tileContent -> addHamster((ReadOnlyHamster)tileContent));
                 }
                 if (change.wasRemoved()) {
-                    change.getRemoved().forEach(tileContent -> removeHamster((Hamster)tileContent));
+                    change.getRemoved().forEach(tileContent -> removeHamster((ReadOnlyHamster)tileContent));
                 }
             }
         }
@@ -70,7 +70,7 @@ public class TileNode extends StackPane {
         configureStyle();
         configureWallImageView();
         configureGrainImageView();
-        tile.getHamsters().forEach(hamster -> addHamster((Hamster) hamster));
+        tile.getHamsters().forEach(hamster -> addHamster((ReadOnlyHamster) hamster));
         addHamsterListListener();
     }
 
@@ -93,7 +93,7 @@ public class TileNode extends StackPane {
         this.getChildren().add(wallView);
     }
 
-    private void addHamster(final Hamster hamster) {
+    private void addHamster(final ReadOnlyHamster hamster) {
         if (!hamsterImageViews.containsKey(hamster)) {
             final Image coloredHamsterImage = getColoredHamsterImage(hamster);
             final ImageView view = new ImageView(coloredHamsterImage);
@@ -108,7 +108,7 @@ public class TileNode extends StackPane {
         }
     }
 
-    private void removeHamster(final Hamster hamster) {
+    private void removeHamster(final ReadOnlyHamster hamster) {
         final ImageView view = hamsterImageViews.remove(hamster);
         JavaFXUtil.blockingExecuteOnFXThread(() -> this.getChildren().remove(view));
     }
@@ -139,7 +139,7 @@ public class TileNode extends StackPane {
         }
     }
 
-    private Image getColoredHamsterImage(final Hamster hamster) {
+    private Image getColoredHamsterImage(final ReadOnlyHamster hamster) {
         int colorIndex;
         if (parent.hamsterToColorPos.containsKey(hamster)) {
             colorIndex = parent.hamsterToColorPos.get(hamster);

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Tile;
 import javafx.application.Platform;
@@ -25,7 +25,7 @@ public class HamsterTerritoryGrid extends StackPane {
 
     private static final double MINIMUM_TILE_SIZE = 20.0;
 
-    final Map<Hamster,Integer> hamsterToColorPos = new HashMap<>();
+    final Map<ReadOnlyHamster,Integer> hamsterToColorPos = new HashMap<>();
 
     private final SimpleObjectProperty<Size> gridSize = new SimpleObjectProperty<Size>(this, "gridSize", new Size(0,0));
     private final ReadOnlyListWrapper<TileNode> cells = new ReadOnlyListWrapper<TileNode>(this, "cells", FXCollections.observableArrayList());

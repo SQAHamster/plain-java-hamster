@@ -15,18 +15,18 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.MoveCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.PickGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.PutGrainCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.TurnLeftCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitHamsterCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.InitHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Tile;
 
 public class Hamster {
 
-    private final de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.Hamster internalHamster;
+    private final de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster internalHamster;
     private GameCommandStack<Command> commandStack;
     private HamsterGame game;
 
     public Hamster() {
         super();
-        this.internalHamster = new de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.Hamster();
+        this.internalHamster = new de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster();
     }
 
     public Hamster(final Territory territory, final Location location, final Direction newDirection, final int newGrainCount) {

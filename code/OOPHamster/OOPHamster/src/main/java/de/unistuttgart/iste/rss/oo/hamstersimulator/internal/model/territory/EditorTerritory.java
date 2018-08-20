@@ -8,11 +8,12 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitHamsterCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.EditorHamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification.AddGrainsToTileCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification.AddWallToTileCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification.ClearTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification.InitDefaultHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification.InitializeTerritoryCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.util.LambdaVisitor;
 
@@ -26,16 +27,33 @@ public class EditorTerritory extends ReadOnlyTerritory {
                 on(InitializeTerritoryCommandSpecification.class).then(this::createInitializeTerritoryCommand).
                 on(AddGrainsToTileCommandSpecification.class).then(this::createAddGrainsToTileCommand).
                 on(AddWallToTileCommandSpecification.class).then(this::createAddWallToTileCommand).
-                on(InitHamsterCommandSpecification.class).then(this::createInitDefaultHamsterCommand).
+                on(InitDefaultHamsterCommandSpecification.class).then(this::createInitDefaultHamsterCommand).
                 on(ClearTileCommandSpecification.class).then(this::createClearTileCommand);
+    }
+
+    @Override
+    public EditorHamster getDefaultHamster() {
+        return (EditorHamster) this.defaultHamster.get();
     }
 
     public Command getCommandFromSpecification(final CommandSpecification spec) {
         return this.editCommandFactory.apply(spec);
     }
 
-    private Command createInitDefaultHamsterCommand(final InitHamsterCommandSpecification specification) {
-        return null;
+    @Override
+    protected ReadOnlyHamster initDefaultHamster() {
+        return new EditorHamster();
+    }
+    
+    private Command createInitDefaultHamsterCommand(final InitDefaultHamsterCommandSpecification specification) {
+        return new AbstractCompositeCommand() {
+            @Override
+            protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
+                final Tile tile = getTileAt(specification.getLocation());
+                builder.newSetPropertyCommand(getDefaultHamster().currentTile, tile);
+                builder.newAddToPropertyCommand(tile.content, getDefaultHamster());
+            }
+        };
     }
     
     private Command createClearTileCommand(final ClearTileCommandSpecification specification) {
@@ -44,7 +62,7 @@ public class EditorTerritory extends ReadOnlyTerritory {
             protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
                 final Tile tile = getTileAt(specification.getLocation());
                 tile.content.stream().
-                        filter(content -> !Hamster.class.isInstance(content)).
+                        filter(content -> !ReadOnlyHamster.class.isInstance(content)).
                         forEach(content -> builder.newRemoveFromPropertyCommand(tile.content, content));
             }
         };

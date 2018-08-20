@@ -1,24 +1,26 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification;
-
-import java.util.Optional;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
 
 public final class InitHamsterCommandSpecification implements CommandSpecification {
 
-    private final Optional<Location> location;
+    private final ReadOnlyTerritory territory;
+    private final Location location;
     private final Direction newDirection;
     private final int newGrainCount;
 
-    public InitHamsterCommandSpecification(final Optional<Location> location, final Direction newDirection, final int newGrainCount) {
+    public InitHamsterCommandSpecification(final ReadOnlyTerritory territory, final Location location, final Direction newDirection, final int newGrainCount) {
+        super();
+        this.territory = territory;
         this.location = location;
         this.newDirection = newDirection;
         this.newGrainCount = newGrainCount;
     }
 
-    public Optional<Location> getLocation() {
+    public Location getLocation() {
         return location;
     }
 
@@ -30,14 +32,7 @@ public final class InitHamsterCommandSpecification implements CommandSpecificati
         return newGrainCount;
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    public ReadOnlyTerritory getTerritory() {
+        return territory;
     }
-
-    @Override
-    public void visit(final SpecificationVisitor visitor) {
-        visitor.visit(this);
-    }
-
 }

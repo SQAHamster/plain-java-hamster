@@ -2,7 +2,6 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.co
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.SpecificationVisitor;
 
 public final class InitializeTerritoryCommandSpecification implements CommandSpecification {
 
@@ -15,15 +14,5 @@ public final class InitializeTerritoryCommandSpecification implements CommandSpe
 
     public Size getSize() {
         return size;
-    }
-
-    @Override
-    public void visit(final SpecificationVisitor visitor) {
-        visitor.visit(this);
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
     }
 }

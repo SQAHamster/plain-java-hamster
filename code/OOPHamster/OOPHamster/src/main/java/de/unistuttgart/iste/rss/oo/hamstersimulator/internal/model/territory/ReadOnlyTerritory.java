@@ -4,7 +4,7 @@ import static de.unistuttgart.iste.rss.oo.hamstersimulator.util.Preconditions.ch
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -15,7 +15,7 @@ public class ReadOnlyTerritory {
 
     final ReadOnlyObjectWrapper<Size> territorySize = new ReadOnlyObjectWrapper<Size>(this, "territorySize", new Size(0, 0));
     final ReadOnlyListWrapper<Tile> tiles = new ReadOnlyListWrapper<Tile>(this, "tiles", FXCollections.observableArrayList());
-    final ReadOnlyObjectWrapper<Hamster> defaultHamster = new ReadOnlyObjectWrapper<Hamster>(this, "defaultHamster", new Hamster());
+    final ReadOnlyObjectWrapper<ReadOnlyHamster> defaultHamster = new ReadOnlyObjectWrapper<ReadOnlyHamster>(this, "defaultHamster", initDefaultHamster());
 
     public Size getSize() {
         return this.territorySize.get();
@@ -29,11 +29,11 @@ public class ReadOnlyTerritory {
         return this.tiles.getReadOnlyProperty();
     }
 
-    public Hamster getDefaultHamster() {
+    public ReadOnlyHamster getDefaultHamster() {
         return this.defaultHamster.get();
     }
 
-    public ReadOnlyObjectProperty<Hamster> defaultHamsterProperty() {
+    public ReadOnlyObjectProperty<ReadOnlyHamster> defaultHamsterProperty() {
         return this.defaultHamster.getReadOnlyProperty();
     }
 
@@ -46,6 +46,10 @@ public class ReadOnlyTerritory {
     public boolean isLocationInTerritory(final Location newHamsterPosition) {
         return newHamsterPosition.getColumn() < this.territorySize.get().getColumnCount() &&
                 newHamsterPosition.getRow() < this.territorySize.get().getRowCount();
+    }
+
+    protected ReadOnlyHamster initDefaultHamster() {
+        return new ReadOnlyHamster();
     }
 
     private int getListIndexFromLocation(final Location location) {

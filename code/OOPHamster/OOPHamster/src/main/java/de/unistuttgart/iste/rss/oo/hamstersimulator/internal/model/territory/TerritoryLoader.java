@@ -85,7 +85,7 @@ public class TerritoryLoader {
             }
         }
         final int initialGrainCount = Integer.parseInt(lines[this.loadedTerritoryDimensions.getRowCount() + grainLocations.size()]);
-        territoryBuilder.defaultHamsterAt(Optional.of(defaultHamsterLocation.get()), defaultHamsterDirection.get(), initialGrainCount);
+        territoryBuilder.defaultHamsterAt(defaultHamsterLocation.get(), defaultHamsterDirection.get(), initialGrainCount);
         placeGrain(lines, grainLocations);
     }
 

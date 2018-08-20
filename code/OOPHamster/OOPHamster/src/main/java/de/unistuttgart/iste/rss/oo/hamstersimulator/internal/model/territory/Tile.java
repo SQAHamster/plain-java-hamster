@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
@@ -42,7 +42,7 @@ public class Tile {
 
         this.grainSublist = new ReadOnlyListWrapper<TileContent>(new FilteredList<TileContent>(content, c -> c instanceof Grain));
         this.blockerSublist = new ReadOnlyListWrapper<TileContent>(new FilteredList<TileContent>(content, c -> c.blocksEntrance()));
-        this.hamsterSublist = new ReadOnlyListWrapper<TileContent>(new FilteredList<TileContent>(content, c -> c instanceof Hamster));
+        this.hamsterSublist = new ReadOnlyListWrapper<TileContent>(new FilteredList<TileContent>(content, c -> c instanceof ReadOnlyHamster));
 
         this.grainCount.bind(this.grainSublist.sizeProperty());
         this.isBlocked.bind(Bindings.createBooleanBinding(() -> this.blockerSublist.size() > 0, this.blockerSublist.sizeProperty()));

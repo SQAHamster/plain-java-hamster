@@ -1,17 +1,15 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory;
 
 import java.util.LinkedList;
-import java.util.Optional;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.AbstractSpecifiedCompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InitHamsterCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.command.specification.InitHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification.AddGrainsToTileCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification.AddWallToTileCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification.InitDefaultHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification.InitializeTerritoryCommandSpecification;
 
 public class TerritoryBuilder {
@@ -34,8 +32,8 @@ public class TerritoryBuilder {
         return this;
     }
 
-    public TerritoryBuilder defaultHamsterAt(final Optional<Location> location, final Direction direction, final int grainCount) {
-        this.commands.add(new InitHamsterCommand(this.territory, new InitHamsterCommandSpecification(location, direction, grainCount)));
+    public TerritoryBuilder defaultHamsterAt(final Location location, final Direction direction, final int grainCount) {
+        this.commands.add(this.territory.getCommandFromSpecification(new InitDefaultHamsterCommandSpecification(location, direction, grainCount)));
         return this;
     }
 

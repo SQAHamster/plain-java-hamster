@@ -15,18 +15,18 @@ import javafx.beans.property.ReadOnlySetProperty;
 import javafx.beans.property.ReadOnlySetWrapper;
 import javafx.collections.FXCollections;
 
-public class Hamster extends TileContent {
+public class ReadOnlyHamster extends TileContent {
 
     /*
      * Static part of class, provides a hamster registry
      */
-    private static final ReadOnlySetWrapper<Hamster> hamsterSet = new ReadOnlySetWrapper<Hamster>();
+    private static final ReadOnlySetWrapper<ReadOnlyHamster> hamsterSet = new ReadOnlySetWrapper<ReadOnlyHamster>();
 
     static {
         hamsterSet.set(FXCollections.observableSet());
     }
 
-    public static ReadOnlySetProperty<Hamster> hamsterSetProperty() {
+    public static ReadOnlySetProperty<ReadOnlyHamster> hamsterSetProperty() {
         return hamsterSet.getReadOnlyProperty();
     }
 
@@ -37,7 +37,7 @@ public class Hamster extends TileContent {
      * Constructors
      */
     // TODO: Fixme, make private by using a creational pattern
-    public Hamster() {
+    public ReadOnlyHamster() {
         super();
 
         hamsterSet.add(this);
