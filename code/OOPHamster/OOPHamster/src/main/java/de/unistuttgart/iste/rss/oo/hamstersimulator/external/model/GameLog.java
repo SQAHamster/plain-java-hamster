@@ -1,5 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
@@ -33,8 +34,8 @@ public class GameLog {
         return this.gameLog.getReadOnlyProperty();
     }
 
-    public Command getCommandFromSpecification(final CommandSpecification specification) {
-        return editCommandFactory.apply(specification);
+    public Optional<Command> getCommandFromSpecification(final CommandSpecification specification) {
+        return Optional.ofNullable(editCommandFactory.apply(specification));
     }
     
     private Command getLogCommand(final GameHamster hamster, final String message) {

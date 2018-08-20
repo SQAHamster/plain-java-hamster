@@ -1,5 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster;
 
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -32,8 +33,8 @@ public class EditorHamster extends ReadOnlyHamster {
         };
     }
 
-    public Command getCommandFromSpecification(final CommandSpecification spec) {
-        return this.editCommandFactory.apply(spec);
+    public Optional<Command> getCommandFromSpecification(final CommandSpecification spec) {
+        return Optional.ofNullable(this.editCommandFactory.apply(spec));
     }
     
 }

@@ -1,5 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractCompositeCommand;
@@ -58,8 +59,12 @@ public class GameHamster extends EditorHamster {
     }
     
     @Override
-    public Command getCommandFromSpecification(final CommandSpecification spec) {
-        return this.editCommandFactory.apply(spec);
+    public Optional<Command> getCommandFromSpecification(final CommandSpecification spec) {
+        final Optional<Command> editorCommand = super.getCommandFromSpecification(spec);
+        if (editorCommand.isPresent()) {
+            return editorCommand;
+        }
+        return Optional.ofNullable(this.editCommandFactory.apply(spec));
     }
     
 }

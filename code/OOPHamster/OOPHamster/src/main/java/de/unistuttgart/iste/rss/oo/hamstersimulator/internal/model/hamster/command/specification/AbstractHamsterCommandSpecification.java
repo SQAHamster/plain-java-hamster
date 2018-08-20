@@ -3,7 +3,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.comm
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.GameHamster;
 
-abstract class AbstractHamsterCommandSpecification implements CommandSpecification {
+public abstract class AbstractHamsterCommandSpecification implements CommandSpecification {
     private final GameHamster hamster;
     
     public AbstractHamsterCommandSpecification(final GameHamster hamster) {

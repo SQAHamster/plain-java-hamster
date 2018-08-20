@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractCompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
@@ -23,22 +24,24 @@ public class TerritoryBuilder {
     }
 
     public TerritoryBuilder initializeTerritory(final Size size) {
-        this.commands.add(this.territory.getCommandFromSpecification(new InitializeTerritoryCommandSpecification(size)));
+        this.commands.add(this.territory.getCommandFromSpecification(new InitializeTerritoryCommandSpecification(size)).get());
         return this;
     }
 
     public TerritoryBuilder wallAt(final Location location) {
-        this.commands.add(this.territory.getCommandFromSpecification(new AddWallToTileCommandSpecification(location)));
+        this.commands.add(this.territory.getCommandFromSpecification(new AddWallToTileCommandSpecification(location)).get());
         return this;
     }
 
     public TerritoryBuilder defaultHamsterAt(final Location location, final Direction direction, final int grainCount) {
-        this.commands.add(this.territory.getCommandFromSpecification(new InitDefaultHamsterCommandSpecification(location, direction, grainCount)));
+        final CommandSpecification specification = new InitDefaultHamsterCommandSpecification(location, direction, grainCount);
+        this.commands.add(this.territory.getCommandFromSpecification(specification).get());
+        this.commands.add(this.territory.getDefaultHamster().getCommandFromSpecification(specification).get());
         return this;
     }
 
     public TerritoryBuilder grainAt(final Location location, final int grainCount) {
-        this.commands.add(this.territory.getCommandFromSpecification(new AddGrainsToTileCommandSpecification(location, grainCount)));
+        this.commands.add(this.territory.getCommandFromSpecification(new AddGrainsToTileCommandSpecification(location, grainCount)).get());
         return this;
     }
 

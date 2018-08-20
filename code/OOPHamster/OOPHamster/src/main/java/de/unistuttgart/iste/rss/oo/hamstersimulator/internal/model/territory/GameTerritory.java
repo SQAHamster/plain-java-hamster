@@ -38,7 +38,7 @@ public class GameTerritory extends EditorTerritory {
                 
                 assert currentTile.content.contains(specification.getGrain());
 
-                builder.newAddToPropertyCommand(currentTile.content, specification.getGrain());
+                builder.newRemoveFromPropertyCommand(currentTile.content, specification.getGrain());
                 builder.newSetPropertyCommand(specification.getGrain().currentTile, Optional.empty());
             }
         };
@@ -50,10 +50,7 @@ public class GameTerritory extends EditorTerritory {
             protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
                 assert specification.getHamster().getCurrentTile().isPresent();
                 final Tile currentTile = specification.getHamster().getCurrentTile().get();
-                
-                assert currentTile.content.contains(specification.getGrain());
-
-                builder.newRemoveFromPropertyCommand(currentTile.content, specification.getGrain());
+                builder.newAddToPropertyCommand(currentTile.content, specification.getGrain());
                 builder.newSetPropertyCommand(specification.getGrain().currentTile, Optional.of(currentTile));
             }
         };
@@ -85,8 +82,12 @@ public class GameTerritory extends EditorTerritory {
     }
 
     @Override
-    public Command getCommandFromSpecification(final CommandSpecification spec) {
-        return this.editCommandFactory.apply(spec);
+    public Optional<Command> getCommandFromSpecification(final CommandSpecification spec) {
+        final Optional<Command> editorCommand = super.getCommandFromSpecification(spec);
+        if (editorCommand.isPresent()) {
+            return editorCommand;
+        }
+        return Optional.ofNullable(this.editCommandFactory.apply(spec));
     }
 
     @Override

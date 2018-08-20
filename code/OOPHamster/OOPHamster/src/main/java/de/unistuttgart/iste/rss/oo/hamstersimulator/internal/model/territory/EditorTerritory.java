@@ -1,5 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory;
 
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -36,8 +37,8 @@ public class EditorTerritory extends ReadOnlyTerritory {
         return (EditorHamster) this.defaultHamster.get();
     }
 
-    public Command getCommandFromSpecification(final CommandSpecification spec) {
-        return this.editCommandFactory.apply(spec);
+    public Optional<Command> getCommandFromSpecification(final CommandSpecification spec) {
+        return Optional.ofNullable(this.editCommandFactory.apply(spec));
     }
 
     @Override
@@ -50,7 +51,7 @@ public class EditorTerritory extends ReadOnlyTerritory {
             @Override
             protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
                 final Tile tile = getTileAt(specification.getLocation());
-                builder.newSetPropertyCommand(getDefaultHamster().currentTile, tile);
+                builder.newSetPropertyCommand(getDefaultHamster().currentTile, Optional.of(tile));
                 builder.newAddToPropertyCommand(tile.content, getDefaultHamster());
             }
         };
@@ -75,7 +76,7 @@ public class EditorTerritory extends ReadOnlyTerritory {
                 final Tile tile = getTileAt(specification.getLocation());
                 final TileContent newWall = new Wall();
                 builder.newAddToPropertyCommand(tile.content, newWall);
-                builder.newSetPropertyCommand(newWall.currentTile, tile);
+                builder.newSetPropertyCommand(newWall.currentTile, Optional.of(tile));
             }
         };
     }
@@ -88,7 +89,7 @@ public class EditorTerritory extends ReadOnlyTerritory {
                 for (int i = 0; i < specification.getAmount(); i++) {
                     final TileContent newContent = new Grain();
                     builder.newAddToPropertyCommand(tile.content, newContent);
-                    builder.newSetPropertyCommand(newContent.currentTile, tile);
+                    builder.newSetPropertyCommand(newContent.currentTile, Optional.of(tile));
                 }
             }
         };
@@ -103,8 +104,8 @@ public class EditorTerritory extends ReadOnlyTerritory {
                         map(location -> getTileAt(location)).
                         forEach(tile -> builder.newRemoveFromPropertyCommand(tiles, tile));
                 }
-                builder.newSetPropertyCommand(territorySize, getSize());
-                getAllLocations(getSize()).
+                builder.newSetPropertyCommand(territorySize, spec.getSize());
+                getAllLocations(spec.getSize()).
                     forEach(location -> builder.newAddToPropertyCommand(tiles, new Tile(EditorTerritory.this, location)));
             }
         };

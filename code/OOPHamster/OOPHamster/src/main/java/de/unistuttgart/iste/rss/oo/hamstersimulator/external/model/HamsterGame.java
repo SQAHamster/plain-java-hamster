@@ -1,5 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractCompositeCommand;
@@ -7,6 +8,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EditCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.AbstractHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
@@ -54,12 +56,21 @@ public class HamsterGame {
     }
 
     public void processCommandSpecification(final CommandSpecification specification) {
-        final Command territoryCommandPart = this.getTerritory().getInternalTerritory().getCommandFromSpecification(specification);
-        final Command logCommandPart = this.log.getCommandFromSpecification(specification);
+        final Optional<Command> territoryCommandPart = this.getTerritory().getInternalTerritory().getCommandFromSpecification(specification);
+        final Optional<Command> logCommandPart = this.log.getCommandFromSpecification(specification);
+        final Optional<Command> hamsterPart;
+        if (specification instanceof AbstractHamsterCommandSpecification) {
+            final AbstractHamsterCommandSpecification hamsterCommandSpec = (AbstractHamsterCommandSpecification) specification;
+            hamsterPart = hamsterCommandSpec.getHamster().getCommandFromSpecification(specification);
+        } else {
+            hamsterPart = Optional.empty();
+        }
         final Command composite = new AbstractCompositeCommand() {
             @Override
             protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
-                builder.add(territoryCommandPart, logCommandPart);
+                territoryCommandPart.ifPresent(c -> builder.add(c));
+                logCommandPart.ifPresent(c -> builder.add(c));
+                hamsterPart.ifPresent(c -> builder.add(c));
             }
         };
         this.commandStack.execute(composite);

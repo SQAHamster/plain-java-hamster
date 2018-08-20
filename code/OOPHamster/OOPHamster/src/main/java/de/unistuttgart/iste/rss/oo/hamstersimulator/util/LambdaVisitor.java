@@ -12,8 +12,12 @@ public class LambdaVisitor<B, A> implements Function<B, A> {
     }
 
     @Override
-    public A apply( final Object o ) {
-        return fMap.get(o.getClass()).apply( o );
+    public A apply(final Object o) {
+        final Function<Object, A> f = fMap.get(o.getClass());
+        if (f == null) {
+            return null;
+        }
+        return f.apply( o );
     }
 
     public static class Acceptor<A, B, C> {
