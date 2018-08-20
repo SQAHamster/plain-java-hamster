@@ -15,3 +15,12 @@
 .game-grid-cell.first-row.first-column {
     -fx-background-insets: 0, 1 ;
 }
+.game-log {
+	-fx-background-color: white;
+}
+.game-log .list-cell:odd { 
+	-fx-background-color: linear-gradient(#CCCCCC 0%, #BBBBBB 25%, #BBBBBB 75%, #AAAAAA 100%); 
+}
+.game-log .list-cell:even { 
+	-fx-background-color: linear-gradient(#DDDDDD 0%, #CCCCCC 25%, #CCCCCC 75%, #BBBBBB 100%);
+}

@@ -101,7 +101,7 @@ public class Hamster {
         return this.internalHamster.getGrainInMouth().isEmpty();
     }
 
-    public static Hamster fromInternalDefaultHamster(final Territory territory) {
+    static Hamster fromInternalDefaultHamster(final Territory territory) {
         return new Hamster(territory);
     }
 

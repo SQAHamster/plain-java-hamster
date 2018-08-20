@@ -14,7 +14,6 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.comma
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.MoveCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.PickGrainCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.PutGrainCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.TurnLeftCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.util.LambdaVisitor;
 
 public class GameTerritory extends EditorTerritory {
@@ -27,7 +26,6 @@ public class GameTerritory extends EditorTerritory {
                 on(InitHamsterCommandSpecification.class).then(this::createInitHamsterCommand).
                 on(PickGrainCommandSpecification.class).then(this::createPickGrainCommand).
                 on(PutGrainCommandSpecification.class).then(this::createPutGrainCommand).
-                on(TurnLeftCommandSpecification.class).then(s -> Command.EMPTY).
                 on(MoveCommandSpecification.class).then(this::createMoveCommand);
     }
 

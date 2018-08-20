@@ -11,7 +11,8 @@ public abstract class SimpleHamsterGame {
     protected Console console = System.console();
 
     protected void start() {
-        paule = Hamster.fromInternalDefaultHamster(game.getTerritory());
+        paule = game.getTerritory().getDefaultHamster();
+        
         run();
         game.finished();
     }

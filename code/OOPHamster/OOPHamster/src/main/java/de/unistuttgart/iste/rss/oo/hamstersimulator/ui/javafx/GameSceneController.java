@@ -8,6 +8,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Rea
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -25,17 +26,19 @@ public class GameSceneController {
     class CellFormat extends ListCell<LogEntry> {
         @Override
         protected void updateItem(final LogEntry item, final boolean empty) {
-            super.updateItem(item, empty);
-            if (!empty) {
-                Platform.runLater(() -> {
+            Platform.runLater(() -> {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
                     setText(item.getMessage());
                     if (hamsterGrid.hamsterToColorPos.containsKey(item.getHamster())) {
                         setTextFill(TileNode.hamsterColors[hamsterGrid.hamsterToColorPos.get(item.getHamster())]);
                     } else {
                         setTextFill(Color.BLACK);
                     }
-                });
-            }
+                }
+            });
         }
     }
 
@@ -94,6 +97,13 @@ public class GameSceneController {
             }
         });
         this.log.itemsProperty().bind(this.game.getGameLog().logProperty());
+        this.log.getItems().addListener(new ListChangeListener<LogEntry>(){
+
+            @Override
+            public void onChanged(final ListChangeListener.Change<? extends LogEntry> c) {
+                Platform.runLater(() -> log.scrollTo(c.getList().size()-1));
+            }
+        });
     }
 
 }

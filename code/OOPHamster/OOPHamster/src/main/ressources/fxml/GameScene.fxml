@@ -63,7 +63,7 @@
          <items>
            	<HamsterTerritoryGrid fx:id="hamsterGrid" />
            	<StackPane>
-            	<ListView fx:id="log"/>
+            	<ListView fx:id="log" styleClass="game-log"/>
             </StackPane>
          </items>
       </SplitPane>

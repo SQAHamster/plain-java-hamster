@@ -9,7 +9,6 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.InitHamsterCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.MoveCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.PickGrainCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.PutGrainCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.TurnLeftCommandSpecification;
@@ -24,7 +23,6 @@ public class GameHamster extends EditorHamster {
         super();
         editCommandFactory = new LambdaVisitor<CommandSpecification, Command>().
                 on(InitHamsterCommandSpecification.class).then(this::createInitHamsterCommand).
-                on(MoveCommandSpecification.class).then(this::createMoveCommand).
                 on(PickGrainCommandSpecification.class).then(this::createPickGrainCommand).
                 on(PutGrainCommandSpecification.class).then(this::createPutGrainCommand).
                 on(TurnLeftCommandSpecification.class).then(this::createTurnLeftCommand);
@@ -68,10 +66,6 @@ public class GameHamster extends EditorHamster {
                 builder.newSetPropertyCommand(direction, newDirection);
             }
         };
-    }
-
-    private Command createMoveCommand(final MoveCommandSpecification specification) {
-        return Command.EMPTY;
     }
     
     @Override
