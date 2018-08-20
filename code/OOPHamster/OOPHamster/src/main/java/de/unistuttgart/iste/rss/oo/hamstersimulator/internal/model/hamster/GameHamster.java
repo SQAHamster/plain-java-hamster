@@ -2,15 +2,18 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster;
 
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractCompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.InitHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.MoveCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.PickGrainCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.PutGrainCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.TurnLeftCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.util.LambdaVisitor;
 
 public class GameHamster extends EditorHamster {
@@ -20,10 +23,23 @@ public class GameHamster extends EditorHamster {
     public GameHamster() {
         super();
         editCommandFactory = new LambdaVisitor<CommandSpecification, Command>().
+                on(InitHamsterCommandSpecification.class).then(this::createInitHamsterCommand).
                 on(MoveCommandSpecification.class).then(this::createMoveCommand).
                 on(PickGrainCommandSpecification.class).then(this::createPickGrainCommand).
                 on(PutGrainCommandSpecification.class).then(this::createPutGrainCommand).
                 on(TurnLeftCommandSpecification.class).then(this::createTurnLeftCommand);
+    }
+
+    private Command createInitHamsterCommand(final InitHamsterCommandSpecification specification) {
+        return new AbstractCompositeCommand() {
+            @Override
+            protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
+                builder.newSetPropertyCommand(direction, specification.getNewDirection());
+                IntStream.
+                    range(0, specification.getNewGrainCount()).
+                    forEach(i -> builder.newAddToPropertyCommand(grainInMouth, new Grain()));
+            }
+        };
     }
 
     private Command createPickGrainCommand(final PickGrainCommandSpecification specification) {

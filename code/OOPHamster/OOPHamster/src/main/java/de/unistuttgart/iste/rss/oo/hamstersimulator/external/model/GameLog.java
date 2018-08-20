@@ -7,7 +7,11 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LogEntry;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.GameHamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.InitHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.MoveCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.PickGrainCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.PutGrainCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.TurnLeftCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.WriteCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.properties.ModifyPropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.properties.ModifyPropertyCommandSpecification;
@@ -27,6 +31,10 @@ public class GameLog {
         super();
         editCommandFactory = new LambdaVisitor<CommandSpecification, Command>().
                 on(MoveCommandSpecification.class).then(s -> getLogCommand(s.getHamster(), "Move")).
+                on(TurnLeftCommandSpecification.class).then(s -> getLogCommand(s.getHamster(), "Turn Left")).
+                on(InitHamsterCommandSpecification.class).then(s -> getLogCommand(null, "Init Hamster")).
+                on(PickGrainCommandSpecification.class).then(s -> getLogCommand(s.getHamster(), "Pick Grain")).
+                on(PutGrainCommandSpecification.class).then(s -> getLogCommand(s.getHamster(), "Put Grain")).
                 on(WriteCommandSpecification.class).then(s -> getLogCommand(s.getHamster(), s.getMessage()));
     }
     

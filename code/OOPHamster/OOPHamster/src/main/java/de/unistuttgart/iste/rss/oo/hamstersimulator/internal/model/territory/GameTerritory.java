@@ -10,6 +10,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.GameHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.InitHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.MoveCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.PickGrainCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.PutGrainCommandSpecification;
@@ -23,12 +24,24 @@ public class GameTerritory extends EditorTerritory {
     public GameTerritory() {
         super();
         editCommandFactory = new LambdaVisitor<CommandSpecification, Command>().
+                on(InitHamsterCommandSpecification.class).then(this::createInitHamsterCommand).
                 on(PickGrainCommandSpecification.class).then(this::createPickGrainCommand).
                 on(PutGrainCommandSpecification.class).then(this::createPutGrainCommand).
                 on(TurnLeftCommandSpecification.class).then(s -> Command.EMPTY).
                 on(MoveCommandSpecification.class).then(this::createMoveCommand);
     }
 
+    private Command createInitHamsterCommand(final InitHamsterCommandSpecification specification) {
+        return new AbstractCompositeCommand() {
+            @Override
+            protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
+                final Tile tile = getTileAt(specification.getLocation());
+                builder.newSetPropertyCommand(specification.getHamster().currentTile, Optional.of(tile));
+                builder.newAddToPropertyCommand(tile.content, specification.getHamster());
+            }
+        };
+    }
+    
     private Command createPickGrainCommand(final PickGrainCommandSpecification specification) {
         return new AbstractCompositeCommand() {
             @Override

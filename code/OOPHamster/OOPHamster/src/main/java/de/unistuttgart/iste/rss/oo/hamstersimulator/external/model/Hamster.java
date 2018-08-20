@@ -46,7 +46,7 @@ public class Hamster {
         checkNotNull(newDirection);
         checkArgument(newGrainCount >= 0);
         this.game = territory.getGame();
-        this.game.processCommandSpecification(new InitHamsterCommandSpecification(territory.getInternalTerritory(), location, newDirection, newGrainCount));
+        this.game.processCommandSpecification(new InitHamsterCommandSpecification(this.internalHamster, territory.getInternalTerritory(), location, newDirection, newGrainCount));
     }
 
     public void move() {
