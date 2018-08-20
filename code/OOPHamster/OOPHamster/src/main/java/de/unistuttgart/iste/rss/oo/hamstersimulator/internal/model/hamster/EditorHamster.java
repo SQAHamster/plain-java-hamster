@@ -5,7 +5,7 @@ import java.util.stream.IntStream;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractCompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.CommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.command.specification.InitDefaultHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.util.LambdaVisitor;

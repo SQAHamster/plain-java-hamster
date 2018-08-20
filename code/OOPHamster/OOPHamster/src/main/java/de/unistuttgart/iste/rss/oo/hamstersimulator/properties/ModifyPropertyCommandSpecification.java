@@ -1,6 +1,6 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.properties;
 
-public final class UnidirectionalUpdatePropertyCommandSpecification  {
+public final class ModifyPropertyCommandSpecification  {
 
     public enum ActionKind {
         SET, ADD, REMOVE
@@ -9,7 +9,7 @@ public final class UnidirectionalUpdatePropertyCommandSpecification  {
     private final Object newValue;
     private final ActionKind actionKind;
 
-    public UnidirectionalUpdatePropertyCommandSpecification(final Object newValue, final ActionKind actionKind) {
+    public ModifyPropertyCommandSpecification(final Object newValue, final ActionKind actionKind) {
         super();
         this.newValue = newValue;
         this.actionKind = actionKind;

@@ -5,7 +5,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.properties.ModifyPropertyCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.properties.ModifyPropertyCommandSpecification.ActionKind;
 import javafx.beans.property.Property;
 
 public abstract class AbstractCompositeCommand extends Command {
@@ -50,20 +51,20 @@ public abstract class AbstractCompositeCommand extends Command {
                 final Property<G> property,
                 final Object value,
                 final ActionKind action) {
-            commandsToExecute.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(property, value, action));
+            commandsToExecute.add(ModifyPropertyCommand.createPropertyUpdateCommand(property, value, action));
             return this;
         }
         
         public <G> void newSetPropertyCommand (final Property<G> property, final Object value) {
-            this.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(property, value, ActionKind.SET));
+            this.add(ModifyPropertyCommand.createPropertyUpdateCommand(property, value, ActionKind.SET));
         }
 
         public <G> void newAddToPropertyCommand (final Property<G> property, final Object value) {
-            this.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(property, value, ActionKind.ADD));
+            this.add(ModifyPropertyCommand.createPropertyUpdateCommand(property, value, ActionKind.ADD));
         }
 
         public <G> void newRemoveFromPropertyCommand (final Property<G> property, final Object value) {
-            this.add(UnidirectionalUpdatePropertyCommand.createPropertyUpdateCommand(property, value, ActionKind.REMOVE));
+            this.add(ModifyPropertyCommand.createPropertyUpdateCommand(property, value, ActionKind.REMOVE));
         }
         
     

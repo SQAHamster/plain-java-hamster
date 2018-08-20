@@ -1,18 +1,18 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.properties;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.UnidirectionalUpdatePropertyCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.specification.UnidirectionalUpdatePropertyCommandSpecification.ActionKind;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.properties.ModifyPropertyCommandSpecification.ActionKind;
 import javafx.beans.property.Property;
 import javafx.beans.value.WritableListValue;
 import javafx.beans.value.WritableSetValue;
 
-public class UnidirectionalUpdatePropertyCommand<T> extends Command {
+public class ModifyPropertyCommand<T> extends Command {
 
     private Object oldValue;
     private final Property<T> property;
-    private final UnidirectionalUpdatePropertyCommandSpecification specification;
+    private final ModifyPropertyCommandSpecification specification;
 
-    public UnidirectionalUpdatePropertyCommand(final Property<T> property, final UnidirectionalUpdatePropertyCommandSpecification spec) {
+    public ModifyPropertyCommand(final Property<T> property, final ModifyPropertyCommandSpecification spec) {
         super();
         this.property = property;
         this.specification = spec;
@@ -75,11 +75,11 @@ public class UnidirectionalUpdatePropertyCommand<T> extends Command {
         }
     }
 
-    public static <G> UnidirectionalUpdatePropertyCommand<G> createPropertyUpdateCommand(
+    public static <G> ModifyPropertyCommand<G> createPropertyUpdateCommand(
             final Property<G> property,
             final Object value,
             final ActionKind action) {
-        return new UnidirectionalUpdatePropertyCommand<G>(property, new UnidirectionalUpdatePropertyCommandSpecification(value, action));
+        return new ModifyPropertyCommand<G>(property, new ModifyPropertyCommandSpecification(value, action));
     }
 
 }
