@@ -4,17 +4,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.properties.ModifyPropertyCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.properties.ModifyPropertyCommandSpecification.ActionKind;
 import javafx.beans.property.Property;
 
-public abstract class AbstractCompositeCommand extends Command {
+public class CompositeCommand extends Command {
 
-    List<Command> commandsToExecute = new LinkedList<>();
-    protected CompositeCommandBuilder compositeCommandBuilder = new CompositeCommandBuilder();
+    private List<Command> commandsToExecute = new LinkedList<>();
+    private final CompositeCommandBuilder compositeCommandBuilder = new CompositeCommandBuilder();
     private boolean isBuilt = false;
+    private Consumer<CompositeCommandBuilder> constructor = null;
 
+    public CompositeCommand setConstructor(final Consumer<CompositeCommandBuilder> constructor) {
+        this.constructor = constructor;
+        return this;
+    }
+    
     @Override
     public void execute() {
         if (!isBuilt) {
@@ -46,14 +53,6 @@ public abstract class AbstractCompositeCommand extends Command {
             }
             return this;
         }
-
-        public <G> CompositeCommandBuilder addPropertyUpdateCommand(
-                final Property<G> property,
-                final Object value,
-                final ActionKind action) {
-            commandsToExecute.add(ModifyPropertyCommand.createPropertyUpdateCommand(property, value, action));
-            return this;
-        }
         
         public <G> void newSetPropertyCommand (final Property<G> property, final Object value) {
             this.add(ModifyPropertyCommand.createPropertyUpdateCommand(property, value, ActionKind.SET));
@@ -66,13 +65,11 @@ public abstract class AbstractCompositeCommand extends Command {
         public <G> void newRemoveFromPropertyCommand (final Property<G> property, final Object value) {
             this.add(ModifyPropertyCommand.createPropertyUpdateCommand(property, value, ActionKind.REMOVE));
         }
-        
-    
     }
 
-    protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {}
-
-    public List<Command> getCommandsToExecute() {
-        return Collections.unmodifiableList(this.commandsToExecute);
-    };
+    protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
+        if (constructor != null) {
+            constructor.accept(builder);
+        }
+    }
 }

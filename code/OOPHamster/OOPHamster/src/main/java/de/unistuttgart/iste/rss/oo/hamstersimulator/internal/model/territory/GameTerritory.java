@@ -3,7 +3,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory;
 import java.util.Optional;
 import java.util.function.Function;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractCompositeCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
@@ -30,7 +30,7 @@ public class GameTerritory extends EditorTerritory {
     }
 
     private Command createInitHamsterCommand(final InitHamsterCommandSpecification specification) {
-        return new AbstractCompositeCommand() {
+        return new CompositeCommand() {
             @Override
             protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
                 final Tile tile = getTileAt(specification.getLocation());
@@ -41,7 +41,7 @@ public class GameTerritory extends EditorTerritory {
     }
     
     private Command createPickGrainCommand(final PickGrainCommandSpecification specification) {
-        return new AbstractCompositeCommand() {
+        return new CompositeCommand() {
             @Override
             protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
                 assert specification.getHamster().getCurrentTile().isPresent();
@@ -56,7 +56,7 @@ public class GameTerritory extends EditorTerritory {
     }
 
     private Command createPutGrainCommand(final PutGrainCommandSpecification specification) {
-        return new AbstractCompositeCommand() {
+        return new CompositeCommand() {
             @Override
             protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
                 assert specification.getHamster().getCurrentTile().isPresent();
@@ -68,7 +68,7 @@ public class GameTerritory extends EditorTerritory {
     }
     
     private Command createMoveCommand(final MoveCommandSpecification specification) {
-        return new AbstractCompositeCommand() {
+        return new CompositeCommand() {
             @Override
             protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
                 assert specification.getHamster().getCurrentTile().isPresent();

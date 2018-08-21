@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractCompositeCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
@@ -47,7 +47,7 @@ public class EditorTerritory extends ReadOnlyTerritory {
     }
     
     private Command createInitDefaultHamsterCommand(final InitDefaultHamsterCommandSpecification specification) {
-        return new AbstractCompositeCommand() {
+        return new CompositeCommand() {
             @Override
             protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
                 final Tile tile = getTileAt(specification.getLocation());
@@ -58,7 +58,7 @@ public class EditorTerritory extends ReadOnlyTerritory {
     }
     
     private Command createClearTileCommand(final ClearTileCommandSpecification specification) {
-        return new AbstractCompositeCommand() {
+        return new CompositeCommand() {
             @Override
             protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
                 final Tile tile = getTileAt(specification.getLocation());
@@ -70,7 +70,7 @@ public class EditorTerritory extends ReadOnlyTerritory {
     }
 
     private Command createAddWallToTileCommand(final AddWallToTileCommandSpecification specification) {
-        return new AbstractCompositeCommand() {
+        return new CompositeCommand() {
             @Override
             protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
                 final Tile tile = getTileAt(specification.getLocation());
@@ -82,7 +82,7 @@ public class EditorTerritory extends ReadOnlyTerritory {
     }
 
     private Command createAddGrainsToTileCommand(final AddGrainsToTileCommandSpecification specification) {
-        return new AbstractCompositeCommand() {
+        return new CompositeCommand() {
             @Override
             protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
                 final Tile tile = getTileAt(specification.getLocation());
@@ -96,7 +96,7 @@ public class EditorTerritory extends ReadOnlyTerritory {
     }
 
     private Command createInitializeTerritoryCommand(final InitializeTerritoryCommandSpecification spec) {
-        return new AbstractCompositeCommand() {
+        return new CompositeCommand() {
             @Override
             protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
                 if (getSize().getRowCount() > 0 && getSize().getColumnCount() > 0) {

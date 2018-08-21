@@ -1,4 +1,3 @@
-
 class Example01 extends SimpleHamsterGame {
 
     @Override

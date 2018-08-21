@@ -3,7 +3,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractCompositeCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EditCommandStack;
@@ -65,7 +65,7 @@ public class HamsterGame {
         } else {
             hamsterPart = Optional.empty();
         }
-        final Command composite = new AbstractCompositeCommand() {
+        final Command composite = new CompositeCommand() {
             @Override
             protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
                 territoryCommandPart.ifPresent(c -> builder.add(c));

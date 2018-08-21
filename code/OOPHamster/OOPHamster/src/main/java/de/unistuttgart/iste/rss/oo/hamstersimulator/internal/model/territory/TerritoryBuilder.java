@@ -2,7 +2,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory;
 
 import java.util.LinkedList;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.AbstractCompositeCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
@@ -50,7 +50,7 @@ public class TerritoryBuilder {
     }
 
     public Command build() {
-        return new AbstractCompositeCommand() {
+        return new CompositeCommand() {
             @Override
             protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
                 builder.add(commands);
