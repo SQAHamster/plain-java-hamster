@@ -23,12 +23,5 @@
 			<version>5.1.0</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>cofjava</groupId>
-			<artifactId>cofjava</artifactId>
-			<scope>system</scope>
-			<version>1.3</version>
-			<systemPath>${basedir}/lib/cofoja.asm-1.3-20160207.jar</systemPath>
-		</dependency>
 	</dependencies>
 </project>
