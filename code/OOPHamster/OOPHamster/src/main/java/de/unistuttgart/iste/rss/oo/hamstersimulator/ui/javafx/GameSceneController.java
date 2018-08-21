@@ -1,13 +1,14 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LogEntry;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -25,17 +26,19 @@ public class GameSceneController {
     class CellFormat extends ListCell<LogEntry> {
         @Override
         protected void updateItem(final LogEntry item, final boolean empty) {
-            super.updateItem(item, empty);
-            if (!empty) {
-                Platform.runLater(() -> {
+            Platform.runLater(() -> {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
                     setText(item.getMessage());
                     if (hamsterGrid.hamsterToColorPos.containsKey(item.getHamster())) {
                         setTextFill(TileNode.hamsterColors[hamsterGrid.hamsterToColorPos.get(item.getHamster())]);
                     } else {
                         setTextFill(Color.BLACK);
                     }
-                });
-            }
+                }
+            });
         }
     }
 
@@ -50,7 +53,7 @@ public class GameSceneController {
     @FXML private SplitPane splitPane;
     @FXML private ListView<LogEntry> log;
 
-    private GameCommandStack<Command> commandStack;
+    private GameCommandStack commandStack;
     private HamsterGame game;
 
     @FXML
@@ -77,10 +80,10 @@ public class GameSceneController {
         commandStack.resume();
     }
 
-    public void connectToGame(final HamsterGame hamsterGame) {
+    public void connectToGame(final HamsterGame hamsterGame, final ReadOnlyTerritory territory, final GameCommandStack commandStack) {
         this.game = hamsterGame;
-        this.hamsterGrid.bindToTerritory(game.getInternalTerritory());
-        this.commandStack = game.getCommandStack();
+        this.commandStack = commandStack;
+        this.hamsterGrid.bindToTerritory(territory);
         final BooleanBinding runningBinding = Bindings.createBooleanBinding(() -> commandStack.stateProperty().get() == Mode.RUNNING, commandStack.stateProperty());
         this.play.disableProperty().bind(Bindings.createBooleanBinding(() -> commandStack.stateProperty().get() == Mode.PAUSED, commandStack.stateProperty()).not());
         this.pause.disableProperty().bind(runningBinding.not());
@@ -93,7 +96,14 @@ public class GameSceneController {
                 return new CellFormat();
             }
         });
-        this.log.itemsProperty().bind(this.game.logProperty());
+        this.log.itemsProperty().bind(this.game.getGameLog().logProperty());
+        this.log.getItems().addListener(new ListChangeListener<LogEntry>(){
+
+            @Override
+            public void onChanged(final ListChangeListener.Change<? extends LogEntry> c) {
+                Platform.runLater(() -> log.scrollTo(c.getList().size()-1));
+            }
+        });
     }
 
 }

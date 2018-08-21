@@ -5,9 +5,9 @@ import java.util.Map;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Territory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.Tile;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Tile;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
@@ -25,12 +25,12 @@ public class HamsterTerritoryGrid extends StackPane {
 
     private static final double MINIMUM_TILE_SIZE = 20.0;
 
-    final Map<Hamster,Integer> hamsterToColorPos = new HashMap<>();
+    final Map<ReadOnlyHamster,Integer> hamsterToColorPos = new HashMap<>();
 
     private final SimpleObjectProperty<Size> gridSize = new SimpleObjectProperty<Size>(this, "gridSize", new Size(0,0));
     private final ReadOnlyListWrapper<TileNode> cells = new ReadOnlyListWrapper<TileNode>(this, "cells", FXCollections.observableArrayList());
     private final GridPane hamsterGrid;
-    private Territory territory;
+    private ReadOnlyTerritory territory;
     private NumberBinding squaredSize;
 
     private final ListChangeListener<Tile> tilesChangedListener = new ListChangeListener<Tile>() {
@@ -63,7 +63,7 @@ public class HamsterTerritoryGrid extends StackPane {
         });
     }
 
-    public void bindToTerritory(final Territory territory) {
+    public void bindToTerritory(final ReadOnlyTerritory territory) {
         this.territory = territory;
         this.gridSize.bind(this.territory.territorySizeProperty());
         this.territory.tilesProperty().addListener(tilesChangedListener);

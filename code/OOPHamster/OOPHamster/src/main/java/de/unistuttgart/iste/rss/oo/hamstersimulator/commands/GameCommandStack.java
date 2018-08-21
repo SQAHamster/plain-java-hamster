@@ -1,24 +1,15 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
 
-import static de.unistuttgart.iste.rss.oo.hamstersimulator.util.Preconditions.checkArgument;
 import static de.unistuttgart.iste.rss.oo.hamstersimulator.util.Preconditions.checkState;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.concurrent.Semaphore;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.WriteCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InitHamsterCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.MoveCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.PickGrainCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.PutGrainCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.TurnLeftCommand;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleDoubleProperty;
 
-public class GameCommandStack<T extends Command> extends CommandStack<T> {
+public class GameCommandStack extends CommandStack {
 
     public enum Mode {
         RUNNING, INITIALIZING, STOPPED, PAUSED
@@ -29,8 +20,6 @@ public class GameCommandStack<T extends Command> extends CommandStack<T> {
 
     private final Semaphore pauseLock = new Semaphore(1, true);
 
-    private final Collection<Class<?>> allowedGameCommands = Arrays.asList(MoveCommand.class, PickGrainCommand.class,
-            PutGrainCommand.class, TurnLeftCommand.class, InitHamsterCommand.class, WriteCommand.class);
     private Thread executingThread;
 
     public void startGame() {
@@ -57,12 +46,10 @@ public class GameCommandStack<T extends Command> extends CommandStack<T> {
     }
 
     @Override
-    public void execute(final T command) {
+    public void execute(final Command command) {
         try {
             this.executingThread = Thread.currentThread();
             checkState(!(state.get() == Mode.STOPPED));
-            checkArgument(state.get() == Mode.INITIALIZING || allowedGameCommands.contains(command.getClass()),
-                    "Only game commands may be executed in game mode!");
             pauseLock.acquire();
             super.execute(command);
             pauseLock.release();

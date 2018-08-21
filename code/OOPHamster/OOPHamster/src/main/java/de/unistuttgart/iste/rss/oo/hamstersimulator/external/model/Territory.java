@@ -1,13 +1,13 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameTerritory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.TerritoryLoader;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.GameTerritory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
 
 public class Territory {
 
-    private final Hamster defaultHamster;
     private final HamsterGame game;
     private final GameTerritory internalTerritory;
+    private final Hamster defaultHamster;
 
     public Territory(final HamsterGame game) {
         super();
@@ -25,16 +25,11 @@ public class Territory {
     }
 
     public void loadFromFile(final String territoryFile) {
-        TerritoryLoader.initializeFor(this.game.getInternalTerritory()).loadFromFile(territoryFile);
+        TerritoryLoader.initializeFor(this.internalTerritory).loadFromFile(territoryFile);
     }
 
-    protected static void delay(final int delay) {
-        try {
-            Thread.sleep(delay);
-        } catch (final InterruptedException e) { }
-    }
-
-    public GameTerritory getInternalTerritory() {
+    GameTerritory getInternalTerritory() {
         return this.internalTerritory;
     }
+
 }

@@ -7,19 +7,19 @@ import java.util.Stack;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 
-public abstract class CommandStack <T extends Command> {
+public abstract class CommandStack {
 
     protected final ReadOnlyBooleanWrapper canUndo = new ReadOnlyBooleanWrapper(this, "canUndo", false);
     protected final ReadOnlyBooleanWrapper canRedo = new ReadOnlyBooleanWrapper(this, "canRedo", false);
 
-    protected final List<T> executedCommands = new LinkedList<>();
-    protected final Stack<T> undoneCommands = new Stack<>();
+    protected final List<Command> executedCommands = new LinkedList<>();
+    protected final Stack<Command> undoneCommands = new Stack<>();
 
     public CommandStack() {
         super();
     }
 
-    public void execute(final T command) {
+    public void execute(final Command command) {
         redoAll();
         command.execute();
         this.executedCommands.add(command);
@@ -39,7 +39,7 @@ public abstract class CommandStack <T extends Command> {
     }
 
     public void undo() {
-        final T undoneCommand = this.executedCommands.remove(this.executedCommands.size()-1);
+        final Command undoneCommand = this.executedCommands.remove(this.executedCommands.size()-1);
         undoneCommand.undo();
         undoneCommands.push(undoneCommand);
         this.canUndo.set(executedCommands.size() > 0);
@@ -47,7 +47,7 @@ public abstract class CommandStack <T extends Command> {
     }
 
     public void redo() {
-        final T undoneCommand = this.undoneCommands.pop();
+        final Command undoneCommand = this.undoneCommands.pop();
         undoneCommand.execute();
         this.executedCommands.add(undoneCommand);
         this.canUndo.set(true);
