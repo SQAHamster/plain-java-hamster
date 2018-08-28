@@ -42,8 +42,8 @@ public class Hamster {
     /*
      * Commands
      */
-    
     /*@
+     @ requires territory != null;
      @*/
     public void init(final Territory territory, final Location location, final Direction newDirection, final int newGrainCount) {
         checkNotNull(territory);
