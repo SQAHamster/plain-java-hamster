@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.unistuttgart.iste.rss</groupId>
 	<artifactId>utils</artifactId>
-	<name>Utils</name>
+	<name>Utility classes from the RSS chair</name>
 	<description>Utility classes for RSS projects</description>
 
 	<properties>

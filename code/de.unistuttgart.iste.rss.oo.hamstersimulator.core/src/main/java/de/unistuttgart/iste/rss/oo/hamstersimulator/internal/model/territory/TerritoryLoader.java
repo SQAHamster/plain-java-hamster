@@ -1,7 +1,8 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -96,18 +97,15 @@ public class TerritoryLoader {
     }
 
     private List<String> readLinesFromTerritoryFile(final String territoryFileName) {
-        final ClassLoader classLoader = getClass().getClassLoader();
-        final File file = new File(classLoader.getResource(territoryFileName).getFile());
-
+        final InputStream in = getClass().getResourceAsStream(territoryFileName); 
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         final List<String> list = new ArrayList<String>();
 
-        try (Scanner input = new Scanner(file))
+        try (Scanner input = new Scanner(reader))
         {
             while (input.hasNextLine()) {
                 list.add(input.nextLine());
             }
-        } catch (final FileNotFoundException e) {
-            throw new RuntimeException(e);
         }
 
         return list;

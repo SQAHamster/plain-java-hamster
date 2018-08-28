@@ -15,7 +15,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 public class HamsterGame {
 
-    private static final String DEFAULT_HAMSTER_TERRITORY = "territories/example01.ter";
+    private static final String DEFAULT_HAMSTER_TERRITORY = "/territories/example01.ter";
 
     private final GameLog log = new GameLog();
     private final GameCommandStack commandStack = new GameCommandStack();
