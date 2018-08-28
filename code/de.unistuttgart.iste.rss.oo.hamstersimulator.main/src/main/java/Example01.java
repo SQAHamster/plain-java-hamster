@@ -2,9 +2,6 @@ class Example01 extends SimpleHamsterGame {
 
     @Override
     void run() {
-        game.initialize();
-        game.displayInNewGameWindow();
-
         paule.write("Hallo!");
         paule.move();
         paule.move();
