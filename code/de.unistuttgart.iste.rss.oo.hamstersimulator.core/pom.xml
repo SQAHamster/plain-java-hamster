@@ -8,7 +8,7 @@
 		<groupId>de.unistuttgart.iste.rss.oo.hamstersimulator</groupId>
 		<artifactId>parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../de.unistuttgart.rss.oo.hamstersimulator.parent</relativePath>
+		<relativePath>../de.unistuttgart.iste.rss.oo.hamstersimulator.parent</relativePath>
 	</parent>
 
 	<dependencies>
@@ -18,4 +18,5 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
+	<name>Hamstersimulator Core Model Library</name>
 </project>
