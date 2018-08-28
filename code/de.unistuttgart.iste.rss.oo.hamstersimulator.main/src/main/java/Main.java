@@ -19,7 +19,7 @@ public class Main {
 
     public static void exampleRun(final Territory territory) {
         final Hamster paule = territory.getDefaultHamster();
-        final Hamster willi = new Hamster(territory, Location.from(1, 9), Direction.WEST, 0);
+        final Hamster willi = new Hamster(territory, Location.from(1, 3), Direction.WEST, 0);
         final Hamster marry = new Hamster(territory, Location.from(1, 2), Direction.EAST, 0);
 
         paule.write("Hallo Steffi!");
