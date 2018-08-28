@@ -1,7 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 
-import static de.unistuttgart.iste.rss.oo.hamstersimulator.util.Preconditions.checkArgument;
-import static de.unistuttgart.iste.rss.oo.hamstersimulator.util.Preconditions.checkNotNull;
+import static de.unistuttgart.iste.rss.utils.Preconditions.checkArgument;
+import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
@@ -19,6 +19,8 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Til
 public class Hamster {
 
     private HamsterGame game;
+    /*@ 
+     @*/
     private final GameHamster internalHamster;
 
     public Hamster() {
@@ -40,6 +42,9 @@ public class Hamster {
     /*
      * Commands
      */
+    
+    /*@
+     @*/
     public void init(final Territory territory, final Location location, final Direction newDirection, final int newGrainCount) {
         checkNotNull(territory);
         checkNotNull(location);

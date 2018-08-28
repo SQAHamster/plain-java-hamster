@@ -3,11 +3,12 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EditCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.AbstractHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
@@ -42,7 +43,7 @@ public class HamsterGame {
     }
 
     public void displayInNewGameWindow() {
-        JavaFXUI.openSceneFor(this, this.territory.getInternalTerritory(), this.commandStack);
+        JavaFXUI.openSceneFor(this.territory.getInternalTerritory(), this.commandStack, this.getGameLog());
     }
 
     public void runGame(final Consumer<Territory> hamsterProgram) {

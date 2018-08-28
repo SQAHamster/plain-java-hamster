@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>de.unistuttgart.iste.rss.hamstersimulator.main</name>
+	<name>de.unistuttgart.iste.rss.oo.hamstersimulator.ui</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -20,16 +20,10 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
-		<buildCommand>
-			<name>org.jmlspecs.OpenJMLUI.JMLBuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.eclipse.m2e.core.maven2Nature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.eclipse.m2e.core.maven2Nature</nature>
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
-		<nature>org.jmlspecs.OpenJMLUI.JMLNatureID</nature>
 	</natures>
 </projectDescription>

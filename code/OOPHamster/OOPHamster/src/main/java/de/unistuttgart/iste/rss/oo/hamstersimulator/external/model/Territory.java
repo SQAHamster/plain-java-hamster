@@ -1,5 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.GameTerritory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
 
@@ -24,6 +25,10 @@ public class Territory {
         return this.game;
     }
 
+    public /*@ pure @*/ boolean isLocationInTerritory(final Location location) {
+        return this.internalTerritory.isLocationInTerritory(location);
+    }
+    
     public void loadFromFile(final String territoryFile) {
         TerritoryLoader.initializeFor(this.internalTerritory).loadFromFile(territoryFile);
     }
