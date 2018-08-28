@@ -22,7 +22,7 @@ public class Main {
         final Hamster willi = new Hamster(territory, Location.from(1, 3), Direction.WEST, 0);
         final Hamster marry = new Hamster(territory, Location.from(1, 2), Direction.EAST, 0);
 
-        paule.write("Hallo Steffi!");
+        paule.write("Hallo!");
         while (!paule.grainAvailable() && paule.frontIsClear()) {
             paule.move();
         }

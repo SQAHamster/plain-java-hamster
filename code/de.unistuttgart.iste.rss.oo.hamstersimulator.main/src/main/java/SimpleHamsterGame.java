@@ -10,18 +10,28 @@ public abstract class SimpleHamsterGame {
     protected Hamster paule;
     protected Console console = System.console();
 
-    protected void start() {
-        paule = game.getTerritory().getDefaultHamster();
+    public SimpleHamsterGame() {
+        JavaFXUI.start();
+
+        game.initialize();
+        game.displayInNewGameWindow();
         
-        run();
+        paule = game.getTerritory().getDefaultHamster();
+    }
+
+    protected void stop() {
         game.finished();
     }
 
-    abstract void run();
+    void run() {}
 
+    public Hamster getPaule() {
+        return paule;
+    }
+    
     public static void main(final String[] args) {
-        JavaFXUI.start();
-
-        new Example01().start();
+        final Example01 example01 = new Example01();
+        example01.run();
+        example01.stop();
     }
 }
