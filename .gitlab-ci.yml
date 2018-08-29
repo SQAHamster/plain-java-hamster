@@ -48,12 +48,12 @@ cache:
 # Validate merge requests using JDK8
 validate:jdk8:
   <<: *validate
-  image: maven:3.3.9-jdk-8
+  image: driv/docker-maven-java-oracle:latest
 
 # Verify merge requests using JDK8
 verify:jdk8:
   <<: *verify
-  image: maven:3.3.9-jdk-8
+  image: driv/docker-maven-java-oracle:latest
 
 
 # For `master` branch run `mvn deploy` automatically.
@@ -72,7 +72,7 @@ deploy:jdk8:
   artifacts:
     paths:
     - target/staging
-  image: maven:3.3.9-jdk-8
+  image: driv/docker-maven-java-oracle:latest
 
 
 pages:
