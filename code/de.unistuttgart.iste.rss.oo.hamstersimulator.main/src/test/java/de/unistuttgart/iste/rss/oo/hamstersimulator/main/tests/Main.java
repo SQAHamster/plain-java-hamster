@@ -1,3 +1,4 @@
+package de.unistuttgart.iste.rss.oo.hamstersimulator.main.tests;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Hamster;
@@ -5,8 +6,17 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
-public class Main {
+/**
+ * Simple test run of the hamster game API examplifying the use of the objects.
+ * @author Steffen Becker
+ *
+ */
+public final class Main {
 
+    /**
+     * Main method which instantiates, initializes, and starts a hamster game.
+     * @param args Default command line parameters, not used.
+     */
     public static void main(final String[] args) {
         JavaFXUI.start();
 
@@ -17,6 +27,10 @@ public class Main {
         game.runGame(Main::exampleRun);
     }
 
+    /**
+     * Hamster main method, executed by this test.
+     * @param territory The territory used during this test.
+     */
     public static void exampleRun(final Territory territory) {
         final Hamster paule = territory.getDefaultHamster();
         final Hamster willi = new Hamster(territory, Location.from(1, 3), Direction.WEST, 0);
@@ -42,4 +56,9 @@ public class Main {
         marry.move();
         marry.write("Ich auch!");
     }
+
+    /**
+     * Default constructor, only the VM should create instances of this.
+     */
+    private Main() { }
 }
