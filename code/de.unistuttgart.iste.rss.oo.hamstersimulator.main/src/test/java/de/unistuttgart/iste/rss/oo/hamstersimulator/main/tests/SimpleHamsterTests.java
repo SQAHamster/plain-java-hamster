@@ -13,7 +13,6 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 /**
  * Simple tests for the hamster API.
@@ -38,10 +37,10 @@ public class SimpleHamsterTests {
      */
     @BeforeAll
     public void initializeGame() {
-        JavaFXUI.start();
+        //JavaFXUI.start();
 
         game = new HamsterGame();
-        game.displayInNewGameWindow();
+        //game.displayInNewGameWindow();
     }
 
     /**
