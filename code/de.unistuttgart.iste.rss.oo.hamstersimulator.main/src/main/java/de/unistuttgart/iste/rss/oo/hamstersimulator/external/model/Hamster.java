@@ -10,6 +10,7 @@ import java.util.Optional;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.HamsterException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.GameHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.InitHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.MoveCommandSpecification;
@@ -113,6 +114,9 @@ public class Hamster {
      * @throws HamsterException When the tile in front of the hamster is blocked
      */
     public void move() {
+        if (!frontIsClear()) {
+            throw new HamsterException("Front is blocked, move aborted");
+        }
         this.game.processCommandSpecification(
                 new MoveCommandSpecification(this.internalHamster));
     }
@@ -245,4 +249,19 @@ public class Hamster {
         return null;
     }
 
+    /**
+     * Get the current hamster location.
+     * @return The current hamster's location in the territory.
+     */
+    public Location getLocation() {
+        return this.internalHamster.getCurrentTile().get().getLocation();
+    }
+
+    /**
+     * Get the current hamster looking direction.
+     * @return The current hamster's looking direction.
+     */
+    public Direction getDirection() {
+        return this.internalHamster.getDirection();
+    }
 }

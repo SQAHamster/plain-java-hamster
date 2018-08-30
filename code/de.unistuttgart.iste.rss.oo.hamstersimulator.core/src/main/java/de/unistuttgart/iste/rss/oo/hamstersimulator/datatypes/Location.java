@@ -3,14 +3,17 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+/**
+ * Immutable class representing a location in the hamster territory.
+ * @author Steffen Becker
+ *
+ */
 public final class Location {
 
+    /**
+     * Constant representing the origin of the coordinate system. 
+     */
     public static final Location ORIGIN = Location.from(0,0);
-
-    @Override
-    public String toString() {
-        return "Location [row=" + row + ", column=" + column + "]";
-    }
 
     private final int row;
     private final int column;
@@ -75,4 +78,11 @@ public final class Location {
         return stream.flatMap(s -> s);
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Location [row=" + row + ", column=" + column + "]";
+    }
 }
