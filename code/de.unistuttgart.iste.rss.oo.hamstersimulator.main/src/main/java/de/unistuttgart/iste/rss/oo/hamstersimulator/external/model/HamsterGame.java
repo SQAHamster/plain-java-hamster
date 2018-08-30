@@ -13,55 +13,128 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.comma
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
+/**
+ * A class representing an instance of a hamster game. A hamster game consists of a territory, on
+ * which the game takes place, a game log for messages, and a command stack for keeping track of the
+ * game's history.
+ * @author Steffen Becker
+ *
+ */
 public class HamsterGame {
 
+    /**
+     * Constant containing the filename of the default territory file.
+     */
     private static final String DEFAULT_HAMSTER_TERRITORY = "/territories/example01.ter";
 
+    /**
+     * Game log object used to print log messages from the game and write commands from hamsters.
+     */
     private final GameLog log = new GameLog();
+
+    /**
+     * Game command stack object used to execute game commands, i.e., commands comming from
+     * the hamster objects on the territory during the simulation run.
+     */
     private final GameCommandStack commandStack = new GameCommandStack();
+
+    /**
+     * The territory object on which the instance of this game takes place.
+     */
     private final Territory territory = new Territory(this);
 
+    /**
+     * Getter for the territory object of this game. Cannot be null.
+     * @return The territory object of this game.
+     */
     public Territory getTerritory() {
         return territory;
     }
-    
+
+    /**
+     * Getter for the game log. Cannot be null.
+     * @return The game log of this hamster game's instance.
+     */
     public GameLog getGameLog() {
         return log;
     }
 
+    /**
+     * Initialize a new hamster game by loading the default territory.
+     */
     public void initialize() {
         initialize(DEFAULT_HAMSTER_TERRITORY);
     }
 
+    /**
+     * Initialize a new hamster game by loading the territory from the passed
+     * territory file path.
+     * @param territoryFile The territory file path. Has to be a location relative to
+     *                      the classes' class path.
+     */
     public void initialize(final String territoryFile) {
-        new EditCommandStack().execute(TerritoryLoader.initializeFor(territory.getInternalTerritory()).loadFromFile(territoryFile));
+        new EditCommandStack().execute(
+                TerritoryLoader.initializeFor(territory.getInternalTerritory()).loadFromFile(territoryFile));
     }
 
+    /**
+     * Reset the hamster game to its initial state. Removes all hamsters besides  the
+     * default hamster and places all gain objects to their initial position.
+     */
     public void reset() {
         this.commandStack.undoAll();
         this.commandStack.reset();
     }
 
+    /**
+     * Opens a new Game UI for this game object. The game UI shows
+     * the game and its current state while the game is executing.
+     */
     public void displayInNewGameWindow() {
         JavaFXUI.openSceneFor(this.territory.getInternalTerritory(), this.commandStack, this.getGameLog());
     }
 
+    /**
+     * Run a given hamster program until it terminates.
+     * @param hamsterProgram The hamster programm to run.
+     */
     public void runGame(final Consumer<Territory> hamsterProgram) {
-        this.commandStack.startGame();
+        startGame();
         hamsterProgram.accept(this.territory);
+        stopGame();
+    }
+
+    /**
+     * Start the execution of a hamster game. Before executing start, no commands can be
+     * executed by the hamster objects in the game.
+     */
+    public void startGame() {
+        this.commandStack.startGame();
+    }
+
+    /**
+     * Stop the execution of the game. The game is finished and needs to be reseted
+     * or closed.
+     */
+    public void stopGame() {
         this.commandStack.stopGame();
     }
 
-    public void finished() {
-        this.commandStack.stopGame();
-    }
-
-    public void processCommandSpecification(final CommandSpecification specification) {
-        final Optional<Command> territoryCommandPart = this.getTerritory().getInternalTerritory().getCommandFromSpecification(specification);
+    /**
+     * This is a central method of the hamster simulation engine. It implements the mediator pattern.
+     * It accepts command specifications of game commands and distributes it to all game entities for
+     * their partial execution. For example, each command specification is sent to the game log so that
+     * it can create an appropriate log entry.
+     * @param specification The command specification of the command to be executed in this game.
+     */
+    void processCommandSpecification(final CommandSpecification specification) {
+        final Optional<Command> territoryCommandPart =
+                territory.getInternalTerritory().getCommandFromSpecification(specification);
         final Optional<Command> logCommandPart = this.log.getCommandFromSpecification(specification);
         final Optional<Command> hamsterPart;
         if (specification instanceof AbstractHamsterCommandSpecification) {
-            final AbstractHamsterCommandSpecification hamsterCommandSpec = (AbstractHamsterCommandSpecification) specification;
+            final AbstractHamsterCommandSpecification hamsterCommandSpec =
+                    (AbstractHamsterCommandSpecification) specification;
             hamsterPart = hamsterCommandSpec.getHamster().getCommandFromSpecification(specification);
         } else {
             hamsterPart = Optional.empty();
@@ -69,9 +142,15 @@ public class HamsterGame {
         final Command composite = new CompositeCommand() {
             @Override
             protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
-                territoryCommandPart.ifPresent(c -> builder.add(c));
-                logCommandPart.ifPresent(c -> builder.add(c));
-                hamsterPart.ifPresent(c -> builder.add(c));
+                if (territoryCommandPart.isPresent()) {
+                    builder.add(territoryCommandPart.get());
+                }
+                if (logCommandPart.isPresent()) {
+                    builder.add(logCommandPart.get());
+                }
+                if (hamsterPart.isPresent()) {
+                    builder.add(hamsterPart.get());
+                }
             }
         };
         this.commandStack.execute(composite);

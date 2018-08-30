@@ -20,7 +20,7 @@ public abstract class SimpleHamsterGame {
     }
 
     protected void stop() {
-        game.finished();
+        game.stopGame();
     }
 
     void run() {}

@@ -73,9 +73,7 @@ public class Hamster {
     private Hamster(final Territory territory) {
         super();
         this.game = territory.getGame();
-        this.internalHamster = territory.
-                               getInternalTerritory().
-                               getDefaultHamster();
+        this.internalHamster = territory.getInternalTerritory().getDefaultHamster();
     }
 
     /*
