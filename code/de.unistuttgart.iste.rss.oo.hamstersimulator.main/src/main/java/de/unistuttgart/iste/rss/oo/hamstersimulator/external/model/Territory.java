@@ -5,7 +5,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Gam
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
 
 /**
- * The territroy class represents territories for hamsters. Territories
+ * The territory class represents territories for hamsters. Territories
  * are rectangular areas with width and height composed out of territory
  * tiles. Tiles again can contain hamster objects, grain objects, or walls.
  * This class provides methods to load or build a territory and to query its
