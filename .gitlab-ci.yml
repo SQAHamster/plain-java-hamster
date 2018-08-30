@@ -51,7 +51,7 @@ validate:jdk8:
   image: driv/docker-maven-java-oracle:latest
 
 test:jdk8:
-  stage: build
+  stage: test
   script:
     - 'mvn $MAVEN_CLI_OPTS test'
   image: driv/docker-maven-java-oracle:latest
