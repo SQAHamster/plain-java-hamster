@@ -7,4 +7,11 @@
  */
 public class Example extends SimpleHamsterGame
 {
+    void run() {
+        paule.move();
+        paule.move();
+        
+        paule.pickGrain();
+        paule.pickGrain();
+    }
 }
