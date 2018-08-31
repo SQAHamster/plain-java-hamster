@@ -11,6 +11,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.HamsterException;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.MouthEmptyException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.NoGrainOnTileException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.GameHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.InitHamsterCommandSpecification;
@@ -149,6 +150,9 @@ public class Hamster {
      * @throws HamsterException when the hamster does not carry any grain.
      */
     public void putGrain() {
+        if (this.internalHamster.getGrainInMouth().isEmpty()) {
+            throw new MouthEmptyException();
+        }
         this.game.processCommandSpecification(
                 new PutGrainCommandSpecification(
                         this.internalHamster,

@@ -13,6 +13,8 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.FrontBlockedException;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.MouthEmptyException;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.NoGrainOnTileException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
 
@@ -86,6 +88,26 @@ public class SimpleHamsterTests {
         assertThrows(FrontBlockedException.class, () -> {
             paule.turnLeft();
             paule.move();
+        });
+    }
+
+    /**
+     * Test picking up a non-existing grain.
+     */
+    @Test
+    public void testFailedPickup() {
+        assertThrows(NoGrainOnTileException.class, () -> {
+            paule.pickGrain();
+        });
+    }
+
+    /**
+     * Test putting a non-existing grain.
+     */
+    @Test
+    public void testFailedPut() {
+        assertThrows(MouthEmptyException.class, () -> {
+            paule.putGrain();
         });
     }
 }
