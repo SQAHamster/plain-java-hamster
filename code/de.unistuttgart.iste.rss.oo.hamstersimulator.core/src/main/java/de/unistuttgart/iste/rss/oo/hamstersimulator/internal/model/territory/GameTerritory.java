@@ -2,12 +2,17 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory;
 
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.FrontBlockedException;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.HamsterNotInitializedException;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.MouthEmptyException;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.NoGrainOnTileException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.GameHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.InitHamsterCommandSpecification;
@@ -41,9 +46,7 @@ public class GameTerritory extends EditorTerritory {
     }
     
     private Command createPickGrainCommand(final PickGrainCommandSpecification specification) {
-        return new CompositeCommand() {
-            @Override
-            protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
+        return new CompositeCommand().setCommandConstructor(builder -> {
                 assert specification.getHamster().getCurrentTile().isPresent();
                 final Tile currentTile = specification.getHamster().getCurrentTile().get();
                 
@@ -52,39 +55,48 @@ public class GameTerritory extends EditorTerritory {
                 builder.newRemoveFromPropertyCommand(currentTile.content, specification.getGrain());
                 builder.newSetPropertyCommand(specification.getGrain().currentTile, Optional.empty());
             }
-        };
+        ).setPreconditionConstructor(builder -> {
+            builder.addNewPrecondition(HamsterNotInitializedException::new, specification.getHamster().getCurrentTile()::isPresent);
+            builder.addNewPrecondition(NoGrainOnTileException::new, () -> specification.getHamster().getCurrentTile().get().content.contains(specification.getGrain()));
+        });
     }
 
     private Command createPutGrainCommand(final PutGrainCommandSpecification specification) {
-        return new CompositeCommand() {
-            @Override
-            protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
+        return new CompositeCommand().setCommandConstructor(builder -> {
                 assert specification.getHamster().getCurrentTile().isPresent();
                 final Tile currentTile = specification.getHamster().getCurrentTile().get();
                 builder.newAddToPropertyCommand(currentTile.content, specification.getGrain());
                 builder.newSetPropertyCommand(specification.getGrain().currentTile, Optional.of(currentTile));
             }
-        };
+        ).setPreconditionConstructor(builder -> {
+            builder.addNewPrecondition(MouthEmptyException::new, specification.getHamster().getGrainInMouth()::isEmpty);
+        });
     }
     
     private Command createMoveCommand(final MoveCommandSpecification specification) {
-        return new CompositeCommand() {
-            @Override
-            protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
-                assert specification.getHamster().getCurrentTile().isPresent();
+        
+        final GameHamster hamster = specification.getHamster();
+        final ReadOnlyTerritory territory = hamster.getCurrentTerritory();
+        final Supplier<Location> newLocation = () -> {
+            final LocationVector movementVector = hamster.getDirection().getMovementVector();
+            return hamster.getCurrentTile().get().getLocation().translate(movementVector);
+        };
+        
+        return new CompositeCommand().setCommandConstructor(builder -> {
                 assert specification.getHamster().getCurrentTerritory() == GameTerritory.this;
 
-                final LocationVector movementVector = specification.getHamster().getDirection().getMovementVector();
-                final Location newHamsterPosition = specification.getHamster().getCurrentTile().get().getLocation().translate(movementVector);
-
-                assert specification.getHamster().getCurrentTerritory().isLocationInTerritory(newHamsterPosition);
-                final Tile newTile = specification.getHamster().getCurrentTerritory().getTileAt(newHamsterPosition);
+                final Location newHamsterPosition = newLocation.get();
+                final Tile newTile = territory.getTileAt(newHamsterPosition);
 
                 builder.newRemoveFromPropertyCommand(specification.getHamster().getCurrentTile().get().content, specification.getHamster());
                 builder.newSetPropertyCommand(specification.getHamster().currentTile, Optional.of(newTile));
                 builder.newAddToPropertyCommand(newTile.content, specification.getHamster());
             }
-        };
+        ).setPreconditionConstructor(builder -> {
+            builder.addNewPrecondition(HamsterNotInitializedException::new, () -> !specification.getHamster().getCurrentTile().isPresent());
+            builder.addNewPrecondition(FrontBlockedException::new, () -> !territory.isLocationInTerritory(newLocation.get()));
+            builder.addNewPrecondition(FrontBlockedException::new, territory.getTileAt(newLocation.get())::isBlocked);
+        });
     }
     
     @Override

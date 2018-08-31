@@ -11,6 +11,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.HamsterException;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.NoGrainOnTileException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.GameHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.InitHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.MoveCommandSpecification;
@@ -114,9 +115,6 @@ public class Hamster {
      * @throws HamsterException When the tile in front of the hamster is blocked
      */
     public void move() {
-        if (!frontIsClear()) {
-            throw new HamsterException("Front is blocked, move aborted");
-        }
         this.game.processCommandSpecification(
                 new MoveCommandSpecification(this.internalHamster));
     }
@@ -139,7 +137,9 @@ public class Hamster {
     public void pickGrain() {
         final Tile currentTile = this.internalHamster.getCurrentTile().get();
         final Grain grain = getRandomGrainFromTile(currentTile);
-        checkArgument(grain != null);
+        if (grain == null) {
+            throw new NoGrainOnTileException();
+        }
         this.game.processCommandSpecification(
                 new PickGrainCommandSpecification(this.internalHamster, grain));
     }

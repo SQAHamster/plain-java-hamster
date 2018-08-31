@@ -37,7 +37,7 @@ public class GameHamster extends EditorHamster {
     }
 
     private Command createInitHamsterCommand(final InitHamsterCommandSpecification specification) {
-        return new CompositeCommand().setConstructor(builder -> {
+        return new CompositeCommand().setCommandConstructor(builder -> {
                 builder.newSetPropertyCommand(direction, specification.getNewDirection());
                 IntStream.
                     range(0, specification.getNewGrainCount()).
@@ -46,19 +46,19 @@ public class GameHamster extends EditorHamster {
     }
 
     private Command createPickGrainCommand(final PickGrainCommandSpecification specification) {
-        return new CompositeCommand().setConstructor(builder -> {
+        return new CompositeCommand().setCommandConstructor(builder -> {
                 builder.newAddToPropertyCommand(grainInMouth, specification.getGrain());
         });
     }
 
     private Command createPutGrainCommand(final PutGrainCommandSpecification specification) {
-        return new CompositeCommand().setConstructor(builder -> {
+        return new CompositeCommand().setCommandConstructor(builder -> {
                 builder.newRemoveFromPropertyCommand(grainInMouth, specification.getGrain());
         });
     }
 
     private Command createTurnLeftCommand(final TurnLeftCommandSpecification specification) {
-        return new CompositeCommand().setConstructor(builder -> {
+        return new CompositeCommand().setCommandConstructor(builder -> {
                 builder.newSetPropertyCommand(direction, getDirection().left());
         });
     }

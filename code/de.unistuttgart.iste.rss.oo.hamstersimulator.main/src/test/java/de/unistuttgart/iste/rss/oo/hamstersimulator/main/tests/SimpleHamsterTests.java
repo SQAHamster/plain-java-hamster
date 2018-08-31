@@ -1,6 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.main.tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.FrontBlockedException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
 
@@ -76,4 +78,14 @@ public class SimpleHamsterTests {
         assertEquals(paule.getDirection(), Direction.EAST);
     }
 
+    /**
+     * Test which tests exception when running against a wall.
+     */
+    @Test
+    public void testFailedMove() {
+        assertThrows(FrontBlockedException.class, () -> {
+            paule.turnLeft();
+            paule.move();
+        });
+    }
 }

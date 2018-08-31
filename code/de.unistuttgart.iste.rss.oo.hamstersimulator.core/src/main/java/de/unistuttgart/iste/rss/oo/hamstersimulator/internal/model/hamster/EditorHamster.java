@@ -22,7 +22,7 @@ public class EditorHamster extends ReadOnlyHamster {
     }
     
     private Command createInitDefaultHamsterCommand(final InitDefaultHamsterCommandSpecification specification) {
-        return new CompositeCommand().setConstructor(builder -> {
+        return new CompositeCommand().setCommandConstructor(builder -> {
                 builder.newSetPropertyCommand(direction, specification.getDirection());
                 IntStream.
                     range(0, specification.getGrainCount()).
