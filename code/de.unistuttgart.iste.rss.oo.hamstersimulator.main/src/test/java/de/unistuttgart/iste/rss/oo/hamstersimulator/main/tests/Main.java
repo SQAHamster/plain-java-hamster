@@ -38,9 +38,9 @@ public final class Main {
         final Hamster marry = new Hamster(territory, Location.from(1, 2), Direction.EAST, 0);
 
         paule.write("Hallo!");
-        final String text = paule.readString();
+        final String text = paule.readString("Please give my any text!");
         paule.write(text);
-        final int value = paule.readNumber();
+        final int value = paule.readNumber("Please give my a positive number!");
         paule.write(Integer.toString(value));
         while (!paule.grainAvailable() && paule.frontIsClear()) {
             paule.move();

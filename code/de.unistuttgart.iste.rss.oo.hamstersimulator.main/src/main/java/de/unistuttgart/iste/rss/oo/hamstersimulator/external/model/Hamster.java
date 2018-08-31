@@ -163,18 +163,20 @@ public class Hamster {
 
     /**
      * Read a number from the hamster simulator UI for further use.
+     * @message The message used to prompt for the number.
      * @return Number read from the user.
      */
-    public int readNumber() {
-        return this.game.getInputInterface().readInteger();
+    public int readNumber(final String message) {
+        return this.game.getInputInterface().readInteger(message);
     }
 
     /**
      * Read a string from the hamster simulator UI for further use.
+     * @message The message used to prompt for the string.
      * @return String read from the user.
      */
-    public String readString() {
-        return this.game.getInputInterface().readString();
+    public String readString(final String message) {
+        return this.game.getInputInterface().readString(message);
     }
 
     /**

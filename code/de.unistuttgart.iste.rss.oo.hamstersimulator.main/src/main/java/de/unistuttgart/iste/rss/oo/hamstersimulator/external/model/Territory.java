@@ -9,9 +9,11 @@ import java.util.stream.Collectors;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.GameTerritory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Tile;
 
 /**
  * The territory class represents territories for hamsters. Territories
@@ -103,6 +105,72 @@ public class Territory {
      */
     public List<Hamster> getHamsters() {
         return this.internalTerritory.getHamsters().stream().
+                map(internalHamster -> this.hamsterTranslation.get(internalHamster)).
+                collect(Collectors.toList());
+    }
+
+    /**
+     * Return the size of the current territory. From the size
+     * you can retrieve the number of rows and colums.
+     * @return A size object representing the size of the territory.
+     *         Is never null.
+     */
+    public Size getTerritorySize() {
+        return this.internalTerritory.getSize();
+    }
+
+    /**
+     * Returns whether the tile at the given location is a wall.
+     * @param location The location of the tile to check for a wall.
+     * @return True if the tile at the given location is blocked by a wall.
+     */
+    public boolean isBlockedByWall(final Location location) {
+        return this.internalTerritory.getTileAt(location).isBlocked();
+    }
+
+    /**
+     * Get the number of grains at the given location.
+     * @param location The location of the tile to check for grain.
+     * @return The number of grains currently available at the given location.
+     */
+    public int getNumberOfGrainsAt(final Location location) {
+        final Tile tile = this.internalTerritory.getTileAt(location);
+        return tile.getGrainCount();
+    }
+
+    /**
+     * Count all grains currently lying freely on any tile in the territory.
+     * @return The total grain count of the territory excluding grains in the
+     *         mouths of hamsters.
+     */
+    public int getTotalGrainCount() {
+        int result = 0;
+        for (int row = 0; row < getTerritorySize().getRowCount(); row++) {
+            for (int column = 0; column < getTerritorySize().getColumnCount(); column++) {
+                result += getNumberOfGrainsAt(Location.from(row, column));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Get the total number of hamsters on the current territory.
+     * @return The total number of hamsters on the current territory.
+     */
+    public int getTotalHamsterCount() {
+        return getHamsters().size();
+    }
+
+    /**
+     * Get a list of hamsters at the given location. Might be empty.
+     * @param location The location of the tile for which all its hamsters are
+     *                 returned.
+     * @return A list of hamsters on the respective tile. Might be an empty list, but…
+     *         never null.
+     */
+    public List<Hamster> getHamstersAt(final Location location) {
+        final Tile tile = this.internalTerritory.getTileAt(location);
+        return tile.getHamsters().stream().
                 map(internalHamster -> this.hamsterTranslation.get(internalHamster)).
                 collect(Collectors.toList());
     }

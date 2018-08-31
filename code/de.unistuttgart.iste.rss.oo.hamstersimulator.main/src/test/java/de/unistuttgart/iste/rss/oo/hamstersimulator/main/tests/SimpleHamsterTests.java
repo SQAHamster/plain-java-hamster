@@ -125,5 +125,8 @@ public class SimpleHamsterTests {
         marry.move();
         assertEquals(spawnLocation.translate(new LocationVector(0, 1)), marry.getLocation());
         assertEquals(marry, game.getTerritory().getHamsters().get(1));
+        game.initialize();
+        assertEquals(game.getTerritory().getHamsters().size(), 1);
+        assertEquals(paule, game.getTerritory().getHamsters().get(0));
     }
 }

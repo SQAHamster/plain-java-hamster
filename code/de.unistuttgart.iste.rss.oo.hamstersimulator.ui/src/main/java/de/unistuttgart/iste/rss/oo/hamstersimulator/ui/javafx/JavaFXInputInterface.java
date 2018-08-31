@@ -39,17 +39,17 @@ public class JavaFXInputInterface implements InputInterface {
     }
 
     @Override
-    public int readInteger() {
+    public int readInteger(final String message) {
         final TextDialogWrapper wrapper = new TextDialogWrapper();
-        wrapper.showAndWait("Please provide a positive number:", "0", this::validateInt);
+        wrapper.showAndWait(message, "0", this::validateInt);
         final int intResult = Integer.valueOf(wrapper.result.orElseThrow(RuntimeException::new));
         return intResult;
     }
     
     @Override
-    public String readString() {
+    public String readString(final String message) {
         final TextDialogWrapper wrapper = new TextDialogWrapper();
-        wrapper.showAndWait("Please provide a string:", "", this::validateString);
+        wrapper.showAndWait(message, "", this::validateString);
         return wrapper.result.orElseThrow(RuntimeException::new);
     }
     

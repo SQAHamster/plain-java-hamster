@@ -4,9 +4,9 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.EditorHamster;
@@ -107,6 +107,8 @@ public class EditorTerritory extends ReadOnlyTerritory {
                 builder.newSetPropertyCommand(territorySize, spec.getSize());
                 getAllLocations(spec.getSize()).
                     forEach(location -> builder.newAddToPropertyCommand(tiles, new Tile(EditorTerritory.this, location)));
+                hamsters.filtered(h -> h != defaultHamster.get()).
+                    forEach(h -> builder.newRemoveFromPropertyCommand(hamsters, h));
             }
         };
     }
