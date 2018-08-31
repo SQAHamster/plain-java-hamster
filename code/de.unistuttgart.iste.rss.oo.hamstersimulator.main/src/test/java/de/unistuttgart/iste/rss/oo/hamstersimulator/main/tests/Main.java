@@ -60,6 +60,8 @@ public final class Main {
         willi.write("Hallo auch von mir!");
         marry.move();
         marry.write("Ich auch!");
+        paule.turnLeft();
+        paule.move();
     }
 
     /**

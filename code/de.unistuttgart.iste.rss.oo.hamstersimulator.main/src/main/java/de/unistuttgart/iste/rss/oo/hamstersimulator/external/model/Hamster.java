@@ -10,7 +10,7 @@ import java.util.Optional;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.HamsterException;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.FrontBlockedException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.MouthEmptyException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.NoGrainOnTileException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.GameHamster;
@@ -113,7 +113,7 @@ public class Hamster {
 
     /**
      * Move the hamster one step towards its looking direction.
-     * @throws HamsterException When the tile in front of the hamster is blocked
+     * @throws FrontBlockedException When the tile in front of the hamster is blocked
      */
     public void move() {
         this.game.processCommandSpecification(
@@ -132,7 +132,7 @@ public class Hamster {
     /**
      * Pick up a random grain from the tile on which the hamster is
      * currently.
-     * @throws HamsterException when no more grains are available on
+     * @throws NoGrainOnTileException when no more grains are available on
      *         the hamster's tile.
      */
     public void pickGrain() {
@@ -147,7 +147,7 @@ public class Hamster {
 
     /**
      * Drop a random grain object from the hamster's mouth.
-     * @throws HamsterException when the hamster does not carry any grain.
+     * @throws MouthEmptyException when the hamster does not carry any grain.
      */
     public void putGrain() {
         if (this.internalHamster.getGrainInMouth().isEmpty()) {

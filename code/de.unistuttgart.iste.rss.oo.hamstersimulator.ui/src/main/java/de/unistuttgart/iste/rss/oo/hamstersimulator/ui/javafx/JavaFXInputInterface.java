@@ -6,8 +6,11 @@ import java.util.function.Function;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InputInterface;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 
@@ -61,6 +64,18 @@ public class JavaFXInputInterface implements InputInterface {
         } catch (final Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public void showAlert(final Throwable t) {
+        JavaFXUtil.blockingExecuteOnFXThread(() -> {
+            final Dialog<ButtonType> alertDialog = new Alert(AlertType.ERROR);
+            alertDialog.setTitle("An exception occured, program execution stopped.");
+            alertDialog.setHeaderText("An exception of type " + t.getClass().getSimpleName() + 
+                    " occured.\n" + t.getMessage() + ".\nProgramm execution will be aborted. Please "+
+                    "fix your program and try again.");
+            alertDialog.showAndWait();
+        });
     }
 
 }

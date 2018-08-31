@@ -1,5 +1,8 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 
+import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
+import static de.unistuttgart.iste.rss.utils.Preconditions.checkState;
+
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -45,7 +48,7 @@ public class HamsterGame {
     private final Territory territory = new Territory(this);
 
     /**
-     * The input interface used when hamsters ask for input. 
+     * The input interface used when hamsters ask for input.
      */
     private InputInterface inputInterface;
 
@@ -98,16 +101,18 @@ public class HamsterGame {
      * @return The input interface for this game.
      */
     public InputInterface getInputInterface() {
+        checkState(this.inputInterface != null, "Input interface needs to be defined first!");
         return this.inputInterface;
     }
 
     /**
      * Sets this game's input interface for reading values from users or
      * mock objects.
-     * @param inputInterface The new input interface.
+     * @param newInputInterface The new input interface.
      */
-    public void setInputInterface(final InputInterface inputInterface) {
-        this.inputInterface = inputInterface;
+    public void setInputInterface(final InputInterface newInputInterface) {
+        checkNotNull(newInputInterface);
+        this.inputInterface = newInputInterface;
     }
 
     /**
@@ -124,7 +129,11 @@ public class HamsterGame {
      */
     public void runGame(final Consumer<Territory> hamsterProgram) {
         startGame();
-        hamsterProgram.accept(this.territory);
+        try {
+            hamsterProgram.accept(this.territory);
+        } catch (final RuntimeException e) {
+            this.inputInterface.showAlert(e);
+        }
         stopGame();
     }
 

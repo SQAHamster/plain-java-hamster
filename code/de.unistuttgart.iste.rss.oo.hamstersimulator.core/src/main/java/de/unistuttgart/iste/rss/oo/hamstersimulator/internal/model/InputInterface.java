@@ -18,4 +18,10 @@ public interface InputInterface {
      * @return The string value read.
      */
     public String readString();
+    
+    /**
+     * Inform a user about an abnormal execution aborting
+     * @param t The throwable which lead to aborting the program.
+     */
+    public void showAlert(Throwable t);
 }

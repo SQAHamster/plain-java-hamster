@@ -56,8 +56,8 @@ public class GameTerritory extends EditorTerritory {
                 builder.newSetPropertyCommand(specification.getGrain().currentTile, Optional.empty());
             }
         ).setPreconditionConstructor(builder -> {
-            builder.addNewPrecondition(HamsterNotInitializedException::new, specification.getHamster().getCurrentTile()::isPresent);
-            builder.addNewPrecondition(NoGrainOnTileException::new, () -> specification.getHamster().getCurrentTile().get().content.contains(specification.getGrain()));
+            builder.addNewPrecondition(HamsterNotInitializedException::new, () -> !specification.getHamster().getCurrentTile().isPresent());
+            builder.addNewPrecondition(NoGrainOnTileException::new, () -> !specification.getHamster().getCurrentTile().get().content.contains(specification.getGrain()));
         });
     }
 
