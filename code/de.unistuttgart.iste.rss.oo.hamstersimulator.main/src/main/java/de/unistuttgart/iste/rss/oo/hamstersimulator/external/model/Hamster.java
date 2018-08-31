@@ -160,8 +160,7 @@ public class Hamster {
      * @return Number read from the user.
      */
     public int readNumber() {
-        // TODO - implement Hamster.readNumber
-        return 0;
+        return this.game.getInputInterface().readInteger();
     }
 
     /**
@@ -169,8 +168,7 @@ public class Hamster {
      * @return String read from the user.
      */
     public String readString() {
-        // TODO - implement Hamster.readString
-        return null;
+        return this.game.getInputInterface().readString();
     }
 
     /**

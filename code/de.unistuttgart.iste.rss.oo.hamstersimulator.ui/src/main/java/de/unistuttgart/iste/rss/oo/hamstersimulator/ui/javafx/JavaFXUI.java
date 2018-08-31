@@ -5,6 +5,7 @@ import java.util.concurrent.CountDownLatch;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -39,6 +40,10 @@ public class JavaFXUI extends Application {
                 e.printStackTrace();
             }
         });
+    }
+    
+    public static InputInterface getJavaFXInputInterface() {
+        return new JavaFXInputInterface();
     }
 
 }

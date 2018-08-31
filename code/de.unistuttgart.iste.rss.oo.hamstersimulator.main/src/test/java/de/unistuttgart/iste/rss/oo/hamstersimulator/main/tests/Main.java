@@ -22,6 +22,7 @@ public final class Main {
 
         final HamsterGame game = new HamsterGame();
         game.initialize();
+        game.setInputInterface(JavaFXUI.getJavaFXInputInterface());
 
         game.displayInNewGameWindow();
         game.runGame(Main::exampleRun);
@@ -37,6 +38,10 @@ public final class Main {
         final Hamster marry = new Hamster(territory, Location.from(1, 2), Direction.EAST, 0);
 
         paule.write("Hallo!");
+        final String text = paule.readString();
+        paule.write(text);
+        final int value = paule.readNumber();
+        paule.write(Integer.toString(value));
         while (!paule.grainAvailable() && paule.frontIsClear()) {
             paule.move();
         }

@@ -36,11 +36,8 @@ public class SimpleHamsterTests {
      * Initialize a game and its UI.
      */
     @BeforeAll
-    public void initializeGame() {
-        //JavaFXUI.start();
-
+    public void createHamsterGame() {
         game = new HamsterGame();
-        //game.displayInNewGameWindow();
     }
 
     /**

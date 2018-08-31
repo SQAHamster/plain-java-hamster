@@ -9,6 +9,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EditCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.AbstractHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
@@ -42,6 +43,11 @@ public class HamsterGame {
      * The territory object on which the instance of this game takes place.
      */
     private final Territory territory = new Territory(this);
+
+    /**
+     * The input interface used when hamsters ask for input. 
+     */
+    private InputInterface inputInterface;
 
     /**
      * Getter for the territory object of this game. Cannot be null.
@@ -84,6 +90,24 @@ public class HamsterGame {
     public void reset() {
         this.commandStack.undoAll();
         this.commandStack.reset();
+    }
+
+    /**
+     * Gets the input interface of this game used to read values from users
+     * or mock objects.
+     * @return The input interface for this game.
+     */
+    public InputInterface getInputInterface() {
+        return this.inputInterface;
+    }
+
+    /**
+     * Sets this game's input interface for reading values from users or
+     * mock objects.
+     * @param inputInterface The new input interface.
+     */
+    public void setInputInterface(final InputInterface inputInterface) {
+        this.inputInterface = inputInterface;
     }
 
     /**
