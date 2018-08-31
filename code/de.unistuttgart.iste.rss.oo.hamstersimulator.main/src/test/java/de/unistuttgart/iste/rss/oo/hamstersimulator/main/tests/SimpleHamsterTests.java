@@ -110,4 +110,20 @@ public class SimpleHamsterTests {
             paule.putGrain();
         });
     }
+
+    /**
+     * Test for spawning a new hamster and registering it at the
+     * territory.
+     */
+    @Test
+    public void testSpawnHamster() {
+        final Location spawnLocation = Location.from(1, 2);
+        assertEquals(game.getTerritory().getHamsters().size(), 1);
+        assertEquals(paule, game.getTerritory().getHamsters().get(0));
+        final Hamster marry = new Hamster(game.getTerritory(), spawnLocation, Direction.EAST, 0);
+        assertEquals(game.getTerritory().getHamsters().size(), 2);
+        marry.move();
+        assertEquals(spawnLocation.translate(new LocationVector(0, 1)), marry.getLocation());
+        assertEquals(marry, game.getTerritory().getHamsters().get(1));
+    }
 }

@@ -1,6 +1,15 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 
+import static de.unistuttgart.iste.rss.utils.Preconditions.checkState;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.GameTerritory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
 
@@ -14,6 +23,11 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Ter
  *
  */
 public class Territory {
+
+    /**
+     * Map to translate from internal to external hamster.
+     */
+    private final Map<ReadOnlyHamster, Hamster> hamsterTranslation = new HashMap<>();
 
     /**
      * The parent hamste game to which this territory belongs to.
@@ -53,7 +67,7 @@ public class Territory {
 
     /**
      * Gets the hamster game associated to this territory object.
-     * @return The hamstet game associated to this territory. The default hamster
+     * @return The hamster game associated to this territory. The default hamster
      *         object is never null.
      */
     public HamsterGame getGame() {
@@ -76,7 +90,21 @@ public class Territory {
      *                      to the class path of this class and is loaded via the classes' class loader.
      */
     public void loadFromFile(final String territoryFile) {
+        checkState(
+                this.getGame().getCurrentGameMode() != Mode.RUNNING
+                && this.getGame().getCurrentGameMode() != Mode.PAUSED);
+        this.hamsterTranslation.clear();
         TerritoryLoader.initializeFor(this.internalTerritory).loadFromFile(territoryFile);
+    }
+
+    /**
+     * Get all hamsters currently active in the territory.
+     * @return A ordered list of all active hamsters.
+     */
+    public List<Hamster> getHamsters() {
+        return this.internalTerritory.getHamsters().stream().
+                map(internalHamster -> this.hamsterTranslation.get(internalHamster)).
+                collect(Collectors.toList());
     }
 
     /**
@@ -85,6 +113,15 @@ public class Territory {
      */
     GameTerritory getInternalTerritory() {
         return this.internalTerritory;
+    }
+
+    /**
+     * Internal method to keep track of all active hamsters.
+     * @param externalHamster An external hamster object.
+     * @param internalHamster An internal hamster object.
+     */
+    void registerHamster(final Hamster externalHamster, final ReadOnlyHamster internalHamster) {
+        this.hamsterTranslation.put(internalHamster, externalHamster);
     }
 
 }

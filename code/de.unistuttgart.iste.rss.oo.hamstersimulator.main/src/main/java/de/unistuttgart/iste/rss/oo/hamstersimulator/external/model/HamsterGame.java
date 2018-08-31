@@ -11,6 +11,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecificatio
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EditCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.AbstractHamsterCommandSpecification;
@@ -128,7 +129,7 @@ public class HamsterGame {
      * @param hamsterProgram The hamster programm to run.
      */
     public void runGame(final Consumer<Territory> hamsterProgram) {
-        startGame();
+        startGame(true);
         try {
             hamsterProgram.accept(this.territory);
         } catch (final RuntimeException e) {
@@ -140,9 +141,10 @@ public class HamsterGame {
     /**
      * Start the execution of a hamster game. Before executing start, no commands can be
      * executed by the hamster objects in the game.
+     * @param startPaused if true the game will be started in pause mode
      */
-    public void startGame() {
-        this.commandStack.startGame();
+    public void startGame(final boolean startPaused) {
+        this.commandStack.startGame(startPaused);
     }
 
     /**
@@ -151,6 +153,14 @@ public class HamsterGame {
      */
     public void stopGame() {
         this.commandStack.stopGame();
+    }
+
+    /**
+     * Get the current state of this game.
+     * @return The current state of this game.
+     */
+    public Mode getCurrentGameMode() {
+        return this.commandStack.stateProperty().get();
     }
 
     /**

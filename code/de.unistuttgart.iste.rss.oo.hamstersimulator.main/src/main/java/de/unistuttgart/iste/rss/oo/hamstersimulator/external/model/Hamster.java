@@ -77,6 +77,7 @@ public class Hamster {
         super();
         this.game = territory.getGame();
         this.internalHamster = territory.getInternalTerritory().getDefaultHamster();
+        territory.registerHamster(this, this.internalHamster);
     }
 
     /*
@@ -109,6 +110,7 @@ public class Hamster {
                         location,
                         direction,
                         grainCount));
+        territory.registerHamster(this, this.internalHamster);
     }
 
     /**

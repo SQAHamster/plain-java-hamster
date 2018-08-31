@@ -2,6 +2,9 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory;
 
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkArgument;
 
+import java.util.Collections;
+import java.util.List;
+
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
@@ -16,6 +19,7 @@ public class ReadOnlyTerritory {
     final ReadOnlyObjectWrapper<Size> territorySize = new ReadOnlyObjectWrapper<Size>(this, "territorySize", new Size(0, 0));
     final ReadOnlyListWrapper<Tile> tiles = new ReadOnlyListWrapper<Tile>(this, "tiles", FXCollections.observableArrayList());
     final ReadOnlyObjectWrapper<ReadOnlyHamster> defaultHamster = new ReadOnlyObjectWrapper<ReadOnlyHamster>(this, "defaultHamster", initDefaultHamster());
+    final ReadOnlyListWrapper<ReadOnlyHamster> hamsters = new ReadOnlyListWrapper<ReadOnlyHamster>(this, "hamsters", FXCollections.observableArrayList(defaultHamster.get()));
 
     public Size getSize() {
         return this.territorySize.get();
@@ -27,6 +31,14 @@ public class ReadOnlyTerritory {
 
     public ReadOnlyListProperty<Tile> tilesProperty() {
         return this.tiles.getReadOnlyProperty();
+    }
+
+    public ReadOnlyListProperty<ReadOnlyHamster> hamstersProperty() {
+        return this.hamsters.getReadOnlyProperty();
+    }
+
+    public List<ReadOnlyHamster> getHamsters() {
+        return Collections.unmodifiableList(this.hamsters.get());
     }
 
     public ReadOnlyHamster getDefaultHamster() {

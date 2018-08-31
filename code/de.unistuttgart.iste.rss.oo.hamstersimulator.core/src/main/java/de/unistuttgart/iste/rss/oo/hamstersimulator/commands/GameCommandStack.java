@@ -22,14 +22,18 @@ public class GameCommandStack extends CommandStack {
 
     private Thread executingThread;
 
-    public void startGame() {
+    public void startGame(final boolean startPaused) {
         this.executedCommands.clear();
         this.canUndo.set(false);
         this.canRedo.set(false);
-        state.set(Mode.PAUSED);
-        try {
-            this.pauseLock.acquire();
-        } catch (final InterruptedException e) {
+        if (startPaused) {
+            state.set(Mode.PAUSED);
+            try {
+                this.pauseLock.acquire();
+            } catch (final InterruptedException e) {
+            }
+        } else {
+            state.set(Mode.RUNNING);
         }
     }
 

@@ -41,6 +41,7 @@ public class GameTerritory extends EditorTerritory {
                 final Tile tile = getTileAt(specification.getLocation());
                 builder.newSetPropertyCommand(specification.getHamster().currentTile, Optional.of(tile));
                 builder.newAddToPropertyCommand(tile.content, specification.getHamster());
+                builder.newAddToPropertyCommand(hamsters, specification.getHamster());
             }
         };
     }

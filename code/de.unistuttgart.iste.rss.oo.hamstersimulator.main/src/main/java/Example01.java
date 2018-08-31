@@ -1,7 +1,7 @@
 /**
- * First hamster programm used in lecture 2. The initial version
+ * First hamster program used in lecture 2. The initial version
  * used the predefined reference to paule (the default hamster) and
- * examplifies calling methods on that object.
+ * exemplifies calling methods on that object.
  *
  * @author Steffen Becker
  *

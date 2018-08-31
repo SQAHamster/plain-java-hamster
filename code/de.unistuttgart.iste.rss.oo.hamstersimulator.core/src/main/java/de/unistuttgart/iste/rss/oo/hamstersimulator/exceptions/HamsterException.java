@@ -1,6 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions;
 
-public class HamsterException extends RuntimeException {
+public abstract class HamsterException extends RuntimeException {
 
     /**
      * Serial
