@@ -39,6 +39,8 @@ public class Hamster {
     private HamsterGame game;
 
     /*@
+     @ public model instance boolean isInitialized;
+     @ private represents isInitialized = (game != null);
      @*/
     /**
      * The internal hamster object representing this hamster in the
@@ -85,6 +87,12 @@ public class Hamster {
      */
     /*@
      @ requires territory != null;
+     @ requires location != null;
+     @ requires territory.isLocationInTerritory(location);
+     @ requires ! territory.isBlockedByWall(location);
+     @ requires grainCount >= 0;
+     @ requires direction != null;
+     @ ensures isInitialized;
      @*/
     /**
      * Initialize a hamster object with the given parameters. Once a hamster
@@ -113,6 +121,23 @@ public class Hamster {
         territory.registerHamster(this, this.internalHamster);
     }
 
+
+    /*@
+     @ requires frontIsClear();
+     @ requires isInitialized;
+     @ ensures getDirection() == Direction.NORTH ==>
+     @      \old(getLocation()).getRow() == getLocation().getRow() + 1 &&
+     @      \old(getLocation()).getColumn() == getLocation().getColumn();
+     @ ensures getDirection() == Direction.SOUTH ==>
+     @      \old(getLocation()).getRow() == getLocation().getRow() - 1 &&
+     @      \old(getLocation()).getColumn() == getLocation().getColumn();
+     @ ensures getDirection() == Direction.EAST ==>
+     @      \old(getLocation()).getRow() == getLocation().getRow() &&
+     @      \old(getLocation()).getColumn() == getLocation().getColumn() - 1;
+     @ ensures getDirection() == Direction.WEST ==>
+     @      \old(getLocation()).getRow() == getLocation().getRow() &&
+     @      \old(getLocation()).getColumn() == getLocation().getColumn() + 1;
+     @*/
     /**
      * Move the hamster one step towards its looking direction.
      * @throws FrontBlockedException When the tile in front of the hamster is blocked
@@ -163,7 +188,7 @@ public class Hamster {
 
     /**
      * Read a number from the hamster simulator UI for further use.
-     * @message The message used to prompt for the number.
+     * @param message The message used to prompt for the number.
      * @return Number read from the user.
      */
     public int readNumber(final String message) {
@@ -172,7 +197,7 @@ public class Hamster {
 
     /**
      * Read a string from the hamster simulator UI for further use.
-     * @message The message used to prompt for the string.
+     * @param message The message used to prompt for the string.
      * @return String read from the user.
      */
     public String readString(final String message) {
@@ -198,7 +223,7 @@ public class Hamster {
      * @return true if the front of the hamster is clear, i.e., the hamster
      *              could execute a move command successfully.
      */
-    public boolean frontIsClear() {
+    public /*@ pure @*/boolean frontIsClear() {
         checkState(this.internalHamster.getCurrentTile().isPresent());
         final LocationVector movementVector = this.internalHamster.getDirection().getMovementVector();
         final Tile currentTile = this.internalHamster.getCurrentTile().get();
@@ -259,7 +284,7 @@ public class Hamster {
      * Get the current hamster location.
      * @return The current hamster's location in the territory.
      */
-    public Location getLocation() {
+    public /*@ pure @*/ Location getLocation() {
         return this.internalHamster.getCurrentTile().get().getLocation();
     }
 
@@ -267,7 +292,7 @@ public class Hamster {
      * Get the current hamster looking direction.
      * @return The current hamster's looking direction.
      */
-    public Direction getDirection() {
+    public /*@ pure @*/ Direction getDirection() {
         return this.internalHamster.getDirection();
     }
 }

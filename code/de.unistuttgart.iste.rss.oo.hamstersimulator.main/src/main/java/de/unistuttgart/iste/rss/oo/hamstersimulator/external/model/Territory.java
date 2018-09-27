@@ -25,6 +25,8 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Til
  *
  */
 public class Territory {
+    //@ public instance invariant getTotalGrainCount() >= 0;
+    //@ public instance invariant getTotalHamsterCount() > 0;
 
     /**
      * Map to translate from internal to external hamster.
@@ -124,7 +126,7 @@ public class Territory {
      * @param location The location of the tile to check for a wall.
      * @return True if the tile at the given location is blocked by a wall.
      */
-    public boolean isBlockedByWall(final Location location) {
+    public /*@ pure @*/ boolean isBlockedByWall(final Location location) {
         return this.internalTerritory.getTileAt(location).isBlocked();
     }
 
@@ -143,7 +145,7 @@ public class Territory {
      * @return The total grain count of the territory excluding grains in the
      *         mouths of hamsters.
      */
-    public int getTotalGrainCount() {
+    public /*@ pure @*/ int getTotalGrainCount() {
         int result = 0;
         for (int row = 0; row < getTerritorySize().getRowCount(); row++) {
             for (int column = 0; column < getTerritorySize().getColumnCount(); column++) {
@@ -157,7 +159,7 @@ public class Territory {
      * Get the total number of hamsters on the current territory.
      * @return The total number of hamsters on the current territory.
      */
-    public int getTotalHamsterCount() {
+    public /*@ pure @*/ int getTotalHamsterCount() {
         return getHamsters().size();
     }
 

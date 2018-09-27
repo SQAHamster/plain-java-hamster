@@ -27,11 +27,11 @@ public final class Location {
         this.column = column;
     }
 
-    public int getRow() {
+    public /*@ pure @*/ int getRow() {
         return row;
     }
 
-    public int getColumn() {
+    public /*@ pure @*/ int getColumn() {
         return column;
     }
 
