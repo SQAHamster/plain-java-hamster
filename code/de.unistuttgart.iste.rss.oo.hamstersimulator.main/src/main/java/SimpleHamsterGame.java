@@ -61,16 +61,24 @@ public abstract class SimpleHamsterGame {
     void run() { }
 
     /**
+     * Internal method to start a hamster game and handle any exceptions happening
+     * while running.
+     */
+    protected final void doRun() {
+        try {
+            this.run();
+        } catch (final RuntimeException e) {
+            this.game.getInputInterface().showAlert(e);
+        }
+        this.stop();
+    }
+
+    /**
      * Main method used to start the simple hamster game.
      * @param args Default command line arguments, not used.
      */
     public static void main(final String[] args) {
         final Example01 example01 = new Example01();
-        try {
-            example01.run();
-        } catch (final RuntimeException e) {
-            example01.game.getInputInterface().showAlert(e);
-        }
-        example01.stop();
+        example01.doRun();
     }
 }

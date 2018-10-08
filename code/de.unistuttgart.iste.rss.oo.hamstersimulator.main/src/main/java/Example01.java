@@ -9,7 +9,7 @@
 class Example01 extends SimpleHamsterGame {
 
     /**
-     * First hamster programm. The idea is to move paule to the grain,
+     * First hamster program. The idea is to move paule to the grain,
      * let paule collect the grain, and finally return to his initial
      * tile.
      */
