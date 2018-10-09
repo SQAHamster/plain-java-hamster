@@ -61,6 +61,11 @@ verify:jdk8:
   <<: *verify
   image: driv/docker-maven-java-oracle:latest
 
+javadoc:jdk8:
+  stage: test
+  script:
+    - 'mvn $MAVEN_CLI_OPTS javadoc:aggregate-jar'
+  image: driv/docker-maven-java-oracle:latest
 
 # For `master` branch run `mvn deploy` automatically.
 # Here you need to decide whether you want to use JDK7 or 8.
