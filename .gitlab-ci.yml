@@ -66,6 +66,10 @@ javadoc:jdk8:
   script:
     - 'mvn $MAVEN_CLI_OPTS javadoc:aggregate-jar'
   image: driv/docker-maven-java-oracle:latest
+  artifacts:
+    paths: 
+    - code/de.unistuttgart.iste.rss.oo.hamstersimulator.parent/target/apidocs/
+    expire_in: 4 weeks
 
 # For `master` branch run `mvn deploy` automatically.
 # Here you need to decide whether you want to use JDK7 or 8.
