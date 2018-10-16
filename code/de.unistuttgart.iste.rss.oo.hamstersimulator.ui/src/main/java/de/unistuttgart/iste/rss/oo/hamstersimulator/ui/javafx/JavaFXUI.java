@@ -13,10 +13,14 @@ import javafx.stage.Stage;
 public class JavaFXUI extends Application {
 
     private static final CountDownLatch initLatch = new CountDownLatch(1);
+    private static boolean isStarted = false;
 
     public static void start() {
-        new Thread(()->Application.launch(JavaFXUI.class)).start();
-        waitForJavaFXStart();
+        if (!isStarted) {
+            new Thread(()->Application.launch(JavaFXUI.class)).start();
+            waitForJavaFXStart();
+            isStarted = true;
+        }
     }
 
     private static void waitForJavaFXStart() {
