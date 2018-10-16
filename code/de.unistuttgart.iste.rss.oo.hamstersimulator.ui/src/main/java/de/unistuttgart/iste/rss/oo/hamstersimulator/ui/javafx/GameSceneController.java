@@ -11,6 +11,8 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -99,7 +101,19 @@ public class GameSceneController {
 
             @Override
             public void onChanged(final ListChangeListener.Change<? extends LogEntry> c) {
-                Platform.runLater(() -> log.scrollTo(c.getList().size()-1));
+            	c.next();
+            	final int size = log.getItems().size();
+            	if (size > 1) {
+            		JavaFXUtil.blockingExecuteOnFXThread(()-> {
+            			Parent virtualFlow = (Parent) log.getChildrenUnmodifiable().get(0);
+            			Parent group = (Parent) virtualFlow.getChildrenUnmodifiable().get(1);
+            			Parent cell = (Parent) group.getChildrenUnmodifiable().get(0);
+            			@SuppressWarnings("unchecked")
+						ListCell<LogEntry> listCell = (ListCell<LogEntry>) cell;
+            			int visibleCells = (int)(log.getHeight() / listCell.getHeight());
+            			log.scrollTo(Math.max(0, size-visibleCells));
+            		});
+            	}
             }
         });
     }
