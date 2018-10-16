@@ -14,7 +14,7 @@ class Example01 extends SimpleHamsterGame {
      * tile.
      */
     @Override
-    void run() {
+    protected void run() {
         game.initialize();
         game.displayInNewGameWindow();
 
