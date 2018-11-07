@@ -41,6 +41,7 @@ public class Hamster {
     /*@
      @ public model instance boolean isInitialized;
      @ private represents isInitialized = (game != null);
+     @ public model instance int grainCount;
      @*/
     /**
      * The internal hamster object representing this hamster in the
@@ -56,18 +57,29 @@ public class Hamster {
         this.internalHamster = new GameHamster();
     }
 
+
+    /*@
+    @ requires territory != null;
+    @ requires location != null;
+    @ requires territory.isLocationInTerritory(location);
+    @ requires ! territory.isBlockedByWall(location);
+    @ requires newGrainCount >= 0;
+    @ requires direction != null;
+    @ ensures isInitialized;
+    @ ensures grainCount == newGrainCount;
+    @*/
     /**
      * Create and initialize a new hamster object with the given parameters.
      * @param territory The territory this hamster lives in.
      * @param location The location in the territory, where the hamster starts.
      * @param direction The direction in which the hamster looks initially.
-     * @param grainCount The number of grain objects initially placed into the
+     * @param newGrainCount The number of grain objects initially placed into the
      *        hamster's mouth.
      */
     public Hamster(final Territory territory, final Location location,
-                   final Direction direction, final int grainCount) {
+                   final Direction direction, final int newGrainCount) {
         this();
-        init(territory, location, direction, grainCount);
+        init(territory, location, direction, newGrainCount);
     }
 
     /**
@@ -90,9 +102,10 @@ public class Hamster {
      @ requires location != null;
      @ requires territory.isLocationInTerritory(location);
      @ requires ! territory.isBlockedByWall(location);
-     @ requires grainCount >= 0;
+     @ requires newGrainCount >= 0;
      @ requires direction != null;
      @ ensures isInitialized;
+     @ ensures grainCount == newGrainCount;
      @*/
     /**
      * Initialize a hamster object with the given parameters. Once a hamster
@@ -100,15 +113,15 @@ public class Hamster {
      * @param territory The territory this hamster lives in.
      * @param location The location in the territory, where the hamster starts.
      * @param direction The direction in which the hamster looks initially.
-     * @param grainCount The number of grain objects initially placed into
+     * @param newGrainCount The number of grain objects initially placed into
      *                   the hamster's mouth
      */
     public void init(final Territory territory, final Location location,
-                     final Direction direction, final int grainCount) {
+                     final Direction direction, final int newGrainCount) {
         checkNotNull(territory);
         checkNotNull(location);
         checkNotNull(direction);
-        checkArgument(grainCount >= 0);
+        checkArgument(newGrainCount >= 0);
         checkState(this.game == null, "Hamster is already initialized!");
         this.game = territory.getGame();
         this.game.processCommandSpecification(
@@ -117,7 +130,7 @@ public class Hamster {
                         territory.getInternalTerritory(),
                         location,
                         direction,
-                        grainCount));
+                        newGrainCount));
         territory.registerHamster(this, this.internalHamster);
     }
 
@@ -156,6 +169,11 @@ public class Hamster {
                 new TurnLeftCommandSpecification(this.internalHamster));
     }
 
+    /*@
+     @ requires grainAvailable();
+     @ requires isInitialized;
+     @ ensures grainCount == \old(grainCount) + 1;
+     @*/
     /**
      * Pick up a random grain from the tile on which the hamster is
      * currently.
@@ -172,6 +190,11 @@ public class Hamster {
                 new PickGrainCommandSpecification(this.internalHamster, grain));
     }
 
+    /*@
+    @ requires grainCount > 0;
+    @ requires isInitialized;
+    @ ensures grainCount == \old(grainCount) - 1;
+    @*/
     /**
      * Drop a random grain object from the hamster's mouth.
      * @throws MouthEmptyException when the hamster does not carry any grain.
@@ -223,7 +246,7 @@ public class Hamster {
      * @return true if the front of the hamster is clear, i.e., the hamster
      *              could execute a move command successfully.
      */
-    public /*@ pure @*/boolean frontIsClear() {
+    public /*@ pure @*/ boolean frontIsClear() {
         checkState(this.internalHamster.getCurrentTile().isPresent());
         final LocationVector movementVector = this.internalHamster.getDirection().getMovementVector();
         final Tile currentTile = this.internalHamster.getCurrentTile().get();
@@ -241,19 +264,36 @@ public class Hamster {
      * @return true if there are grain objects available on the hamster's current tile,
      *              i.e., a pickGrain command could execute successfully.
      */
-    public boolean grainAvailable() {
+    public /*@ pure @*/ boolean grainAvailable() {
         final Optional<Tile> tile = this.internalHamster.getCurrentTile();
         checkArgument(tile.isPresent());
         return tile.get().getGrainCount() > 0;
     }
 
     /**
-     * Checks whether the hamster has grain objects in its mouth.
-     * @return true when there are grain objects left in the hamster's mouth,
-     *              i.e., when a putGrain command could execute successfully.
+     * Checks whether the hamster's mouth is empty or whether it
+     * has grains in its mouth.
+     * @return true when there are no grain objects left in the hamster's mouth,
+     *              i.e., when a putGrain command can not be executed.
      */
-    public boolean mouthEmpty() {
+    public /*@ pure @*/ boolean mouthEmpty() {
         return this.internalHamster.getGrainInMouth().isEmpty();
+    }
+
+    /**
+     * Get the current hamster location.
+     * @return The current hamster's location in the territory.
+     */
+    public /*@ pure @*/ Location getLocation() {
+        return this.internalHamster.getCurrentTile().get().getLocation();
+    }
+
+    /**
+     * Get the current hamster looking direction.
+     * @return The current hamster's looking direction.
+     */
+    public /*@ pure @*/ Direction getDirection() {
+        return this.internalHamster.getDirection();
     }
 
     /** Internal factory object used to create a hamster object from the default
@@ -278,21 +318,5 @@ public class Hamster {
             }
         }
         return null;
-    }
-
-    /**
-     * Get the current hamster location.
-     * @return The current hamster's location in the territory.
-     */
-    public /*@ pure @*/ Location getLocation() {
-        return this.internalHamster.getCurrentTile().get().getLocation();
-    }
-
-    /**
-     * Get the current hamster looking direction.
-     * @return The current hamster's looking direction.
-     */
-    public /*@ pure @*/ Direction getDirection() {
-        return this.internalHamster.getDirection();
     }
 }

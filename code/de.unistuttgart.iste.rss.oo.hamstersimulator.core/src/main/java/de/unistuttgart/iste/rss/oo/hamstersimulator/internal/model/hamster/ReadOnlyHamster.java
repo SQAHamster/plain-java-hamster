@@ -29,14 +29,11 @@ public class ReadOnlyHamster extends TileContent {
         return this.grainInMouth.getReadOnlyProperty();
     }
 
-    /*@
-     @ pure
-     @*/
-    public Direction getDirection() {
+    public /*@ pure @*/ Direction getDirection() {
         return direction.get();
     }
 
-    public List<Grain> getGrainInMouth() {
+    public /*@ pure @*/ List<Grain> getGrainInMouth() {
         return Collections.unmodifiableList(grainInMouth.get());
     }
 

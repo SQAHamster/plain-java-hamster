@@ -57,7 +57,7 @@ public class HamsterGame {
      * Getter for the territory object of this game. Cannot be null.
      * @return The territory object of this game.
      */
-    public Territory getTerritory() {
+    public /*@ pure @*/ Territory getTerritory() {
         return territory;
     }
 
