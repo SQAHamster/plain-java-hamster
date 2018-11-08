@@ -7,6 +7,8 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TileContent;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -15,8 +17,14 @@ import javafx.collections.FXCollections;
 
 public class ReadOnlyHamster extends TileContent {
 
-    final ReadOnlyObjectWrapper<Direction> direction = new ReadOnlyObjectWrapper<>(this, "direction", Direction.NORTH);
-    final ReadOnlyListWrapper<Grain> grainInMouth = new ReadOnlyListWrapper<>(this, "grainInMouth", FXCollections.observableArrayList());
+    final ReadOnlyObjectWrapper<Direction> direction = new ReadOnlyObjectWrapper<Direction>(this, "direction", Direction.NORTH);
+    final ReadOnlyListWrapper<Grain> grainInMouth = new ReadOnlyListWrapper<Grain>(this, "grainInMouth", FXCollections.observableArrayList());
+    final ReadOnlyIntegerWrapper grainCount = new ReadOnlyIntegerWrapper(this, "grainCount", 0);
+
+    public ReadOnlyHamster() {
+        super();
+        grainCount.bind(grainInMouth.sizeProperty());
+    }
 
     /*
      * Read-Only (observable) Properties
@@ -29,16 +37,27 @@ public class ReadOnlyHamster extends TileContent {
         return this.grainInMouth.getReadOnlyProperty();
     }
 
-    public /*@ pure @*/ Direction getDirection() {
+    public ReadOnlyIntegerProperty grainCountProperty() {
+        return this.grainCount.getReadOnlyProperty();
+    }
+    
+    public Direction getDirection() {
         return direction.get();
     }
 
-    public /*@ pure @*/ List<Grain> getGrainInMouth() {
+    public List<Grain> getGrainInMouth() {
         return Collections.unmodifiableList(grainInMouth.get());
     }
 
+    public /*@ pure helper @*/ int getGrainCount() {
+        return grainCount.get();
+    }
+
     public ReadOnlyTerritory getCurrentTerritory() {
-        return this.getCurrentTile().orElseThrow(IllegalStateException::new).getTerritory();
+        if (!this.getCurrentTile().isPresent()) {
+            throw new IllegalStateException();
+        }
+        return this.getCurrentTile().get().getTerritory();
     }
 
     /*

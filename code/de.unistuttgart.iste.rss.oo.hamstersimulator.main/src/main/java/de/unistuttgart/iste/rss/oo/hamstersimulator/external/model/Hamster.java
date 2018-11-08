@@ -42,6 +42,7 @@ public class Hamster {
      @ public model instance boolean isInitialized;
      @ private represents isInitialized = (game != null);
      @ public model instance int grainCount;
+     @ private represents grainCount <- internalHamster.grainCount;
      @*/
     /**
      * The internal hamster object representing this hamster in the
@@ -191,7 +192,7 @@ public class Hamster {
     }
 
     /*@
-    @ requires grainCount > 0;
+    @ requires ! mouthEmpty();
     @ requires isInitialized;
     @ ensures grainCount == \old(grainCount) - 1;
     @*/
