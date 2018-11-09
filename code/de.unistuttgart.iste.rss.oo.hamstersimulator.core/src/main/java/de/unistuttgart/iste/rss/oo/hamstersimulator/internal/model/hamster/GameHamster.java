@@ -15,11 +15,6 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Gra
 import de.unistuttgart.iste.rss.utils.LambdaVisitor;
 
 public class GameHamster extends EditorHamster {
-
-    /*@
-     @ public model instance int grainCount;
-     @ private represents grainCount <- 0; // getGrainCount();
-     @*/
     
     private final Function<CommandSpecification, Command> editCommandFactory;
 

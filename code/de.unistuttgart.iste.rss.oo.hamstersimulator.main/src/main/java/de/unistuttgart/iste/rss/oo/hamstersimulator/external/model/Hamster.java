@@ -42,7 +42,7 @@ public class Hamster {
      @ public model instance boolean isInitialized;
      @ private represents isInitialized = (game != null);
      @ public model instance int grainCount;
-     @ private represents grainCount <- internalHamster.grainCount;
+     @ private represents grainCount <- internalHamster.getGrainCount();
      @*/
     /**
      * The internal hamster object representing this hamster in the
