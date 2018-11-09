@@ -7,11 +7,16 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Territory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 /**
- * Simple test run of the hamster game API examplifying the use of the objects.
+ * Simple test run of the hamster game API exemplifying the use of the objects.
  * @author Steffen Becker
  *
  */
 public final class Main {
+
+    /**
+     * Constant containing the filename of the default territory file.
+     */
+    private static final String DEFAULT_HAMSTER_TERRITORY = "/territories/example01.ter";
 
     /**
      * Main method which instantiates, initializes, and starts a hamster game.
@@ -21,7 +26,7 @@ public final class Main {
         JavaFXUI.start();
 
         final HamsterGame game = new HamsterGame();
-        game.initialize();
+        game.initialize(DEFAULT_HAMSTER_TERRITORY);
         game.setInputInterface(JavaFXUI.getJavaFXInputInterface());
 
         game.displayInNewGameWindow();
