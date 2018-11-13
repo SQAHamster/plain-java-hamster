@@ -7,6 +7,7 @@ import java.util.stream.IntStream;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.HamsterNotOnNonBlockingTileException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.InitHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.PickGrainCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.PutGrainCommandSpecification;
@@ -42,6 +43,9 @@ public class GameHamster extends EditorHamster {
                 IntStream.
                     range(0, specification.getNewGrainCount()).
                     forEach(i -> builder.newAddToPropertyCommand(grainInMouth, new Grain()));
+            }).setPreconditionConstructor(builder -> {
+                builder.addNewPrecondition(HamsterNotOnNonBlockingTileException::new, 
+                        () -> specification.getTerritory().getTileAt(specification.getLocation()).isBlocked());
             });
     }
 
