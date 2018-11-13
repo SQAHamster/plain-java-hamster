@@ -112,6 +112,7 @@ public final class Location {
      * are further right.
      * @param row The non-negative row count.
      * @param column The non-negative column count.
+     * @return Returns the non-null location with the given position.
      */    
     public static Location from(final int row, final int column) {
         return new Location(row, column);
