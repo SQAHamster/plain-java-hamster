@@ -36,12 +36,12 @@ public class CompositeCommand extends Command {
     
     @Override
     public void execute() {
+        if (!getExceptionsFromPreconditions().isEmpty()) {
+            throw getExceptionsFromPreconditions().get(0);
+        }
         if (!isBuilt) {
             buildBeforeFirstExecution(compositeCommandBuilder);
             isBuilt = true;
-        }
-        if (!getExceptionsFromPreconditions().isEmpty()) {
-            throw getExceptionsFromPreconditions().get(0);
         }
         commandsToExecute = Collections.unmodifiableList(new ArrayList<>(compositeCommandBuilder.commandsToExecute));
         commandsToExecute.forEach(command -> command.execute());

@@ -251,6 +251,11 @@ public class Hamster {
         checkState(this.internalHamster.getCurrentTile().isPresent());
         final LocationVector movementVector = this.internalHamster.getDirection().getMovementVector();
         final Tile currentTile = this.internalHamster.getCurrentTile().get();
+        if (currentTile.getLocation().getRow() + movementVector.getDeltaRow() < 0
+            || currentTile.getLocation().getColumn() + movementVector.getDeltaColumn() < 0) {
+            return false;
+        }
+
         final Location potentialNewLocation = currentTile.getLocation().translate(movementVector);
 
         if (!currentTile.getTerritory().isLocationInTerritory(potentialNewLocation)) {

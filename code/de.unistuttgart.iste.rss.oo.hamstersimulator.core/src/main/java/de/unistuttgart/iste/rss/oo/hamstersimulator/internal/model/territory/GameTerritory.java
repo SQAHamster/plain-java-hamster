@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.FrontBlockedException;
@@ -95,8 +96,14 @@ public class GameTerritory extends EditorTerritory {
             }
         ).setPreconditionConstructor(builder -> {
             builder.addNewPrecondition(HamsterNotInitializedException::new, () -> !specification.getHamster().getCurrentTile().isPresent());
+            builder.addNewPrecondition(FrontBlockedException::new, 
+                    () -> specification.getHamster().getCurrentTile().get().getLocation().getRow() == 0
+                                && specification.getHamster().getDirection() == Direction.NORTH);
+            builder.addNewPrecondition(FrontBlockedException::new, 
+                    () -> specification.getHamster().getCurrentTile().get().getLocation().getColumn() == 0
+                    && specification.getHamster().getDirection() == Direction.WEST);
             builder.addNewPrecondition(FrontBlockedException::new, () -> !territory.isLocationInTerritory(newLocation.get()));
-            builder.addNewPrecondition(FrontBlockedException::new, territory.getTileAt(newLocation.get())::isBlocked);
+            builder.addNewPrecondition(FrontBlockedException::new, () -> territory.getTileAt(newLocation.get()).isBlocked());
         });
     }
     
