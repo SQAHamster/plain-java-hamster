@@ -16,7 +16,7 @@
 	<parent>
 		<groupId>de.unistuttgart.iste.rss.oo.hamstersimulator</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.0.2</version>
+		<version>1.0.3-SNAPSHOT</version>
 		<relativePath>../de.unistuttgart.iste.rss.oo.hamstersimulator.parent</relativePath>
 	</parent>
 </project>
