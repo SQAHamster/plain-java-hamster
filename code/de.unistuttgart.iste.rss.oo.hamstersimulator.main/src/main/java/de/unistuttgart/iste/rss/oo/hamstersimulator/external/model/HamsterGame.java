@@ -3,6 +3,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkState;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -73,7 +74,12 @@ public class HamsterGame {
      * Initialize a new hamster game by loading the default territory.
      */
     public void initialize() {
-        initialize(DEFAULT_HAMSTER_TERRITORY);
+        try {
+            initialize(DEFAULT_HAMSTER_TERRITORY);
+        } catch (final IOException e) {
+            throw new IllegalStateException("Unable to load default territory. "
+                    + "This should not happen. Check jar for completeness.");
+        }
     }
 
     /**
@@ -81,8 +87,9 @@ public class HamsterGame {
      * territory file path.
      * @param territoryFile The territory file path. Has to be a location relative to
      *                      the classes' class path.
+     * @throws IOException IOException occurs if the territory file could not be found or loaded.
      */
-    public void initialize(final String territoryFile) {
+    public void initialize(final String territoryFile) throws IOException {
         new EditCommandStack().execute(
                 TerritoryLoader.initializeFor(territory.getInternalTerritory()).loadFromFile(territoryFile));
     }

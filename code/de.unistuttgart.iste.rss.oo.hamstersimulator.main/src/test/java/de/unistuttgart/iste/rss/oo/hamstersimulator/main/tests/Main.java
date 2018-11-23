@@ -1,4 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.main.tests;
+import java.io.IOException;
+
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Hamster;
@@ -26,7 +28,11 @@ public final class Main {
         JavaFXUI.start();
 
         final HamsterGame game = new HamsterGame();
-        game.initialize(DEFAULT_HAMSTER_TERRITORY);
+        try {
+            game.initialize(DEFAULT_HAMSTER_TERRITORY);
+        } catch (final IOException e) {
+            throw new RuntimeException();
+        }
         game.setInputInterface(JavaFXUI.getJavaFXInputInterface());
 
         game.displayInNewGameWindow();

@@ -2,6 +2,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkState;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,8 +93,9 @@ public class Territory {
      * file and the default hamster is initialized.
      * @param territoryFile The territory file path from where to load the territory. The path has to be relative
      *                      to the class path of this class and is loaded via the classes' class loader.
+     * @throws IOException IOException occurs if the territory file could not be found or loaded.
      */
-    public void loadFromFile(final String territoryFile) {
+    public void loadFromFile(final String territoryFile) throws IOException {
         checkState(
                 this.getGame().getCurrentGameMode() != Mode.RUNNING
                 && this.getGame().getCurrentGameMode() != Mode.PAUSED);

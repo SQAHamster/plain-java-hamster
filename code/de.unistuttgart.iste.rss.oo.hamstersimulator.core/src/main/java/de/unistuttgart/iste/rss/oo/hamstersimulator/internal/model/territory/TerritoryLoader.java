@@ -1,6 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class TerritoryLoader {
         return new TerritoryLoader(new TerritoryBuilder(territory));
     }
 
-    public Command loadFromFile(final String territoryFile) {
+    public Command loadFromFile(final String territoryFile) throws IOException {
         final List<String> list = readLinesFromTerritoryFile(territoryFile);
         final String[] lines = list.toArray(new String[]{});
         setSizeFromStrings(lines);
@@ -96,8 +97,11 @@ public class TerritoryLoader {
         }
     }
 
-    private List<String> readLinesFromTerritoryFile(final String territoryFileName) {
+    private List<String> readLinesFromTerritoryFile(final String territoryFileName) throws IOException {
         final InputStream in = getClass().getResourceAsStream(territoryFileName); 
+        if (in == null) {
+            throw new IOException("Unable to load the territory from the filename: " + territoryFileName);
+        }
         final BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         final List<String> list = new ArrayList<String>();
 

@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 /**
  * First hamster program used in lecture 2. The initial version
  * used the predefined reference to paule (the default hamster) and
@@ -15,9 +17,12 @@ class Example01 extends SimpleHamsterGame {
      */
     @Override
     protected void run() {
-        game.initialize();
         game.displayInNewGameWindow();
-
+        try {
+            game.initialize("dhdfhfhf");
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
         paule.write("Hallo!");
         paule.move();
         paule.move();

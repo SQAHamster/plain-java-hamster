@@ -3,6 +3,8 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.main.tests;
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.IOException;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +46,11 @@ public class HamsterBoundsTest {
      */
     @BeforeEach
     public void initializeTest() {
-        game.initialize("/territories/example02.ter");
+        try {
+            game.initialize("/territories/example02.ter");
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
         paule = game.getTerritory().getDefaultHamster();
     }
 
