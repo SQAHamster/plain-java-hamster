@@ -36,15 +36,15 @@ public class TerritoryInitTests {
      * Example territory.
      */
     private final String exampleTerritory =
-            "4\n" +
-            "4\n" +
-            ">   \n" +
-            "*   \n" +
-            "    \n" +
-            "    \n" +
-            "0\n" +
-            "1\n" +
-            "0\n";
+            "4\n"
+            + "4\n"
+            + ">   \n"
+            + "*   \n"
+            + "    \n"
+            + "    \n"
+            + "0\n"
+            + "1\n"
+            + "0\n";
 
 
     /**

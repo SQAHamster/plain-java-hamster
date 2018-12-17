@@ -66,6 +66,7 @@ public class TerritoryLoader {
                 final char tileCode = lines[row].charAt(column);
                 switch (tileCode) {
                 case ' ':
+                    break;
                 case '#':
                     createWallAt(currentLocation);
                     break;

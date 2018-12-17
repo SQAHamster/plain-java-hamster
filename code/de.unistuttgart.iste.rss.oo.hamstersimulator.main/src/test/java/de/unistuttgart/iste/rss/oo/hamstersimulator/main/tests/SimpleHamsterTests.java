@@ -27,6 +27,11 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
 public class SimpleHamsterTests {
 
     /**
+     * Delay used when running these hamster tests.
+     */
+    private static final double HAMSTER_GAME_TEST_SPEED = 0.1d;
+
+    /**
      * Field containing the hamster game used in tests.
      */
     private HamsterGame game;
@@ -50,6 +55,7 @@ public class SimpleHamsterTests {
     @BeforeEach
     public void initializeTest() {
         game.initialize();
+        game.setSpeed(HAMSTER_GAME_TEST_SPEED);
         paule = game.getTerritory().getDefaultHamster();
     }
 
