@@ -16,7 +16,7 @@ public class GameCommandStack extends CommandStack {
     }
 
     private final ReadOnlyObjectWrapper<Mode> state = new ReadOnlyObjectWrapper<Mode>(this, "state", Mode.INITIALIZING);
-    protected final SimpleDoubleProperty speed = new SimpleDoubleProperty(this, "speed", 5.0);
+    protected final SimpleDoubleProperty speed = new SimpleDoubleProperty(this, "speed", 1.0);
 
     private final Semaphore pauseLock = new Semaphore(1, true);
 
@@ -39,7 +39,7 @@ public class GameCommandStack extends CommandStack {
 
     public void delay() {
         try {
-            Thread.sleep((int)(this.speed.get() * 200.0d));
+            Thread.sleep((int)((11.0d-this.speed.get())/5.0d * 400.0d));
         } catch (final InterruptedException e) {
         }
     }

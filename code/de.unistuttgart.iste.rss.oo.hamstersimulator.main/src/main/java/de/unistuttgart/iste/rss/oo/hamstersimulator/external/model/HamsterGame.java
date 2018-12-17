@@ -55,11 +55,11 @@ public class HamsterGame {
      * The input interface used when hamsters ask for input.
      */
     private InputInterface inputInterface;
-    
+
     /**
      * Set the speed of the delay of the hamster game. The closer the delay is to 0,
      * the faster the hamster game will run.
-     * @param gameSpeed The new game speed's delay. Has to be > 0.
+     * @param gameSpeed The new game speed's delay. Has to be greater 0.
      */
     public void setSpeed(final double gameSpeed) {
         this.commandStack.setSpeed(gameSpeed);
