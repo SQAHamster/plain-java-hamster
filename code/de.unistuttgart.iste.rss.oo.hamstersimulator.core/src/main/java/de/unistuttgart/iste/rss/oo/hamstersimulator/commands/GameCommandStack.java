@@ -17,7 +17,7 @@ public class GameCommandStack extends CommandStack {
     }
 
     private final ReadOnlyObjectWrapper<Mode> state = new ReadOnlyObjectWrapper<Mode>(this, "state", Mode.INITIALIZING);
-    protected final SimpleDoubleProperty speed = new SimpleDoubleProperty(this, "speed", 1.0);
+    protected final SimpleDoubleProperty speed = new SimpleDoubleProperty(this, "speed", 4.0);
 
     private final Semaphore pauseLock = new Semaphore(1, true);
 

@@ -73,6 +73,7 @@ public abstract class SimpleHamsterGame {
         } catch (final RuntimeException e) {
             this.game.getInputInterface().showAlert(e);
         }
+        game.stopGame();
     }
 
     /**
