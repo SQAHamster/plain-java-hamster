@@ -3,6 +3,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 import java.io.IOException;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
 import javafx.fxml.FXMLLoader;
@@ -19,12 +20,18 @@ class HamsterGameStage extends Stage {
         super();
         prepareStage();
         sceneController.connectToGame(territory, commandStack, gameLog);
+        this.setOnCloseRequest(event -> {
+            if (commandStack.stateProperty().get() == Mode.PAUSED ||
+                commandStack.stateProperty().get() == Mode.RUNNING) {
+                commandStack.stopGame();
+            }
+        });
     }
 
     public void prepareStage() throws IOException {
         this.setTitle("Hamster Simulator - Game Window");
         final BorderPane root = (BorderPane) loadFromFXML();
-        final Scene scene = new Scene(root, 500, 300);
+        final Scene scene = new Scene(root, 700, 400);
         scene.getStylesheets().add("css/game.css");
         this.minHeightProperty().bind(root.minHeightProperty());
         this.minWidthProperty().bind(root.minWidthProperty());

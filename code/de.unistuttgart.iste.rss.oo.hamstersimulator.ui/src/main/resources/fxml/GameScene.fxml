@@ -12,6 +12,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="root" minHeight="150.0" minWidth="200.0" prefHeight="322.0" prefWidth="690.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.GameSceneController">
    <top>
@@ -55,6 +56,11 @@
                </graphic>
             </Button>
             <Separator maxWidth="30.0" orientation="VERTICAL" prefWidth="30.0" />
+            <Label text="Speed Control:">
+               <font>
+                  <Font name="Arial Bold" size="13.0" />
+               </font>
+            </Label>
             <Label text="Slow" />
             <Slider fx:id="speed" max="10" min="1" />
             <Label text="Fast" />

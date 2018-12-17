@@ -1,6 +1,7 @@
 
 import java.io.Console;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
@@ -67,6 +68,8 @@ public abstract class SimpleHamsterGame {
     protected final void doRun() {
         try {
             this.run();
+        } catch (final GameAbortedException e) {
+            // End this game
         } catch (final RuntimeException e) {
             this.game.getInputInterface().showAlert(e);
         }

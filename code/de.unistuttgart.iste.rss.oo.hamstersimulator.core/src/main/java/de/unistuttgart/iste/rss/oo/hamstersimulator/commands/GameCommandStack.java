@@ -4,6 +4,7 @@ import static de.unistuttgart.iste.rss.utils.Preconditions.checkState;
 
 import java.util.concurrent.Semaphore;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -51,6 +52,9 @@ public class GameCommandStack extends CommandStack {
 
     @Override
     public void execute(final Command command) {
+        if (this.state.get() != Mode.RUNNING && this.state.get() != Mode.PAUSED) {
+            throw new GameAbortedException();
+        }
         try {
             this.executingThread = Thread.currentThread();
             checkState(!(state.get() == Mode.STOPPED));
