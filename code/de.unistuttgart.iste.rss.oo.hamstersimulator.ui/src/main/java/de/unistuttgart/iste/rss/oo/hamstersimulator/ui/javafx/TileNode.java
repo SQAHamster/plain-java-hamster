@@ -27,6 +27,7 @@ public class TileNode extends StackPane {
             Color.MAGENTA,
             Color.RED
     };
+    private final static Image PLUS_12_CORN_IMAGE = new Image("images/12PlusCorn32.png");
 
     static {
         loadCornImages();
@@ -35,7 +36,7 @@ public class TileNode extends StackPane {
     private static void loadCornImages() {
         for (int i = 1; i < 13; i++) {
             cornImages.put(i, new Image("images/"+ i + "Corn32.png"));
-        }
+        } 
     }
 
     private final HamsterTerritoryGrid parent;
@@ -77,7 +78,7 @@ public class TileNode extends StackPane {
     private void configureGrainImageView() {
         this.grainView = new ImageView();
         grainView.visibleProperty().bind(Bindings.createBooleanBinding(() -> tile.getGrainCount() > 0, tile.grainCountProperty()));
-        grainView.imageProperty().bind(Bindings.createObjectBinding(() -> tile.getGrainCount() <= 12 ? cornImages.get(tile.getGrainCount()) : cornImages.get(12), tile.grainCountProperty()));
+        grainView.imageProperty().bind(Bindings.createObjectBinding(() -> tile.getGrainCount() <= 12 ? cornImages.get(tile.getGrainCount()) : PLUS_12_CORN_IMAGE, tile.grainCountProperty()));
         grainView.fitHeightProperty().bind(this.heightProperty());
         grainView.fitWidthProperty().bind(this.widthProperty());
         grainView.setPreserveRatio(true);
