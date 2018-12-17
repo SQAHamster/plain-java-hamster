@@ -3,6 +3,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkState;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +101,21 @@ public class Territory {
                 this.getGame().getCurrentGameMode() != Mode.RUNNING
                 && this.getGame().getCurrentGameMode() != Mode.PAUSED);
         this.hamsterTranslation.clear();
-        TerritoryLoader.initializeFor(this.internalTerritory).loadFromFile(territoryFile);
+        TerritoryLoader.initializeFor(this.internalTerritory).loadFromResourceFile(territoryFile);
+    }
+
+    /**
+     * Loads the territory from an input stream. The territory is initalized according to the loaded territory
+     * input stream and the default hamster is initialized.
+     * @param inputStream The input stream from where to load the territory.
+     * @throws IOException IOException occurs if the territory file could not be found or loaded.
+     */
+    public void loadFromInputStream(final InputStream inputStream) throws IOException {
+        checkState(
+                this.getGame().getCurrentGameMode() != Mode.RUNNING
+                && this.getGame().getCurrentGameMode() != Mode.PAUSED);
+        this.hamsterTranslation.clear();
+        TerritoryLoader.initializeFor(this.internalTerritory).loadFromInputStream(inputStream);
     }
 
     /**

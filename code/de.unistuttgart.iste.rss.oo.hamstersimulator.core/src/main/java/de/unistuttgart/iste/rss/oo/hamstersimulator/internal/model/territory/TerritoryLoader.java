@@ -1,5 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory;
 
+import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,8 +32,17 @@ public class TerritoryLoader {
         return new TerritoryLoader(new TerritoryBuilder(territory));
     }
 
-    public Command loadFromFile(final String territoryFile) throws IOException {
-        final List<String> list = readLinesFromTerritoryFile(territoryFile);
+    public Command loadFromResourceFile(final String territoryFile) throws IOException {
+        final List<String> list = readLinesFromTerritoryResourceFile(territoryFile);
+        return interpretLoadedTerritoryLines(list);
+    }
+    
+    public Command loadFromInputStream(final InputStream inputStream) throws IOException {
+        final List<String> list = readLinesFromTerritoryInputStream(inputStream);
+        return interpretLoadedTerritoryLines(list);
+    }
+
+    private Command interpretLoadedTerritoryLines(final List<String> list) {
         final String[] lines = list.toArray(new String[]{});
         setSizeFromStrings(lines);
         final String[] territoryDefinition = Arrays.copyOfRange(lines,2,lines.length);
@@ -53,10 +64,10 @@ public class TerritoryLoader {
             for (int column = 0; column < this.loadedTerritoryDimensions.getColumnCount(); column++) {
                 final Location currentLocation = new Location(row,column);
                 final char tileCode = lines[row].charAt(column);
-                createTileAt(currentLocation, tileCode);
                 switch (tileCode) {
                 case ' ':
                 case '#':
+                    createWallAt(currentLocation);
                     break;
                 case '*':
                     grainLocations.add(currentLocation);
@@ -91,18 +102,19 @@ public class TerritoryLoader {
         placeGrain(lines, grainLocations);
     }
 
-    private void createTileAt(final Location currentLocation, final char tileCode) {
-        if (tileCode == '#') {
-            this.territoryBuilder.wallAt(currentLocation);
-        }
-    }
-
-    private List<String> readLinesFromTerritoryFile(final String territoryFileName) throws IOException {
+    private List<String> readLinesFromTerritoryResourceFile(final String territoryFileName) throws IOException {
         final InputStream in = getClass().getResourceAsStream(territoryFileName); 
         if (in == null) {
             throw new IOException("Unable to load the territory from the filename: " + territoryFileName);
         }
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        final List<String> result = readLinesFromTerritoryInputStream(in);
+        in.close();
+        return result;
+    }
+    
+    private List<String> readLinesFromTerritoryInputStream(final InputStream inputStream) throws IOException {
+        checkNotNull(inputStream);
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         final List<String> list = new ArrayList<String>();
 
         try (Scanner input = new Scanner(reader))
@@ -121,6 +133,10 @@ public class TerritoryLoader {
             final int count = Integer.parseInt(lines[this.loadedTerritoryDimensions.getRowCount() + i]);
             territoryBuilder.grainAt(location, count);
         }
+    }
+    
+    private void createWallAt(final Location currentLocation) {
+        this.territoryBuilder.wallAt(currentLocation);
     }
 
 }

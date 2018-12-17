@@ -2,9 +2,9 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory;
 
 import java.util.LinkedList;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
@@ -23,6 +23,10 @@ public class TerritoryBuilder {
         this.territory = territory;
     }
 
+    public static TerritoryBuilder getTerritoryBuilderForTerritory(final EditorTerritory territory) {
+        return new TerritoryBuilder(territory);
+    }
+    
     public TerritoryBuilder initializeTerritory(final Size size) {
         this.commands.add(this.territory.getCommandFromSpecification(new InitializeTerritoryCommandSpecification(size)).get());
         return this;

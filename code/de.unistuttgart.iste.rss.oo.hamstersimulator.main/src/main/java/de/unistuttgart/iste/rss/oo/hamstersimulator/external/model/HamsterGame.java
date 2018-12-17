@@ -4,6 +4,7 @@ import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkState;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -16,6 +17,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mo
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.AbstractHamsterCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryBuilder;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
@@ -83,6 +85,17 @@ public class HamsterGame {
     }
 
     /**
+     * Initialize a new hamster game by loading the default territory.
+     * @param territoryBuilder A territory builder which has been used before to
+     *        build the territory.
+     */
+    public void initialize(final TerritoryBuilder territoryBuilder) {
+        new EditCommandStack().execute(
+                territoryBuilder.build());
+
+    }
+
+    /**
      * Initialize a new hamster game by loading the territory from the passed
      * territory file path.
      * @param territoryFile The territory file path. Has to be a location relative to
@@ -91,9 +104,28 @@ public class HamsterGame {
      */
     public void initialize(final String territoryFile) throws IOException {
         new EditCommandStack().execute(
-                TerritoryLoader.initializeFor(territory.getInternalTerritory()).loadFromFile(territoryFile));
+                TerritoryLoader.initializeFor(territory.getInternalTerritory()).loadFromResourceFile(territoryFile));
     }
 
+    /**
+     * Initialize a new hamster game by loading the territory from the passed
+     * territory file path.
+     * @param inputStream The input stream to load the territory from.
+     * @throws IOException IOException occurs if the territory file could not be found or loaded.
+     */
+    public void initialize(final InputStream inputStream) throws IOException {
+        new EditCommandStack().execute(
+                TerritoryLoader.initializeFor(territory.getInternalTerritory()).loadFromInputStream(inputStream));
+    }
+
+    /**
+     * Return a territory builder for this game's terriotry. The builder can be passed to an initialize call
+     * later to use the created territory.
+     * @return A territory builder for this territory
+     */
+    public TerritoryBuilder getNewTerritoryBuilder() {
+        return TerritoryBuilder.getTerritoryBuilderForTerritory(getTerritory().getInternalTerritory());
+    }
     /**
      * Reset the hamster game to its initial state. Removes all hamsters besides  the
      * default hamster and places all gain objects to their initial position.
