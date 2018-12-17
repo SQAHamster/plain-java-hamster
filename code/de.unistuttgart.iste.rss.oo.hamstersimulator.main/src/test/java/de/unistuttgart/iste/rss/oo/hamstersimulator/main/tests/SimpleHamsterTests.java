@@ -56,7 +56,15 @@ public class SimpleHamsterTests {
     public void initializeTest() {
         game.initialize();
         game.setSpeed(HAMSTER_GAME_TEST_SPEED);
+        game.startGame(false);
         paule = game.getTerritory().getDefaultHamster();
+    }
+
+    /**
+     * Stop any running game.
+     */
+    public void deinitizeTest() {
+        game.stopGame();
     }
 
     /**
