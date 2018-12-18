@@ -34,14 +34,14 @@ public final class LocationVector {
     /**
      * @return The delta of the row this vector describes.
      */
-    public /*@ pure, helper @*/ int getDeltaRow() {
+    public /*@ pure; helper @*/ int getDeltaRow() {
         return deltaRow;
     }
 
     /**
      * @return The delta of the column this vector describes.
      */
-    public /*@ pure, helper @*/ int getDeltaColumn() {
+    public /*@ pure; helper @*/ int getDeltaColumn() {
         return deltaColumn;
     }
     

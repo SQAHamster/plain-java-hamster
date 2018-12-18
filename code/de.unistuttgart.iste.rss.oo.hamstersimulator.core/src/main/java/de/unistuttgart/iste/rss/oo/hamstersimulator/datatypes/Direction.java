@@ -48,7 +48,7 @@ public enum Direction {
      *        a single movement step (i.e., one tile) towards
      *        the direction represented by this direction object.
      */
-    public /*@ pure, helper @*/ LocationVector getMovementVector() {
+    public /*@ pure; helper @*/ LocationVector getMovementVector() {
         return movementVector;
     }
 
@@ -57,7 +57,7 @@ public enum Direction {
      *         which is the direction of turning the hamster one step
      *         towards the left, i.e., counterclockwise.
      */
-    public /*@ pure, helper @*/ Direction left() {
+    public /*@ pure; helper @*/ Direction left() {
         switch (this) {
         case EAST:
             return Direction.NORTH;
@@ -76,7 +76,7 @@ public enum Direction {
      *         which is the direction of turning the hamster one step
      *         towards the right, i.e., clockwise.
      */
-    public /*@ pure, helper @*/ Direction right() {
+    public /*@ pure; helper @*/ Direction right() {
         switch (this) {
         case EAST:
             return Direction.SOUTH;

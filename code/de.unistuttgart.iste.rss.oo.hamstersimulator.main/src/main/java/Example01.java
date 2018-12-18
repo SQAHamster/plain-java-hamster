@@ -8,6 +8,11 @@
 class Example01 extends SimpleHamsterGame {
 
     /**
+     * How often Paule should repeat its behaviour.
+     */
+    private static final int SCENARIO_REPETITION_COUNT = 20;
+
+    /**
      * First hamster program. The idea is to move paule to the grain, let paule collect the grain,
      * and finally return to his initial tile.
      */
@@ -15,7 +20,7 @@ class Example01 extends SimpleHamsterGame {
     protected void run() {
         game.displayInNewGameWindow();
         game.initialize();
-        for(int i = 0; i < 20; i++) {
+        for (int i = 0; i < SCENARIO_REPETITION_COUNT; i++) {
             paule.write("Hallo!");
             paule.move();
             paule.move();

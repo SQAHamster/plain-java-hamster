@@ -46,14 +46,14 @@ public final class Location {
     /**
      * @return The non-negative row number of this location.
      */
-    public /*@ pure, helper @*/ int getRow() {
+    public /*@ pure; helper @*/ int getRow() {
         return row;
     }
 
     /**
      * @return The non-negative column number of this location.
      */
-    public /*@ pure, helper @*/ int getColumn() {
+    public /*@ pure; helper @*/ int getColumn() {
         return column;
     }
 
@@ -101,7 +101,7 @@ public final class Location {
      * @return A new location object which is the result of adding the given
      *      location vector to this location. Will never be null.
      */
-    public /*@ pure, helper @*/ Location translate(final LocationVector movementVector) {
+    public /*@ pure; helper @*/ Location translate(final LocationVector movementVector) {
         return new Location(this.row + movementVector.getDeltaRow(), this.column + movementVector.getDeltaColumn());
     }
 
