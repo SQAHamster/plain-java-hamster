@@ -24,13 +24,18 @@ public final class TreeNode<G> {
         this.value = value;
     }
     
-    /** Convienience overloaded constructor which creates a leaf node.
+    /** Convenience overloaded constructor which creates a leaf node.
      * @param value Value of this leave node.
      */
     public TreeNode(final G value) {
         this(Optional.empty(), Optional.empty(), value);
     }
 
+    /** Creates a node in a binary tree with the given value and child trees.
+     * @param left Left subtree.
+     * @param right Right subtree.
+     * @param value Value stored in this node.
+     */
     public TreeNode(final TreeNode<G> left, final TreeNode<G> right, final G value) {
         this(Optional.of(left), Optional.of(right), value);
     }
@@ -51,4 +56,17 @@ public final class TreeNode<G> {
         result.append(">");
         return result.toString();
     }
+
+    public G getValue() {
+        return value;
+    }
+
+    public Optional<TreeNode<G>> getLeft() {
+        return left;
+    }
+
+    public Optional<TreeNode<G>> getRight() {
+        return right;
+    }
+    
 }
