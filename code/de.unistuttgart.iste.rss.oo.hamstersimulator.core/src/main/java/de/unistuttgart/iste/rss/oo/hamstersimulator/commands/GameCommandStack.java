@@ -28,11 +28,7 @@ public class GameCommandStack extends CommandStack {
         this.canUndo.set(false);
         this.canRedo.set(false);
         if (startPaused) {
-            state.set(Mode.PAUSED);
-            try {
-                this.pauseLock.acquire();
-            } catch (final InterruptedException e) {
-            }
+            pause();
         } else {
             state.set(Mode.RUNNING);
         }
@@ -53,7 +49,7 @@ public class GameCommandStack extends CommandStack {
     @Override
     public void execute(final Command command) {
         if (this.state.get() != Mode.RUNNING && this.state.get() != Mode.PAUSED) {
-            throw new GameAbortedException();
+            throw new GameAbortedException("The game needs to be running to execute hamster commands");
         }
         try {
             this.executingThread = Thread.currentThread();

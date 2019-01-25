@@ -14,6 +14,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EditCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mode;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.AbstractHamsterCommandSpecification;
@@ -177,9 +178,13 @@ public class HamsterGame {
      * @param hamsterProgram The hamster programm to run.
      */
     public void runGame(final Consumer<Territory> hamsterProgram) {
-        startGame(true);
+        if (this.commandStack.stateProperty().get() == Mode.INITIALIZING || 
+                this.commandStack.stateProperty().get() == Mode.STOPPED) {
+            startGame(true);
+        }
         try {
             hamsterProgram.accept(this.territory);
+        } catch (final GameAbortedException e) {
         } catch (final RuntimeException e) {
             this.inputInterface.showAlert(e);
         }
