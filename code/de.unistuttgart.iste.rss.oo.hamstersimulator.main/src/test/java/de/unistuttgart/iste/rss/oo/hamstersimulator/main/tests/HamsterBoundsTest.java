@@ -51,6 +51,7 @@ public class HamsterBoundsTest {
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
+        game.startGame(false);
         paule = game.getTerritory().getDefaultHamster();
     }
 
@@ -59,26 +60,26 @@ public class HamsterBoundsTest {
      */
     @Test
     public void testFailedMove() {
-        game.startGame(false);
-        assertFalse(paule.frontIsClear());
         assertThrows(FrontBlockedException.class, () -> {
-            paule.move();
+            game.runGame(territory -> {
+                assertFalse(paule.frontIsClear());
+                paule.move();
+            });
         });
-        game.stopGame();
     }
 
     /**
-     * Test which tests exception when running against a wall.
+     * Test which tests exception when running off the territory.
      */
     @Test
     public void testFailedMove2() {
-        game.startGame(false);
-        paule.turnLeft();
-        assertFalse(paule.frontIsClear());
         assertThrows(FrontBlockedException.class, () -> {
-            paule.move();
+            game.runGame(territory -> {
+                paule.turnLeft();
+                assertFalse(paule.frontIsClear());
+                paule.move();
+            });
         });
-        game.stopGame();
     }
 
 }

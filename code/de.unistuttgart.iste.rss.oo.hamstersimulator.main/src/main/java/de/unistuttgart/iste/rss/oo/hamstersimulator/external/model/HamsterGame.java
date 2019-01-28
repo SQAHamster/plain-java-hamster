@@ -15,6 +15,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EditCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.DummyInputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.AbstractHamsterCommandSpecification;
@@ -56,6 +57,37 @@ public class HamsterGame {
      * The input interface used when hamsters ask for input.
      */
     private InputInterface inputInterface;
+
+    /**
+     * Initialize a hamster game. The hamster game is in mode Initialized
+     * in the beginning and needs to have its territory defined or loaded
+     * and the game started to be useful.
+     *
+     * The default constructor initializes the hamster game with a dummy IO
+     * interface, i.e., reading values is not allowed and exceptions from
+     * the hamster game will be rethrown.
+     */
+    public HamsterGame() {
+        this(new DummyInputInterface());
+    }
+
+    /**
+     * Initialize a hamster game. The hamster game is in mode Initialized
+     * in the beginning and needs to have its territory defined or loaded
+     * and the game started to be useful.
+     *
+     * This constructor initializes the hamster game with the given
+     * object to handle read commands of the hamster (e.g., from a GUI
+     * or from Mockups) and to handle any exception thrown from the user
+     * defined hamster game.
+     *
+     * @param newInputInterface The input interface this game should use
+     * for reading values from the user and to handle exceptions.
+     */
+    public HamsterGame(final InputInterface newInputInterface) {
+        super();
+        this.inputInterface = newInputInterface;
+    }
 
     /**
      * Set the speed of the delay of the hamster game. The closer the delay is to 0,
@@ -174,21 +206,32 @@ public class HamsterGame {
     }
 
     /**
-     * Run a given hamster program until it terminates.
-     * @param hamsterProgram The hamster programm to run.
+     * Run a given hamster program until it terminates. Termination
+     * is either by ending the hamster game regularly or by throwing
+     * an exception and not handling it inside the provided hamster program.
+     *
+     * The game will be started automatically if it had not been started before.
+     * The game will be in paused mode, suitable for GUI runs, if it is started by
+     * this method. After returning from this method the game will be in stopped state
+     * no matter whether an exception was thrown or the program terminated regularly.
+     *
+     * Precondition to running the game is that the territory has been defined or loaded
+     * and that an IO interface is attached for reading values and handling exceptions.
+     *
+     * @param hamsterProgram The hamster program to run.
      */
     public void runGame(final Consumer<Territory> hamsterProgram) {
-        if (this.commandStack.stateProperty().get() == Mode.INITIALIZING || 
-                this.commandStack.stateProperty().get() == Mode.STOPPED) {
-            startGame(true);
-        }
+        checkState(this.inputInterface != null, "Running a hamster game implies a defined IO interface first.");
+
+        startGameIfNotStarted();
         try {
             hamsterProgram.accept(this.territory);
         } catch (final GameAbortedException e) {
         } catch (final RuntimeException e) {
             this.inputInterface.showAlert(e);
+        } finally {
+            stopGame();
         }
-        stopGame();
     }
 
     /**
@@ -214,6 +257,18 @@ public class HamsterGame {
      */
     public Mode getCurrentGameMode() {
         return this.commandStack.stateProperty().get();
+    }
+
+    /**
+     * Start a hamster game, if it is not started yet.
+     * The game will be started in paused mode, suited
+     * for GUI interaction.
+     */
+    private void startGameIfNotStarted() {
+        if (this.commandStack.stateProperty().get() == Mode.INITIALIZING
+               || this.commandStack.stateProperty().get() == Mode.STOPPED) {
+            startGame(true);
+        }
     }
 
     /**

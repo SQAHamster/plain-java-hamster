@@ -11,6 +11,10 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 public class Main {
 
+    private static final int MAX_ROW_COUNT = 3;
+    private static final int MAX_COLUMN_COUNT = 5;
+    private static final Size EXAMPLE_TERRITORY_SIZE = new Size(MAX_COLUMN_COUNT, MAX_ROW_COUNT);
+
     public static void main(final String[] args) {
         final HamsterGame hamsterGame = new HamsterGame();
 
@@ -41,11 +45,20 @@ public class Main {
     private static TerritoryBuilder createTerritory(final HamsterGame hamsterGame) {
         final TerritoryBuilder builder = hamsterGame.getNewTerritoryBuilder();
 
-        builder.initializeTerritory(new Size(4, 3));
-        builder.defaultHamsterAt(Location.ORIGIN, Direction.EAST, 0);
-        builder.grainAt(Location.from(0, 2));
-        
+        builder.initializeTerritory(EXAMPLE_TERRITORY_SIZE);
+        builder.defaultHamsterAt(Location.from(1, 1), Direction.EAST, 0);
+        builder.grainAt(Location.from(1, 3));
+
+        createWall(builder, Location.ORIGIN, Location.from(0, MAX_COLUMN_COUNT-1));
+        createWall(builder, Location.from(1, 0), Location.from(MAX_ROW_COUNT-2, 0));
+        createWall(builder, Location.from(1, MAX_COLUMN_COUNT-1), Location.from(MAX_ROW_COUNT-2, MAX_COLUMN_COUNT-1));
+        createWall(builder, Location.from(MAX_ROW_COUNT-1, 0), Location.from(MAX_ROW_COUNT-1, MAX_COLUMN_COUNT-1));
+
         return builder;
+    }
+
+    private static void createWall(final TerritoryBuilder builder, final Location from, final Location to) {
+        Location.getAllLocationsFromTo(from, to).forEach(location -> builder.wallAt(location));
     }
 
 }
