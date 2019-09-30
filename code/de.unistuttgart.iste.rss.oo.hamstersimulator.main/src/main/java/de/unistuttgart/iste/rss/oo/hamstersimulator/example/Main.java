@@ -13,7 +13,7 @@ public class Main {
 
     private static final int MAX_ROW_COUNT = 3;
     private static final int MAX_COLUMN_COUNT = 5;
-    private static final Size EXAMPLE_TERRITORY_SIZE = new Size(MAX_COLUMN_COUNT, MAX_ROW_COUNT);
+    private static final Size EXAMPLE_TERRITORY_SIZE = new Size(MAX_ROW_COUNT, MAX_COLUMN_COUNT);
 
     public static void main(final String[] args) {
         final HamsterGame hamsterGame = new HamsterGame();

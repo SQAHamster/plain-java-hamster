@@ -52,7 +52,7 @@ public class TerritoryLoader {
     }
 
     private void setSizeFromStrings(final String[] lines) {
-        this.loadedTerritoryDimensions = new Size(Integer.parseInt(lines[0]), Integer.parseInt(lines[1]));
+        this.loadedTerritoryDimensions = new Size(Integer.parseInt(lines[1]), Integer.parseInt(lines[0]));
         this.territoryBuilder.initializeTerritory(this.loadedTerritoryDimensions);
     }
 

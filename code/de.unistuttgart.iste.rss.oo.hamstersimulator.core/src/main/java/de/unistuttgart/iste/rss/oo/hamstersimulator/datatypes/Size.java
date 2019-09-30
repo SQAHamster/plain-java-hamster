@@ -5,7 +5,7 @@ public final class Size {
     private final int columnCount;
     private final int rowCount;
 
-    public Size(final int columnCount, final int rowCount) {
+    public Size(final int rowCount, final int columnCount) {
         super();
         this.columnCount = columnCount;
         this.rowCount = rowCount;
