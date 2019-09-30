@@ -1,4 +1,3 @@
-
 import java.io.Console;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
@@ -36,7 +35,7 @@ public abstract class SimpleHamsterGame {
 
     /**
      * Initialized a simple hamster game by loading a default territory
-     * and setting protected refernces to contain the default hamster and
+     * and setting protected references to contain the default hamster and
      * the game.
      */
     public SimpleHamsterGame() {
@@ -45,13 +44,6 @@ public abstract class SimpleHamsterGame {
         game.startGame(false);
 
         paule = game.getTerritory().getDefaultHamster();
-    }
-
-    /**
-     * Stop method to stop a finished hamster game.
-     */
-    protected void stop() {
-        game.stopGame();
     }
 
     /**
@@ -65,7 +57,7 @@ public abstract class SimpleHamsterGame {
      * Internal method to start a hamster game and handle any exceptions happening
      * while running.
      */
-    protected final void doRun() {
+    final void doRun() {
         try {
             this.run();
         } catch (final GameAbortedException e) {
