@@ -24,12 +24,11 @@ public class LogEntry {
 
     /** Create a new log entry.
      * @param loggingHamster Reference to the hamster which created the log message.
-     *        Must not be null and the hamster has to be initialized
+     *        Can be null if the log does not originate from a hamster but from the environment.
      * @param loggedMessage The message to be logged. Has not to be null and not to be empty.
      */
     public LogEntry(final GameHamster loggingHamster, final String loggedMessage) {
         super();
-        Preconditions.checkNotNull(loggingHamster);
         Preconditions.checkNotNull(loggedMessage);
         Preconditions.checkArgument(!loggedMessage.equals(""), "Empty message not allowed");
         this.hamster = loggingHamster;
