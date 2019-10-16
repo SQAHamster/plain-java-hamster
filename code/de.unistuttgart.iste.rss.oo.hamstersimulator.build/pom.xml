@@ -26,7 +26,7 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
-						    <createSourcesJar>true</createSourcesJar>
+							<createSourcesJar>true</createSourcesJar>
 							<finalName>rss-hamstersimulator-${project.version}</finalName>
 							<transformers>
 								<transformer
@@ -38,6 +38,11 @@
 									</manifestEntries>
 								</transformer>
 							</transformers>
+							<artifactSet>
+								<excludes>
+									<exclude>org.openjfx:*</exclude>
+								</excludes>
+							</artifactSet>
 						</configuration>
 					</execution>
 				</executions>
