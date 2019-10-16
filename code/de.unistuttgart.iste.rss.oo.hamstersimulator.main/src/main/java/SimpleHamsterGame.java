@@ -51,7 +51,7 @@ public abstract class SimpleHamsterGame {
      * Put the hamster code into this method. This parent class version
      * is empty, so that the hamster does not do anything by default.
      */
-    protected void run() { }
+    void run() { }
 
     /**
      * Internal method to start a hamster game and handle any exceptions happening
