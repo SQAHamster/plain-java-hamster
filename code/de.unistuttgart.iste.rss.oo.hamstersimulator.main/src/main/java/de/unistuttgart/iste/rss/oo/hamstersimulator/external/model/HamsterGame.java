@@ -98,7 +98,8 @@ public class HamsterGame {
     /**
      * Set the speed of the hamster game. Valid values are in the range from 0.0 to 10.0,
      * where 0.0 is slow and 10.0 is fast.
-     * @param gameSpeed The new game speed's delay. Has to be >= 0 and <= 10.
+     * @param gameSpeed The new game speed's delay. Has to be greater or equal 0.0 and
+     *                  less than or equal 10.0.
      */
     public void setSpeed(final double gameSpeed) {
         Preconditions.checkArgument(gameSpeed >= 0.0 && gameSpeed <= MAX_SPEED);
