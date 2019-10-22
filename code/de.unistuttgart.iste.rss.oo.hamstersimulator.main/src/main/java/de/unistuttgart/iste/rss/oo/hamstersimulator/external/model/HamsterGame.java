@@ -22,6 +22,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.comma
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryBuilder;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
+import de.unistuttgart.iste.rss.utils.Preconditions;
 
 /**
  * A class representing an instance of a hamster game. A hamster game consists of a territory, on
@@ -31,6 +32,11 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
  *
  */
 public class HamsterGame {
+
+    /**
+     * Maximum number for the game speed of the hamster game.
+     */
+    private static final double MAX_SPEED = 10.0;
 
     /**
      * Constant containing the filename of the default territory file.
@@ -90,11 +96,12 @@ public class HamsterGame {
     }
 
     /**
-     * Set the speed of the delay of the hamster game. The closer the delay is to 0,
-     * the faster the hamster game will run.
-     * @param gameSpeed The new game speed's delay. Has to be greater 0.
+     * Set the speed of the hamster game. Valid values are in the range from 0.0 to 10.0,
+     * where 0.0 is slow and 10.0 is fast.
+     * @param gameSpeed The new game speed's delay. Has to be >= 0 and <= 10.
      */
     public void setSpeed(final double gameSpeed) {
+        Preconditions.checkArgument(gameSpeed >= 0.0 && gameSpeed <= MAX_SPEED);
         this.commandStack.setSpeed(gameSpeed);
     }
 
