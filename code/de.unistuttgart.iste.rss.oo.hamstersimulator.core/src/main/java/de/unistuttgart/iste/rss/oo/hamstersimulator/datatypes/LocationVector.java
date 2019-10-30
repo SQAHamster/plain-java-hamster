@@ -1,51 +1,55 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes;
 
 /**
- * A location vector is a vector in the mathematical sense.
- * It can be used to describe a location relative to another
- * location.
- * 
+ * A location vector is a vector in the mathematical sense. It can be used to describe a location
+ * relative to another location.
+ *
  * @author Steffen Becker
  *
  */
 public final class LocationVector {
-    
+
     /**
      * The vector's delta in the row number. Can be any integer number.
      */
     private final int deltaRow;
-    
+
     /**
-     * The vector's deleta in the column number. Can be any integer number.
+     * The vector's delta in the column number. Can be any integer number.
      */
     private final int deltaColumn;
-    
+
     /**
      * Creates a new location vector with the given vector deltas.
-     * @param deltaRow The delta in the row count. Can be any integer.
-     * @param delteColumn The delta in the column count. Can be any integer.
+     *
+     * @param newDeltaRow
+     *            The delta in the row count. Can be any integer.
+     * @param newDeltaColumn
+     *            The delta in the column count. Can be any integer.
      */
-    public LocationVector(final int deltaRow, final int delteColumn) {
+    public LocationVector(final int newDeltaRow, final int newDeltaColumn) {
         super();
-        this.deltaRow = deltaRow;
-        this.deltaColumn = delteColumn;
+        this.deltaRow = newDeltaRow;
+        this.deltaColumn = newDeltaColumn;
     }
-    
+
     /**
      * @return The delta of the row this vector describes.
      */
-    public /*@ pure; helper @*/ int getDeltaRow() {
+    public /* @ pure; helper @ */ int getDeltaRow() {
         return deltaRow;
     }
 
     /**
      * @return The delta of the column this vector describes.
      */
-    public /*@ pure; helper @*/ int getDeltaColumn() {
+    public /* @ pure; helper @ */ int getDeltaColumn() {
         return deltaColumn;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -56,8 +60,10 @@ public final class LocationVector {
         result = prime * result + deltaColumn;
         return result;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
