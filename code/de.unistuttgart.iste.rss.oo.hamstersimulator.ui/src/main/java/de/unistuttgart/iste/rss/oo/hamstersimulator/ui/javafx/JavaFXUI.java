@@ -8,19 +8,31 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 public class JavaFXUI extends Application {
 
     private static final CountDownLatch initLatch = new CountDownLatch(1);
-    private static boolean isStarted = false;
+    private static volatile boolean isStarted = false;
 
     public static void start() {
         if (!isStarted) {
             new Thread(()->Application.launch(JavaFXUI.class)).start();
             waitForJavaFXStart();
             isStarted = true;
+            Platform.setImplicitExit(true);
         }
+    }
+    
+    public static void setKeepFXRunningAfterLastWindow() {
+        Platform.setImplicitExit(false);        
+    }
+    
+    @Override
+    public void stop() throws Exception {
+        isStarted = false;
+        super.stop();
     }
 
     private static void waitForJavaFXStart() {
@@ -35,6 +47,7 @@ public class JavaFXUI extends Application {
     }
 
     public static void openSceneFor(final ReadOnlyTerritory territory, final GameCommandStack commandStack, final GameLog gameLog) {
+        start();
         JavaFXUtil.blockingExecuteOnFXThread(() -> {
             Stage stage;
             try {
