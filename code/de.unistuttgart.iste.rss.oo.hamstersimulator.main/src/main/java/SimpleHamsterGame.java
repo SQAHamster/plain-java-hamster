@@ -73,7 +73,7 @@ public abstract class SimpleHamsterGame {
      * @param args Default command line arguments, not used.
      */
     public static void main(final String[] args) {
-        final Example01 example01 = new Example01();
+        final SimpleHamsterGame example01 = new Example03();
         example01.doRun();
     }
 }

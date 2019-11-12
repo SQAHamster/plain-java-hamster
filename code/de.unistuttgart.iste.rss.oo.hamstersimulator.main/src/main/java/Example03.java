@@ -19,7 +19,7 @@ class Example03 extends SimpleHamsterGame {
       @       \let Location l = paule.getDirection().getMovementVector().scale(i);
       @           game.getTerritory().isFree(\pre(paule.getLocation()).translate(l));
       @ ensures
-      @    paule.getDirection().equals(\pre(paule.getLocation()).translate(paule.getDirection().getMovementVector().scale(2)));
+      @    paule.getLocation().equals(\pre(paule.getLocation()).translate(paule.getDirection().getMovementVector().scale(2)));
       @*/
     void doubleMove() {
         // Precondition implies paule.frontIsClear();
