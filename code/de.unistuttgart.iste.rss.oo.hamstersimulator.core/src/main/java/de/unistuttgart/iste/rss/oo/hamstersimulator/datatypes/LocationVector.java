@@ -47,6 +47,15 @@ public final class LocationVector {
         return deltaColumn;
     }
 
+    /**
+     * Returns a scaled version of this vector. Both
+     * axis are scaled by the same scalar.
+     * @param scale integer scalar to use for scaling this vector
+     * @return A new scaled LocationVector
+     */
+    LocationVector scale(final int scale) {
+        return new LocationVector(this.deltaRow * scale, this.deltaColumn * scale);
+    }
     /*
      * (non-Javadoc)
      *

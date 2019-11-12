@@ -148,6 +148,15 @@ public class Territory {
     }
 
     /**
+     * Returns whether the tile at the given location exists and is not blocked.
+     * @param location The location of the tile to check for a wall.
+     * @return True if the tile at the given location exists and is not blocked.
+     */
+    public /*@ pure @*/ boolean isFree(final Location location) {
+        return isLocationInTerritory(location) && !isBlockedByWall(location);
+    }
+
+    /**
      * Get the number of grains at the given location.
      * @param location The location of the tile to check for grain.
      * @return The number of grains currently available at the given location.
