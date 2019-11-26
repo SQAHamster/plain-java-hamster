@@ -6,12 +6,42 @@
 	<artifactId>parent</artifactId>
 	<version>2.1.1-SNAPSHOT</version>
 
+	<distributionManagement>
+		<repository>
+			<id>central</id>
+			<name>cbf448e68d12-releases</name>
+			<url>http://admin:password@localhost/artifactory/rss-hamster</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>cbf448e68d12-snapshots</name>
+			<url>http://admin:password@localhost/artifactory/rss-hamster</url>
+		</snapshotRepository>
+	</distributionManagement>
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<build>
 		<plugins>
+
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+            
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<tagNameFormat>v@{project.version}</tagNameFormat>
+				</configuration>
+			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -128,4 +158,9 @@
 		</module>
 	</modules>
 	<name>Hamstersimulator Maven Parent Project</name>
+	<scm>
+		<url>https://git.rss.iste.uni-stuttgart.de/open-to-public/pse.git</url>
+		<developerConnection>scm:git:https://git.rss.iste.uni-stuttgart.de/open-to-public/pse.git</developerConnection>
+		<connection>scm:git:https://git.rss.iste.uni-stuttgart.de/open-to-public/pse.git</connection>
+	</scm>
 </project>

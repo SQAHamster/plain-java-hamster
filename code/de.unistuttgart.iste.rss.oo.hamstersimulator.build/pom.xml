@@ -10,11 +10,21 @@
 		<relativePath>../de.unistuttgart.iste.rss.oo.hamstersimulator.parent</relativePath>
 	</parent>
 
-	<artifactId>build</artifactId>
+	<artifactId>simulator</artifactId>
 	<name>Hamstersimulator Final Build Project</name>
 
 	<build>
 		<plugins>
+		
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <configuration>
+                    <skip>false</skip>
+                    <classifier>sources</classifier>
+                </configuration>
+            </plugin>
+            
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
@@ -38,11 +48,8 @@
 									</manifestEntries>
 								</transformer>
 							</transformers>
-							<artifactSet>
-								<excludes>
-									<exclude>org.openjfx:*</exclude>
-								</excludes>
-							</artifactSet>
+							<!-- <artifactSet> <excludes> <exclude>org.openjfx:*</exclude> </excludes> 
+								</artifactSet> -->
 						</configuration>
 					</execution>
 				</executions>
@@ -81,9 +88,23 @@
 			<version>2.1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>
+				de.unistuttgart.iste.rss.oo.hamstersimulator
+			</groupId>
+			<artifactId>ui</artifactId>
+			<version>2.1.1-SNAPSHOT</version>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
 			<groupId>de.unistuttgart.iste.rss</groupId>
 			<artifactId>utils</artifactId>
 			<version>2.1.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>de.unistuttgart.iste.rss</groupId>
+			<artifactId>utils</artifactId>
+			<version>2.1.1-SNAPSHOT</version>
+			<classifier>sources</classifier>
 		</dependency>
 	</dependencies>
 </project>
