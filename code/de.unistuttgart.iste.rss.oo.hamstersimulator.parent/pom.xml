@@ -158,7 +158,7 @@
 	<name>Hamstersimulator Maven Parent Project</name>
 	<scm>
 		<url>https://git.rss.iste.uni-stuttgart.de/open-to-public/pse.git</url>
-		<developerConnection>scm:git:https://git.rss.iste.uni-stuttgart.de/open-to-public/pse.git</developerConnection>
+		<developerConnection>scm:git:ssh://git@git.rss.iste.uni-stuttgart.de:22222/open-to-public/pse.git</developerConnection>
 		<connection>scm:git:https://git.rss.iste.uni-stuttgart.de/open-to-public/pse.git</connection>
 	  <tag>v2.1.1</tag>
   </scm>
