@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>de.unistuttgart.iste.rss.oo.hamstersimulator</groupId>
+		<artifactId>parent</artifactId>
+		<version>2.1.1</version>
+		<relativePath>./de.unistuttgart.iste.rss.oo.hamstersimulator.parent/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>root</artifactId>
+	<name>Hamster Simulator Root Project</name>
+	<packaging>pom</packaging>
+    <version>2.1.1</version>
+
+	<modules>
+		<module>
+			de.unistuttgart.iste.rss.oo.hamstersimulator.parent
+		</module>
+		<module>
+			de.unistuttgart.iste.rss.oo.hamstersimulator.core
+		</module>
+		<module>
+			de.unistuttgart.iste.rss.oo.hamstersimulator.main
+		</module>
+		<module>
+			de.unistuttgart.iste.rss.oo.hamstersimulator.ui
+		</module>
+		<module>de.unistuttgart.iste.rss.utils</module>
+		<module>
+			de.unistuttgart.iste.rss.oo.hamstersimulator.build
+		</module>
+	</modules>
+
+    <scm>
+		<developerConnection>scm:git:ssh://git@git.rss.iste.uni-stuttgart.de:22222/open-to-public/pse.git</developerConnection>
+		<connection>scm:git:ssh://git@git.rss.iste.uni-stuttgart.de:22222/open-to-public/pse.git</connection>
+    <tag>v2.1.1</tag>
+  </scm>
+</project>
