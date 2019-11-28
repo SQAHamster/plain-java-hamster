@@ -11,7 +11,7 @@
 	<artifactId>root</artifactId>
 	<name>Hamster Simulator Root Project</name>
 	<packaging>pom</packaging>
-    <version>2.1.1-SNAPSHOT</version>
+    <version>2.1.1</version>
 
 	<modules>
 		<module>
