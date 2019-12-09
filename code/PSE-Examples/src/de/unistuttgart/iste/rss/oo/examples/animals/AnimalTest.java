@@ -5,7 +5,7 @@ public class AnimalTest {
     void runTest() {
         final Hamster paule = new Hamster();
         final Animal pet1 = paule;
-        final Mamal pet2 = paule;
+        final Mammal pet2 = paule;
     }
     
     void moreInterestingTest(final boolean wantDog) {

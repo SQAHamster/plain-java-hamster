@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Hamster extends Mamal {
+public class Hamster extends Mammal {
 
     @Override
     public int pregnantFor() {
