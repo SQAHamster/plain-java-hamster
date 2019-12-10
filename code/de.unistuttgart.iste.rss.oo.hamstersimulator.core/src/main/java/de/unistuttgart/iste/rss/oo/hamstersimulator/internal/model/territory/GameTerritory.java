@@ -76,14 +76,14 @@ public class GameTerritory extends EditorTerritory {
     }
     
     private Command createMoveCommand(final MoveCommandSpecification specification) {
-        
+
         final GameHamster hamster = specification.getHamster();
         final ReadOnlyTerritory territory = hamster.getCurrentTerritory();
         final Supplier<Location> newLocation = () -> {
             final LocationVector movementVector = hamster.getDirection().getMovementVector();
             return hamster.getCurrentTile().get().getLocation().translate(movementVector);
         };
-        
+
         return new CompositeCommand().setCommandConstructor(builder -> {
                 assert specification.getHamster().getCurrentTerritory() == GameTerritory.this;
 
@@ -96,17 +96,17 @@ public class GameTerritory extends EditorTerritory {
             }
         ).setPreconditionConstructor(builder -> {
             builder.addNewPrecondition(HamsterNotInitializedException::new, () -> !specification.getHamster().getCurrentTile().isPresent());
-            builder.addNewPrecondition(FrontBlockedException::new, 
+            builder.addNewPrecondition(FrontBlockedException::new,
                     () -> specification.getHamster().getCurrentTile().get().getLocation().getRow() == 0
                                 && specification.getHamster().getDirection() == Direction.NORTH);
-            builder.addNewPrecondition(FrontBlockedException::new, 
+            builder.addNewPrecondition(FrontBlockedException::new,
                     () -> specification.getHamster().getCurrentTile().get().getLocation().getColumn() == 0
                     && specification.getHamster().getDirection() == Direction.WEST);
             builder.addNewPrecondition(FrontBlockedException::new, () -> !territory.isLocationInTerritory(newLocation.get()));
             builder.addNewPrecondition(FrontBlockedException::new, () -> territory.getTileAt(newLocation.get()).isBlocked());
         });
     }
-    
+
     @Override
     public GameHamster getDefaultHamster() {
         return (GameHamster) this.defaultHamster.get();

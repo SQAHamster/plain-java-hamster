@@ -6,8 +6,12 @@ public class GameAbortedException extends RuntimeException {
         super(message);
     }
 
+    public GameAbortedException(final String message, final Exception exception) {
+        super(message, exception);
+    }
+
     /**
-     * 
+     * Serial ID.
      */
     private static final long serialVersionUID = 4952442615093902161L;
 

@@ -51,14 +51,24 @@ public class GameCommandStack extends CommandStack {
         if (this.state.get() != Mode.RUNNING && this.state.get() != Mode.PAUSED) {
             throw new GameAbortedException("The game needs to be running to execute hamster commands");
         }
+        if (!command.canExecute()) {
+            state.set(Mode.STOPPED);
+            throw command.getExceptionsFromPreconditions().get(0);
+        }
+        this.executingThread = Thread.currentThread();
+        checkState(!(state.get() == Mode.STOPPED));
         try {
-            this.executingThread = Thread.currentThread();
-            checkState(!(state.get() == Mode.STOPPED));
             pauseLock.acquire();
             super.execute(command);
-            pauseLock.release();
             delay();
         } catch (final InterruptedException e) {
+        } catch (final Exception e) {
+            // Stop the game to prevent execution of further commands!
+            state.set(Mode.STOPPED);
+            throw e;
+        }
+        finally {
+            pauseLock.release();
         }
     }
 

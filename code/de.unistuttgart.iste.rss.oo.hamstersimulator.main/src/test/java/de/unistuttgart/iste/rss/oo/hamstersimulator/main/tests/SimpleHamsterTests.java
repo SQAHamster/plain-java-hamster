@@ -1,7 +1,10 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.main.tests;
 
+import static java.time.Duration.ofMillis;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,10 +12,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.FrontBlockedException;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.MouthEmptyException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.NoGrainOnTileException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Hamster;
@@ -25,6 +30,8 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 public class SimpleHamsterTests {
+
+    private static final int TIMEOUT = 1000;
 
     /**
      * Delay used when running these hamster tests.
@@ -146,6 +153,46 @@ public class SimpleHamsterTests {
             game.initialize();
             assertEquals(game.getTerritory().getHamsters().size(), 1);
             assertEquals(paule, game.getTerritory().getHamsters().get(0));
+        });
+    }
+
+    /**
+     * Test which tests catching a hamster game exception does still
+     * stop to game and prevents further game commands.
+     */
+    @Test
+    public void testExceptionMove() {
+        game.runGame(territory -> {
+            paule.move();
+            paule.move();
+            try {
+                paule.move();
+            } catch (FrontBlockedException fbe) {
+                assertTrue(game.getCurrentGameMode() == Mode.STOPPED);
+            }
+        });
+    }
+
+    /**
+     * Test which tests catching a hamster game exception does still
+     * stop to game and prevents further game commands. It also ensures
+     * that raising an exception inside a command does not stall the hamster
+     * simulator in a half-paused mode.
+     */
+    @Test
+    public void testExceptionMove2() {
+        game.runGame(territory -> {
+            paule.move();
+            paule.move();
+            try {
+                paule.move();
+            } catch (FrontBlockedException fbe) {
+                assertThrows(GameAbortedException.class, () -> {
+                    assertTimeoutPreemptively(ofMillis(TIMEOUT), () -> {
+                        paule.turnLeft();
+                    });
+                });
+            }
         });
     }
 }

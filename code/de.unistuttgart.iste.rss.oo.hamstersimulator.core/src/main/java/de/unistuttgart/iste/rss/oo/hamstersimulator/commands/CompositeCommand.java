@@ -49,7 +49,7 @@ public class CompositeCommand extends Command {
 
     @Override
     public List<RuntimeException> getExceptionsFromPreconditions() {
-         final Function<Supplier<Optional<RuntimeException>>, Optional<RuntimeException>> exceptionSupplier =
+        final Function<Supplier<Optional<RuntimeException>>, Optional<RuntimeException>> exceptionSupplier =
                  supplier -> {
                      try {
                          return supplier.get();
@@ -57,15 +57,15 @@ public class CompositeCommand extends Command {
                          return Optional.of(e);
                      }
                  };
-         final List<RuntimeException> result = preconditionBuilder.preconditions.stream().
+        final List<RuntimeException> result = preconditionBuilder.preconditions.stream().
                  map(exceptionSupplier).
                  filter(optionalException -> optionalException.isPresent()).
                  map(optionalException -> optionalException.get()).
                  collect(Collectors.toList());
-         for (final Command command : commandsToExecute) {
-             result.addAll(command.getExceptionsFromPreconditions());
-         }
-         return result;
+        for (final Command command : this.compositeCommandBuilder.commandsToExecute) {
+            result.addAll(command.getExceptionsFromPreconditions());
+        }
+        return result;
     }
     
     @Override
