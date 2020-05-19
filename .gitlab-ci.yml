@@ -48,24 +48,24 @@ cache:
 # Validate merge requests using JDK8
 validate:jdk11:
   <<: *validate
-  image: maven:3.6.2-jdk-11
+  image: maven:3.6.3-jdk-14
 
 test:jdk11:
   stage: test
   script:
     - 'mvn $MAVEN_CLI_OPTS test'
-  image: maven:3.6.2-jdk-11
+  image: maven:3.6.3-jdk-14
 
 # Verify merge requests using JDK8
 verify:jdk11:
   <<: *verify
-  image: maven:3.6.2-jdk-11
+  image: maven:3.6.3-jdk-14
 
 javadoc:jdk11:
   stage: test
   script:
     - 'mvn $MAVEN_CLI_OPTS javadoc:aggregate-jar'
-  image: maven:3.6.2-jdk-11
+  image: maven:3.6.3-jdk-14
   artifacts:
     name: "rss-hamster-javadoc-$CI_COMMIT_SHA"
     when: on_success
