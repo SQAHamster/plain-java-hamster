@@ -35,7 +35,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.3</version>
+				<version>3.0.0-M1</version>
 				<configuration>
 					<tagNameFormat>v@{project.version}</tagNameFormat>
 				</configuration>
@@ -103,10 +103,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.0.1</version>
+				<version>3.1.1</version>
 				<configuration>
 					<links>
-						<link>https://docs.oracle.com/en/java/javase/11/docs/api</link>
+						<link>https://docs.oracle.com/en/java/javase/14/docs/api</link>
 					</links>
 					<detectJavaApiLink>true</detectJavaApiLink>
 					<detectLinks>true</detectLinks>
