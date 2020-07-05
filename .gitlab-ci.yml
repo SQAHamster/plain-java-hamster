@@ -83,6 +83,7 @@ deploy:jdk11:
   stage: deploy
   script:
     - 'mvn $MAVEN_CLI_OPTS deploy'
+  image: maven:3.6.3-jdk-14
   only:
     - master
 #  # Archive up the built documentation site.
