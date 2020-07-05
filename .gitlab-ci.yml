@@ -70,7 +70,7 @@ javadoc:jdk11:
     name: "rss-hamster-javadoc-$CI_COMMIT_SHA"
     when: on_success
     paths: 
-    - code/de.unistuttgart.iste.rss.oo.hamstersimulator.parent/target/apidocs/
+    - code/target/apidocs/
     expire_in: 4 weeks
 
 # For `master` branch run `mvn deploy` automatically.
