@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.example;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.examples;
 
 import java.util.Collections;
 import java.util.HashSet;

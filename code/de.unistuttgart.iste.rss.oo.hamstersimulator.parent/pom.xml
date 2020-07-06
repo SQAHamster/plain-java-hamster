@@ -97,16 +97,26 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M3</version>
+				<version>3.0.0-M4</version>
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>3.1.1</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
 				<configuration>
 					<links>
 						<link>https://docs.oracle.com/en/java/javase/14/docs/api</link>
+						<!-- <link>https://openjfx.io/javadoc/14/</link> -->
+						<link>https://junit.org/junit5/docs/current/api/</link>
 					</links>
 					<detectJavaApiLink>true</detectJavaApiLink>
 					<detectLinks>true</detectLinks>

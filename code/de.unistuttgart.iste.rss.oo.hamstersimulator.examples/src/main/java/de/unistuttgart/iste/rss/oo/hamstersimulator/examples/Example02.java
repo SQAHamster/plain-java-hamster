@@ -1,3 +1,4 @@
+package de.unistuttgart.iste.rss.oo.hamstersimulator.examples;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Hamster;
 
 class Example02 extends SimpleHamsterGame {

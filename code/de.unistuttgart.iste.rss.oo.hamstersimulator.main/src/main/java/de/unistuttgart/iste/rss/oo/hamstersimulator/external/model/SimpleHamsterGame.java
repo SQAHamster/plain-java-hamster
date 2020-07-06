@@ -1,8 +1,7 @@
+package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 import java.io.Console;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 /**
@@ -51,15 +50,15 @@ public abstract class SimpleHamsterGame {
      * Put the hamster code into this method. This parent class version
      * is empty, so that the hamster does not do anything by default.
      */
-    void run() { }
+    protected abstract void hamsterMain();
 
     /**
      * Internal method to start a hamster game and handle any exceptions happening
      * while running.
      */
-    final void doRun() {
+    protected final void doRun() {
         try {
-            this.run();
+            this.hamsterMain();
         } catch (final GameAbortedException e) {
             // End this game
         } catch (final RuntimeException e) {
@@ -68,12 +67,4 @@ public abstract class SimpleHamsterGame {
         game.stopGame();
     }
 
-    /**
-     * Main method used to start the simple hamster game.
-     * @param args Default command line arguments, not used.
-     */
-    public static void main(final String[] args) {
-        final SimpleHamsterGame example01 = new Example03();
-        example01.doRun();
-    }
 }

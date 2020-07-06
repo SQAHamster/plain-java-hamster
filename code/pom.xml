@@ -30,6 +30,9 @@
 		<module>
 			de.unistuttgart.iste.rss.oo.hamstersimulator.build
 		</module>
+		<module>
+			de.unistuttgart.iste.rss.oo.hamstersimulator.examples
+		</module>
 	</modules>
 
     <scm>

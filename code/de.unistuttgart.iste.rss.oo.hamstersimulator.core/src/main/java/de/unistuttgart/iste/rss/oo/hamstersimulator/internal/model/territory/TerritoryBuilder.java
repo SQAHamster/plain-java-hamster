@@ -15,9 +15,9 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.com
 
 /**
  * Objects of this class can be used to define Hamster territories. The builder
- * objects track all operations used to define the territory and finally create 
- * a large composite command that initializes the defined territory. 
- * 
+ * objects track all operations used to define the territory and finally create
+ * a large composite command that initializes the defined territory.
+ *
  * @author Steffen Becker
  *
  */
@@ -31,9 +31,9 @@ public class TerritoryBuilder {
         this.territory = territory;
     }
 
-    /** 
+    /**
      * Factory method to create new TerritoryBuilder objects which then can be
-     * used to defined the given territory. 
+     * used to defined the given territory.
      * @param territory The territory which should be built.
      * @return A TerritoryBuilder object for the given territory.
      */
@@ -91,11 +91,12 @@ public class TerritoryBuilder {
     }
 
     /**
-     * Puts a single grain at the given location. The location 
+     * Puts a single grain at the given location. The location
      * must not be blocked by a wall.
      * @param location Location where the new grain will be put at.
      * @return The builder again for a fluent API use case.
-     */    public TerritoryBuilder grainAt(final Location location) {
+     */
+    public TerritoryBuilder grainAt(final Location location) {
         return this.grainAt(location, 1);
     }
 

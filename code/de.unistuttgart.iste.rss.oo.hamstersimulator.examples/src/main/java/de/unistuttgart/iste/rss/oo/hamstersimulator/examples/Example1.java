@@ -1,7 +1,9 @@
+package de.unistuttgart.iste.rss.oo.hamstersimulator.examples;
+
 class Example1 extends SimpleHamsterGame {
 
     @Override
-    protected void run() {
+    void run() {
         game.displayInNewGameWindow();
         game.initialize();
         paule.move();

@@ -1,3 +1,5 @@
+package de.unistuttgart.iste.rss.oo.hamstersimulator.examples;
+
 class Example03 extends SimpleHamsterGame {
 
     /**

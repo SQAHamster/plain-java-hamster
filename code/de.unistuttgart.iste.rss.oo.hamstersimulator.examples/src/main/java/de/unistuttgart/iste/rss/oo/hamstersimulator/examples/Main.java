@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.example;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.examples;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
@@ -6,7 +6,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Territory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryBuilder;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.TerritoryBuilder;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 /**

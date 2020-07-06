@@ -16,7 +16,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryBuilder;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.TerritoryBuilder;
 
 /**
  * Simple tests for the hamster API.

@@ -19,7 +19,6 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.DummyInputInt
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.AbstractHamsterCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryBuilder;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 import de.unistuttgart.iste.rss.utils.Preconditions;
@@ -174,7 +173,7 @@ public class HamsterGame {
      * @return A territory builder for this territory
      */
     public TerritoryBuilder getNewTerritoryBuilder() {
-        return TerritoryBuilder.getTerritoryBuilderForTerritory(getTerritory().getInternalTerritory());
+        return TerritoryBuilder.getTerritoryBuilderForTerritory(getTerritory());
     }
     /**
      * Reset the hamster game to its initial state. Removes all hamsters besides  the
