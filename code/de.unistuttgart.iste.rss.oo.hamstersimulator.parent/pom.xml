@@ -1,20 +1,22 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.unistuttgart.iste.rss.oo.hamstersimulator</groupId>
 	<artifactId>parent</artifactId>
 	<version>2.1.4-SNAPSHOT</version>
 
 	<distributionManagement>
-	    <snapshotRepository>
-    	    <id>snapshots</id>
-        	<name>artifactory-oss-artifactory-0-snapshots</name>
-        	<url>https://rss-artifactory.ddnss.org/artifactory/libs-snapshot-local</url>
-    	</snapshotRepository>
-    	<repository>
-        	<id>central</id>
-       		<name>artifactory-oss-artifactory-0-releases</name>
-        	<url>https://rss-artifactory.ddnss.org/artifactory/libs-release-local</url>
-    	</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>artifactory-oss-artifactory-0-snapshots</name>
+			<url>https://rss-artifactory.ddnss.org/artifactory/libs-snapshot-local</url>
+		</snapshotRepository>
+		<repository>
+			<id>central</id>
+			<name>artifactory-oss-artifactory-0-releases</name>
+			<url>https://rss-artifactory.ddnss.org/artifactory/libs-release-local</url>
+		</repository>
 	</distributionManagement>
 
 	<properties>
@@ -24,13 +26,13 @@
 	<build>
 		<plugins>
 
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>3.0.0-M1</version>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
-            </plugin>
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>3.0.0-M1</version>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -47,6 +49,8 @@
 				<version>3.8.1</version>
 				<configuration>
 					<release>14</release>
+					<source>14</source>
+					<target>14</target>
 				</configuration>
 			</plugin>
 
@@ -104,22 +108,22 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>3.1.1</version>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
 					<links>
-						<link>https://docs.oracle.com/en/java/javase/14/docs/api</link>
-						<!-- <link>https://openjfx.io/javadoc/14/</link> -->
+						<link>https://docs.oracle.com/en/java/javase/14/docs/api/</link>
+						<link>https://openjfx.io/javadoc/14/</link>
 						<link>https://junit.org/junit5/docs/current/api/</link>
 					</links>
-					<detectJavaApiLink>true</detectJavaApiLink>
-					<detectLinks>true</detectLinks>
+					<detectJavaApiLink>false</detectJavaApiLink>
+					<detectLinks>false</detectLinks>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -155,6 +159,6 @@
 	<scm>
 		<developerConnection>scm:git:ssh://git@git.rss.iste.uni-stuttgart.de:22222/open-to-public/pse.git</developerConnection>
 		<connection>scm:git:ssh://git@git.rss.iste.uni-stuttgart.de:22222/open-to-public/pse.git</connection>
-	  <tag>v2.1.1</tag>
-  </scm>
+		<tag>v2.1.1</tag>
+	</scm>
 </project>

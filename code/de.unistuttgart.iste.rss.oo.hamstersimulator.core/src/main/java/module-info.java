@@ -1,5 +1,4 @@
 module rss.hamster.core {
-    requires java.base;
     requires transitive rss.util;
     requires transitive javafx.base;
 
