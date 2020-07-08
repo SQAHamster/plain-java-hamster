@@ -41,27 +41,27 @@ cache:
 .verify: &verify
   stage: test
   script:
-    - 'mvn $MAVEN_CLI_OPTS verify site site:stage'
+    - 'mvn $MAVEN_CLI_OPTS verify'
   except:
     - master
 
 # Validate merge requests using JDK8
-validate:jdk11:
+validate:jdk14:
   <<: *validate
   image: maven:3.6.3-jdk-14
 
-test:jdk11:
+test:jdk14:
   stage: test
   script:
     - 'mvn $MAVEN_CLI_OPTS test'
   image: maven:3.6.3-jdk-14
 
-# Verify merge requests using JDK8
-verify:jdk11:
+# Verify merge requests using JDK14
+verify:jdk14:
   <<: *verify
   image: maven:3.6.3-jdk-14
 
-javadoc:jdk11:
+javadoc:jdk14:
   stage: test
   script:
     - 'mvn $MAVEN_CLI_OPTS javadoc:aggregate-jar'
@@ -78,7 +78,7 @@ javadoc:jdk11:
 # To get this working you need to define a volume while configuring your gitlab-ci-multi-runner.
 # Mount your `settings.xml` as `/root/.m2/settings.xml` which holds your secrets.
 # See https://maven.apache.org/settings.html
-deploy:jdk11:
+deploy:jdk14:
 #  # Use stage test here, so the pages job may later pickup the created site.
   stage: deploy
   script:
