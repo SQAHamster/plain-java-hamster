@@ -32,7 +32,7 @@ class HamsterGameStage extends Stage {
         this.setTitle("Hamster Simulator - Game Window");
         final BorderPane root = (BorderPane) loadFromFXML();
         final Scene scene = new Scene(root, 700, 400);
-        scene.getStylesheets().add("css/game.css");
+        scene.getStylesheets().add("de/unistuttgart/iste/rss/oo/hamstersimulator/ui/ressources/css/game.css");
         this.minHeightProperty().bind(root.minHeightProperty());
         this.minWidthProperty().bind(root.minWidthProperty());
         this.setScene(scene);
@@ -40,7 +40,8 @@ class HamsterGameStage extends Stage {
 
     private Parent loadFromFXML() throws IOException {
         final FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getClassLoader().getResource("fxml/GameScene.fxml"));
+        fxmlLoader.setLocation(getClass().getClassLoader()
+                .getResource("de/unistuttgart/iste/rss/oo/hamstersimulator/ui/ressources/fxml/GameScene.fxml"));
         final Parent root = fxmlLoader.load();
         this.sceneController = (GameSceneController) fxmlLoader.getController();
         return root;
