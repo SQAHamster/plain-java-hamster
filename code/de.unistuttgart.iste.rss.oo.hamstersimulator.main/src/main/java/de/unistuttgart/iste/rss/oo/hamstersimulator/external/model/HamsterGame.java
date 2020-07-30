@@ -123,6 +123,8 @@ public class HamsterGame {
 
     /**
      * Initialize a new hamster game by loading the default territory.
+     *
+     * Warning: this executes a hard reset which cannot be undone
      */
     public void initialize() {
         try {
@@ -137,8 +139,12 @@ public class HamsterGame {
      * Initialize a new hamster game by loading the default territory.
      * @param territoryBuilder A territory builder which has been used before to
      *        build the territory.
+     *
+     * Warning: this executes a hard reset which cannot be undone
      */
     public void initialize(final TerritoryBuilder territoryBuilder) {
+        this.hardReset();
+
         new EditCommandStack().execute(
                 territoryBuilder.build());
 
@@ -147,11 +153,15 @@ public class HamsterGame {
     /**
      * Initialize a new hamster game by loading the territory from the passed
      * territory file path.
+     * Warning: this executes a hard reset which cannot be undone
+     *
      * @param territoryFile The territory file path. Has to be a location relative to
      *                      the classes' class path.
      * @throws IOException IOException occurs if the territory file could not be found or loaded.
      */
     public void initialize(final String territoryFile) throws IOException {
+        this.hardReset();
+
         new EditCommandStack().execute(
                 TerritoryLoader.initializeFor(territory.getInternalTerritory()).loadFromResourceFile(territoryFile));
     }
@@ -159,10 +169,14 @@ public class HamsterGame {
     /**
      * Initialize a new hamster game by loading the territory from the passed
      * territory file path.
+     * Warning: this executes a hard reset which cannot be undone
+     *
      * @param inputStream The input stream to load the territory from.
      * @throws IOException IOException occurs if the territory file could not be found or loaded.
      */
     public void initialize(final InputStream inputStream) throws IOException {
+        this.hardReset();
+
         new EditCommandStack().execute(
                 TerritoryLoader.initializeFor(territory.getInternalTerritory()).loadFromInputStream(inputStream));
     }
@@ -175,14 +189,54 @@ public class HamsterGame {
     public TerritoryBuilder getNewTerritoryBuilder() {
         return TerritoryBuilder.getTerritoryBuilderForTerritory(getTerritory());
     }
+
+    /*@
+     @ requires getCurrentGameMode() != Mode.INITIALIZING;
+     @ ensures !this.commandStack.canUndoProperty().get();
+     @ ensures (\old(getCurrentGameMode()) == Mode.RUNNING) ==> (getCurrentGameMode() == Mode.PAUSED);
+     @ ensures (\old(getCurrentGameMode()) == Mode.PAUSED) ==> (getCurrentGameMode() == Mode.PAUSED);
+     @ ensures (\old(getCurrentGameMode()) == Mode.STOPPED) ==> (getCurrentGameMode() == Mode.STOPPED);
+     @*/
     /**
-     * Reset the hamster game to its initial state. Removes all hamsters besides  the
-     * default hamster and places all gain objects to their initial position.
+     * Soft-Reset the hamster game to its initial state (after started running). This undoes all steps. <br>
+     * If the game was running or paused, the game is paused, however,
+     * it is possible to execute further steps, which redoes all previous steps first.<br>
+     * If the game is stopped, it also undoes all steps previous steps and it is possible to redo them,
+     * but it is not possible to execute new steps. To do this, a hard reset is necessary. <br>
+     * It is not possible to call this during initialisation.
+     *
+     * @throws IllegalStateException if getCurrentGameMode() == Mode.INITIALIZING
      */
     public void reset() {
-        this.commandStack.undoAll();
-        this.commandStack.reset();
+        checkState(getCurrentGameMode() != Mode.INITIALIZING,
+                "soft reset is not possible during initialization");
+
+        final Mode currentMode = getCurrentGameMode();
+        if (currentMode == Mode.RUNNING) {
+            pauseGame();
+            this.commandStack.undoAll();
+        } else if (currentMode == Mode.PAUSED || currentMode == Mode.STOPPED) {
+            this.commandStack.undoAll();
+        }
     }
+
+    /*@
+     @ requires true;
+     @ ensures !this.commandStack.canUndoProperty().get();
+     @ ensures !this.commandStack.canRedoProperty().get();
+     @ ensures getCurrentGameMode() == Mode.INITIALIZING;
+     @*/
+    /**
+     * Hard-Reset the hamster game to its initial state (after started running). It is not possible to
+     * repeat the simulation via redo. The mode is set to initializing, so it is possible to load another territory
+     * file, however, it is necessary to call startGame again. <br>
+     * This does not unload the currently loaded territory! <br>
+     */
+    public void hardReset() {
+        this.commandStack.undoAll();
+        this.commandStack.hardReset();
+    }
+
 
     /**
      * Gets the input interface of this game used to read values from users
@@ -219,16 +273,18 @@ public class HamsterGame {
      *
      * The game will be started automatically if it had not been started before.
      * The game will be in paused mode, suitable for GUI runs, if it is started by
-     * this method. After returning from this method the game will be in stopped state
+     * this method. After returning from this method the game will be in stopped mode
      * no matter whether an exception was thrown or the program terminated regularly.
      *
      * Precondition to running the game is that the territory has been defined or loaded
      * and that an IO interface is attached for reading values and handling exceptions.
      *
      * @param hamsterProgram The hamster program to run.
+     * @throws IllegalStateException if hamsterProgram is null or if no IO interface is defined
      */
     public void runGame(final Consumer<Territory> hamsterProgram) {
         checkState(this.inputInterface != null, "Running a hamster game implies a defined IO interface first.");
+        checkNotNull(hamsterProgram);
 
         startGameIfNotStarted();
         try {
@@ -241,40 +297,96 @@ public class HamsterGame {
         }
     }
 
+    /*@
+     @ requires getCurrentGameMode() == Mode.INITIALIZING;
+     @ ensures startPaused ==> getCurrentGameMode() == Mode.PAUSED;
+     @ ensures !startPaused ==> getCurrentGameMode() == Mode.RUNNING;
+     @*/
     /**
      * Start the execution of a hamster game. Before executing start, no commands can be
      * executed by the hamster objects in the game.
+     * This is only possible if the current mode is Mode.INITIALIZING
      * @param startPaused if true the game will be started in pause mode
+     * @throws IllegalStateException if getCurrentGameMode() != Mode.INITIALIZING
      */
     public void startGame(final boolean startPaused) {
+        checkState(getCurrentGameMode() == Mode.INITIALIZING,
+                "start game is only possible during initialization");
+
         this.commandStack.startGame(startPaused);
     }
 
     /**
-     * Stop the execution of the game. The game is finished and needs to be reseted
+     * Stop the execution of the game. The game is finished and needs to be reset / hardReset
      * or closed.
      */
     public void stopGame() {
         this.commandStack.stopGame();
     }
 
+    /*@
+     @ requires getCurrentGameMode() == Mode.RUNNING;
+     @ ensures getCurrentGameMode() == Mode.PAUSED;
+     @*/
     /**
-     * Get the current state of this game.
-     * @return The current state of this game.
+     * Pauses the HamsterGame.
+     * It is only possible to execute this in running mode.
+     *
+     * @throws IllegalStateException if getCurrentGameMode() != Mode.RUNNING
      */
-    public Mode getCurrentGameMode() {
-        return this.commandStack.stateProperty().get();
+    public void pauseGame() {
+        checkState(getCurrentGameMode() == Mode.RUNNING, "pauseGame is only possible in running mode");
+
+        this.commandStack.pause();
     }
 
+    /*@
+     @ requires getCurrentGameMode() == Mode.PAUSED;
+     @ ensures getCurrentGameMode() == Mode.RUNNING;
+     @*/
     /**
-     * Start a hamster game, if it is not started yet.
+     * Pauses the HamsterGame.
+     * It is only possible to execute this in paused mode.
+     *
+     * @throws IllegalStateException if getCurrentGameMode() != Mode.PAUSED
+     */
+    public void resumeGame() {
+        checkState(getCurrentGameMode() == Mode.PAUSED, "resumeGame is only possible in paused mode");
+
+        this.commandStack.resume();
+    }
+
+    /*@
+     @ requires true;
+     @ pure;
+     @ ensures \result != null;
+     @*/
+    /**
+     * Get the current mode of this game.
+     * @return The current mode of this game.
+     */
+    public Mode getCurrentGameMode() {
+        return this.commandStack.modeProperty().get();
+    }
+
+    /*@
+     @ requires true;
+     @ ensures ((\old(getCurrentGameMode()) == MODE.INITIALIZING) || (\old(getCurrentGameMode()) == MODE.STOPPED))
+     @          ==> (getCurrentGameMode() == Mode.PAUSED);
+     @*/
+    /**
+     * Start a hamster game, if it is not started yet or if it is stopped.
      * The game will be started in paused mode, suited
-     * for GUI interaction.
+     * for GUI interaction. <br>
+     * Note: if the game is stopped, a hard reset is performed before restarting
+     * Note: If the game is already started and running, it is not paused
      */
     private void startGameIfNotStarted() {
-        if (this.commandStack.stateProperty().get() == Mode.INITIALIZING
-               || this.commandStack.stateProperty().get() == Mode.STOPPED) {
-            startGame(true);
+        if (getCurrentGameMode() == Mode.STOPPED) {
+            this.hardReset();
+            this.startGame(true);
+        } else if (getCurrentGameMode() == Mode.INITIALIZING) {
+            this.startGame(true);
         }
     }
 

@@ -54,6 +54,24 @@ public abstract class CommandStack {
         this.canRedo.set(undoneCommands.size() > 0);
     }
 
+    /*@
+     @ requires true;
+     @ ensures !this.canUndo.get();
+     @ ensures !this.canRedo.get();
+     @ ensures this.executedCommands.isEmpty();
+     @ ensures this.undoneCommands.isEmpty();
+     @*/
+    /**
+     * hard-resets the CommandStack. it clears executedCommands and undoneCommands, however, it does NOT
+     * undo all commands. If this behaviour is desired, it is necessary to call undoAll first
+     */
+    public void hardReset() {
+        this.executedCommands.clear();
+        this.undoneCommands.clear();
+        this.canUndo.set(false);
+        this.canRedo.set(false);
+    }
+
     public ReadOnlyBooleanProperty canUndoProperty() {
         return this.canUndo.getReadOnlyProperty();
     }

@@ -21,8 +21,8 @@ class HamsterGameStage extends Stage {
         prepareStage();
         sceneController.connectToGame(territory, commandStack, gameLog);
         this.setOnCloseRequest(event -> {
-            if (commandStack.stateProperty().get() == Mode.PAUSED ||
-                commandStack.stateProperty().get() == Mode.RUNNING) {
+            if (commandStack.modeProperty().get() == Mode.PAUSED ||
+                commandStack.modeProperty().get() == Mode.RUNNING) {
                 commandStack.stopGame();
             }
         });
