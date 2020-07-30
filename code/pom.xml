@@ -15,6 +15,9 @@
 
 	<modules>
 		<module>
+			de.unistuttgart.iste.rss.oo.hamstersimulator.parent
+		</module>
+		<module>
 			de.unistuttgart.iste.rss.oo.hamstersimulator.core
 		</module>
 		<module>
