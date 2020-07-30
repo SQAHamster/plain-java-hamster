@@ -97,9 +97,7 @@ public class Territory {
      * @throws IOException IOException occurs if the territory file could not be found or loaded.
      */
     public void loadFromFile(final String territoryFile) throws IOException {
-        checkState(
-                this.getGame().getCurrentGameMode() != Mode.RUNNING
-                && this.getGame().getCurrentGameMode() != Mode.PAUSED);
+        checkState(this.getGame().getCurrentGameMode() == Mode.INITIALIZING);
         this.hamsterTranslation.clear();
         TerritoryLoader.initializeFor(this.internalTerritory).loadFromResourceFile(territoryFile);
     }
@@ -111,9 +109,7 @@ public class Territory {
      * @throws IOException IOException occurs if the territory file could not be found or loaded.
      */
     public void loadFromInputStream(final InputStream inputStream) throws IOException {
-        checkState(
-                this.getGame().getCurrentGameMode() != Mode.RUNNING
-                && this.getGame().getCurrentGameMode() != Mode.PAUSED);
+        checkState(this.getGame().getCurrentGameMode() == Mode.INITIALIZING);
         this.hamsterTranslation.clear();
         TerritoryLoader.initializeFor(this.internalTerritory).loadFromInputStream(inputStream);
     }

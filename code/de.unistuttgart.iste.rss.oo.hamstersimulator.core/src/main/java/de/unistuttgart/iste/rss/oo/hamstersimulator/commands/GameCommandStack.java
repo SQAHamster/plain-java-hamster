@@ -16,7 +16,7 @@ public class GameCommandStack extends CommandStack {
         RUNNING, INITIALIZING, STOPPED, PAUSED
     }
 
-    private final ReadOnlyObjectWrapper<Mode> state = new ReadOnlyObjectWrapper<Mode>(this, "state", Mode.INITIALIZING);
+    private final ReadOnlyObjectWrapper<Mode> mode = new ReadOnlyObjectWrapper<Mode>(this, "mode", Mode.INITIALIZING);
     protected final SimpleDoubleProperty speed = new SimpleDoubleProperty(this, "speed", 4.0);
 
     private final Semaphore pauseLock = new Semaphore(1, true);
@@ -30,7 +30,7 @@ public class GameCommandStack extends CommandStack {
         if (startPaused) {
             pause();
         } else {
-            state.set(Mode.RUNNING);
+            mode.set(Mode.RUNNING);
         }
     }
 
@@ -48,15 +48,15 @@ public class GameCommandStack extends CommandStack {
 
     @Override
     public void execute(final Command command) {
-        if (this.state.get() != Mode.RUNNING && this.state.get() != Mode.PAUSED) {
+        if (this.mode.get() != Mode.RUNNING && this.mode.get() != Mode.PAUSED) {
             throw new GameAbortedException("The game needs to be running to execute hamster commands");
         }
         if (!command.canExecute()) {
-            state.set(Mode.STOPPED);
+            mode.set(Mode.STOPPED);
             throw command.getExceptionsFromPreconditions().get(0);
         }
         this.executingThread = Thread.currentThread();
-        checkState(!(state.get() == Mode.STOPPED));
+        checkState(!(mode.get() == Mode.STOPPED));
         try {
             pauseLock.acquire();
             super.execute(command);
@@ -64,7 +64,7 @@ public class GameCommandStack extends CommandStack {
         } catch (final InterruptedException e) {
         } catch (final Exception e) {
             // Stop the game to prevent execution of further commands!
-            state.set(Mode.STOPPED);
+            mode.set(Mode.STOPPED);
             throw e;
         }
         finally {
@@ -72,9 +72,25 @@ public class GameCommandStack extends CommandStack {
         }
     }
 
-    public void reset() {
-        state.set(Mode.INITIALIZING);
-        interruptWaitingThreads();
+    /*@
+     @ requires true;
+     @ !ensures this.canUndo.get();
+     @ !ensures this.canRedo.get();
+     @ ensures this.executedCommands.isEmpty();
+     @ ensures this.undoneCommands.isEmpty();
+     @ ensures this.mode.get() == Mode.INITIALIZING
+     @*/
+    /**
+     * hard-resets the CommandStack. it clears executedCommands and undoneCommands, however, it does NOT
+     * undo all commands. If this behaviour is desired, it is necessary to call undoAll first.
+     * This also sets the mode to initializing.
+     */
+    @Override
+    public void hardReset() {
+        super.hardReset();
+
+        this.stopGame();
+        this.mode.set(Mode.INITIALIZING);
     }
 
     private void interruptWaitingThreads() {
@@ -84,17 +100,17 @@ public class GameCommandStack extends CommandStack {
     }
 
     public void stopGame() {
-        state.set(Mode.STOPPED);
+        mode.set(Mode.STOPPED);
         if (pauseLock.availablePermits() == 0) {
             pauseLock.release();
         }
         interruptWaitingThreads();
     }
 
-    public void pause() {
-        assert state.get() != Mode.PAUSED;
+    public void pauseAsync() {
+        assert mode.get() == Mode.RUNNING;
 
-        state.set(Mode.PAUSED);
+        mode.set(Mode.PAUSED);
         new Thread(() -> {
             try {
                 this.pauseLock.acquire();
@@ -103,15 +119,26 @@ public class GameCommandStack extends CommandStack {
         }).start();
     }
 
+    public void pause() {
+        assert mode.get() == Mode.RUNNING;
+
+        mode.set(Mode.PAUSED);
+        try {
+            this.pauseLock.acquire();
+        } catch (final InterruptedException e) {
+        }
+    }
+
     public void resume() {
         assert this.pauseLock.availablePermits() == 0;
+        assert this.mode.get() == Mode.PAUSED;
 
-        state.set(Mode.RUNNING);
+        mode.set(Mode.RUNNING);
         this.pauseLock.release();
     }
 
-    public ReadOnlyObjectProperty<Mode> stateProperty() {
-        return this.state.getReadOnlyProperty();
+    public ReadOnlyObjectProperty<Mode> modeProperty() {
+        return this.mode.getReadOnlyProperty();
     }
 
     public DoubleProperty speedProperty() {

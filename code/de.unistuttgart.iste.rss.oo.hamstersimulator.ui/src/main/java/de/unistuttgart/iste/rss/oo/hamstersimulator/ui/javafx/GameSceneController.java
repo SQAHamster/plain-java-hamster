@@ -62,7 +62,7 @@ public class GameSceneController {
 
     @FXML
     void pauseGame(final ActionEvent event) {
-        commandStack.pause();
+        commandStack.pauseAsync();
     }
 
     @FXML
@@ -83,8 +83,8 @@ public class GameSceneController {
     public void connectToGame(final ReadOnlyTerritory territory, final GameCommandStack commandStack, final GameLog gameLog) {
         this.commandStack = commandStack;
         this.hamsterGrid.bindToTerritory(territory);
-        final BooleanBinding runningBinding = Bindings.createBooleanBinding(() -> commandStack.stateProperty().get() == Mode.RUNNING, commandStack.stateProperty());
-        this.play.disableProperty().bind(Bindings.createBooleanBinding(() -> commandStack.stateProperty().get() == Mode.PAUSED, commandStack.stateProperty()).not());
+        final BooleanBinding runningBinding = Bindings.createBooleanBinding(() -> commandStack.modeProperty().get() == Mode.RUNNING, commandStack.modeProperty());
+        this.play.disableProperty().bind(Bindings.createBooleanBinding(() -> commandStack.modeProperty().get() == Mode.PAUSED, commandStack.modeProperty()).not());
         this.pause.disableProperty().bind(runningBinding.not());
         this.undo.disableProperty().bind(this.commandStack.canUndoProperty().not().or(runningBinding));
         this.redo.disableProperty().bind(this.commandStack.canRedoProperty().not().or(runningBinding));

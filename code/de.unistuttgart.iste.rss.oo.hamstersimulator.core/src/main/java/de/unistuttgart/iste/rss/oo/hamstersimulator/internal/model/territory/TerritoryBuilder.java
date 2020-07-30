@@ -1,6 +1,10 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory;
 
+import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
+
 import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Consumer;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
@@ -25,6 +29,8 @@ public class TerritoryBuilder {
 
     private final EditorTerritory territory;
     private final LinkedList<Command> commands = new LinkedList<>();
+
+    private final List<Consumer<CompositeCommand.PreconditionBuilder>> preconditionCreators = new LinkedList<>();
 
     TerritoryBuilder(final EditorTerritory territory) {
         super();
@@ -105,6 +111,7 @@ public class TerritoryBuilder {
      * territory according to all builder commands issued before. It has to be the
      * last command used on this builder object. After calling build, this TerritoryBuilder 
      * should not be used any longer.
+     * Also applies all preconditions to this command
      * @return A command which, when executed on an editable territory, initializes that territory.
      */
     public Command build() {
@@ -113,7 +120,24 @@ public class TerritoryBuilder {
             protected void buildBeforeFirstExecution(final CompositeCommandBuilder builder) {
                 builder.add(commands);
             }
-        };
+        }.setPreconditionConstructor(builder -> {
+            for (final Consumer<CompositeCommand.PreconditionBuilder> preconditionCreators : preconditionCreators) {
+                preconditionCreators.accept(builder);
+            }
+        });
+    }
+
+    /*@
+     @ requires preconditionCreator != null;
+     @*/
+    /**
+     * Adds a Consumer which can add preconditions to a CompositeCommand via a PreconditionBuilder
+     * @param preconditionCreator the consumer which has to handle the PreconditionBuilder
+     */
+    public void addPreconditionCreator(final Consumer<CompositeCommand.PreconditionBuilder> preconditionCreator) {
+        checkNotNull(preconditionCreator);
+
+        this.preconditionCreators.add(preconditionCreator);
     }
 
 }
