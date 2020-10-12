@@ -1,5 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.examples;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Hamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 class Example02 extends SimpleHamsterGame {
     Hamster paula;
@@ -11,7 +12,7 @@ class Example02 extends SimpleHamsterGame {
     @Override
     void run() {
         game.initialize();
-        game.displayInNewGameWindow();
+        JavaFXUI.displayInNewGameWindow(game.getAdapter());
 
         Hamster paula = new Hamster(game.getTerritory(), paule.getLocation(), paule.getDirection(), 0);
 

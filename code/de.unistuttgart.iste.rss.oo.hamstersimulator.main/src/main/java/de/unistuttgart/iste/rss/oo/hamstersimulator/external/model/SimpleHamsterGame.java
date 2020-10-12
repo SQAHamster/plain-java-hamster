@@ -38,8 +38,7 @@ public abstract class SimpleHamsterGame {
      * the game.
      */
     public SimpleHamsterGame() {
-        JavaFXUI.start();
-        game.setInputInterface(JavaFXUI.getJavaFXInputInterface());
+        JavaFXUI.displayInNewGameWindow(game.getAdapter());
         game.startGame(false);
 
         paule = game.getTerritory().getDefaultHamster();
@@ -62,7 +61,7 @@ public abstract class SimpleHamsterGame {
         } catch (final GameAbortedException e) {
             // End this game
         } catch (final RuntimeException e) {
-            this.game.getInputInterface().showAlert(e);
+            this.game.showAlert(e);
         }
         game.stopGame();
     }

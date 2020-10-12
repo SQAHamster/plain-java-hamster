@@ -33,9 +33,10 @@ public final class Main {
         } catch (final IOException e) {
             throw new RuntimeException();
         }
-        game.setInputInterface(JavaFXUI.getJavaFXInputInterface());
 
-        game.displayInNewGameWindow();
+        game.getAdapter().addInputInterface(JavaFXUI.getJavaFXInputInterface());
+
+        JavaFXUI.openSceneFor(game.getAdapter());
         game.runGame(Main::exampleRun);
     }
 

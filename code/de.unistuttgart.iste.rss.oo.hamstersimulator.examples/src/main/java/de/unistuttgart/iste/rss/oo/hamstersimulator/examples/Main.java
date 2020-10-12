@@ -66,9 +66,7 @@ public final class Main {
     private static void initUI(final HamsterGame hamsterGame) {
         assert hamsterGame != null;
 
-        JavaFXUI.start();
-        hamsterGame.displayInNewGameWindow();
-        hamsterGame.setInputInterface(JavaFXUI.getJavaFXInputInterface());
+        JavaFXUI.displayInNewGameWindow(hamsterGame.getAdapter());
     }
 
     /** This operation captures the algorithm executed by the hamster.
