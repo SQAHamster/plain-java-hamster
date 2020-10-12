@@ -5,19 +5,21 @@ import static de.unistuttgart.iste.rss.utils.Preconditions.checkState;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameAdapter;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.*;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.DummyInputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.InputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.AbstractHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 import de.unistuttgart.iste.rss.utils.Preconditions;
 
 /**
@@ -39,13 +41,15 @@ public class HamsterGame {
      */
     private static final String DEFAULT_HAMSTER_TERRITORY = "/territories/example01.ter";
 
+    private final HamsterGameAdapter adapter;
+
     /**
      * Game log object used to print log messages from the game and write commands from hamsters.
      */
     private final GameLog log = new GameLog();
 
     /**
-     * Game command stack object used to execute game commands, i.e., commands comming from
+     * Game command stack object used to execute game commands, i.e., commands coming from
      * the hamster objects on the territory during the simulation run.
      */
     private final GameCommandStack commandStack = new GameCommandStack();
@@ -68,7 +72,7 @@ public class HamsterGame {
      * the hamster game will be rethrown.
      */
     public HamsterGame() {
-        this(new DummyInputInterface());
+        this(Collections.emptySet());
     }
 
     /**
@@ -81,16 +85,29 @@ public class HamsterGame {
      * or from Mockups) and to handle any exception thrown from the user
      * defined hamster game.
      *
-     * @param newInputInterface The input interface this game should use
+     * @param newInputInterfaces The input interfaces this game should use
      * for reading values from the user and to handle exceptions.
      */
-    public HamsterGame(final InputInterface newInputInterface) {
+    public HamsterGame(final Set<InputInterface> newInputInterfaces) {
         super();
-        this.inputInterface = newInputInterface;
+        checkNotNull(newInputInterfaces);
+
+        this.executorService = Executors.newCachedThreadPool(r -> {
+            Thread t = Executors.defaultThreadFactory().newThread(r);
+            t.setDaemon(true);
+            return t;
+        });
+        this.adapter = new HamsterGameAdapter(this.territory.getInternalTerritory(), this.commandStack, this.log,
+                newInputInterfaces);
     }
 
+    /*@
+     @ requires gameSpeed >= 0 && gameSpeed <= MAX_SPEED;
+     @ ensures getSpeed() == gameSpeed;
+     @*/
     /**
-     * Set the speed of the hamster game. Valid values are in the range from 0.0 to 10.0,
+     * Set the speed of the hamster game. Valid values are in the range from
+     * 0.0 to 10.0,
      * where 0.0 is slow and 10.0 is fast.
      * @param gameSpeed The new game speed's delay. Has to be greater or equal 0.0 and
      *                  less than or equal 10.0.
@@ -100,20 +117,34 @@ public class HamsterGame {
         this.commandStack.setSpeed(gameSpeed);
     }
 
+    /*@
+     @ requires true;
+     @ ensures gameSpeed >= 0 && gameSpeed <= MAX_SPEED;
+     @*/
+    /**
+     * Gets the speed of the hamster game.
+     * @return The hamster game's current speed. Is greater or equal 0.0 and
+     *         less than or equal 10.0;
+     */
+    public double getSpeed() {
+        return this.commandStack.speedProperty().get();
+    }
+
+    /**
+     * Getter for the HamsterGameAdapter object of this game. Cannot be null.
+     * The adapter can be used to connect a UI or a test framework to this game.
+     * @return The adapter object of this game
+     */
+    public /*@ pure @*/ HamsterGameAdapter getAdapter() {
+        return this.adapter;
+    }
+
     /**
      * Getter for the territory object of this game. Cannot be null.
      * @return The territory object of this game.
      */
     public /*@ pure @*/ Territory getTerritory() {
         return territory;
-    }
-
-    /**
-     * Getter for the game log. Cannot be null.
-     * @return The game log of this hamster game's instance.
-     */
-    public GameLog getGameLog() {
-        return log;
     }
 
     /**
@@ -140,9 +171,7 @@ public class HamsterGame {
     public void initialize(final TerritoryBuilder territoryBuilder) {
         this.hardReset();
 
-        new EditCommandStack().execute(
-                territoryBuilder.build());
-
+        new EditCommandStack().execute(territoryBuilder.build());
     }
 
     /**
@@ -232,35 +261,6 @@ public class HamsterGame {
         this.commandStack.hardReset();
     }
 
-
-    /**
-     * Gets the input interface of this game used to read values from users
-     * or mock objects.
-     * @return The input interface for this game.
-     */
-    public InputInterface getInputInterface() {
-        checkState(this.inputInterface != null, "Input interface needs to be defined first!");
-        return this.inputInterface;
-    }
-
-    /**
-     * Sets this game's input interface for reading values from users or
-     * mock objects.
-     * @param newInputInterface The new input interface.
-     */
-    public void setInputInterface(final InputInterface newInputInterface) {
-        checkNotNull(newInputInterface);
-        this.inputInterface = newInputInterface;
-    }
-
-    /**
-     * Opens a new Game UI for this game object. The game UI shows
-     * the game and its current state while the game is executing.
-     */
-    public void displayInNewGameWindow() {
-        JavaFXUI.openSceneFor(this.territory.getInternalTerritory(), this.commandStack, this.getGameLog());
-    }
-
     /**
      * Run a given hamster program until it terminates. Termination
      * is either by ending the hamster game regularly or by throwing
@@ -278,15 +278,15 @@ public class HamsterGame {
      * @throws IllegalStateException if hamsterProgram is null or if no IO interface is defined
      */
     public void runGame(final Consumer<Territory> hamsterProgram) {
-        checkState(this.inputInterface != null, "Running a hamster game implies a defined IO interface first.");
         checkNotNull(hamsterProgram);
+        checkState(!this.adapter.getInputInterfaces().isEmpty(), "Running a hamster game implies a defined IO interface first.");
 
         startGameIfNotStarted();
         try {
             hamsterProgram.accept(this.territory);
         } catch (final GameAbortedException e) {
         } catch (final RuntimeException e) {
-            this.inputInterface.showAlert(e);
+            this.showAlert(e);
         } finally {
             stopGame();
         }
@@ -311,9 +311,14 @@ public class HamsterGame {
         this.commandStack.startGame(startPaused);
     }
 
+    /*@
+     @ requires true;
+     @ ensures getCurrentGameMode() == Mode.STOPPED;
+     */
     /**
      * Stop the execution of the game. The game is finished and needs to be reset / hardReset
      * or closed.
+     * If the game is already stopped, this does nothing
      */
     public void stopGame() {
         this.commandStack.stopGame();

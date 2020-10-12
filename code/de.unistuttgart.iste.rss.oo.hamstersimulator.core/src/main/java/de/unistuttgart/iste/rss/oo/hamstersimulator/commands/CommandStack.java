@@ -7,6 +7,8 @@ import java.util.Stack;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 
+import static de.unistuttgart.iste.rss.utils.Preconditions.checkState;
+
 public abstract class CommandStack {
 
     protected final ReadOnlyBooleanWrapper canUndo = new ReadOnlyBooleanWrapper(this, "canUndo", false);
@@ -26,19 +28,46 @@ public abstract class CommandStack {
         this.canUndo.set(true);
     }
 
+    /*@
+     @ true;
+     @ ensures !canUndoProperty().get();
+     @*/
+    /**
+     * Undoes all commands which are executed, in the inverse order than they where
+     * executed
+     */
     public void undoAll() {
         while (canUndo.get()) {
             undo();
         }
     }
 
+    /*@
+     @ requires true;
+     @ ensures !canRedoProperty().get();
+     @*/
+    /**
+     * Redoes all commands which are currently undone, in the same order
+     * like they where executed first
+     */
     public void redoAll() {
         while (canRedo.get()) {
             redo();
         }
     }
 
+    /*@
+     @ requires canUndoProperty().get();
+     @ ensures !canUndoProperty().get();
+     @ ensures canRedoProperty().get();
+     @*/
+    /**
+     * Undoes the last executed command, if possible
+     * @throws IllegalStateException if !canUndoProperty().get();
+     */
     public void undo() {
+        checkState(canUndo.get(), "Cannot undo");
+
         final Command undoneCommand = this.executedCommands.remove(this.executedCommands.size()-1);
         undoneCommand.undo();
         undoneCommands.push(undoneCommand);
@@ -46,7 +75,18 @@ public abstract class CommandStack {
         this.canRedo.set(true);
     }
 
+    /*@
+     @ requires canRedoProperty().get();
+     @ ensures !canRedoProperty().get();
+     @ ensures canUndoProperty().get();
+     @*/
+    /**
+     * Redoes the oldest undone command, if possible
+     * @throws IllegalStateException if !canRedoProperty().get();
+     */
     public void redo() {
+        checkState(canRedo.get(), "Cannot redo");
+
         final Command undoneCommand = this.undoneCommands.pop();
         undoneCommand.execute();
         this.executedCommands.add(undoneCommand);
@@ -72,10 +112,20 @@ public abstract class CommandStack {
         this.canRedo.set(false);
     }
 
+    /**
+     * Getter for the canUndo property
+     * true if the game is stopped / paused and there is at least one command to undo
+     * @return the property (not null)
+     */
     public ReadOnlyBooleanProperty canUndoProperty() {
         return this.canUndo.getReadOnlyProperty();
     }
 
+    /**
+     * Getter for the canRedo property
+     * true if the game is stopped / paused and there is at least one command to redo
+     * @return the property (not null)
+     */
     public ReadOnlyBooleanProperty canRedoProperty() {
         return this.canRedo.getReadOnlyProperty();
     }
