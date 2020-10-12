@@ -1,10 +1,9 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mode;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LogEntry;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameAdapter;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameController;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableLogEntry;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;

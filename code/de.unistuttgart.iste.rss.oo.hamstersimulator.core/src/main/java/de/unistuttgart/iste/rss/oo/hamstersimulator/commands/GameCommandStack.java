@@ -4,6 +4,8 @@ import static de.unistuttgart.iste.rss.utils.Preconditions.checkState;
 
 import java.util.concurrent.Semaphore;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameController;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;

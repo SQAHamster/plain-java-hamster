@@ -8,12 +8,9 @@ import java.io.InputStream;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EditCommandStack;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mode;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameAdapter;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.*;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.DummyInputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
