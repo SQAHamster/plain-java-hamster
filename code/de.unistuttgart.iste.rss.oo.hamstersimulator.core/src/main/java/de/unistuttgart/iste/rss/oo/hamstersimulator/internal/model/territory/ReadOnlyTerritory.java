@@ -8,31 +8,35 @@ import java.util.List;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableTerritory;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 
-public class ReadOnlyTerritory {
+public class ReadOnlyTerritory implements ObservableTerritory {
 
-    final ReadOnlyObjectWrapper<Size> territorySize = new ReadOnlyObjectWrapper<Size>(this, "territorySize", new Size(0, 0));
-    final ReadOnlyListWrapper<Tile> tiles = new ReadOnlyListWrapper<Tile>(this, "tiles", FXCollections.observableArrayList());
-    final ReadOnlyObjectWrapper<ReadOnlyHamster> defaultHamster = new ReadOnlyObjectWrapper<ReadOnlyHamster>(this, "defaultHamster", initDefaultHamster());
-    final ReadOnlyListWrapper<ReadOnlyHamster> hamsters = new ReadOnlyListWrapper<ReadOnlyHamster>(this, "hamsters", FXCollections.observableArrayList(defaultHamster.get()));
+    final ReadOnlyObjectWrapper<Size> territorySize = new ReadOnlyObjectWrapper<>(this, "territorySize", new Size(0, 0));
+    final ReadOnlyListWrapper<Tile> tiles = new ReadOnlyListWrapper<>(this, "tiles", FXCollections.observableArrayList());
+    final ReadOnlyObjectWrapper<ReadOnlyHamster> defaultHamster = new ReadOnlyObjectWrapper<>(this, "defaultHamster", initDefaultHamster());
+    final ReadOnlyListWrapper<ReadOnlyHamster> hamsters = new ReadOnlyListWrapper<>(this, "hamsters", FXCollections.observableArrayList(defaultHamster.get()));
 
     public Size getSize() {
         return this.territorySize.get();
     }
 
+    @Override
     public ReadOnlyObjectProperty<Size> territorySizeProperty() {
         return this.territorySize.getReadOnlyProperty();
     }
 
+    @Override
     public ReadOnlyListProperty<Tile> tilesProperty() {
         return this.tiles.getReadOnlyProperty();
     }
 
+    @Override
     public ReadOnlyListProperty<ReadOnlyHamster> hamstersProperty() {
         return this.hamsters.getReadOnlyProperty();
     }
@@ -45,6 +49,7 @@ public class ReadOnlyTerritory {
         return this.defaultHamster.get();
     }
 
+    @Override
     public ReadOnlyObjectProperty<ReadOnlyHamster> defaultHamsterProperty() {
         return this.defaultHamster.getReadOnlyProperty();
     }

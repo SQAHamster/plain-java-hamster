@@ -1,6 +1,8 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory;
 
-public class Wall extends TileContent {
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableWall;
+
+public class Wall extends TileContent implements ObservableWall {
 
     @Override
     public String toString() {

@@ -9,6 +9,7 @@ import java.util.List;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableTile;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
@@ -19,7 +20,7 @@ import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 
-public class Tile {
+public class Tile implements ObservableTile {
 
     final ReadOnlyListWrapper<TileContent> content = new ReadOnlyListWrapper<TileContent>(this, "content", FXCollections.observableArrayList());
     final ReadOnlyIntegerWrapper grainCount = new ReadOnlyIntegerWrapper(this, "grainCount", 0);
@@ -52,6 +53,7 @@ public class Tile {
         return territory;
     }
 
+    @Override
     public /*@ pure @*/ Location getLocation() {
         return tileLocation;
     }
@@ -72,18 +74,22 @@ public class Tile {
         return Collections.unmodifiableList(this.hamsterSublist.get());
     }
 
+    @Override
     public ReadOnlyIntegerProperty grainCountProperty() {
         return this.grainCount.getReadOnlyProperty();
     }
 
+    @Override
     public ReadOnlyBooleanProperty isBlockedProperty() {
         return this.isBlocked.getReadOnlyProperty();
     }
 
+    @Override
     public ReadOnlyListProperty<TileContent> contentProperty() {
         return this.content.getReadOnlyProperty();
     }
 
+    @Override
     public ReadOnlyListProperty<TileContent> hamstersProperty() {
         return this.hamsterSublist.getReadOnlyProperty();
     }

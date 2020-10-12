@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TileContent;
@@ -15,7 +16,7 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 
-public class ReadOnlyHamster extends TileContent {
+public class ReadOnlyHamster extends TileContent implements ObservableHamster {
 
     final ReadOnlyObjectWrapper<Direction> direction = new ReadOnlyObjectWrapper<Direction>(this, "direction", Direction.NORTH);
     final ReadOnlyListWrapper<Grain> grainInMouth = new ReadOnlyListWrapper<Grain>(this, "grainInMouth", FXCollections.observableArrayList());
@@ -29,6 +30,7 @@ public class ReadOnlyHamster extends TileContent {
     /*
      * Read-Only (observable) Properties
      */
+    @Override
     public ReadOnlyObjectProperty<Direction> directionProperty() {
         return this.direction.getReadOnlyProperty();
     }
@@ -40,7 +42,7 @@ public class ReadOnlyHamster extends TileContent {
     public ReadOnlyIntegerProperty grainCountProperty() {
         return this.grainCount.getReadOnlyProperty();
     }
-    
+
     public Direction getDirection() {
         return direction.get();
     }

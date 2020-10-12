@@ -5,9 +5,9 @@ import java.util.Map;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Tile;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableHamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableTerritory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableTile;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
@@ -25,17 +25,17 @@ public class HamsterTerritoryGrid extends StackPane {
 
     private static final double MINIMUM_TILE_SIZE = 20.0;
 
-    final Map<ReadOnlyHamster,Integer> hamsterToColorPos = new HashMap<>();
+    final Map<ObservableHamster,Integer> hamsterToColorPos = new HashMap<>();
 
     private final SimpleObjectProperty<Size> gridSize = new SimpleObjectProperty<Size>(this, "gridSize", new Size(0,0));
     private final ReadOnlyListWrapper<TileNode> cells = new ReadOnlyListWrapper<TileNode>(this, "cells", FXCollections.observableArrayList());
     private final GridPane hamsterGrid;
-    private ReadOnlyTerritory territory;
+    private ObservableTerritory territory;
     private NumberBinding squaredSize;
 
-    private final ListChangeListener<Tile> tilesChangedListener = new ListChangeListener<Tile>() {
+    private final ListChangeListener<ObservableTile> tilesChangedListener = new ListChangeListener<ObservableTile>() {
         @Override
-        public void onChanged(final Change<? extends Tile> change) {
+        public void onChanged(final Change<? extends ObservableTile> change) {
             while (change.next()) {
                 if (change.wasAdded()) {
                     change.getAddedSubList().forEach(tile -> addTileNode(tile));
@@ -63,7 +63,7 @@ public class HamsterTerritoryGrid extends StackPane {
         });
     }
 
-    public void bindToTerritory(final ReadOnlyTerritory territory) {
+    public void bindToTerritory(final ObservableTerritory territory) {
         this.territory = territory;
         this.gridSize.bind(this.territory.territorySizeProperty());
         this.territory.tilesProperty().addListener(tilesChangedListener);
@@ -101,12 +101,12 @@ public class HamsterTerritoryGrid extends StackPane {
         this.hamsterGrid.setAlignment(Pos.CENTER);
     }
 
-    private void addTileNode(final Tile tile) {
+    private void addTileNode(final ObservableTile tile) {
         final Location location = tile.getLocation();
         setTileNodeAt(location, new TileNode(this, tile));
     }
 
-    private void removeTileNode(final Tile tile) {
+    private void removeTileNode(final ObservableTile tile) {
         getTileNodeAt(tile.getLocation()).dispose();
         JavaFXUtil.blockingExecuteOnFXThread(() -> this.hamsterGrid.getChildren().remove(getTileNodeAt(tile.getLocation())));
         setTileNodeAt(tile.getLocation(), null);

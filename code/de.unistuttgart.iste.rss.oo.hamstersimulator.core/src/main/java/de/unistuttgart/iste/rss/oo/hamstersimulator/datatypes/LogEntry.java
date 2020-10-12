@@ -1,5 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableLogEntry;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.GameHamster;
 import de.unistuttgart.iste.rss.utils.Preconditions;
 
@@ -10,7 +11,7 @@ import de.unistuttgart.iste.rss.utils.Preconditions;
  * @author Steffen Becker
  *
  */
-public class LogEntry {
+public class LogEntry implements ObservableLogEntry {
 
     /**
      * Immutable message of this log entry.

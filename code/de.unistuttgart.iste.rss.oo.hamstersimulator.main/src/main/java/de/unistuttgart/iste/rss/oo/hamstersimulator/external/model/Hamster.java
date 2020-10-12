@@ -216,7 +216,7 @@ public class Hamster {
      * @return Number read from the user.
      */
     public int readNumber(final String message) {
-        return this.game.getInputInterface().readInteger(message);
+        return this.game.readInteger(message);
     }
 
     /**
@@ -225,7 +225,7 @@ public class Hamster {
      * @return String read from the user.
      */
     public String readString(final String message) {
-        return this.game.getInputInterface().readString(message);
+        return this.game.readString(message);
     }
 
     /**
