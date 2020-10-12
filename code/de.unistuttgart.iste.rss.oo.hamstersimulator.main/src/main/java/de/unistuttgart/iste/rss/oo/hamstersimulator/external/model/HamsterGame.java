@@ -17,7 +17,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mo
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.DummyInputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InputInterface;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.InputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.AbstractHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
@@ -58,10 +58,8 @@ public class HamsterGame {
      */
     private final Territory territory = new Territory(this);
 
-    /**
-     * The input interface used when hamsters ask for input.
-     */
-    private InputInterface inputInterface;
+    private final ExecutorService executorService;
+
 
     /**
      * Initialize a hamster game. The hamster game is in mode Initialized
@@ -424,5 +422,81 @@ public class HamsterGame {
             }
         };
         this.commandStack.execute(composite);
+    }
+
+    /**
+     * Inform a user about an abnormal execution aborting.
+     * This blocks until it returns or is aborted
+     * @param t The throwable which lead to aborting the program.
+     */
+    public void showAlert(final Throwable t) {
+        final Throwable res = this.executeAndGetFirstResult(inputInterface -> () -> {
+            try {
+                inputInterface.showAlert(t);
+            } catch (Exception e) {
+                return e;
+            }
+            return null;
+        });
+
+        if (res != null) {
+            if (res instanceof RuntimeException) {
+                throw (RuntimeException)res;
+            } else {
+                throw new RuntimeException(res);
+            }
+        }
+    }
+
+    /**
+     * Read an integer value from a user. This blocks until there is
+     * an integer to return or it is aborted
+     * @param message The message used in the prompt for the number.
+     * @return The integer value read or an empty optional, if aborted.
+     */
+    protected int readInteger(final String message) {
+        return this.executeAndGetFirstResult(inputInterface -> () -> inputInterface.readInteger(message).orElseThrow());
+    }
+
+    /**
+     * Read a string value from a user. This blocks until there is a
+     * String to return or it is aborted
+     * @param message The message used in the prompt for the string.
+     * @return The string value read or an empty optional, if aborted.
+     */
+    protected String readString(final String message) {
+        return this.executeAndGetFirstResult(inputInterface -> () -> inputInterface.readString(message).orElseThrow());
+    }
+
+    /**
+     * executes the callable with every input interface in parallel
+     * @param callableFactory factory to create the Callable out of the InputInterface
+     * @param <R> the return type
+     * @return the result of the first callable that completes
+     */
+    private <R> R executeAndGetFirstResult(final Function<InputInterface, Callable<R>> callableFactory) {
+        final CompletionService<R> completionService = new ExecutorCompletionService<>(this.executorService);
+        for (final InputInterface inputInterface : this.adapter.getInputInterfaces()) {
+            completionService.submit(callableFactory.apply(inputInterface));
+        }
+
+        try {
+            return completionService.take().get();
+        } catch (InterruptedException e) {
+            throw new IllegalStateException("interrupted");
+        } catch (ExecutionException e) {
+            throw new RuntimeException("nothing returned", e);
+        } finally {
+            for (final InputInterface inputInterface : this.adapter.getInputInterfaces()) {
+                inputInterface.abort();
+            }
+            for (int i = 0; i < this.adapter.getInputInterfaces().size() - 1; i++) {
+                try {
+                    completionService.take();
+                } catch (InterruptedException e) {
+                    //ignore
+                }
+            }
+        }
     }
 }
