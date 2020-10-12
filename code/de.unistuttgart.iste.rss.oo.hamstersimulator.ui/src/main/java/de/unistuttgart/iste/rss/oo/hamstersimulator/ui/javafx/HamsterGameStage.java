@@ -15,14 +15,15 @@ class HamsterGameStage extends Stage {
 
     private GameSceneController sceneController;
 
-    public HamsterGameStage(final ReadOnlyTerritory territory, final GameCommandStack commandStack, final GameLog gameLog) throws IOException {
+    public HamsterGameStage(final HamsterGameAdapter hamsterGameAdapter) throws IOException {
         super();
         prepareStage();
-        sceneController.connectToGame(territory, commandStack, gameLog);
+        sceneController.connectToGame(hamsterGameAdapter);
         this.setOnCloseRequest(event -> {
-            if (commandStack.modeProperty().get() == Mode.PAUSED ||
-                commandStack.modeProperty().get() == Mode.RUNNING) {
-                commandStack.stopGame();
+            final HamsterGameController gameController = hamsterGameAdapter.getGameController();
+            if (gameController.modeProperty().get() == Mode.PAUSED ||
+                gameController.modeProperty().get() == Mode.RUNNING) {
+                gameController.stopGame();
             }
         });
     }

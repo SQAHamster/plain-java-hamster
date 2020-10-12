@@ -7,6 +7,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.ReadOnlyListProperty;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,13 +20,12 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
-import javafx.util.Callback;
 
 public class GameSceneController {
 
-    class CellFormat extends ListCell<LogEntry> {
+    class CellFormat extends ListCell<ObservableLogEntry> {
         @Override
-        protected void updateItem(final LogEntry item, final boolean empty) {
+        protected void updateItem(final ObservableLogEntry item, final boolean empty) {
             Platform.runLater(() -> {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
@@ -51,9 +51,9 @@ public class GameSceneController {
     @FXML private Slider speed;
     @FXML private HamsterTerritoryGrid hamsterGrid;
     @FXML private SplitPane splitPane;
-    @FXML private ListView<LogEntry> log;
+    @FXML private ListView<ObservableLogEntry> log;
 
-    private GameCommandStack commandStack;
+    private HamsterGameController gameController;
 
     @FXML
     private void initialize() {
@@ -61,58 +61,48 @@ public class GameSceneController {
 
     @FXML
     void pauseGame(final ActionEvent event) {
-        commandStack.pauseAsync();
+        gameController.pauseAsync();
     }
 
     @FXML
     void undo(final ActionEvent event) {
-        commandStack.undo();
+        gameController.undo();
     }
 
     @FXML
     void redo(final ActionEvent event) {
-        commandStack.redo();
+        gameController.redo();
     }
 
     @FXML
     void startGame(final ActionEvent event) {
-        commandStack.resume();
+        gameController.resume();
     }
 
-    public void connectToGame(final ReadOnlyTerritory territory, final GameCommandStack commandStack, final GameLog gameLog) {
-        this.commandStack = commandStack;
-        this.hamsterGrid.bindToTerritory(territory);
-        final BooleanBinding runningBinding = Bindings.createBooleanBinding(() -> commandStack.modeProperty().get() == Mode.RUNNING, commandStack.modeProperty());
-        this.play.disableProperty().bind(Bindings.createBooleanBinding(() -> commandStack.modeProperty().get() == Mode.PAUSED, commandStack.modeProperty()).not());
+    @SuppressWarnings("unchecked")
+    public void connectToGame(final HamsterGameAdapter hamsterGameAdapter) {
+        this.gameController = hamsterGameAdapter.getGameController();
+        this.hamsterGrid.bindToTerritory(hamsterGameAdapter.getTerritory());
+        final BooleanBinding runningBinding = Bindings.createBooleanBinding(() -> gameController.modeProperty().get() == Mode.RUNNING, gameController.modeProperty());
+        this.play.disableProperty().bind(Bindings.createBooleanBinding(() -> gameController.modeProperty().get() == Mode.PAUSED, gameController.modeProperty()).not());
         this.pause.disableProperty().bind(runningBinding.not());
-        this.undo.disableProperty().bind(this.commandStack.canUndoProperty().not().or(runningBinding));
-        this.redo.disableProperty().bind(this.commandStack.canRedoProperty().not().or(runningBinding));
-        this.speed.valueProperty().bindBidirectional(this.commandStack.speedProperty());
-        this.log.setCellFactory(new Callback<ListView<LogEntry>, ListCell<LogEntry>>() {
-            @Override
-            public ListCell<LogEntry> call(final ListView<LogEntry> list) {
-                return new CellFormat();
-            }
-        });
-        this.log.itemsProperty().bind(gameLog.logProperty());
-        this.log.getItems().addListener(new ListChangeListener<LogEntry>(){
-
-            @Override
-            public void onChanged(final ListChangeListener.Change<? extends LogEntry> c) {
-            	c.next();
-            	final int size = log.getItems().size();
-            	if (size > 1) {
-            		JavaFXUtil.blockingExecuteOnFXThread(()-> {
-            			final Parent virtualFlow = (Parent) log.getChildrenUnmodifiable().get(0);
-            			final Parent group = (Parent) virtualFlow.getChildrenUnmodifiable().get(1);
-            			final Parent cell = (Parent) group.getChildrenUnmodifiable().get(0);
-            			@SuppressWarnings("unchecked")
-                        final
-						ListCell<LogEntry> listCell = (ListCell<LogEntry>) cell;
-            			final int visibleCells = (int)(log.getHeight() / listCell.getHeight());
-            			log.scrollTo(Math.max(0, size-visibleCells));
-            		});
-            	}
+        this.undo.disableProperty().bind(this.gameController.canUndoProperty().not().or(runningBinding));
+        this.redo.disableProperty().bind(this.gameController.canRedoProperty().not().or(runningBinding));
+        this.speed.valueProperty().bindBidirectional(this.gameController.speedProperty());
+        this.log.setCellFactory(list -> new CellFormat());
+        this.log.itemsProperty().bind((ReadOnlyListProperty<ObservableLogEntry>) hamsterGameAdapter.getLog().logProperty());
+        this.log.getItems().addListener((ListChangeListener<ObservableLogEntry>) changeListener -> {
+            changeListener.next();
+            final int size = log.getItems().size();
+            if (size > 1) {
+                JavaFXUtil.blockingExecuteOnFXThread(() -> {
+                    final Parent virtualFlow = (Parent) log.getChildrenUnmodifiable().get(0);
+                    final Parent group = (Parent) virtualFlow.getChildrenUnmodifiable().get(1);
+                    final Parent cell = (Parent) group.getChildrenUnmodifiable().get(0);
+                    final ListCell<ObservableLogEntry> listCell = (ListCell<ObservableLogEntry>) cell;
+                    final int visibleCells = (int) (log.getHeight() / listCell.getHeight());
+                    log.scrollTo(Math.max(0, size - visibleCells));
+                });
             }
         });
     }

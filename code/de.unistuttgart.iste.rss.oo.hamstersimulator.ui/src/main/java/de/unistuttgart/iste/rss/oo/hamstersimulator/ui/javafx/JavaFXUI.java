@@ -3,10 +3,8 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InputInterface;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameAdapter;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.InputInterface;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -14,8 +12,29 @@ import javafx.stage.Stage;
 public class JavaFXUI extends Application {
 
     private static final CountDownLatch initLatch = new CountDownLatch(1);
+    private static final JavaFXInputInterface inputInterface = new JavaFXInputInterface();
     private static volatile boolean isStarted = false;
 
+    /*@
+     @ requires true;
+     @*/
+    /**
+     * Displays the hamster game associated with the provided hamster game adapter in a new window
+     * This automatically starts the UI, adds the necessary input interface and opens the scene
+     * @param hamsterGameAdapter the adapter of the hamster game to display, must be != null
+     */
+    public static void displayInNewGameWindow(final HamsterGameAdapter hamsterGameAdapter) {
+        hamsterGameAdapter.addInputInterface(inputInterface);
+        openSceneFor(hamsterGameAdapter);
+    }
+
+    /*@
+     @ requires true;
+     @ ensures isStarted;
+     @*/
+    /**
+     * Starts the javafx ui thread if not already started
+     */
     public static void start() {
         if (!isStarted) {
             new Thread(()->Application.launch(JavaFXUI.class)).start();
@@ -46,21 +65,38 @@ public class JavaFXUI extends Application {
         initLatch.countDown();
     }
 
-    public static void openSceneFor(final ReadOnlyTerritory territory, final GameCommandStack commandStack, final GameLog gameLog) {
+    /*@
+     @ requires true;
+     @ ensures isStarted;
+     @*/
+    /**
+     * Opens a scene for the hamster game associated with hamsterGameAdapter
+     * requires that the JavaFXUI is started
+     * @param hamsterGameAdapter the adapter for the hamster game to display
+     */
+    public static void openSceneFor(final HamsterGameAdapter hamsterGameAdapter) {
         start();
         JavaFXUtil.blockingExecuteOnFXThread(() -> {
             Stage stage;
             try {
-                stage = new HamsterGameStage(territory, commandStack, gameLog);
+                stage = new HamsterGameStage(hamsterGameAdapter);
                 stage.show();
             } catch (final IOException e) {
                 e.printStackTrace();
             }
         });
     }
-    
+
+    /*@
+     @ requires true;
+     @ ensures \result != null;
+     @*/
+    /**
+     * Getter for the JavaFXInputInterface singleton
+     * @return the JavaFXInputInterface to display
+     */
     public static InputInterface getJavaFXInputInterface() {
-        return new JavaFXInputInterface();
+        return inputInterface;
     }
 
 }
