@@ -436,9 +436,9 @@ public class HamsterGame {
             try {
                 inputInterface.showAlert(t);
             } catch (Exception e) {
-                return e;
+                return Optional.of(e);
             }
-            return null;
+            return Optional.empty();
         });
 
         if (res != null) {
@@ -457,7 +457,7 @@ public class HamsterGame {
      * @return The integer value read or an empty optional, if aborted.
      */
     protected int readInteger(final String message) {
-        return this.executeAndGetFirstResult(inputInterface -> () -> inputInterface.readInteger(message).orElseThrow());
+        return this.executeAndGetFirstResult(inputInterface -> () -> inputInterface.readInteger(message));
     }
 
     /**
@@ -467,7 +467,7 @@ public class HamsterGame {
      * @return The string value read or an empty optional, if aborted.
      */
     protected String readString(final String message) {
-        return this.executeAndGetFirstResult(inputInterface -> () -> inputInterface.readString(message).orElseThrow());
+        return this.executeAndGetFirstResult(inputInterface -> () -> inputInterface.readString(message));
     }
 
     /**
@@ -476,29 +476,70 @@ public class HamsterGame {
      * @param <R> the return type
      * @return the result of the first callable that completes
      */
-    private <R> R executeAndGetFirstResult(final Function<InputInterface, Callable<R>> callableFactory) {
-        final CompletionService<R> completionService = new ExecutorCompletionService<>(this.executorService);
+    private <R> R executeAndGetFirstResult(final Function<InputInterface, Callable<Optional<R>>> callableFactory) {
+        final CompletionService<Optional<R>> completionService = submitInputRequests(callableFactory);
+
+        try {
+            return getFirstResult(completionService);
+        } finally {
+            abortInputRequests(completionService);
+        }
+    }
+
+    /**
+     * Creates a new CompletionService and submits a callable to each input interface to handle the input request
+     * @param callableFactory creates the callable for the CompletionService on invocation
+     * @param <R> the return type of the input request
+     * @return the CompletionService which handes all input requests
+     */
+    private <R> CompletionService<Optional<R>> submitInputRequests(final Function<InputInterface, Callable<Optional<R>>> callableFactory) {
+        final CompletionService<Optional<R>> completionService = new ExecutorCompletionService<>(this.executorService);
         for (final InputInterface inputInterface : this.adapter.getInputInterfaces()) {
             completionService.submit(callableFactory.apply(inputInterface));
         }
+        return completionService;
+    }
 
+    /**
+     * Takes th first result from the completionService and return its result if possible,
+     * otherwise throws an exception
+     * @param completionService the service which handles all input requests
+     * @param <R> the return type of the input request
+     * @return the first result if possible
+     * @throws IllegalStateException if nothing was returned from the first request which returned or an
+     *                               internal error occurs
+     */
+    private <R> R getFirstResult(final CompletionService<Optional<R>> completionService) {
         try {
-            return completionService.take().get();
+            final Optional<R> result = completionService.take().get();
+            if (result.isPresent()) {
+                return result.get();
+            } else {
+                throw new IllegalStateException("nothing returned");
+            }
         } catch (InterruptedException e) {
             throw new IllegalStateException("interrupted");
         } catch (ExecutionException e) {
             throw new RuntimeException("nothing returned", e);
-        } finally {
-            for (final InputInterface inputInterface : this.adapter.getInputInterfaces()) {
-                inputInterface.abort();
-            }
-            for (int i = 0; i < this.adapter.getInputInterfaces().size() - 1; i++) {
-                try {
-                    completionService.take();
-                } catch (InterruptedException e) {
-                    //ignore
-                }
+        }
+    }
+
+    /**
+     * Aborts all remaining input requests by calling abort on every input interface
+     * @param completionService the service which handles all input requests
+     * @param <R> the return type of the input request
+     */
+    private <R> void abortInputRequests(final CompletionService<Optional<R>> completionService) {
+        for (final InputInterface inputInterface : this.adapter.getInputInterfaces()) {
+            inputInterface.abort();
+        }
+        for (int i = 0; i < this.adapter.getInputInterfaces().size() - 1; i++) {
+            try {
+                completionService.take();
+            } catch (InterruptedException e) {
+                //ignore
             }
         }
     }
+
 }
