@@ -38,7 +38,7 @@ public abstract class SimpleHamsterGame {
      * the game.
      */
     public SimpleHamsterGame() {
-        JavaFXUI.displayInNewGameWindow(game.getAdapter());
+        JavaFXUI.displayInNewGameWindow(game.getModelViewAdapter());
         game.startGame(false);
 
         paule = game.getTerritory().getDefaultHamster();

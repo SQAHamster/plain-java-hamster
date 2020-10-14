@@ -1,6 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameAdapter;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameViewModel;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameController;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableLogEntry;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
@@ -80,9 +80,9 @@ public class GameSceneController {
     }
 
     @SuppressWarnings("unchecked")
-    public void connectToGame(final HamsterGameAdapter hamsterGameAdapter) {
-        this.gameController = hamsterGameAdapter.getGameController();
-        this.hamsterGrid.bindToTerritory(hamsterGameAdapter.getTerritory());
+    public void connectToGame(final HamsterGameViewModel hamsterGameViewModel) {
+        this.gameController = hamsterGameViewModel.getGameController();
+        this.hamsterGrid.bindToTerritory(hamsterGameViewModel.getTerritory());
         final BooleanBinding runningBinding = Bindings.createBooleanBinding(() -> gameController.modeProperty().get() == Mode.RUNNING, gameController.modeProperty());
         this.play.disableProperty().bind(Bindings.createBooleanBinding(() -> gameController.modeProperty().get() == Mode.PAUSED, gameController.modeProperty()).not());
         this.pause.disableProperty().bind(runningBinding.not());
@@ -90,7 +90,7 @@ public class GameSceneController {
         this.redo.disableProperty().bind(this.gameController.canRedoProperty().not().or(runningBinding));
         this.speed.valueProperty().bindBidirectional(this.gameController.speedProperty());
         this.log.setCellFactory(list -> new CellFormat());
-        this.log.itemsProperty().bind((ReadOnlyListProperty<ObservableLogEntry>) hamsterGameAdapter.getLog().logProperty());
+        this.log.itemsProperty().bind((ReadOnlyListProperty<ObservableLogEntry>) hamsterGameViewModel.getLog().logProperty());
         this.log.getItems().addListener((ListChangeListener<ObservableLogEntry>) changeListener -> {
             changeListener.next();
             final int size = log.getItems().size();

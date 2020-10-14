@@ -52,7 +52,7 @@ public class HamsterBoundsTest {
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
-        game.getAdapter().addInputInterface(new DummyInputInterface());
+        game.getModelViewAdapter().addInputInterface(new DummyInputInterface());
         game.startGame(false);
         paule = game.getTerritory().getDefaultHamster();
     }

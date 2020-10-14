@@ -6,7 +6,7 @@ class Example1 extends SimpleHamsterGame {
 
     @Override
     void run() {
-        JavaFXUI.displayInNewGameWindow(game.getAdapter());
+        JavaFXUI.displayInNewGameWindow(game.getModelViewAdapter());
         game.initialize();
         paule.move();
         paule.move();

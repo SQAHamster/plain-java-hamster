@@ -2,7 +2,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 
 import java.io.IOException;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameAdapter;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameViewModel;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameController;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import javafx.fxml.FXMLLoader;
@@ -15,12 +15,12 @@ class HamsterGameStage extends Stage {
 
     private GameSceneController sceneController;
 
-    public HamsterGameStage(final HamsterGameAdapter hamsterGameAdapter) throws IOException {
+    public HamsterGameStage(final HamsterGameViewModel hamsterGameViewModel) throws IOException {
         super();
         prepareStage();
-        sceneController.connectToGame(hamsterGameAdapter);
+        sceneController.connectToGame(hamsterGameViewModel);
         this.setOnCloseRequest(event -> {
-            final HamsterGameController gameController = hamsterGameAdapter.getGameController();
+            final HamsterGameController gameController = hamsterGameViewModel.getGameController();
             if (gameController.modeProperty().get() == Mode.PAUSED ||
                 gameController.modeProperty().get() == Mode.RUNNING) {
                 gameController.stopGame();

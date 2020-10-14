@@ -34,9 +34,9 @@ public final class Main {
             throw new RuntimeException();
         }
 
-        game.getAdapter().addInputInterface(JavaFXUI.getJavaFXInputInterface());
+        game.getModelViewAdapter().addInputInterface(JavaFXUI.getJavaFXInputInterface());
 
-        JavaFXUI.openSceneFor(game.getAdapter());
+        JavaFXUI.openSceneFor(game.getModelViewAdapter());
         game.runGame(Main::exampleRun);
     }
 

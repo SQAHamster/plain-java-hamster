@@ -3,7 +3,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameAdapter;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameViewModel;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.InputInterface;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -21,11 +21,11 @@ public class JavaFXUI extends Application {
     /**
      * Displays the hamster game associated with the provided hamster game adapter in a new window
      * This automatically starts the UI, adds the necessary input interface and opens the scene
-     * @param hamsterGameAdapter the adapter of the hamster game to display, must be != null
+     * @param hamsterGameViewModel the adapter of the hamster game to display, must be != null
      */
-    public static void displayInNewGameWindow(final HamsterGameAdapter hamsterGameAdapter) {
-        hamsterGameAdapter.addInputInterface(inputInterface);
-        openSceneFor(hamsterGameAdapter);
+    public static void displayInNewGameWindow(final HamsterGameViewModel hamsterGameViewModel) {
+        hamsterGameViewModel.addInputInterface(inputInterface);
+        openSceneFor(hamsterGameViewModel);
     }
 
     /*@
@@ -70,16 +70,16 @@ public class JavaFXUI extends Application {
      @ ensures isStarted;
      @*/
     /**
-     * Opens a scene for the hamster game associated with hamsterGameAdapter
+     * Opens a scene for the hamster game associated with hamsterGameViewModel
      * requires that the JavaFXUI is started
-     * @param hamsterGameAdapter the adapter for the hamster game to display
+     * @param hamsterGameViewModel the adapter for the hamster game to display
      */
-    public static void openSceneFor(final HamsterGameAdapter hamsterGameAdapter) {
+    public static void openSceneFor(final HamsterGameViewModel hamsterGameViewModel) {
         start();
         JavaFXUtil.blockingExecuteOnFXThread(() -> {
             Stage stage;
             try {
-                stage = new HamsterGameStage(hamsterGameAdapter);
+                stage = new HamsterGameStage(hamsterGameViewModel);
                 stage.show();
             } catch (final IOException e) {
                 e.printStackTrace();

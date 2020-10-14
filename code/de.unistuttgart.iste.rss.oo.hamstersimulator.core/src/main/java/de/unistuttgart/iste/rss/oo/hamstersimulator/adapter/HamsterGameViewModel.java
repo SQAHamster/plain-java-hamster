@@ -21,7 +21,7 @@ import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
  * Besides inputInterfaces and the controller, this class only provides read-only access.
  * In particular it is not possible to modify the territory or anything on it or add log messages.
  */
-public class HamsterGameAdapter {
+public class HamsterGameViewModel {
     /**
      * The territory object on which the instance of this game takes place on
      */
@@ -49,15 +49,15 @@ public class HamsterGameAdapter {
      @ requires inputInterfaces != null;
      @*/
     /**
-     * Creates a new HamsterGameAdapter
+     * Creates a new HamsterGameViewModel
      * This is only meant for internal use
      * @param territory the territory, must be != null
      * @param gameController the gameController to stop, pause etc., must be != null
      * @param log the log with all log messages, must be != null
      * @param inputInterfaces an initial collection of InputInterfaces, must be != null, might be empty
      */
-    public HamsterGameAdapter(final ObservableTerritory territory, final HamsterGameController gameController,
-                              final ObservableLog log, Collection<InputInterface> inputInterfaces) {
+    public HamsterGameViewModel(final ObservableTerritory territory, final HamsterGameController gameController,
+                                final ObservableLog log, Collection<InputInterface> inputInterfaces) {
         checkNotNull(territory, "territory must be != null");
         checkNotNull(gameController, "gameController must be != null");
         checkNotNull(log, "log must be != null");

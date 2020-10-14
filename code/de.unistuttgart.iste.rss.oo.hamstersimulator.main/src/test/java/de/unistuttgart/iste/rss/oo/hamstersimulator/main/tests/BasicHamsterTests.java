@@ -60,7 +60,7 @@ public class BasicHamsterTests {
     @BeforeEach
     public void initializeTest() throws IOException {
         game.initialize(new ByteArrayInputStream(territory.getBytes()));
-        game.getAdapter().addInputInterface(new DummyInputInterface());
+        game.getModelViewAdapter().addInputInterface(new DummyInputInterface());
         game.setSpeed(HAMSTER_GAME_TEST_SPEED);
         game.startGame(false);
         paule = game.getTerritory().getDefaultHamster();

@@ -22,7 +22,7 @@ class Example01 extends SimpleHamsterGame {
      */
     @Override
     void run() {
-        JavaFXUI.displayInNewGameWindow(game.getAdapter());
+        JavaFXUI.displayInNewGameWindow(game.getModelViewAdapter());
         game.initialize();
         for (int i = 0; i < SCENARIO_REPETITION_COUNT; i++) {
             paule.write("Hallo!");

@@ -12,7 +12,7 @@ import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameAdapter;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameViewModel;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.*;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
@@ -41,7 +41,7 @@ public class HamsterGame {
      */
     private static final String DEFAULT_HAMSTER_TERRITORY = "/territories/example01.ter";
 
-    private final HamsterGameAdapter adapter;
+    private final HamsterGameViewModel adapter;
 
     /**
      * Game log object used to print log messages from the game and write commands from hamsters.
@@ -97,7 +97,7 @@ public class HamsterGame {
             t.setDaemon(true);
             return t;
         });
-        this.adapter = new HamsterGameAdapter(this.territory.getInternalTerritory(), this.commandStack, this.log,
+        this.adapter = new HamsterGameViewModel(this.territory.getInternalTerritory(), this.commandStack, this.log,
                 newInputInterfaces);
     }
 
@@ -131,11 +131,11 @@ public class HamsterGame {
     }
 
     /**
-     * Getter for the HamsterGameAdapter object of this game. Cannot be null.
+     * Getter for the HamsterGameViewModel object of this game. Cannot be null.
      * The adapter can be used to connect a UI or a test framework to this game.
      * @return The adapter object of this game
      */
-    public /*@ pure @*/ HamsterGameAdapter getAdapter() {
+    public /*@ pure @*/ HamsterGameViewModel getModelViewAdapter() {
         return this.adapter;
     }
 
