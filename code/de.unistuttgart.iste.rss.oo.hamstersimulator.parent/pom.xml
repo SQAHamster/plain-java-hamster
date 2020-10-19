@@ -3,6 +3,9 @@
 	<groupId>de.unistuttgart.iste.rss.oo.hamstersimulator</groupId>
 	<artifactId>parent</artifactId>
 	<version>2.1.5-SNAPSHOT</version>
+	<modules>
+		<module>../de.unistuttgart.iste.rss.oo.hamstersimulator.config</module>
+	</modules>
 
 	<distributionManagement>
 		<snapshotRepository>
