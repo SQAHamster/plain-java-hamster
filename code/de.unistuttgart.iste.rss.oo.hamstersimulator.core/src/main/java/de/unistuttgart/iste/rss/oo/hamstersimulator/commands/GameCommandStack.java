@@ -57,7 +57,7 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
         this.canUndo.set(false);
         this.canRedo.set(false);
         if (startPaused) {
-            pause();
+            mode.set(Mode.PAUSED);
         } else {
             mode.set(Mode.RUNNING);
         }
