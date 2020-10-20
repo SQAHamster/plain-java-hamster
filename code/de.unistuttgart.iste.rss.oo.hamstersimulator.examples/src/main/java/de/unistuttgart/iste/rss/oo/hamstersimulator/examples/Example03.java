@@ -10,7 +10,7 @@ class Example03 extends SimpleHamsterGame {
      * grain in her mouth. She drops it and Paule picks it up.     
      */
     @Override
-    void run() {
+    protected void run() {
         game.initialize();
         JavaFXUI.displayInNewGameWindow(game.getModelViewAdapter());
 

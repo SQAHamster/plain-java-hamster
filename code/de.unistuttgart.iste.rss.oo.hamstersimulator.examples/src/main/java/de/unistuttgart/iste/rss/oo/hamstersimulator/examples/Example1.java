@@ -5,7 +5,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 class Example1 extends SimpleHamsterGame {
 
     @Override
-    void run() {
+    protected void run() {
         JavaFXUI.displayInNewGameWindow(game.getModelViewAdapter());
         game.initialize();
         paule.move();

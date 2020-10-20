@@ -21,7 +21,7 @@ class Example01 extends SimpleHamsterGame {
      * and finally return to his initial tile.
      */
     @Override
-    void run() {
+    protected void run() {
         JavaFXUI.displayInNewGameWindow(game.getModelViewAdapter());
         game.initialize();
         for (int i = 0; i < SCENARIO_REPETITION_COUNT; i++) {

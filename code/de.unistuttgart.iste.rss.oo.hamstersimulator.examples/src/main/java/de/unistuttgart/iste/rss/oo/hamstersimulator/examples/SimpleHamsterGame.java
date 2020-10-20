@@ -15,11 +15,4 @@ public abstract class SimpleHamsterGame
         final SimpleHamsterGame example = createInstance();
         example.doRun();
     }
-
-    @Override
-    protected void hamsterMain() {
-        run();
-    }
-
-    abstract void run();
 }
