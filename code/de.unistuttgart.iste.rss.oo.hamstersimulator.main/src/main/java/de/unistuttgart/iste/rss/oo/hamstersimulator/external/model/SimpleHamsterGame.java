@@ -1,6 +1,11 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 import java.io.Console;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Optional;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.config.HamsterConfig;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
@@ -12,6 +17,11 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
  *
  */
 public abstract class SimpleHamsterGame {
+
+    /**
+     * Name of the environment variable used to determine the output interface
+     */
+    private static final String OUTPUT_INTERFACE_ENVIRONMENT_VARIABLE_NAME = "OUTPUT_INTERFACE";
 
     /**
      * Variable inherited to child classes containing the default hamster
@@ -38,7 +48,7 @@ public abstract class SimpleHamsterGame {
      * the game.
      */
     public SimpleHamsterGame() {
-        JavaFXUI.displayInNewGameWindow(game.getModelViewAdapter());
+        displayInNewGameWindow();
         game.startGame(false);
 
         paule = game.getTerritory().getDefaultHamster();
@@ -57,13 +67,89 @@ public abstract class SimpleHamsterGame {
      */
     protected final void doRun() {
         try {
-            this.hamsterMain();
+            this.run();
         } catch (final GameAbortedException e) {
             // End this game
         } catch (final RuntimeException e) {
             this.game.showAlert(e);
         }
         game.stopGame();
+    }
+
+    /**
+     * Displays the hamster game in a new game window
+     * The UI type can be specified in the config file or in the environment variable
+     * OUTPUT_INTERFACE. Possible values are JAVA_FX, HTTP and NONE
+     * The default is JAVA_FX.
+     */
+    protected void displayInNewGameWindow() {
+        final UIMode mode = getUIModeFromConfig()
+                .orElse(getUIModeFromEnvironmentVariable()
+                        .orElse(UIMode.JAVA_FX));
+        switch (mode) {
+            case JAVA_FX:
+                JavaFXUI.displayInNewGameWindow(this.game.getModelViewAdapter());
+                break;
+            case HTTP:
+                // TODO
+                break;
+            case NONE:
+                // ignore
+                break;
+            default:
+                throw new IllegalStateException("not handled output interface case");
+        }
+    }
+
+    /**
+     * Loads the UI Mode from the config if possible
+     * @return The UI mode if it was found in the default config, if the file is not present
+     *         an empty optional
+     * @throws IllegalStateException if something goes wrong reading the file or if the config file
+     *         contains an illegal value
+     */
+    private Optional<UIMode> getUIModeFromConfig() {
+        if (Files.exists(Path.of("config.json"))) {
+            try {
+                final HamsterConfig config = HamsterConfig.load();
+                if (config.getOutput() != null) {
+                    return Optional.of(UIMode.valueOf(config.getOutput()));
+                } else {
+                    return Optional.empty();
+                }
+            } catch (IOException | IllegalArgumentException e) {
+                throw new IllegalStateException("Illegal config", e);
+            }
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Loads the UI Mode from the environment variable if possible
+     * @return The UI mode if the environment variable was set, otherwise an empty optional
+     * @throws IllegalStateException if an illegal value is set
+     */
+    private Optional<UIMode> getUIModeFromEnvironmentVariable() {
+        final String value = System.getenv(OUTPUT_INTERFACE_ENVIRONMENT_VARIABLE_NAME);
+        if (value != null) {
+            try {
+                return Optional.of(UIMode.valueOf(value));
+            } catch (IllegalArgumentException e) {
+                throw new IllegalStateException("Illegal environmental variable", e);
+            }
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * enum for different UI types
+     */
+    private enum UIMode {
+        JAVA_FX,
+        HTTP,
+        NONE;
     }
 
 }
