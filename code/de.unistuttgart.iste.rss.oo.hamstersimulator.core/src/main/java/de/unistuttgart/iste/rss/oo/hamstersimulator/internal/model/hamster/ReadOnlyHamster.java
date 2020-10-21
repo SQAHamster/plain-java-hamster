@@ -27,8 +27,32 @@ public class ReadOnlyHamster extends TileContent implements ObservableHamster {
         grainCount.bind(grainInMouth.sizeProperty());
     }
 
-    /*
-     * Read-Only (observable) Properties
+    /*@
+     @ pure;
+     @ requires true;
+     @ ensures \result != null;
+     @*/
+    /**
+     * Get the current hamster looking direction.
+     * @return The current hamster's looking direction.
+     */
+    @Override
+    public Direction getDirection() {
+        return direction.get();
+    }
+
+    public List<Grain> getGrainInMouth() {
+        return Collections.unmodifiableList(grainInMouth.get());
+    }
+
+    public /*@ pure helper @*/ int getGrainCount() {
+        return grainCount.get();
+    }
+
+    /**
+     * Getter for the direction property of the hamster, which represents
+     * the direction this hamster is facing
+     * @return the property, not null
      */
     @Override
     public ReadOnlyObjectProperty<Direction> directionProperty() {
@@ -41,18 +65,6 @@ public class ReadOnlyHamster extends TileContent implements ObservableHamster {
 
     public ReadOnlyIntegerProperty grainCountProperty() {
         return this.grainCount.getReadOnlyProperty();
-    }
-
-    public Direction getDirection() {
-        return direction.get();
-    }
-
-    public List<Grain> getGrainInMouth() {
-        return Collections.unmodifiableList(grainInMouth.get());
-    }
-
-    public /*@ pure helper @*/ int getGrainCount() {
-        return grainCount.get();
     }
 
     public ReadOnlyTerritory getCurrentTerritory() {

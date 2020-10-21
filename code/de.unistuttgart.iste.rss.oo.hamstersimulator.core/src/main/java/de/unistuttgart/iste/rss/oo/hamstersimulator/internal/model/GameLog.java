@@ -38,7 +38,11 @@ public class GameLog implements ObservableLog {
                 on(PutGrainCommandSpecification.class).then(s -> getLogCommand(s.getHamster(), "Put Grain")).
                 on(WriteCommandSpecification.class).then(s -> getLogCommand(s.getHamster(), s.getMessage()));
     }
-    
+
+    /**
+     * Getter for the log property, which contains read-only log entries
+     * @return the property (not null)
+     */
     public ReadOnlyListProperty<LogEntry> logProperty() {
         return this.gameLog.getReadOnlyProperty();
     }

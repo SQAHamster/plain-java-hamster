@@ -126,7 +126,7 @@ public class Territory {
 
     /**
      * Return the size of the current territory. From the size
-     * you can retrieve the number of rows and colums.
+     * you can retrieve the number of rows and columns.
      * @return A size object representing the size of the territory.
      *         Is never null.
      */
