@@ -1,11 +1,9 @@
-package de.unistuttgart.iste.oo.hamstersimulator.testFramework;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.testFramework;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.InputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableTile;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.testFramework.HamsterGameResolver;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.testFramework.HamsterTest;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.testFramework.TestUtils;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -14,7 +12,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-@HamsterTest(game = "de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.SimpleHamsterGame")
+@HamsterTest(game = "de.unistuttgart.iste.rss.oo.hamstersimulator.testFramework.TestHamsterGame")
 @ExtendWith(HamsterGameResolver.class)
 public class ExampleTest {
 
@@ -45,10 +43,11 @@ public class ExampleTest {
         final ObservableTile t = null;
 
         assertEquals(Direction.EAST, utils.getViewModel().getTerritory().defaultHamsterProperty().get().directionProperty().get());
+        assertEquals(new Location(1, 1), utils.getViewModel().getTerritory().defaultHamsterProperty().get().currentTileProperty().get().get().getLocation());
 
         utils.runGame();
 
         assertEquals(Direction.NORTH, utils.getViewModel().getTerritory().defaultHamsterProperty().get().directionProperty().get());
-        //assertEquals(new Location(1, 3), utils.getViewModel().getTerritory().defaultHamsterProperty().get().currentTileProperty().get().get().getLocation());
+        assertEquals(new Location(1, 3), utils.getViewModel().getTerritory().defaultHamsterProperty().get().currentTileProperty().get().get().getLocation());
     }
 }
