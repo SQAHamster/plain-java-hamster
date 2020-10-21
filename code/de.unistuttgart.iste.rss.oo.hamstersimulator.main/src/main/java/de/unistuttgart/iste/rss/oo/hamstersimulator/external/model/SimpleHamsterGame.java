@@ -136,6 +136,18 @@ public abstract class SimpleHamsterGame {
     }
 
     /**
+     * Returns the view model used by the game as an output interface
+     * <p>
+     * The view model provides information about the current game and can be used to (un)register input interfaces.
+     * It is used for adapting the game to a user interface such as the JavaFX UI
+     *
+     * @return The view model used by the game in this simple hamster game. It is always the same instance and won't be null
+     */
+    public HamsterGameViewModel getGameViewModel() {
+        return this.game.getModelViewAdapter();
+    }
+
+    /**
      * Loads the UI Mode from the config if possible
      *
      * @return The UI mode if it was found in the default config, if the file is not present
