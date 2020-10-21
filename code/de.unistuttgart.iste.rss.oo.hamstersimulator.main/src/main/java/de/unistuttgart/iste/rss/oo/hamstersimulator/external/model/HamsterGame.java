@@ -430,6 +430,7 @@ public class HamsterGame {
      * Inform a user about an abnormal execution aborting.
      * This blocks until it returns or is aborted
      * @param t The throwable which lead to aborting the program.
+     * @throws IllegalStateException if no input is registered
      */
     public void showAlert(final Throwable t) {
         final Throwable res = this.executeAndGetFirstResult(inputInterface -> () -> {
@@ -455,6 +456,7 @@ public class HamsterGame {
      * an integer to return or it is aborted
      * @param message The message used in the prompt for the number.
      * @return The integer value read or an empty optional, if aborted.
+     * @throws IllegalStateException if no input interface is registered
      */
     protected int readInteger(final String message) {
         return this.executeAndGetFirstResult(inputInterface -> () -> inputInterface.readInteger(message));
@@ -465,6 +467,7 @@ public class HamsterGame {
      * String to return or it is aborted
      * @param message The message used in the prompt for the string.
      * @return The string value read or an empty optional, if aborted.
+     * @throws IllegalStateException if no input interface is registered
      */
     protected String readString(final String message) {
         return this.executeAndGetFirstResult(inputInterface -> () -> inputInterface.readString(message));
@@ -472,11 +475,16 @@ public class HamsterGame {
 
     /**
      * executes the callable with every input interface in parallel
+     * requires that there is at least one InputInterface
      * @param callableFactory factory to create the Callable out of the InputInterface
      * @param <R> the return type
      * @return the result of the first callable that completes
      */
     private <R> R executeAndGetFirstResult(final Function<InputInterface, Callable<Optional<R>>> callableFactory) {
+        if (this.adapter.getInputInterfaces().isEmpty()) {
+            throw new IllegalStateException("No input interface registered");
+        }
+
         final CompletionService<Optional<R>> completionService = submitInputRequests(callableFactory);
 
         try {
@@ -490,7 +498,7 @@ public class HamsterGame {
      * Creates a new CompletionService and submits a callable to each input interface to handle the input request
      * @param callableFactory creates the callable for the CompletionService on invocation
      * @param <R> the return type of the input request
-     * @return the CompletionService which handes all input requests
+     * @return the CompletionService which handles all input requests
      */
     private <R> CompletionService<Optional<R>> submitInputRequests(final Function<InputInterface, Callable<Optional<R>>> callableFactory) {
         final CompletionService<Optional<R>> completionService = new ExecutorCompletionService<>(this.executorService);
