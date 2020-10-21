@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.DummyInputInterface;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,6 +60,7 @@ public class BasicHamsterTests {
     @BeforeEach
     public void initializeTest() throws IOException {
         game.initialize(new ByteArrayInputStream(territory.getBytes()));
+        game.getModelViewAdapter().addInputInterface(new DummyInputInterface());
         game.setSpeed(HAMSTER_GAME_TEST_SPEED);
         game.startGame(false);
         paule = game.getTerritory().getDefaultHamster();

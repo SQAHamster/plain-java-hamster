@@ -2,10 +2,9 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx;
 
 import java.io.IOException;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mode;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameViewModel;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameController;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,14 +15,15 @@ class HamsterGameStage extends Stage {
 
     private GameSceneController sceneController;
 
-    public HamsterGameStage(final ReadOnlyTerritory territory, final GameCommandStack commandStack, final GameLog gameLog) throws IOException {
+    public HamsterGameStage(final HamsterGameViewModel hamsterGameViewModel) throws IOException {
         super();
         prepareStage();
-        sceneController.connectToGame(territory, commandStack, gameLog);
+        sceneController.connectToGame(hamsterGameViewModel);
         this.setOnCloseRequest(event -> {
-            if (commandStack.modeProperty().get() == Mode.PAUSED ||
-                commandStack.modeProperty().get() == Mode.RUNNING) {
-                commandStack.stopGame();
+            final HamsterGameController gameController = hamsterGameViewModel.getGameController();
+            if (gameController.modeProperty().get() == Mode.PAUSED ||
+                gameController.modeProperty().get() == Mode.RUNNING) {
+                gameController.stopGame();
             }
         });
     }

@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.GameTerritory;
@@ -126,7 +126,7 @@ public class Territory {
 
     /**
      * Return the size of the current territory. From the size
-     * you can retrieve the number of rows and colums.
+     * you can retrieve the number of rows and columns.
      * @return A size object representing the size of the territory.
      *         Is never null.
      */

@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Tile;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TileContent;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableHamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableTile;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableTileContent;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ListChangeListener;
 import javafx.scene.image.Image;
@@ -46,19 +46,19 @@ public class TileNode extends StackPane {
     private final HamsterTerritoryGrid parent;
     private ImageView wallView;
     private ImageView grainView;
-    private final Map<ReadOnlyHamster, ImageView> hamsterImageViews = new HashMap<>();
-    final Tile tile;
+    private final Map<ObservableHamster, ImageView> hamsterImageViews = new HashMap<>();
+    final ObservableTile tile;
 
-    private final ListChangeListener<TileContent> tileListener = new ListChangeListener<TileContent>(){
+    private final ListChangeListener<ObservableTileContent> tileListener = new ListChangeListener<ObservableTileContent>(){
 
         @Override
-        public void onChanged(final Change<? extends TileContent> change) {
+        public void onChanged(final Change<? extends ObservableTileContent> change) {
             while(change.next()) {
                 if (change.wasAdded()) {
-                    change.getAddedSubList().forEach(tileContent -> addHamster((ReadOnlyHamster)tileContent));
+                    change.getAddedSubList().forEach(tileContent -> addHamster((ObservableHamster) tileContent));
                 }
                 if (change.wasRemoved()) {
-                    change.getRemoved().forEach(tileContent -> removeHamster((ReadOnlyHamster)tileContent));
+                    change.getRemoved().forEach(tileContent -> removeHamster((ObservableHamster)tileContent));
                 }
             }
         }
@@ -66,7 +66,7 @@ public class TileNode extends StackPane {
     };
 
 
-    TileNode(final HamsterTerritoryGrid hamsterTerritoryGrid, final Tile tile) {
+    TileNode(final HamsterTerritoryGrid hamsterTerritoryGrid, final ObservableTile tile) {
         super();
 
         this.tile = tile;
@@ -75,14 +75,14 @@ public class TileNode extends StackPane {
         configureStyle();
         configureWallImageView();
         configureGrainImageView();
-        tile.getHamsters().forEach(hamster -> addHamster((ReadOnlyHamster) hamster));
+        tile.hamstersProperty().forEach(hamster -> addHamster((ObservableHamster) hamster));
         addHamsterListListener();
     }
 
     private void configureGrainImageView() {
         this.grainView = new ImageView();
-        grainView.visibleProperty().bind(Bindings.createBooleanBinding(() -> tile.getGrainCount() > 0, tile.grainCountProperty()));
-        grainView.imageProperty().bind(Bindings.createObjectBinding(() -> tile.getGrainCount() <= 12 ? cornImages.get(tile.getGrainCount()) : PLUS_12_CORN_IMAGE, tile.grainCountProperty()));
+        grainView.visibleProperty().bind(Bindings.createBooleanBinding(() -> tile.grainCountProperty().get() > 0, tile.grainCountProperty()));
+        grainView.imageProperty().bind(Bindings.createObjectBinding(() -> tile.grainCountProperty().get() <= 12 ? cornImages.get(tile.grainCountProperty().get()) : PLUS_12_CORN_IMAGE, tile.grainCountProperty()));
         grainView.fitHeightProperty().bind(this.heightProperty());
         grainView.fitWidthProperty().bind(this.widthProperty());
         grainView.setPreserveRatio(true);
@@ -98,7 +98,7 @@ public class TileNode extends StackPane {
         this.getChildren().add(wallView);
     }
 
-    private void addHamster(final ReadOnlyHamster hamster) {
+    private void addHamster(final ObservableHamster hamster) {
         if (!hamsterImageViews.containsKey(hamster)) {
             final Image coloredHamsterImage = getColoredHamsterImage(hamster);
             final ImageView view = new ImageView(coloredHamsterImage);
@@ -106,14 +106,14 @@ public class TileNode extends StackPane {
             view.fitWidthProperty().bind(this.widthProperty().multiply(0.7));
             view.setPreserveRatio(true);
             hamsterImageViews.put(hamster, view);
-            view.rotateProperty().bind(Bindings.createDoubleBinding(() -> getRotationForDirection(hamster.getDirection()), hamster.directionProperty()));
+            view.rotateProperty().bind(Bindings.createDoubleBinding(() -> getRotationForDirection(hamster.directionProperty().get()), hamster.directionProperty()));
             JavaFXUtil.blockingExecuteOnFXThread(() -> {
                 this.getChildren().add(hamsterImageViews.get(hamster));
             });
         }
     }
 
-    private void removeHamster(final ReadOnlyHamster hamster) {
+    private void removeHamster(final ObservableHamster hamster) {
         final ImageView view = hamsterImageViews.remove(hamster);
         JavaFXUtil.blockingExecuteOnFXThread(() -> this.getChildren().remove(view));
     }
@@ -144,7 +144,7 @@ public class TileNode extends StackPane {
         }
     }
 
-    private Image getColoredHamsterImage(final ReadOnlyHamster hamster) {
+    private Image getColoredHamsterImage(final ObservableHamster hamster) {
         int colorIndex;
         if (parent.hamsterToColorPos.containsKey(hamster)) {
             colorIndex = parent.hamsterToColorPos.get(hamster);

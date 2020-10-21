@@ -6,13 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.DummyInputInterface;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
@@ -62,6 +63,7 @@ public class SimpleHamsterTests {
     @BeforeEach
     public void initializeTest() {
         game.initialize();
+        game.getModelViewAdapter().addInputInterface(new DummyInputInterface());
         game.setSpeed(HAMSTER_GAME_TEST_SPEED);
         game.startGame(false);
         paule = game.getTerritory().getDefaultHamster();

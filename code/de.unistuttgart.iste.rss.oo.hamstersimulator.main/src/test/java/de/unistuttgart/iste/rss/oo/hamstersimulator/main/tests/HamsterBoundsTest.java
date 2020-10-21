@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.DummyInputInterface;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,6 +52,7 @@ public class HamsterBoundsTest {
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
+        game.getModelViewAdapter().addInputInterface(new DummyInputInterface());
         game.startGame(false);
         paule = game.getTerritory().getDefaultHamster();
     }

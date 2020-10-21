@@ -5,22 +5,21 @@ import static de.unistuttgart.iste.rss.utils.Preconditions.checkState;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EditCommandStack;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack.Mode;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameViewModel;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.*;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.DummyInputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.InputInterface;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.InputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.AbstractHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 import de.unistuttgart.iste.rss.utils.Preconditions;
 
 /**
@@ -42,13 +41,15 @@ public class HamsterGame {
      */
     private static final String DEFAULT_HAMSTER_TERRITORY = "/territories/example01.ter";
 
+    private final HamsterGameViewModel adapter;
+
     /**
      * Game log object used to print log messages from the game and write commands from hamsters.
      */
     private final GameLog log = new GameLog();
 
     /**
-     * Game command stack object used to execute game commands, i.e., commands comming from
+     * Game command stack object used to execute game commands, i.e., commands coming from
      * the hamster objects on the territory during the simulation run.
      */
     private final GameCommandStack commandStack = new GameCommandStack();
@@ -58,10 +59,8 @@ public class HamsterGame {
      */
     private final Territory territory = new Territory(this);
 
-    /**
-     * The input interface used when hamsters ask for input.
-     */
-    private InputInterface inputInterface;
+    private final ExecutorService executorService;
+
 
     /**
      * Initialize a hamster game. The hamster game is in mode Initialized
@@ -73,7 +72,7 @@ public class HamsterGame {
      * the hamster game will be rethrown.
      */
     public HamsterGame() {
-        this(new DummyInputInterface());
+        this(Collections.emptySet());
     }
 
     /**
@@ -86,16 +85,29 @@ public class HamsterGame {
      * or from Mockups) and to handle any exception thrown from the user
      * defined hamster game.
      *
-     * @param newInputInterface The input interface this game should use
+     * @param newInputInterfaces The input interfaces this game should use
      * for reading values from the user and to handle exceptions.
      */
-    public HamsterGame(final InputInterface newInputInterface) {
+    public HamsterGame(final Set<InputInterface> newInputInterfaces) {
         super();
-        this.inputInterface = newInputInterface;
+        checkNotNull(newInputInterfaces);
+
+        this.executorService = Executors.newCachedThreadPool(r -> {
+            Thread t = Executors.defaultThreadFactory().newThread(r);
+            t.setDaemon(true);
+            return t;
+        });
+        this.adapter = new HamsterGameViewModel(this.territory.getInternalTerritory(), this.commandStack, this.log,
+                newInputInterfaces);
     }
 
+    /*@
+     @ requires gameSpeed >= 0 && gameSpeed <= MAX_SPEED;
+     @ ensures getSpeed() == gameSpeed;
+     @*/
     /**
-     * Set the speed of the hamster game. Valid values are in the range from 0.0 to 10.0,
+     * Set the speed of the hamster game. Valid values are in the range from
+     * 0.0 to 10.0,
      * where 0.0 is slow and 10.0 is fast.
      * @param gameSpeed The new game speed's delay. Has to be greater or equal 0.0 and
      *                  less than or equal 10.0.
@@ -105,20 +117,34 @@ public class HamsterGame {
         this.commandStack.setSpeed(gameSpeed);
     }
 
+    /*@
+     @ requires true;
+     @ ensures gameSpeed >= 0 && gameSpeed <= MAX_SPEED;
+     @*/
+    /**
+     * Gets the speed of the hamster game.
+     * @return The hamster game's current speed. Is greater or equal 0.0 and
+     *         less than or equal 10.0;
+     */
+    public double getSpeed() {
+        return this.commandStack.speedProperty().get();
+    }
+
+    /**
+     * Getter for the HamsterGameViewModel object of this game. Cannot be null.
+     * The adapter can be used to connect a UI or a test framework to this game.
+     * @return The adapter object of this game
+     */
+    public /*@ pure @*/ HamsterGameViewModel getModelViewAdapter() {
+        return this.adapter;
+    }
+
     /**
      * Getter for the territory object of this game. Cannot be null.
      * @return The territory object of this game.
      */
     public /*@ pure @*/ Territory getTerritory() {
         return territory;
-    }
-
-    /**
-     * Getter for the game log. Cannot be null.
-     * @return The game log of this hamster game's instance.
-     */
-    public GameLog getGameLog() {
-        return log;
     }
 
     /**
@@ -145,9 +171,7 @@ public class HamsterGame {
     public void initialize(final TerritoryBuilder territoryBuilder) {
         this.hardReset();
 
-        new EditCommandStack().execute(
-                territoryBuilder.build());
-
+        new EditCommandStack().execute(territoryBuilder.build());
     }
 
     /**
@@ -237,35 +261,6 @@ public class HamsterGame {
         this.commandStack.hardReset();
     }
 
-
-    /**
-     * Gets the input interface of this game used to read values from users
-     * or mock objects.
-     * @return The input interface for this game.
-     */
-    public InputInterface getInputInterface() {
-        checkState(this.inputInterface != null, "Input interface needs to be defined first!");
-        return this.inputInterface;
-    }
-
-    /**
-     * Sets this game's input interface for reading values from users or
-     * mock objects.
-     * @param newInputInterface The new input interface.
-     */
-    public void setInputInterface(final InputInterface newInputInterface) {
-        checkNotNull(newInputInterface);
-        this.inputInterface = newInputInterface;
-    }
-
-    /**
-     * Opens a new Game UI for this game object. The game UI shows
-     * the game and its current state while the game is executing.
-     */
-    public void displayInNewGameWindow() {
-        JavaFXUI.openSceneFor(this.territory.getInternalTerritory(), this.commandStack, this.getGameLog());
-    }
-
     /**
      * Run a given hamster program until it terminates. Termination
      * is either by ending the hamster game regularly or by throwing
@@ -283,15 +278,15 @@ public class HamsterGame {
      * @throws IllegalStateException if hamsterProgram is null or if no IO interface is defined
      */
     public void runGame(final Consumer<Territory> hamsterProgram) {
-        checkState(this.inputInterface != null, "Running a hamster game implies a defined IO interface first.");
         checkNotNull(hamsterProgram);
+        checkState(!this.adapter.getInputInterfaces().isEmpty(), "Running a hamster game implies a defined IO interface first.");
 
         startGameIfNotStarted();
         try {
             hamsterProgram.accept(this.territory);
         } catch (final GameAbortedException e) {
         } catch (final RuntimeException e) {
-            this.inputInterface.showAlert(e);
+            this.showAlert(e);
         } finally {
             stopGame();
         }
@@ -316,9 +311,14 @@ public class HamsterGame {
         this.commandStack.startGame(startPaused);
     }
 
+    /*@
+     @ requires true;
+     @ ensures getCurrentGameMode() == Mode.STOPPED;
+     */
     /**
      * Stop the execution of the game. The game is finished and needs to be reset / hardReset
      * or closed.
+     * If the game is already stopped, this does nothing
      */
     public void stopGame() {
         this.commandStack.stopGame();
@@ -425,4 +425,129 @@ public class HamsterGame {
         };
         this.commandStack.execute(composite);
     }
+
+    /**
+     * Inform a user about an abnormal execution aborting.
+     * This blocks until it returns or is aborted
+     * @param t The throwable which lead to aborting the program.
+     * @throws IllegalStateException if no input is registered
+     */
+    public void showAlert(final Throwable t) {
+        final Throwable res = this.executeAndGetFirstResult(inputInterface -> () -> {
+            try {
+                inputInterface.showAlert(t);
+            } catch (Exception e) {
+                return Optional.of(e);
+            }
+            return Optional.empty();
+        });
+
+        if (res != null) {
+            if (res instanceof RuntimeException) {
+                throw (RuntimeException)res;
+            } else {
+                throw new RuntimeException(res);
+            }
+        }
+    }
+
+    /**
+     * Read an integer value from a user. This blocks until there is
+     * an integer to return or it is aborted
+     * @param message The message used in the prompt for the number.
+     * @return The integer value read or an empty optional, if aborted.
+     * @throws IllegalStateException if no input interface is registered
+     */
+    protected int readInteger(final String message) {
+        return this.executeAndGetFirstResult(inputInterface -> () -> inputInterface.readInteger(message));
+    }
+
+    /**
+     * Read a string value from a user. This blocks until there is a
+     * String to return or it is aborted
+     * @param message The message used in the prompt for the string.
+     * @return The string value read or an empty optional, if aborted.
+     * @throws IllegalStateException if no input interface is registered
+     */
+    protected String readString(final String message) {
+        return this.executeAndGetFirstResult(inputInterface -> () -> inputInterface.readString(message));
+    }
+
+    /**
+     * executes the callable with every input interface in parallel
+     * requires that there is at least one InputInterface
+     * @param callableFactory factory to create the Callable out of the InputInterface
+     * @param <R> the return type
+     * @return the result of the first callable that completes
+     */
+    private <R> R executeAndGetFirstResult(final Function<InputInterface, Callable<Optional<R>>> callableFactory) {
+        if (this.adapter.getInputInterfaces().isEmpty()) {
+            throw new IllegalStateException("No input interface registered");
+        }
+
+        final CompletionService<Optional<R>> completionService = submitInputRequests(callableFactory);
+
+        try {
+            return getFirstResult(completionService);
+        } finally {
+            abortInputRequests(completionService);
+        }
+    }
+
+    /**
+     * Creates a new CompletionService and submits a callable to each input interface to handle the input request
+     * @param callableFactory creates the callable for the CompletionService on invocation
+     * @param <R> the return type of the input request
+     * @return the CompletionService which handles all input requests
+     */
+    private <R> CompletionService<Optional<R>> submitInputRequests(final Function<InputInterface, Callable<Optional<R>>> callableFactory) {
+        final CompletionService<Optional<R>> completionService = new ExecutorCompletionService<>(this.executorService);
+        for (final InputInterface inputInterface : this.adapter.getInputInterfaces()) {
+            completionService.submit(callableFactory.apply(inputInterface));
+        }
+        return completionService;
+    }
+
+    /**
+     * Takes th first result from the completionService and return its result if possible,
+     * otherwise throws an exception
+     * @param completionService the service which handles all input requests
+     * @param <R> the return type of the input request
+     * @return the first result if possible
+     * @throws IllegalStateException if nothing was returned from the first request which returned or an
+     *                               internal error occurs
+     */
+    private <R> R getFirstResult(final CompletionService<Optional<R>> completionService) {
+        try {
+            final Optional<R> result = completionService.take().get();
+            if (result.isPresent()) {
+                return result.get();
+            } else {
+                throw new IllegalStateException("nothing returned");
+            }
+        } catch (InterruptedException e) {
+            throw new IllegalStateException("interrupted");
+        } catch (ExecutionException e) {
+            throw new RuntimeException("nothing returned", e);
+        }
+    }
+
+    /**
+     * Aborts all remaining input requests by calling abort on every input interface
+     * @param completionService the service which handles all input requests
+     * @param <R> the return type of the input request
+     */
+    private <R> void abortInputRequests(final CompletionService<Optional<R>> completionService) {
+        for (final InputInterface inputInterface : this.adapter.getInputInterfaces()) {
+            inputInterface.abort();
+        }
+        for (int i = 0; i < this.adapter.getInputInterfaces().size() - 1; i++) {
+            try {
+                completionService.take();
+            } catch (InterruptedException e) {
+                //ignore
+            }
+        }
+    }
+
 }

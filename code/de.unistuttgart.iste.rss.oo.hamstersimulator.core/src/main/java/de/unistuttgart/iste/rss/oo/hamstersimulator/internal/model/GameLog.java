@@ -3,6 +3,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model;
 import java.util.Optional;
 import java.util.function.Function;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableLog;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LogEntry;
@@ -22,7 +23,7 @@ import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class GameLog {
+public class GameLog implements ObservableLog {
     
     final ReadOnlyListWrapper<LogEntry> gameLog = new ReadOnlyListWrapper<LogEntry>(this, "log", FXCollections.observableArrayList());
     private final Function<CommandSpecification, Command> editCommandFactory;
@@ -37,7 +38,11 @@ public class GameLog {
                 on(PutGrainCommandSpecification.class).then(s -> getLogCommand(s.getHamster(), "Put Grain")).
                 on(WriteCommandSpecification.class).then(s -> getLogCommand(s.getHamster(), s.getMessage()));
     }
-    
+
+    /**
+     * Getter for the log property, which contains read-only log entries
+     * @return the property (not null)
+     */
     public ReadOnlyListProperty<LogEntry> logProperty() {
         return this.gameLog.getReadOnlyProperty();
     }

@@ -1,9 +1,9 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
 
 public class TerritoryBuilder {
@@ -19,7 +19,7 @@ public class TerritoryBuilder {
                 .getTerritoryBuilderForTerritory(territory.getInternalTerritory());
         internalBuilder.addPreconditionCreator(builder -> {
             builder.addNewPrecondition(IllegalStateException::new,
-                    () -> territory.getGame().getCurrentGameMode() != GameCommandStack.Mode.INITIALIZING);
+                    () -> territory.getGame().getCurrentGameMode() != Mode.INITIALIZING);
         });
         return new TerritoryBuilder(internalBuilder);
     }
