@@ -11,6 +11,7 @@ public class TestUtils {
     public TestUtils(final SimpleHamsterGame game) {
         this.viewModel = game.getGameViewModel();
         this.game = game;
+        this.viewModel.getGameController().disableDelay();
     }
 
     public final HamsterGameViewModel getViewModel() {
