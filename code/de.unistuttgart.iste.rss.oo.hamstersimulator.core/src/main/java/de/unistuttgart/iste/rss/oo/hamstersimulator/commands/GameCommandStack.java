@@ -8,15 +8,22 @@ import java.util.concurrent.Semaphore;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameController;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
+
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.*;
+
+import static de.unistuttgart.iste.rss.utils.Preconditions.checkArgument;
+import static de.unistuttgart.iste.rss.utils.Preconditions.checkState;
+
 
 public class GameCommandStack extends EditCommandStack implements HamsterGameController {
 
     private final ReadOnlyObjectWrapper<Mode> mode = new ReadOnlyObjectWrapper<Mode>(this, "mode", Mode.INITIALIZING);
     protected final SimpleDoubleProperty speed = new SimpleDoubleProperty(this, "speed", 4.0);
+    protected final SimpleBooleanProperty delayDisabled = new SimpleBooleanProperty(this, "delayDisabled", false);
 
     private final Semaphore pauseLock = new Semaphore(1, true);
 
@@ -28,7 +35,7 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
     public GameCommandStack() {
         super();
         // prevent illegal values to be set via biding
-        speed.addListener((observable, oldValue, newValue) -> {
+        this.speed.addListener((observable, oldValue, newValue) -> {
             checkState(newValue.doubleValue() >= 0 && newValue.doubleValue() <= 10,
                     "Provided speed is not in range [0, 10]");
         });
@@ -41,10 +48,12 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
      @ ensures startPaused ==> getCurrentGameMode() == Mode.PAUSED;
      @ ensures !startPaused ==> getCurrentGameMode() == Mode.RUNNING;
      @*/
+
     /**
      * Start the execution of a hamster game. Before executing start, no commands can be
      * executed by the hamster objects in the game.
      * This is only possible if the current mode is Mode.INITIALIZING
+     *
      * @param startPaused if true the game will be started in pause mode
      * @throws IllegalStateException if getCurrentGameMode() != Mode.INITIALIZING
      */
@@ -70,7 +79,7 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
 
     private void delay() {
         try {
-            Thread.sleep((int)((11.0d-this.speed.get())/5.0d * 400.0d));
+            Thread.sleep((int) ((11.0d - this.speed.get()) / 5.0d * 400.0d));
         } catch (final InterruptedException e) {
         }
     }
@@ -79,18 +88,55 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
      @ requires speed >= 0 && speed <= MAX_SPEED;
      @ ensures getSpeed() == speed;
      @*/
+
     /**
      * Set the speed of the hamster game. Valid values are in the range from
      * 0.0 to 10.0,
      * where 0.0 is slow and 10.0 is fast.
+     *
      * @param speed The new game speed's delay. Has to be greater or equal 0.0 and
-     *                  less than or equal 10.0.
+     *              less than or equal 10.0.
      */
     @Override
     public void setSpeed(final double speed) {
         checkArgument(speed >= 0 && speed <= 10, "Provided speed is not in range [0, 10]");
 
         this.speed.set(speed);
+    }
+
+
+    /*@
+     @ requires true;
+     @ ensures delayDisabled.get() == true;
+     */
+
+    /**
+     * WARNING: USE WITH CAUTION! THIS WILL VERY LIKELY CAUSE GUI GLITCHES!
+     * For setting the speed to the minimum well working speed, use {@link HamsterGameController#setSpeed(double)}
+     * <p>
+     * Disables the delay between steps. (Speed infinity)
+     * <p>
+     * The speed is not overwritten and if {@link HamsterGameController#enableDelay()} is called, the speed will be
+     * set back to the level it was before disabling the delay
+     */
+    @Override
+    public void disableDelay() {
+        this.delayDisabled.set(true);
+    }
+
+    /*@
+     @ requires true;
+     @ ensures delayDisabled.get() == false;
+     */
+
+    /**
+     * Re-enables the delay between steps
+     * <p>
+     * The speed will be the one last used before disabling the delay
+     */
+    @Override
+    public void enableDelay() {
+        this.delayDisabled.set(false);
     }
 
     @Override
@@ -121,7 +167,9 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
             } finally {
                 getStateLock().unlock();
             }
-            delay();
+            if (!this.delayDisabled.get()) {
+                this.delay();
+            }
         } catch (InterruptedException e) {
         } finally {
             pauseLock.release();
@@ -136,6 +184,7 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
      @ ensures this.undoneCommands.isEmpty();
      @ ensures this.mode.get() == Mode.INITIALIZING
      @*/
+
     /**
      * hard-resets the CommandStack. it clears executedCommands and undoneCommands, however, it does NOT
      * undo all commands. If this behaviour is desired, it is necessary to call undoAll first.
@@ -165,6 +214,7 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
      @ requires true;
      @ ensures getCurrentGameMode() == Mode.STOPPED;
      */
+
     /**
      * Stop the execution of the game. The game is finished and needs to be reset / hardReset
      * or closed.
@@ -219,12 +269,14 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
     /*@
      @ requires modeProperty().get() == Mode.RUNNING;
      @*/
+
     /**
      * Pauses the game when it is running.
      * If the game is not running (paused previously, not started or stopped), an exception
      * is thrown.
      * This is executed asynchronously, this methods returns before the game was paused.
      * Use with care! Normally, this is only necessary for UI functionality.
+     *
      * @throws IllegalStateException if modeProperty().get() != Mode.RUNNING
      */
     @Override
@@ -249,11 +301,13 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
      @ requires modeProperty().get() == Mode.RUNNING;
      @ ensures modeProperty().get() == Mode.PAUSED;
      @*/
+
     /**
      * Pauses the game when it is running.
      * If the game is not running (paused previously, not started or stopped), an exception
      * is thrown.
      * This is executed synchronously, this methods returns after the game was successfully paused.
+     *
      * @throws IllegalStateException if modeProperty().get() != Mode.RUNNING
      */
     @Override
@@ -276,6 +330,7 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
      @ requires modeProperty().get() == Mode.PAUSED;
      @ ensures modeProperty().get() == Mode.RUNNING;
      @*/
+
     /**
      * Pauses the HamsterGame.
      * It is only possible to execute this in paused mode.
@@ -291,14 +346,20 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
         } finally {
             getStateLock().unlock();
         }
+<<<<<<< HEAD
         redoAll();
         mode.set(Mode.RUNNING);
+=======
+
+        this.mode.set(Mode.RUNNING);
+>>>>>>> 3bf15c3 (Added enableDelay/disableDelay Command to CommandStack for faster execution)
         this.pauseLock.release();
     }
 
     /**
      * Getter for the mode property
      * provides read-only access to the current mode of the associated game
+     *
      * @return the property (not null)
      */
     @Override
@@ -319,4 +380,14 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
         return this.speed;
     }
 
+    /**
+     * Getter for the delayDisabled property
+     * provides read and write access to the current state of the delay disabling of the associated game
+     *
+     * @return the property (not null)
+     */
+    @Override
+    public BooleanProperty delayDisabledProperty() {
+        return this.delayDisabled;
+    }
 }

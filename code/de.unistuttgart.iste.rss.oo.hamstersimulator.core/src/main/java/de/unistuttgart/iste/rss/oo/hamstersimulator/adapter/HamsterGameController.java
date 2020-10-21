@@ -1,6 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.adapter;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -20,6 +21,7 @@ public interface HamsterGameController {
      @ true;
      @ ensures !canUndoProperty().get();
      @*/
+
     /**
      * Undoes all commands which are executed, in the inverse order than they where
      * executed
@@ -30,6 +32,7 @@ public interface HamsterGameController {
      @ requires true;
      @ ensures !canRedoProperty().get();
      @*/
+
     /**
      * Redoes all commands which are currently undone, in the same order
      * like they where executed first
@@ -41,8 +44,10 @@ public interface HamsterGameController {
      @ ensures !canUndoProperty().get();
      @ ensures canRedoProperty().get();
      @*/
+
     /**
      * Undoes the last executed command, if possible
+     *
      * @throws IllegalStateException if !canUndoProperty().get();
      */
     void undo();
@@ -52,8 +57,10 @@ public interface HamsterGameController {
      @ ensures !canRedoProperty().get();
      @ ensures canUndoProperty().get();
      @*/
+
     /**
      * Redoes the oldest undone command, if possible
+     *
      * @throws IllegalStateException if !canRedoProperty().get();
      */
     void redo();
@@ -62,19 +69,50 @@ public interface HamsterGameController {
      @ requires speed >= 0 && speed <= MAX_SPEED;
      @ ensures getSpeed() == speed;
      @*/
+
     /**
      * Set the speed of the hamster game. Valid values are in the range from
      * 0.0 to 10.0,
      * where 0.0 is slow and 10.0 is fast.
+     *
      * @param speed The new game speed's delay. Has to be greater or equal 0.0 and
-     *                  less than or equal 10.0.
+     *              less than or equal 10.0.
      */
     void setSpeed(final double speed);
 
     /*@
      @ requires true;
+     @ ensures delayDisabled.get() == true;
+     */
+
+    /**
+     * WARNING: USE WITH CAUTION! THIS WILL VERY LIKELY CAUSE GUI GLITCHES!
+     * For setting the speed to the minimum well working speed, use {@link HamsterGameController#setSpeed(double)}
+     * <p>
+     * Disables the delay between steps. (Speed infinity)
+     * <p>
+     * The speed is not overwritten and if {@link HamsterGameController#enableDelay()} is called, the speed will be
+     * set back to the level it was before disabling the delay
+     */
+    void disableDelay();
+
+    /*@
+     @ requires true;
+     @ ensures delayDisabled.get() == false;
+     */
+
+    /**
+     * Re-enables the delay between steps
+     * <p>
+     * The speed will be the one last used before disabling the delay
+     */
+    void enableDelay();
+
+    /*@
+     @ requires true;
      @ ensures modeProperty().get() == Mode.STOPPED;
      */
+
     /**
      * Stop the execution of the game. The game is finished and needs to be reset / hardReset
      * or closed.
@@ -102,11 +140,13 @@ public interface HamsterGameController {
      @ requires modeProperty().get() == Mode.RUNNING;
      @ ensures modeProperty().get() == Mode.PAUSED;
      @*/
+
     /**
      * Pauses the game when it is running.
      * If the game is not running (paused previously, not started or stopped), an exception
      * is thrown.
      * This is executed synchronously, this methods returns after the game was successfully paused.
+     *
      * @throws IllegalStateException if modeProperty().get() != Mode.RUNNING
      */
     void pause();
@@ -114,12 +154,14 @@ public interface HamsterGameController {
     /*@
      @ requires modeProperty().get() == Mode.RUNNING;
      @*/
+
     /**
      * Pauses the game when it is running.
      * If the game is not running (paused previously, not started or stopped), an exception
      * is thrown.
      * This is executed asynchronously, this methods returns before the game was paused.
      * Use with care! Normally, this is only necessary for UI functionality.
+     *
      * @throws IllegalStateException if modeProperty().get() != Mode.RUNNING
      */
     void pauseAsync();
@@ -128,6 +170,7 @@ public interface HamsterGameController {
      @ requires modeProperty().get() == Mode.PAUSED;
      @ ensures modeProperty().get() == Mode.RUNNING;
      @*/
+
     /**
      * Pauses the HamsterGame.
      * It is only possible to execute this in paused mode.
@@ -139,6 +182,7 @@ public interface HamsterGameController {
     /**
      * Getter for the mode property
      * provides read-only access to the current mode of the associated game
+     *
      * @return the property (not null)
      */
     ReadOnlyObjectProperty<Mode> modeProperty();
@@ -154,8 +198,17 @@ public interface HamsterGameController {
     DoubleProperty speedProperty();
 
     /**
+     * Getter for the delayDisabled property
+     * provides read and write access to the current state of the delay disabling of the associated game
+     *
+     * @return the property (not null)
+     */
+    BooleanProperty delayDisabledProperty();
+
+    /**
      * Getter for the canUndo property
      * true if the game is stopped / paused and there is at least one command to undo
+     *
      * @return the property (not null)
      */
     ReadOnlyBooleanProperty canUndoProperty();
@@ -163,6 +216,7 @@ public interface HamsterGameController {
     /**
      * Getter for the canRedo property
      * true if the game is stopped / paused and there is at least one command to redo
+     *
      * @return the property (not null)
      */
     ReadOnlyBooleanProperty canRedoProperty();
