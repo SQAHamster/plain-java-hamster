@@ -48,7 +48,6 @@ public abstract class SimpleHamsterGame {
      * the game.
      */
     public SimpleHamsterGame() {
-        displayInNewGameWindow();
         game.startGame(false);
 
         paule = game.getTerritory().getDefaultHamster();
@@ -83,8 +82,8 @@ public abstract class SimpleHamsterGame {
      * The default is JAVA_FX.
      */
     protected void displayInNewGameWindow() {
-        final UIMode mode = getUIModeFromConfig()
-                .orElse(getUIModeFromEnvironmentVariable()
+        final UIMode mode = getUIModeFromEnvironmentVariable()
+                .orElse(getUIModeFromConfig()
                         .orElse(UIMode.JAVA_FX));
         switch (mode) {
             case JAVA_FX:
