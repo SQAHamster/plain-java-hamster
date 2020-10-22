@@ -2,7 +2,6 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TileContent;
@@ -10,18 +9,13 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
 
 public class ReadOnlyHamster extends TileContent implements ObservableHamster {
 
     final ReadOnlyObjectWrapper<Direction> direction = new ReadOnlyObjectWrapper<Direction>(this, "direction", Direction.NORTH);
     final ReadOnlyListWrapper<Grain> grainInMouth = new ReadOnlyListWrapper<Grain>(this, "grainInMouth", FXCollections.observableArrayList());
     final ReadOnlyIntegerWrapper grainCount = new ReadOnlyIntegerWrapper(this, "grainCount", 0);
-    final Set<Consumer<Location>> pickGrainHandlers = new HashSet<>();
-    final Set<Consumer<Location>> putGrainHandlers = new HashSet<>();
 
     public ReadOnlyHamster() {
         super();
