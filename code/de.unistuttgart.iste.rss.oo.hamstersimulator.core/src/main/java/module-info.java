@@ -6,6 +6,9 @@ module rss.hamster.core {
     exports de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions;
     exports de.unistuttgart.iste.rss.oo.hamstersimulator.adapter;
     exports de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables;
+    exports de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification;
+    exports de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.hamster;
+    exports de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.territory;
 
     exports de.unistuttgart.iste.rss.oo.hamstersimulator.commands to rss.hamster.main;
     exports de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model to rss.hamster.main;
