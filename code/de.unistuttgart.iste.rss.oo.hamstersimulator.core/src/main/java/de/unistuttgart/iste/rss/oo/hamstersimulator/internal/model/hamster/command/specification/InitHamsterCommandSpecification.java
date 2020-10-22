@@ -21,18 +21,18 @@ public final class InitHamsterCommandSpecification extends AbstractHamsterComman
     }
 
     public Location getLocation() {
-        return location;
+        return this.location;
     }
 
     public Direction getNewDirection() {
-        return newDirection;
+        return this.newDirection;
     }
 
     public int getNewGrainCount() {
-        return newGrainCount;
+        return this.newGrainCount;
     }
 
     public ReadOnlyTerritory getTerritory() {
-        return territory;
+        return this.territory;
     }
 }
