@@ -10,11 +10,12 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.TerritoryBuil
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 /**
- * Class demonstrating the intended use of the hamster simulator API.
+ * Class demonstrating the use of the hamster simulator API without the SimpleHamsterGame
+ * using the JavaFXUI
  * @author Steffen Becker
  *
  */
-public final class Main {
+public final class ExampleWithoutSimpleHamsterGame {
 
     /**
      * A constant containing the location of an example grain on the territory.
@@ -44,7 +45,7 @@ public final class Main {
         final HamsterGame hamsterGame = new HamsterGame();
 
         hamsterGame.initialize(createTerritory(hamsterGame));
-        initUI(hamsterGame);
+        initJavaFXUI(hamsterGame);
         runGameCycle(hamsterGame);
     }
 
@@ -56,14 +57,14 @@ public final class Main {
         assert hamsterGame != null;
 
         hamsterGame.startGame(false);
-        hamsterGame.runGame(Main::runHamster);
+        hamsterGame.runGame(ExampleWithoutSimpleHamsterGame::runHamster);
         hamsterGame.stopGame();
     }
 
-    /** Setup routine which configures the UI appropriately.
+    /** Setup routine which configures the JavaFX UI.
      * @param hamsterGame The hamster game to run, must not be null.
      */
-    private static void initUI(final HamsterGame hamsterGame) {
+    private static void initJavaFXUI(final HamsterGame hamsterGame) {
         assert hamsterGame != null;
 
         JavaFXUI.displayInNewGameWindow(hamsterGame.getModelViewAdapter());
@@ -124,6 +125,6 @@ public final class Main {
     /**
      * Private constructor preventing instances of this class.
      */
-    private Main() { }
+    private ExampleWithoutSimpleHamsterGame() { }
 
 }
