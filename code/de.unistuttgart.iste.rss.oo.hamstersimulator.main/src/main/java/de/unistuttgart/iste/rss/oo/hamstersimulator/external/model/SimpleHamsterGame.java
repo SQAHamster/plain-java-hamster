@@ -48,7 +48,7 @@ public abstract class SimpleHamsterGame {
      * the game.
      */
     public SimpleHamsterGame() {
-        game.startGame(false);
+        game.startGame();
 
         paule = game.getTerritory().getDefaultHamster();
     }

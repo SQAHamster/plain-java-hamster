@@ -65,7 +65,7 @@ public class SimpleHamsterTests {
         game.initialize();
         game.getModelViewAdapter().addInputInterface(new DummyInputInterface());
         game.setSpeed(HAMSTER_GAME_TEST_SPEED);
-        game.startGame(false);
+        game.startGame();
         paule = game.getTerritory().getDefaultHamster();
     }
 

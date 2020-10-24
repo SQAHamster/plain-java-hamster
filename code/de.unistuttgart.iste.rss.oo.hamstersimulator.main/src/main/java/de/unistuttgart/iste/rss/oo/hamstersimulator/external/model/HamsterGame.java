@@ -294,21 +294,38 @@ public class HamsterGame {
 
     /*@
      @ requires getCurrentGameMode() == Mode.INITIALIZING;
-     @ ensures startPaused ==> getCurrentGameMode() == Mode.PAUSED;
-     @ ensures !startPaused ==> getCurrentGameMode() == Mode.RUNNING;
+     @ ensures getCurrentGameMode() == Mode.RUNNING;
      @*/
     /**
      * Start the execution of a hamster game. Before executing start, no commands can be
      * executed by the hamster objects in the game.
      * This is only possible if the current mode is Mode.INITIALIZING
-     * @param startPaused if true the game will be started in pause mode
+     * The game will be started in running mode
      * @throws IllegalStateException if getCurrentGameMode() != Mode.INITIALIZING
      */
-    public void startGame(final boolean startPaused) {
+    public void startGame() {
         checkState(getCurrentGameMode() == Mode.INITIALIZING,
                 "start game is only possible during initialization");
 
-        this.commandStack.startGame(startPaused);
+        this.commandStack.startGame(false);
+    }
+
+    /*@
+     @ requires getCurrentGameMode() == Mode.INITIALIZING;
+     @ ensures getCurrentGameMode() == Mode.PAUSED;
+     @*/
+    /**
+     * Start the execution of a hamster game. Before executing start, no commands can be
+     * executed by the hamster objects in the game.
+     * This is only possible if the current mode is Mode.INITIALIZING
+     * The game will be started in pause mode
+     * @throws IllegalStateException if getCurrentGameMode() != Mode.INITIALIZING
+     */
+    public void startGamePaused() {
+        checkState(getCurrentGameMode() == Mode.INITIALIZING,
+                "start game is only possible during initialization");
+
+        this.commandStack.startGame(true);
     }
 
     /*@
@@ -384,9 +401,9 @@ public class HamsterGame {
     private void startGameIfNotStarted() {
         if (getCurrentGameMode() == Mode.STOPPED) {
             this.hardReset();
-            this.startGame(true);
+            this.startGamePaused();
         } else if (getCurrentGameMode() == Mode.INITIALIZING) {
-            this.startGame(true);
+            this.startGamePaused();
         }
     }
 
