@@ -18,7 +18,7 @@ public final class Main {
     /**
      * Constant containing the filename of the default territory file.
      */
-    private static final String DEFAULT_HAMSTER_TERRITORY = "/territories/example01.ter";
+    private static final String DEFAULT_HAMSTER_TERRITORY = "/_territories/example01.ter";
 
     /**
      * Main method which instantiates, initializes, and starts a hamster game.

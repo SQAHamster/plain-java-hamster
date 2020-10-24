@@ -70,7 +70,7 @@ public class TerritoryInitTests {
      */
     @BeforeEach
     public void initializeTest() {
-        game.initialize(getClass().getResourceAsStream("/territories/example02.ter"));
+        game.initialize(getClass().getResourceAsStream("/_territories/example02.ter"));
         paule = game.getTerritory().getDefaultHamster();
     }
 

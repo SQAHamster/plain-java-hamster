@@ -47,7 +47,7 @@ public class HamsterBoundsTest {
      */
     @BeforeEach
     public void initializeTest() {
-        game.initialize(getClass().getResourceAsStream("/territories/example02.ter"));
+        game.initialize(getClass().getResourceAsStream("/_territories/example02.ter"));
         game.getModelViewAdapter().addInputInterface(new DummyInputInterface());
         game.startGame();
         paule = game.getTerritory().getDefaultHamster();

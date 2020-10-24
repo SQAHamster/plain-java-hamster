@@ -39,7 +39,7 @@ public class HamsterGame {
     /**
      * Constant containing the filename of the default territory file.
      */
-    private static final String DEFAULT_HAMSTER_TERRITORY = "/territories/example01.ter";
+    private static final String DEFAULT_HAMSTER_TERRITORY = "/_territories/example01.ter";
 
     private final HamsterGameViewModel adapter;
 
