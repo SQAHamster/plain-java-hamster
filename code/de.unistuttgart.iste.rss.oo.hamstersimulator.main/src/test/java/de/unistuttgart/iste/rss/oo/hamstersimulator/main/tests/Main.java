@@ -28,11 +28,7 @@ public final class Main {
         JavaFXUI.start();
 
         final HamsterGame game = new HamsterGame();
-        try {
-            game.initialize(DEFAULT_HAMSTER_TERRITORY);
-        } catch (final IOException e) {
-            throw new RuntimeException();
-        }
+        game.initialize(Main.class.getResourceAsStream(DEFAULT_HAMSTER_TERRITORY));
 
         game.getModelViewAdapter().addInputInterface(JavaFXUI.getJavaFXInputInterface());
 

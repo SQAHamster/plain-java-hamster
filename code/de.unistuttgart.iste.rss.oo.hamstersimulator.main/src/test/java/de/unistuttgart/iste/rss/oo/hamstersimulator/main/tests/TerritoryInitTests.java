@@ -70,11 +70,7 @@ public class TerritoryInitTests {
      */
     @BeforeEach
     public void initializeTest() {
-        try {
-            game.initialize("/territories/example02.ter");
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
+        game.initialize(getClass().getResourceAsStream("/territories/example02.ter"));
         paule = game.getTerritory().getDefaultHamster();
     }
 
@@ -83,11 +79,7 @@ public class TerritoryInitTests {
      */
     @Test
     public void testLoadFromInputStream() {
-        try {
-            game.initialize(new ByteArrayInputStream(exampleTerritory.getBytes("UTF-8")));
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
+        game.initialize(exampleTerritory);
         paule = game.getTerritory().getDefaultHamster();
         assertEquals(game.getTerritory().getTerritorySize(), new Size(TERRITORY_SIZE, TERRITORY_SIZE));
         assertEquals(paule.getLocation(), Location.from(0, 0));

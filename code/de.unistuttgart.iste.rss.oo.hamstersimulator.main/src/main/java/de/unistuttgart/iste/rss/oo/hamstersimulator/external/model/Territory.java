@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EditCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
@@ -52,9 +53,10 @@ public class Territory {
 
     /**
      * Initialize a new territory and link it to its game object.
+     * This should only be used by HamsterGame
      * @param game The game in which this territory object is used.
      */
-    public Territory(final HamsterGame game) {
+    Territory(final HamsterGame game) {
         super();
         this.hamsterGame = game;
         this.internalTerritory = new GameTerritory();
@@ -90,28 +92,37 @@ public class Territory {
     }
 
     /**
-     * Loads the territory from a file. The territory is initalized according to the loaded territory
+     * Loads the territory from a file. The territory is initialized according to the loaded territory
      * file and the default hamster is initialized.
-     * @param territoryFile The territory file path from where to load the territory. The path has to be relative
-     *                      to the class path of this class and is loaded via the classes' class loader.
-     * @throws IOException IOException occurs if the territory file could not be found or loaded.
+     * @param territoryContent The territory encoded as string
+     * @throws IllegalStateException if the current mode of the associated game is not INITIALIZING
      */
-    public void loadFromFile(final String territoryFile) throws IOException {
+    public void loadFromString(final String territoryContent) {
         checkState(this.getGame().getCurrentGameMode() == Mode.INITIALIZING);
-        this.hamsterTranslation.clear();
-        TerritoryLoader.initializeFor(this.internalTerritory).loadFromResourceFile(territoryFile);
+        resetHamsterTranslation();
+        new EditCommandStack().execute(
+                TerritoryLoader.initializeFor(this.internalTerritory).loadFromString(territoryContent));
     }
 
     /**
-     * Loads the territory from an input stream. The territory is initalized according to the loaded territory
+     * Loads the territory from an input stream. The territory is initialized according to the loaded territory
      * input stream and the default hamster is initialized.
      * @param inputStream The input stream from where to load the territory.
-     * @throws IOException IOException occurs if the territory file could not be found or loaded.
+     * @throws IllegalStateException if the current mode of the associated game is not INITIALIZING
      */
-    public void loadFromInputStream(final InputStream inputStream) throws IOException {
+    public void loadFromInputStream(final InputStream inputStream) {
         checkState(this.getGame().getCurrentGameMode() == Mode.INITIALIZING);
+        resetHamsterTranslation();
+        new EditCommandStack().execute(
+                TerritoryLoader.initializeFor(this.internalTerritory).loadFromInputStream(inputStream));
+    }
+
+    /**
+     * Resets the hamsterTranslation: removes all hamsters except the default hamster
+     */
+    private void resetHamsterTranslation() {
         this.hamsterTranslation.clear();
-        TerritoryLoader.initializeFor(this.internalTerritory).loadFromInputStream(inputStream);
+        hamsterTranslation.put(getInternalTerritory().getDefaultHamster(), getDefaultHamster());
     }
 
     /**
