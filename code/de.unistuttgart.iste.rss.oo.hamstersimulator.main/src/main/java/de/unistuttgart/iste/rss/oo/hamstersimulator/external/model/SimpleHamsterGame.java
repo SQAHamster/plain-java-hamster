@@ -61,10 +61,10 @@ public abstract class SimpleHamsterGame {
     protected abstract void run();
 
     /**
-     * Internal method to start a hamster game and handle any exceptions happening
+     * Method to start a hamster game and handle any exceptions happening
      * while running.
      */
-    protected final void doRun() {
+    public final void doRun() {
         try {
             this.run();
         } catch (final GameAbortedException e) {
