@@ -1,5 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 
+import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkState;
 
 import java.io.IOException;
@@ -98,7 +99,10 @@ public class Territory {
      * @throws IllegalStateException if the current mode of the associated game is not INITIALIZING
      */
     public void loadFromString(final String territoryContent) {
-        checkState(this.getGame().getCurrentGameMode() == Mode.INITIALIZING);
+        checkState(this.getGame().getCurrentGameMode() == Mode.INITIALIZING,
+                "game is not in INITIALIZING mode: hard reset might be necessary");
+        checkNotNull(territoryContent, "The territory encoded as string must not be null");
+
         resetHamsterTranslation();
         new EditCommandStack().execute(
                 TerritoryLoader.initializeFor(this.internalTerritory).loadFromString(territoryContent));
@@ -111,7 +115,10 @@ public class Territory {
      * @throws IllegalStateException if the current mode of the associated game is not INITIALIZING
      */
     public void loadFromInputStream(final InputStream inputStream) {
-        checkState(this.getGame().getCurrentGameMode() == Mode.INITIALIZING);
+        checkState(this.getGame().getCurrentGameMode() == Mode.INITIALIZING,
+                "game is not in INITIALIZING mode: hard reset might be necessary");
+        checkNotNull(inputStream, "The inputStream must not be null");
+
         resetHamsterTranslation();
         new EditCommandStack().execute(
                 TerritoryLoader.initializeFor(this.internalTerritory).loadFromInputStream(inputStream));
