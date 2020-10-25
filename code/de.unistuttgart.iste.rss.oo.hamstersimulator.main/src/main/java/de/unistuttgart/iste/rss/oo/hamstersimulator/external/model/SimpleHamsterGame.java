@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.config.HamsterConfig;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
@@ -120,7 +119,7 @@ public abstract class SimpleHamsterGame {
      * @throws IllegalArgumentException if fileName is no absolute resource path (does not start with "/")
      *                                  or if the file was not found
      */
-    protected void loadTerritoryFromResourceFile(final String fileName) {
+    protected final void loadTerritoryFromResourceFile(final String fileName) {
         checkNotNull(fileName);
         checkArgument(fileName.startsWith("/"), "fileName does not start with \"/\"");
         final InputStream territoryFileStream = getClass().getResourceAsStream(fileName);
