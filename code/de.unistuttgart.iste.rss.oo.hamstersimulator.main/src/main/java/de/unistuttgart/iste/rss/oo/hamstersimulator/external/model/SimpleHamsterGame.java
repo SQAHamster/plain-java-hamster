@@ -1,13 +1,18 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 import java.io.Console;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.config.HamsterConfig;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
+
+import static de.unistuttgart.iste.rss.utils.Preconditions.checkArgument;
+import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
 
 /**
  * Parent class of a simple, to a large extend preconfigured hamster game.
@@ -98,6 +103,29 @@ public abstract class SimpleHamsterGame {
             default:
                 throw new IllegalStateException("not handled output interface case");
         }
+    }
+
+    /*@
+     @ requires true;
+     @ ensures game.getCurrentGameMode() == Mode.INITIALIZING;
+     @*/
+    /**
+     * Loads the Territory from a resources file.
+     * Only absolute resource paths are allowed. E.g. the fileName "/territory.ter" represents the file
+     * territory.ter in the resources directory
+     * This resets the game if it was already started. After the territory was loaded, the game is
+     * in mode INITIALIZING. To start the game, game.startGame() should be called
+     *
+     * @param fileName An absolute path to the resource file. Must start with a "/"
+     * @throws IllegalArgumentException if fileName is no absolute resource path (does not start with "/")
+     *                                  or if the file was not found
+     */
+    protected void loadTerritoryFromResourceFile(final String fileName) {
+        checkNotNull(fileName);
+        checkArgument(fileName.startsWith("/"), "fileName does not start with \"/\"");
+        final InputStream territoryFileStream = getClass().getResourceAsStream(fileName);
+        checkArgument(territoryFileStream != null, "territory file not found");
+        this.game.initialize(territoryFileStream);
     }
 
     /**
