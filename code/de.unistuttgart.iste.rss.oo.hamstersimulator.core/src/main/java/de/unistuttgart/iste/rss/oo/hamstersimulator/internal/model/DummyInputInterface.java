@@ -34,14 +34,11 @@ public class DummyInputInterface implements InputInterface {
     }
 
     /* (non-Javadoc)
-     * @see de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.InputInterface#showAlert(java.lang.Throwable)
+     * @see de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.InputInterface#confirmAlert(java.lang.Throwable)
      */
     @Override
-    public void showAlert(final Throwable t) {
-        if (t instanceof RuntimeException) {
-            throw (RuntimeException)t;
-        }
-        throw new RuntimeException(t);
+    public void confirmAlert(final Throwable t) {
+        // do nothing
     }
 
     @Override

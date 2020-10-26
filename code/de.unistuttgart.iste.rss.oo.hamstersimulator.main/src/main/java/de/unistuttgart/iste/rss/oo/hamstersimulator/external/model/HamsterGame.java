@@ -281,7 +281,8 @@ public class HamsterGame {
             hamsterProgram.accept(this.territory);
         } catch (final GameAbortedException e) {
         } catch (final RuntimeException e) {
-            this.showAlert(e);
+            this.confirmAlert(e);
+            throw e;
         } finally {
             stopGame();
         }
@@ -441,26 +442,14 @@ public class HamsterGame {
     /**
      * Inform a user about an abnormal execution aborting.
      * This blocks until it returns or is aborted
-     * @param t The throwable which lead to aborting the program.
-     * @throws IllegalStateException if no input is registered
+     * @param throwable The throwable which lead to aborting the program.
+     * @throws IllegalStateException if no input interface is registered
      */
-    public void showAlert(final Throwable t) {
-        final Throwable res = this.executeAndGetFirstResult(inputInterface -> () -> {
-            try {
-                inputInterface.showAlert(t);
-            } catch (Exception e) {
-                return Optional.of(e);
-            }
+    public void confirmAlert(final Throwable throwable) {
+        this.executeAndGetFirstResult(inputInterface -> () -> {
+            inputInterface.confirmAlert(throwable);
             return Optional.empty();
         });
-
-        if (res != null) {
-            if (res instanceof RuntimeException) {
-                throw (RuntimeException)res;
-            } else {
-                throw new RuntimeException(res);
-            }
-        }
     }
 
     /**
@@ -469,9 +458,10 @@ public class HamsterGame {
      * @param message The message used in the prompt for the number.
      * @return The integer value read or an empty optional, if aborted.
      * @throws IllegalStateException if no input interface is registered
+     *                               or if nothing was returned
      */
     protected int readInteger(final String message) {
-        return this.executeAndGetFirstResult(inputInterface -> () -> inputInterface.readInteger(message));
+        return this.executeAndGetFirstResultIfPresent(inputInterface -> () -> inputInterface.readInteger(message));
     }
 
     /**
@@ -480,9 +470,30 @@ public class HamsterGame {
      * @param message The message used in the prompt for the string.
      * @return The string value read or an empty optional, if aborted.
      * @throws IllegalStateException if no input interface is registered
+     *                               or if nothing was returned
      */
     protected String readString(final String message) {
-        return this.executeAndGetFirstResult(inputInterface -> () -> inputInterface.readString(message));
+        return this.executeAndGetFirstResultIfPresent(inputInterface -> () -> inputInterface.readString(message));
+    }
+
+
+
+    /**
+     * executes the callable with every input interface in parallel and returns the first result, but only if
+     * it is present, otherwise an Exception is thrown
+     * requires that there is at least one InputInterface
+     * @param callableFactory factory to create the Callable out of the InputInterface
+     * @param <R> the return type
+     * @return the result of the first callable that completes
+     * @throws IllegalStateException if the first is empty
+     */
+    private <R> R executeAndGetFirstResultIfPresent(final Function<InputInterface, Callable<Optional<R>>> callableFactory) {
+        final Optional<R> result = executeAndGetFirstResult(callableFactory);
+        if (result.isPresent()) {
+            return result.get();
+        } else {
+            throw new IllegalStateException("nothing returned");
+        }
     }
 
     /**
@@ -490,9 +501,9 @@ public class HamsterGame {
      * requires that there is at least one InputInterface
      * @param callableFactory factory to create the Callable out of the InputInterface
      * @param <R> the return type
-     * @return the result of the first callable that completes
+     * @return an Optional with the result of the first callable that completes
      */
-    private <R> R executeAndGetFirstResult(final Function<InputInterface, Callable<Optional<R>>> callableFactory) {
+    private <R> Optional<R> executeAndGetFirstResult(final Function<InputInterface, Callable<Optional<R>>> callableFactory) {
         if (this.adapter.getInputInterfaces().isEmpty()) {
             throw new IllegalStateException("No input interface registered");
         }
@@ -521,22 +532,16 @@ public class HamsterGame {
     }
 
     /**
-     * Takes th first result from the completionService and return its result if possible,
+     * Takes the first result from the completionService and return its result if possible,
      * otherwise throws an exception
      * @param completionService the service which handles all input requests
      * @param <R> the return type of the input request
-     * @return the first result if possible
-     * @throws IllegalStateException if nothing was returned from the first request which returned or an
-     *                               internal error occurs
+     * @return an Optional with the the first result if possible
+     * @throws IllegalStateException if an internal error occurs
      */
-    private <R> R getFirstResult(final CompletionService<Optional<R>> completionService) {
+    private <R> Optional<R> getFirstResult(final CompletionService<Optional<R>> completionService) {
         try {
-            final Optional<R> result = completionService.take().get();
-            if (result.isPresent()) {
-                return result.get();
-            } else {
-                throw new IllegalStateException("nothing returned");
-            }
+            return completionService.take().get();
         } catch (InterruptedException e) {
             throw new IllegalStateException("interrupted");
         } catch (ExecutionException e) {

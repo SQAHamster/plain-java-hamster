@@ -78,7 +78,7 @@ public class JavaFXInputInterface implements InputInterface {
     }
 
     @Override
-    public void showAlert(final Throwable t) {
+    public void confirmAlert(final Throwable t) {
         JavaFXUtil.blockingExecuteOnFXThread(() -> {
             final Dialog<ButtonType> alertDialog = new Alert(AlertType.ERROR);
             this.currentDialog = Optional.of(alertDialog);
