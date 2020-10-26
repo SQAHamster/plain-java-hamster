@@ -58,7 +58,7 @@ public class HamsterBoundsTest {
      */
     @Test
     public void testFailedMove() {
-        assertThrows(FrontBlockedException.class, () -> {
+        assertThrows(RuntimeException.class, () -> {
             game.runGame(territory -> {
                 assertFalse(paule.frontIsClear());
                 paule.move();
@@ -71,7 +71,7 @@ public class HamsterBoundsTest {
      */
     @Test
     public void testFailedMove2() {
-        assertThrows(FrontBlockedException.class, () -> {
+        assertThrows(RuntimeException.class, () -> {
             game.runGame(territory -> {
                 paule.turnLeft();
                 assertFalse(paule.frontIsClear());
