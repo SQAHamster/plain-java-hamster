@@ -5,7 +5,7 @@ import java.util.Optional;
 /**
  * Interface to interact with a UI or mock object for reading values from the user.
  * Warning: subclasses of this interface must support multithreading. <code>readInteger</code>,
- * <code>readString</code> and <code>showAlert</code> may be invoked from different threads before
+ * <code>readString</code> and <code>confirmAlert</code> may be invoked from different threads before
  * the previous invocation returned. It is guaranteed that in this case, <code>abort</code> is called
  * before the next invocation.
  *
@@ -39,10 +39,10 @@ InputInterface {
      * This must be thread safe
      * @param t The throwable which lead to aborting the program.
      */
-    void showAlert(Throwable t);
+    void confirmAlert(Throwable t);
 
     /**
-     * Aborts readInteger, readString or showAlert. This is used due to multi ui systems,
+     * Aborts readInteger, readString or confirmAlert. This is used due to multi ui systems,
      * where every dialog could return first. Because only one dialog is able to return a
      * value, all other dialogs can be aborted.<br>
      * This must be thread-safe.

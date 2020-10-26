@@ -281,7 +281,7 @@ public class HamsterGame {
             hamsterProgram.accept(this.territory);
         } catch (final GameAbortedException e) {
         } catch (final RuntimeException e) {
-            this.showAlert(e);
+            this.confirmAlert(e);
         } finally {
             stopGame();
         }
@@ -444,9 +444,9 @@ public class HamsterGame {
      * @param throwable The throwable which lead to aborting the program.
      * @throws IllegalStateException if no input interface is registered
      */
-    public void showAlert(final Throwable throwable) {
+    public void confirmAlert(final Throwable throwable) {
         this.executeAndGetFirstResult(inputInterface -> () -> {
-            inputInterface.showAlert(throwable);
+            inputInterface.confirmAlert(throwable);
             return Optional.empty();
         });
     }
