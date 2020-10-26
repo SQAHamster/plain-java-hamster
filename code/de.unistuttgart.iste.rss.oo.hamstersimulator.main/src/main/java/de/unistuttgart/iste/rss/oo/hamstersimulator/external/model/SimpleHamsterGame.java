@@ -75,6 +75,7 @@ public abstract class SimpleHamsterGame {
             // End this game
         } catch (final RuntimeException e) {
             this.game.confirmAlert(e);
+            throw e;
         }
         game.stopGame();
     }

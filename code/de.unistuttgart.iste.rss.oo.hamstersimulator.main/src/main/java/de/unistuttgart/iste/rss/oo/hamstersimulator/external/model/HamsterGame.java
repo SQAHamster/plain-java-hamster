@@ -282,6 +282,7 @@ public class HamsterGame {
         } catch (final GameAbortedException e) {
         } catch (final RuntimeException e) {
             this.confirmAlert(e);
+            throw e;
         } finally {
             stopGame();
         }
