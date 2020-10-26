@@ -38,10 +38,7 @@ public class DummyInputInterface implements InputInterface {
      */
     @Override
     public void confirmAlert(final Throwable t) {
-        if (t instanceof RuntimeException) {
-            throw (RuntimeException)t;
-        }
-        throw new RuntimeException(t);
+        // do nothing
     }
 
     @Override
