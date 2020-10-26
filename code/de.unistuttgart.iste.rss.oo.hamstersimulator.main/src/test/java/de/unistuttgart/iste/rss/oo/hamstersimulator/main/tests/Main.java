@@ -18,7 +18,7 @@ public final class Main {
     /**
      * Constant containing the filename of the default territory file.
      */
-    private static final String DEFAULT_HAMSTER_TERRITORY = "/territories/example01.ter";
+    private static final String DEFAULT_HAMSTER_TERRITORY = "/_territories/example01.ter";
 
     /**
      * Main method which instantiates, initializes, and starts a hamster game.
@@ -28,11 +28,7 @@ public final class Main {
         JavaFXUI.start();
 
         final HamsterGame game = new HamsterGame();
-        try {
-            game.initialize(DEFAULT_HAMSTER_TERRITORY);
-        } catch (final IOException e) {
-            throw new RuntimeException();
-        }
+        game.initialize(Main.class.getResourceAsStream(DEFAULT_HAMSTER_TERRITORY));
 
         game.getModelViewAdapter().addInputInterface(JavaFXUI.getJavaFXInputInterface());
 

@@ -55,14 +55,13 @@ public class BasicHamsterTests {
 
     /**
      * Before each test, load the default territory.
-     * @throws IOException 
      */
     @BeforeEach
-    public void initializeTest() throws IOException {
+    public void initializeTest() {
         game.initialize(new ByteArrayInputStream(territory.getBytes()));
         game.getModelViewAdapter().addInputInterface(new DummyInputInterface());
         game.setSpeed(HAMSTER_GAME_TEST_SPEED);
-        game.startGame(false);
+        game.startGame();
         paule = game.getTerritory().getDefaultHamster();
     }
 

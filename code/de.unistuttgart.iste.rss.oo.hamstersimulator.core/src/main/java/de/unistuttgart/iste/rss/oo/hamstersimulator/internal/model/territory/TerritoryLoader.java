@@ -1,5 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory;
 
+import static de.unistuttgart.iste.rss.utils.Preconditions.checkArgument;
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
 
 import java.io.BufferedReader;
@@ -32,13 +33,28 @@ public class TerritoryLoader {
         return new TerritoryLoader(new TerritoryBuilder(territory));
     }
 
-    public Command loadFromResourceFile(final String territoryFile) throws IOException {
-        final List<String> list = readLinesFromTerritoryResourceFile(territoryFile);
+    /**
+     * Loads the territory from the provided InputStream
+     * @param inputStream the InputStream which is used to get the territory
+     *                    lines
+     * @return the command which on execution loads the territory
+     */
+    public Command loadFromInputStream(final InputStream inputStream) {
+        checkNotNull(inputStream, "The inputStream must not be null");
+
+        final List<String> list = readLinesFromTerritoryInputStream(inputStream);
         return interpretLoadedTerritoryLines(list);
     }
-    
-    public Command loadFromInputStream(final InputStream inputStream) throws IOException {
-        final List<String> list = readLinesFromTerritoryInputStream(inputStream);
+
+    /**
+     * Loads the territory from the provided string
+     * @param territoryContent the territory encoded in a territory string
+     * @return the command which on execution loads the territory
+     */
+    public Command loadFromString(final String territoryContent) {
+        checkNotNull(territoryContent, "The territory encoded as string must not be null");
+
+        final List<String> list = readLinesFromString(territoryContent);
         return interpretLoadedTerritoryLines(list);
     }
 
@@ -103,17 +119,7 @@ public class TerritoryLoader {
         placeGrain(lines, grainLocations);
     }
 
-    private List<String> readLinesFromTerritoryResourceFile(final String territoryFileName) throws IOException {
-        final InputStream in = getClass().getResourceAsStream(territoryFileName);
-        if (in == null) {
-            throw new IOException("Unable to load the territory from the filename: " + territoryFileName);
-        }
-        final List<String> result = readLinesFromTerritoryInputStream(in);
-        in.close();
-        return result;
-    }
-
-    private List<String> readLinesFromTerritoryInputStream(final InputStream inputStream) throws IOException {
+    private List<String> readLinesFromTerritoryInputStream(final InputStream inputStream) {
         checkNotNull(inputStream);
         final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         final List<String> list = new ArrayList<String>();
@@ -126,6 +132,11 @@ public class TerritoryLoader {
         }
 
         return list;
+    }
+
+    private List<String> readLinesFromString(final String territoryContent) {
+        checkNotNull(territoryContent);
+        return List.of(territoryContent.split("\r?\n"));
     }
 
     private void placeGrain(final String[] lines, final LinkedList<Location> grainLocations) {

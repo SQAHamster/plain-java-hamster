@@ -55,7 +55,7 @@ public final class Main {
     private static void runGameCycle(final HamsterGame hamsterGame) {
         assert hamsterGame != null;
 
-        hamsterGame.startGame(false);
+        hamsterGame.startGame();
         hamsterGame.runGame(Main::runHamster);
         hamsterGame.stopGame();
     }
