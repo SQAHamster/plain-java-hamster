@@ -3,15 +3,16 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.main.tests;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.util.Optional;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.DummyInputInterface;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.mockito.Mockito;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.InputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Hamster;
@@ -51,6 +52,7 @@ public class BasicHamsterTests {
     @BeforeAll
     public void createHamsterGame() {
         game = new HamsterGame();
+
     }
 
     /**
@@ -59,7 +61,7 @@ public class BasicHamsterTests {
     @BeforeEach
     public void initializeTest() {
         game.initialize(new ByteArrayInputStream(territory.getBytes()));
-        game.getModelViewAdapter().addInputInterface(new DummyInputInterface());
+        game.getModelViewAdapter().addInputInterface(getInputInterfaceMock());
         game.setSpeed(HAMSTER_GAME_TEST_SPEED);
         game.startGame();
         paule = game.getTerritory().getDefaultHamster();
@@ -72,12 +74,38 @@ public class BasicHamsterTests {
     public void testMove() {
         game.runGame(territory -> {
             final Location beforeLocation = paule.getLocation();
+            assertEquals(Location.from(1, 1), paule.getLocation());
             for (int i = 0; i < 2; i++) {
                 paule.move();
             }
             assertEquals(paule.getLocation(), Location.from(1, 3));
             assertEquals(paule.getLocation(), beforeLocation.translate(new LocationVector(0, 2)));
         });
+    }
+
+    /**
+     * Test which tests moving a number of steps read from the input interface.
+     */
+    @Test
+    public void testMoveWithInput() {
+        game.runGame(territory -> {
+            final Location beforeLocation = paule.getLocation();
+            assertEquals(Location.from(1, 1), paule.getLocation());
+            final int count = paule.readNumber("How many steps?");
+            assertEquals(2, count);
+            for (int i = 0; i < count; i++) {
+                paule.move();
+            }
+            assertEquals(Location.from(1, 3), paule.getLocation());
+            assertEquals(beforeLocation.translate(new LocationVector(0, 2)), paule.getLocation());
+        });
+    }
+
+    private InputInterface getInputInterfaceMock() {
+        final InputInterface inputInterface = Mockito.mock(InputInterface.class);
+        Mockito.when(inputInterface.readInteger(Mockito.anyString())).thenReturn(Optional.of(2));
+
+        return inputInterface;
     }
 
 }

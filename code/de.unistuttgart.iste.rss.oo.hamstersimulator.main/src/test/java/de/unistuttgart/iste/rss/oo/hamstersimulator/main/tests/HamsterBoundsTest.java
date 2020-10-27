@@ -5,13 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.DummyInputInterface;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.mockito.Mockito;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.InputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.FrontBlockedException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Hamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
@@ -48,7 +49,7 @@ public class HamsterBoundsTest {
     @BeforeEach
     public void initializeTest() {
         game.initialize(getClass().getResourceAsStream("/_territories/example02.ter"));
-        game.getModelViewAdapter().addInputInterface(new DummyInputInterface());
+        game.getModelViewAdapter().addInputInterface(getInputInterfaceMock());
         game.startGame();
         paule = game.getTerritory().getDefaultHamster();
     }
@@ -80,4 +81,8 @@ public class HamsterBoundsTest {
         });
     }
 
+    private InputInterface getInputInterfaceMock() {
+        InputInterface inputInterface = Mockito.mock(InputInterface.class);
+        return inputInterface;
+    }
 }

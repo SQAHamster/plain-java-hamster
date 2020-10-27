@@ -6,17 +6,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.DummyInputInterface;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.mockito.Mockito;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.InputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.FrontBlockedException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.MouthEmptyException;
@@ -63,7 +64,7 @@ public class SimpleHamsterTests {
     @BeforeEach
     public void initializeTest() {
         game.initialize();
-        game.getModelViewAdapter().addInputInterface(new DummyInputInterface());
+        game.getModelViewAdapter().addInputInterface(getInputInterfaceMock());
         game.setSpeed(HAMSTER_GAME_TEST_SPEED);
         game.startGame();
         paule = game.getTerritory().getDefaultHamster();
@@ -196,5 +197,10 @@ public class SimpleHamsterTests {
                 });
             }
         });
+    }
+
+    private InputInterface getInputInterfaceMock() {
+        final InputInterface inputInterface = Mockito.mock(InputInterface.class);
+        return inputInterface;
     }
 }
