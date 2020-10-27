@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.internal;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.server.internal;
 
 /**
  * Helper class for json serialization, represents a input request including the message

@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.internal;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.server.internal;
 
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
 
