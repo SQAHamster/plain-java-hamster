@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>main</artifactId>
@@ -11,7 +9,7 @@
 	<parent>
 		<groupId>de.unistuttgart.iste.rss.oo.hamstersimulator</groupId>
 		<artifactId>parent</artifactId>
-		<version>2.2.1-SNAPSHOT</version>
+		<version>2.2.2</version>
 		<relativePath>../de.unistuttgart.iste.rss.oo.hamstersimulator.parent</relativePath>
 	</parent>
 
@@ -25,7 +23,7 @@
 		<dependency>
 			<groupId>de.unistuttgart.iste.rss</groupId>
 			<artifactId>utils</artifactId>
-			<version>2.2.1-SNAPSHOT</version>
+			<version>2.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -38,21 +36,21 @@
 				de.unistuttgart.iste.rss.oo.hamstersimulator
 			</groupId>
 			<artifactId>core</artifactId>
-			<version>2.2.1-SNAPSHOT</version>
+			<version>2.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>
 				de.unistuttgart.iste.rss.oo.hamstersimulator
 			</groupId>
 			<artifactId>ui</artifactId>
-			<version>2.2.1-SNAPSHOT</version>
+			<version>2.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>
 				de.unistuttgart.iste.rss.oo.hamstersimulator
 			</groupId>
 			<artifactId>config</artifactId>
-			<version>2.2.1-SNAPSHOT</version>
+			<version>2.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
