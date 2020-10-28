@@ -4,7 +4,7 @@
 	<artifactId>parent</artifactId>
 	<version>2.2.6-SNAPSHOT</version>
 
-	<!-- <distributionManagement>
+	<distributionManagement>
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>artifactory-oss-artifactory-0-snapshots</name>
@@ -15,15 +15,15 @@
 			<name>artifactory-oss-artifactory-0-releases</name>
 			<url>https://rss-artifactory.ddnss.org/artifactory/libs-release-local</url>
 		</repository>
-	</distributionManagement> -->
+	</distributionManagement>
 
-	<distributionManagement>
+	<!-- <distributionManagement>
 		<repository>
 			<id>bintray-snowball77-RSS-Hamstersimulator</id>
 			<name>snowball77-RSS-Hamstersimulator</name>
 			<url>https://api.bintray.com/maven/snowball77/RSS-Hamstersimulator/HamstersimulatorMain/;publish=1</url>
 		</repository>
-	</distributionManagement>
+	</distributionManagement> -->
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
