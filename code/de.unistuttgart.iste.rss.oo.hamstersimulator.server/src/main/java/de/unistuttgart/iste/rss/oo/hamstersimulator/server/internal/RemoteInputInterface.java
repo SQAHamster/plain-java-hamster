@@ -105,7 +105,7 @@ public class RemoteInputInterface implements InputInterface {
      * @param throwable The throwable which lead to aborting the program.
      */
     @Override
-    public void showAlert(Throwable throwable) {
+    public void confirmAlert(Throwable throwable) {
         this.enterCriticalRegion();
         try {
             this.setupNext();

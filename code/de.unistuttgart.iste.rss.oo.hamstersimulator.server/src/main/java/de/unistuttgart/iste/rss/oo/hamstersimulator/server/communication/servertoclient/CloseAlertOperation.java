@@ -5,7 +5,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.InputOp
 public class CloseAlertOperation extends InputOperation {
     private static final long serialVersionUID = 7385883371520259923L;
 
-    public CloseAlertOperation(final int inputd) {
+    public CloseAlertOperation(final int inputId) {
         super(inputId);
     }
 }

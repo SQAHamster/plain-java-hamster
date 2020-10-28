@@ -2,7 +2,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication;
 
 import java.io.Serializable;
 
-public abstract class InputOperation implements Serializable {
+public abstract class InputOperation implements Operation {
     private final int inputId;
 
     protected InputOperation(final int inputId) {

@@ -7,7 +7,7 @@ public class IntegerInputOperation extends InputOperation {
 
     private final int result;
 
-    public IntegerInputOperation(final int inputd, int result) {
+    public IntegerInputOperation(final int inputId, int result) {
         super(inputId);
         this.result = result;
     }
