@@ -17,14 +17,6 @@
 		</repository>
 	</distributionManagement>
 
-	<!-- <distributionManagement>
-		<repository>
-			<id>bintray-snowball77-RSS-Hamstersimulator</id>
-			<name>snowball77-RSS-Hamstersimulator</name>
-			<url>https://api.bintray.com/maven/snowball77/RSS-Hamstersimulator/HamstersimulatorMain/;publish=1</url>
-		</repository>
-	</distributionManagement> -->
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
