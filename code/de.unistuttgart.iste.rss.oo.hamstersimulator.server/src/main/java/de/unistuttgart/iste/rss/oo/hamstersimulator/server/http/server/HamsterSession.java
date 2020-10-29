@@ -116,7 +116,7 @@ public class HamsterSession {
         try {
             deltaList.add(operation.getDelta());
         } finally {
-            readWriteLock.writeLock().lock();
+            readWriteLock.writeLock().unlock();
         }
     }
 
@@ -125,7 +125,7 @@ public class HamsterSession {
         try {
             deltaList.addAll(operation.getDeltaList());
         } finally {
-            readWriteLock.writeLock().lock();
+            readWriteLock.writeLock().unlock();
         }
     }
 
@@ -207,4 +207,12 @@ public class HamsterSession {
         }
     }
 
+    public InputMessage getInputMessage() {
+        this.readWriteLock.readLock().lock();
+        try {
+            return inputMessage;
+        } finally {
+            this.readWriteLock.readLock().unlock();
+        }
+    }
 }

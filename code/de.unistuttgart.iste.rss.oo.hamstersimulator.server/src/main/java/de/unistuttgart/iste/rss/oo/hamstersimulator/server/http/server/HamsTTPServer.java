@@ -21,8 +21,10 @@ public class HamsTTPServer {
     public static final int PORT = 8008;
     private final ServerSocket serverSocket;
     private final Map<Integer, HamsterSession> sessions = new ConcurrentHashMap<>();
+    private int sessionIdCounter = 0;
 
     public HamsTTPServer(final ServerSocket serverSocket) throws IOException {
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "off");
         this.serverSocket = serverSocket;
         startListenForSessions(serverSocket);
         startHttpServer();
@@ -46,6 +48,9 @@ public class HamsTTPServer {
             try {
                 while (!serverSocket.isClosed()) {
                     Socket socket = serverSocket.accept();
+                    final HamsterSession session = new HamsterSession(socket, sessionIdCounter);
+                    this.sessions.put(sessionIdCounter, session);
+                    sessionIdCounter++;
                 }
             } catch (IOException e) {
                 //TODO shutdown
@@ -106,6 +111,9 @@ public class HamsTTPServer {
         final HamsterSession session = getSession(context);
         final int inputId = getIntQueryParam(context, "inputId");
         final String input = getQueryParam(context, "input");
+        if (inputId != session.getInputMessage().getInputId()) {
+            throw new StatusCodeException(400, "outdated inputId");
+        }
 
         session.setInputResult(inputId, input);
     }
@@ -131,18 +139,6 @@ public class HamsTTPServer {
             throw new StatusCodeException(400, "Provided speed is not in range [0, 10]");
         }
         session.changeSpeed(speed);
-    }
-
-
-    private Handler catchExceptions(final Handler handler) {
-        return (Context context) -> {
-            try {
-                handler.handle(context);
-            } catch (RuntimeException e) {
-                context.result(e.getMessage());
-                context.status(500);
-            }
-        };
     }
 
     private String getQueryParam(final Context context, final String parameter) {

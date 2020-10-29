@@ -8,9 +8,9 @@ public class AddLogEntryDelta extends Delta {
     private static final long serialVersionUID = -6341894296286153193L;
 
     private final String message;
-    private final Optional<Integer> hamsterId;
+    private final Integer hamsterId;
 
-    public AddLogEntryDelta(final String message, final Optional<Integer> hamsterId) {
+    public AddLogEntryDelta(final String message, final Integer hamsterId) {
         super(DeltaType.ADD_LOG_ENTRY);
         this.message = message;
         this.hamsterId = hamsterId;

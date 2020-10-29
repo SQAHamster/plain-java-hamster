@@ -57,6 +57,11 @@
 			<artifactId>javalin</artifactId>
 			<version>3.9.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.30</version>
+		</dependency>
 	</dependencies>
 
 	<name>Hamstersimulator Http Server</name>

@@ -8,7 +8,7 @@ public class RemoveTileContentDelta extends Delta {
     private final int tileContentId;
 
     public RemoveTileContentDelta(final int tileContentId) {
-        super(DeltaType.REMOVE_TileContent);
+        super(DeltaType.REMOVE_TILE_CONTENT);
         this.tileContentId = tileContentId;
     }
 }

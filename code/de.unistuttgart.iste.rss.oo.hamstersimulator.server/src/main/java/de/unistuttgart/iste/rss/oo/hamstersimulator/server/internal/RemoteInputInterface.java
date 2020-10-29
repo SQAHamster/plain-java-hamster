@@ -20,7 +20,7 @@ import static de.unistuttgart.iste.rss.utils.Preconditions.*;
  * execution is necessary (e.g. a setResult after a getInputId), use
  * enterCriticalRegion and leaveCriticalRegion. <br>
  */
-public class RemoteInputInterface implements InputInterface {
+public abstract class RemoteInputInterface implements InputInterface {
     private volatile CompletableFuture<Optional<String>> result = new CompletableFuture<>();
 
     /**
@@ -56,6 +56,7 @@ public class RemoteInputInterface implements InputInterface {
             this.setupNext();
             this.mode = InputMode.READ_INT;
             this.message = new InputMessage(message, getInputID());
+            onInput(this.message);
         } finally {
             this.leaveCriticalRegion();
         }
@@ -87,6 +88,7 @@ public class RemoteInputInterface implements InputInterface {
             this.setupNext();
             this.mode = InputMode.READ_STRING;
             this.message = new InputMessage(message, getInputID());
+            onInput(this.message);
         } finally {
             this.leaveCriticalRegion();
         }
@@ -116,6 +118,7 @@ public class RemoteInputInterface implements InputInterface {
 
             this.message = new InputMessage(throwable.getMessage(), getInputID(),
                     throwable.getClass().getSimpleName(), stringWriter.toString());
+            onInput(this.message);
         } finally {
             this.leaveCriticalRegion();
         }
@@ -210,6 +213,8 @@ public class RemoteInputInterface implements InputInterface {
             return Optional.of(this.message);
         }
     }
+
+    protected abstract void onInput(final InputMessage inputMessage);
 
     /**
      * Enters a critical region and waits if necessary <br>

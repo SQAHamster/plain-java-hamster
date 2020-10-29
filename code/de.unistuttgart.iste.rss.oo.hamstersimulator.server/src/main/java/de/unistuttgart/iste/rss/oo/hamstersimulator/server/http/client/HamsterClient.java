@@ -12,6 +12,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.servert
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.delta.*;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.delta.type.TileContentType;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.server.HamsTTPServer;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.internal.InputMessage;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.internal.RemoteInputInterface;
 import de.unistuttgart.iste.rss.utils.LambdaVisitor;
 import javafx.beans.value.ChangeListener;
@@ -23,7 +24,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.*;
 
-public class HamsterClient {
+public final class HamsterClient extends RemoteInputInterface {
 
     private final Map<ObservableTileContent, Integer> contentIdRelation = new IdentityHashMap<>();
     private final Map<ObservableHamster, ChangeListener<Direction>> hamsterDirectionChangeListenerRelation = new IdentityHashMap<>();
@@ -34,7 +35,6 @@ public class HamsterClient {
     private final HamsterGameController gameController;
     private final Socket socket;
     private final ObjectOutputStream outputStream;
-    private RemoteInputInterface inputInterface; //TODO
 
     public HamsterClient(final HamsterGameViewModel gameViewModel) throws IOException {
         this.gameController = gameViewModel.getGameController();
@@ -58,7 +58,8 @@ public class HamsterClient {
     public static void startAndConnectToServer(final HamsterGameViewModel gameViewModel) {
         try {
             HamsTTPServer.startIfNotRunning();
-            new HamsterClient(gameViewModel);
+            final HamsterClient client = new HamsterClient(gameViewModel);
+            gameViewModel.addInputInterface(client);
         } catch (IOException e) {
             throw new RuntimeException("failed to start client", e);
         }
@@ -188,28 +189,33 @@ public class HamsterClient {
     }
 
     private synchronized void onLogChanged(ListChangeListener.Change<? extends ObservableLogEntry> change) {
-        if (change.wasAdded() && change.wasRemoved()) {
-            throw new IllegalStateException("add and remove in one change is not supported ");
-        }
-
         final List<Delta> deltas = new ArrayList<>();
-        for (final ObservableLogEntry logEntry : change.getAddedSubList()) {
-            deltas.add(addedLogEntry(logEntry));
-        }
-        for (final ObservableLogEntry logEntry : change.getRemoved()) {
-            deltas.add(new RemoveLogEntryDelta());
+
+        while (change.next()) {
+            if (change.wasAdded() && change.wasRemoved()) {
+                throw new IllegalStateException("add and remove in one change is not supported ");
+            }
+
+            for (final ObservableLogEntry logEntry : change.getAddedSubList()) {
+                deltas.add(addedLogEntry(logEntry));
+            }
+            for (final ObservableLogEntry logEntry : change.getRemoved()) {
+                deltas.add(new RemoveLogEntryDelta());
+            }
         }
         sendOperation(new AddDeltasOperation(deltas));
     }
 
     private synchronized void onTileContentsChanged(final ListChangeListener.Change<? extends ObservableTileContent> change) {
         final List<Delta> deltas = new ArrayList<>();
-        for (final ObservableTileContent addedContent : change.getAddedSubList()) {
-            deltas.add(addedTileContent(addedContent));
-        }
-        for (final ObservableTileContent removedContent : change.getRemoved()) {
-            deltas.add(new RemoveTileContentDelta(contentIdRelation.get(removedContent)));
-            contentIdRelation.remove(removedContent);
+        while (change.next()) {
+            for (final ObservableTileContent addedContent : change.getAddedSubList()) {
+                deltas.add(addedTileContent(addedContent));
+            }
+            for (final ObservableTileContent removedContent : change.getRemoved()) {
+                deltas.add(new RemoveTileContentDelta(contentIdRelation.get(removedContent)));
+                contentIdRelation.remove(removedContent);
+            }
         }
         sendOperation(new AddDeltasOperation(deltas));
     }
@@ -220,8 +226,10 @@ public class HamsterClient {
 
     private synchronized void onHamsterAdded(final ListChangeListener.Change<? extends ObservableHamster> change) {
         final List<Delta> deltas = new ArrayList<>();
-        for (final ObservableHamster hamster : change.getAddedSubList()) {
-            deltas.add(new RotateHamsterDelta(contentIdRelation.get(hamster), hamster.getDirection()));
+        while (change.next()) {
+            for (final ObservableHamster hamster : change.getAddedSubList()) {
+                deltas.add(new RotateHamsterDelta(contentIdRelation.get(hamster), hamster.getDirection()));
+            }
         }
         sendOperation(new AddDeltasOperation(deltas));
     }
@@ -236,7 +244,7 @@ public class HamsterClient {
 
     private synchronized Delta addedLogEntry(final ObservableLogEntry logEntry) {
         return new AddLogEntryDelta(logEntry.getMessage(),
-                Optional.ofNullable(logEntry.getHamster()).map(contentIdRelation::get));
+                contentIdRelation.get(logEntry.getHamster()));
     }
 
 
@@ -257,21 +265,26 @@ public class HamsterClient {
     }
 
     private void onRedo(final RedoOperation redoOperation) {
-        if (gameController.canUndoProperty().get()) {
-            gameController.undo();
-        }
-    }
-
-    private void onUndo(final UndoOperation operation) {
         if (gameController.canRedoProperty().get()) {
             gameController.redo();
         }
     }
 
+    private void onUndo(final UndoOperation operation) {
+        if (gameController.canUndoProperty().get()) {
+            gameController.undo();
+        }
+    }
+
 
     private void onSetInput(final SetInputOperation operation) {
-        if (inputInterface.getInputID() == operation.getInputId()) {
-            inputInterface.setResult(operation.getResult(), operation.getInputId());
+        if (getInputID() == operation.getInputId()) {
+            setResult(operation.getResult(), operation.getInputId());
         }
+    }
+
+    @Override
+    protected void onInput(final InputMessage inputMessage) {
+        sendOperation(new RequestInputOperation(inputMessage));
     }
 }
