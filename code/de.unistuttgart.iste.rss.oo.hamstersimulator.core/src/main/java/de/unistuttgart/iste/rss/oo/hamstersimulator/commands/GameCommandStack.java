@@ -90,8 +90,11 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
 
     @Override
     public void execute(final Command command) {
-        if (this.mode.get() != Mode.RUNNING && this.mode.get() != Mode.PAUSED) {
-            throw new GameAbortedException("The game needs to be running to execute hamster commands");
+        if (this.mode.get() == Mode.ABORTED) {
+            this.mode.set(Mode.STOPPED);
+            throw new GameAbortedException("Stopped execution of command due to abort");
+        } else if (this.mode.get() != Mode.RUNNING && this.mode.get() != Mode.PAUSED) {
+            throw new IllegalStateException("The game needs to be running to execute hamster commands");
         }
         if (!command.canExecute()) {
             mode.set(Mode.STOPPED);
@@ -153,6 +156,24 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
     @Override
     public void stopGame() {
         mode.set(Mode.STOPPED);
+        if (pauseLock.availablePermits() == 0) {
+            pauseLock.release();
+        }
+        interruptWaitingThreads();
+    }
+
+    /*@
+     @ requires true;
+     @ ensures getCurrentGameMode() == Mode.ABORTED;
+     */
+    /**
+     * Stop the execution of the game. The game is finished and needs to be reset / hardReset
+     * or closed.
+     * If the game is already aborted, this does nothing
+     */
+    @Override
+    public void abortGame() {
+        mode.set(Mode.ABORTED);
         if (pauseLock.availablePermits() == 0) {
             pauseLock.release();
         }

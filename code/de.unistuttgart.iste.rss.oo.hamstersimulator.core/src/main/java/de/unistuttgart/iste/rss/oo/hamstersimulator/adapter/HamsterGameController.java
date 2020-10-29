@@ -83,6 +83,17 @@ public interface HamsterGameController {
     void stopGame();
 
     /*@
+     @ requires true;
+     @ ensures getCurrentGameMode() == Mode.ABORTED;
+     */
+    /**
+     * Stop the execution of the game. The game is finished and needs to be reset / hardReset
+     * or closed.
+     * If the game is already aborted, this does nothing
+     */
+    void abortGame();
+
+    /*@
      @ requires modeProperty().get() == Mode.RUNNING;
      @ ensures modeProperty().get() == Mode.PAUSED;
      @*/
