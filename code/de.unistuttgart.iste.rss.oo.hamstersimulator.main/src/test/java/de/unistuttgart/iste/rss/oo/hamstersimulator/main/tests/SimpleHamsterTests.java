@@ -190,7 +190,7 @@ public class SimpleHamsterTests {
             try {
                 paule.move();
             } catch (FrontBlockedException fbe) {
-                assertThrows(GameAbortedException.class, () -> {
+                assertThrows(IllegalStateException.class, () -> {
                     assertTimeoutPreemptively(ofMillis(TIMEOUT), () -> {
                         paule.turnLeft();
                     });
