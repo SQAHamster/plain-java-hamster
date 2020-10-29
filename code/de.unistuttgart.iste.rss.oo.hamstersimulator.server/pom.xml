@@ -52,6 +52,11 @@
 			<version>2.2.3-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.javalin</groupId>
+			<artifactId>javalin</artifactId>
+			<version>3.9.1</version>
+		</dependency>
 	</dependencies>
 
 	<name>Hamstersimulator Http Server</name>

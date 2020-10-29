@@ -6,25 +6,88 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.*;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.Operation;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.SpeedChangedOperation;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.clienttoserver.SpeedChangedOperation;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.clienttoserver.*;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.servertoclient.*;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.delta.*;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.delta.type.TileContentType;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.server.HamsTTPServer;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.internal.RemoteInputInterface;
+import de.unistuttgart.iste.rss.utils.LambdaVisitor;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.*;
 
-public class HamsterHttpClient {
+public class HamsterClient {
 
     private final Map<ObservableTileContent, Integer> contentIdRelation = new IdentityHashMap<>();
     private final Map<ObservableHamster, ChangeListener<Direction>> hamsterDirectionChangeListenerRelation = new IdentityHashMap<>();
     private volatile int idCounter = 0;
 
-    public HamsterHttpClient(final HamsterGameViewModel gameViewModel) {
+    private final LambdaVisitor<Operation, Runnable> operationVisitor;
+
+    private final HamsterGameController gameController;
+    private final Socket socket;
+    private final ObjectOutputStream outputStream;
+    private RemoteInputInterface inputInterface; //TODO
+
+    public HamsterClient(final HamsterGameViewModel gameViewModel) throws IOException {
+        this.gameController = gameViewModel.getGameController();
+
+        this.socket = new Socket("127.0.0.1", HamsTTPServer.PORT);
+        this.outputStream = new ObjectOutputStream(socket.getOutputStream());
+        startInputListener(socket);
+
+        operationVisitor = new LambdaVisitor<Operation, Runnable>()
+                .on(ChangeSpeedOperation.class).then(operation -> () -> onChangeSpeed(operation))
+                .on(PauseOperation.class).then(operation -> () -> onPause(operation))
+                .on(ResumeOperation.class).then(operation -> () -> onResume(operation))
+                .on(RedoOperation.class).then(operation -> () -> onRedo(operation))
+                .on(SetInputOperation.class).then(operation -> () -> onSetInput(operation))
+                .on(UndoOperation.class).then(operation -> () -> onUndo(operation));
+
         initListeners(gameViewModel);
         initInitialState(gameViewModel);
+    }
+
+    public static void startAndConnectToServer(final HamsterGameViewModel gameViewModel) {
+        try {
+            HamsTTPServer.startIfNotRunning();
+            new HamsterClient(gameViewModel);
+        } catch (IOException e) {
+            throw new RuntimeException("failed to start client", e);
+        }
+    }
+
+    private void startInputListener(final Socket socket) throws IOException {
+        final ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+        new Thread(() -> {
+            try {
+                while (!socket.isClosed()) {
+                    final Object input = inputStream.readObject();
+                    final Runnable handler = operationVisitor.apply(input);
+                    if (handler == null) {
+                        throw new IllegalStateException("no handler found for the operation");
+                    } else {
+                        try {
+                            handler.run();
+                        } catch (RuntimeException e) {
+                            // due to multithreading, we cannot prevent some exceptions from sometimes happen
+                            // we do not want to stop the game because of this, so we just ignore these
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                // ok, connection closed
+                // TODO shutdown
+            }
+        }).start();
     }
 
     private void initListeners(final HamsterGameViewModel gameViewModel) {
@@ -53,6 +116,7 @@ public class HamsterHttpClient {
             change.getRemoved().forEach(this::hamsterRemoved);
         });
         territory.hamstersProperty().forEach(this::hamsterAdded);
+        territory.hamstersProperty().addListener(this::onHamsterAdded);
     }
 
     private void hamsterAdded(final ObservableHamster hamster) {
@@ -94,6 +158,7 @@ public class HamsterHttpClient {
         initInitialGameControllerState(gameViewModel.getGameController());
         sendOperation(new AddDeltasOperation(deltas));
     }
+
     private void initInitialTerritoryState(final ObservableTerritory territory, final List<Delta> deltas) {
         territory.tilesProperty().stream().flatMap(tile -> tile.contentProperty().stream())
                 .forEach(content -> deltas.add(addedTileContent(content)));
@@ -106,15 +171,20 @@ public class HamsterHttpClient {
         log.logProperty().forEach(logEntry -> deltas.add(addedLogEntry(logEntry)));
     }
 
-
     private void initInitialGameControllerState(final HamsterGameController gameController) {
         sendOperation(new ModeChangedOperation(gameController.modeProperty().get()));
         sendOperation(new CanUndoChangedOperation(gameController.canUndoProperty().get()));
         sendOperation(new CanRedoChangedOperation(gameController.canRedoProperty().get()));
         sendOperation(new SpeedChangedOperation(gameController.speedProperty().get()));
     }
+
     private synchronized void sendOperation(final Operation operation) {
-        //TODO
+        try {
+            this.outputStream.writeObject(operation);
+        } catch (IOException e) {
+            //TODO shutdown
+            e.printStackTrace();
+        }
     }
 
     private synchronized void onLogChanged(ListChangeListener.Change<? extends ObservableLogEntry> change) {
@@ -131,7 +201,6 @@ public class HamsterHttpClient {
         }
         sendOperation(new AddDeltasOperation(deltas));
     }
-
 
     private synchronized void onTileContentsChanged(final ListChangeListener.Change<? extends ObservableTileContent> change) {
         final List<Delta> deltas = new ArrayList<>();
@@ -168,5 +237,41 @@ public class HamsterHttpClient {
     private synchronized Delta addedLogEntry(final ObservableLogEntry logEntry) {
         return new AddLogEntryDelta(logEntry.getMessage(),
                 Optional.ofNullable(logEntry.getHamster()).map(contentIdRelation::get));
+    }
+
+
+    private void onChangeSpeed(final ChangeSpeedOperation operation) {
+        this.gameController.setSpeed(operation.getSpeed());
+    }
+
+    private void onPause(final PauseOperation pauseOperation) {
+        if (gameController.modeProperty().get() == Mode.RUNNING) {
+            gameController.pauseAsync();
+        }
+    }
+
+    private void onResume(final ResumeOperation operation) {
+        if (gameController.modeProperty().get() == Mode.PAUSED) {
+            gameController.resume();
+        }
+    }
+
+    private void onRedo(final RedoOperation redoOperation) {
+        if (gameController.canUndoProperty().get()) {
+            gameController.undo();
+        }
+    }
+
+    private void onUndo(final UndoOperation operation) {
+        if (gameController.canRedoProperty().get()) {
+            gameController.redo();
+        }
+    }
+
+
+    private void onSetInput(final SetInputOperation operation) {
+        if (inputInterface.getInputID() == operation.getInputId()) {
+            inputInterface.setResult(operation.getResult(), operation.getInputId());
+        }
     }
 }

@@ -53,6 +53,13 @@
 			<version>2.2.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>
+				de.unistuttgart.iste.rss.oo.hamstersimulator
+			</groupId>
+			<artifactId>server</artifactId>
+			<version>2.2.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<version>3.5.15</version>
