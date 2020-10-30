@@ -19,9 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Consumer;
 
 public class HamsterSession {
+
+    private static final int MIN_SHUTDOWN_DELAY = 4000;
 
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private final List<Delta> deltaList = new ArrayList<>();
@@ -29,6 +30,9 @@ public class HamsterSession {
     private final LambdaVisitor<Operation, Runnable> operationVisitor;
     private final int id;
     private final Socket socket;
+
+    private volatile boolean isAlive = true;
+    private volatile long lastKeepAliveTime = System.currentTimeMillis();
 
     private volatile Mode mode;
     private volatile InputMessage inputMessage;
@@ -55,10 +59,11 @@ public class HamsterSession {
 
     private void startInputListener(final Socket socket) throws IOException {
         final ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
-        new Thread(() -> {
+        final Thread thread = new Thread(() -> {
             try {
                 while (!socket.isClosed()) {
                     final Object input = inputStream.readObject();
+                    keepAlive();
                     final Runnable handler = operationVisitor.apply(input);
                     if (handler == null) {
                         throw new IllegalStateException("no handler found for the operation");
@@ -67,14 +72,54 @@ public class HamsterSession {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
-                // ok, connection closed
-                // TODO shutdown
+                shutdown();
             }
-        }).start();
+        });
+        thread.setDaemon(true);
+        thread.start();
     }
 
-    public List<Delta> getDeltasSince(final int index) {
+    public void sendOperation(final Operation operation) {
+        keepAlive();
+        this.readWriteLock.writeLock().lock();
+        try {
+            outputStream.writeObject(operation);
+        } catch (IOException e) {
+            shutdown();
+        } finally {
+            this.readWriteLock.writeLock().unlock();
+        }
+    }
+
+    private void shutdown() {
+        this.readWriteLock.writeLock().lock();
+        try {
+            if (this.isAlive) {
+                this.isAlive = false;
+                try {
+                    this.socket.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
+        } finally {
+            this.readWriteLock.writeLock().unlock();
+        }
+    }
+
+    public void shutdownIfPossible() {
+        if ((System.currentTimeMillis() - this.lastKeepAliveTime) > MIN_SHUTDOWN_DELAY && inputMessage == null) {
+            System.out.println("shutdown because it is possible");
+            shutdown();
+        }
+    }
+
+    private void keepAlive() {
+        this.lastKeepAliveTime = System.currentTimeMillis();
+    }
+
+
+    private List<Delta> getDeltasSince(final int index) {
         readWriteLock.readLock().lock();
         try {
             return new ArrayList<>(this.deltaList.subList(Math.min(Math.max(index, 0),
@@ -84,21 +129,12 @@ public class HamsterSession {
         }
     }
 
-    public GameState getGameState() {
+    private GameState getGameState() {
         readWriteLock.readLock().lock();
         try {
             return new GameState(mode, inputMessage, canUndo, canRedo, speed);
         } finally {
             readWriteLock.readLock().unlock();
-        }
-    }
-
-    public synchronized void sendOperation(final Operation operation) {
-        try {
-            outputStream.writeObject(operation);
-        } catch (IOException e) {
-            //TODO shutdown
-            e.printStackTrace();
         }
     }
 
@@ -199,6 +235,7 @@ public class HamsterSession {
     }
 
     public GameStatus getStatus(final int since) {
+        keepAlive();
         this.readWriteLock.readLock().lock();
         try {
             return new GameStatus(getGameState(), getDeltasSince(since));
@@ -208,11 +245,20 @@ public class HamsterSession {
     }
 
     public InputMessage getInputMessage() {
+        keepAlive();
         this.readWriteLock.readLock().lock();
         try {
             return inputMessage;
         } finally {
             this.readWriteLock.readLock().unlock();
         }
+    }
+
+    public boolean isAlive() {
+        return this.isAlive;
+    }
+
+    public int getId() {
+        return id;
     }
 }

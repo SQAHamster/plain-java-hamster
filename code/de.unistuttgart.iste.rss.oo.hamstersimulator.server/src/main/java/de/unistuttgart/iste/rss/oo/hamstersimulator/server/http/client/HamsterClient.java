@@ -280,6 +280,7 @@ public final class HamsterClient extends RemoteInputInterface {
     private void onSetInput(final SetInputOperation operation) {
         if (getInputID() == operation.getInputId()) {
             setResult(operation.getResult(), operation.getInputId());
+            sendOperation(new AbortInputOperation(operation.getInputId()));
         }
     }
 

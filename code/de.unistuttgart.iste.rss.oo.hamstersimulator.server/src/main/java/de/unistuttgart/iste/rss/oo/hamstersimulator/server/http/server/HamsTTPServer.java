@@ -4,14 +4,14 @@ import com.google.gson.Gson;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
 import io.javalin.http.Context;
-import io.javalin.http.Handler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 
 import static io.javalin.apibuilder.ApiBuilder.path;
 import static io.javalin.apibuilder.ApiBuilder.get;
@@ -19,7 +19,10 @@ import static io.javalin.apibuilder.ApiBuilder.post;
 
 public class HamsTTPServer {
     public static final int PORT = 8008;
+    private static final int HTTP_SERVER_PORT = 8080;
+
     private final ServerSocket serverSocket;
+    private final Javalin httpServer;
     private final Map<Integer, HamsterSession> sessions = new ConcurrentHashMap<>();
     private int sessionIdCounter = 0;
 
@@ -27,7 +30,9 @@ public class HamsTTPServer {
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "off");
         this.serverSocket = serverSocket;
         startListenForSessions(serverSocket);
-        startHttpServer();
+        this.httpServer = createHttpServer();
+        this.httpServer.start(HTTP_SERVER_PORT);
+        startLifetimeRefreshTimer();
     }
 
     public static void startIfNotRunning() {
@@ -58,14 +63,6 @@ public class HamsTTPServer {
         }).start();
     }
 
-    private void startHttpServer() {
-        final Thread thread = new Thread(() -> {
-            createHttpServer().start();
-        });
-        thread.setDaemon(true);
-        thread.start();
-    }
-
     private Javalin createHttpServer() {
         return Javalin.create(JavalinConfig::enableCorsForAllOrigins).routes(() -> {
             path("status", () -> {
@@ -90,6 +87,25 @@ public class HamsTTPServer {
             context.result(e.getMessage());
             context.status(500);
         });
+    }
+
+    private void startLifetimeRefreshTimer() {
+        System.out.println("lol now start");
+        final TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("I want to shut down");
+                sessions.values().forEach(session -> {
+                    session.shutdownIfPossible();
+                    if (!session.isAlive()) {
+                        removeSession(session.getId());
+                    }
+                });
+            }
+        };
+
+        final Timer timer = new Timer(true);
+        timer.scheduleAtFixedRate(task, 0, 3000);
     }
 
 
@@ -171,10 +187,32 @@ public class HamsTTPServer {
     private HamsterSession getSession(final Context context) {
         final int sessionId = getIntQueryParam(context, "id");
         if (this.sessions.containsKey(sessionId)) {
-            return this.sessions.get(sessionId);
+            final HamsterSession session = this.sessions.get(sessionId);
+            if (session.isAlive()) {
+                return session;
+            } else {
+                removeSession(sessionId);
+                throw new StatusCodeException(400, "session no longer available");
+            }
         } else {
             throw new StatusCodeException(400, "the provided id did not match any existing session");
         }
+    }
+
+    private void removeSession(final int sessionId) {
+        sessions.remove(sessionId);
+        if (sessions.size() == 0) {
+            shutdown();
+        }
+    }
+
+    private void shutdown() {
+        try {
+            this.serverSocket.close();
+        } catch (IOException e) {
+            // ignore
+        }
+        this.httpServer.stop();
     }
 
 }
