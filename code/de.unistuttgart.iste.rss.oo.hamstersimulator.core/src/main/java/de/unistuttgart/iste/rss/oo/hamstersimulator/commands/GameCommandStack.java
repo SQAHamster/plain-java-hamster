@@ -164,20 +164,29 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
 
     /*@
      @ requires true;
-     @ ensures getCurrentGameMode() == Mode.ABORTED;
+     @ ensures (\old(modeProperty().get()) == Mode.STOPPED) ==> (modeProperty().get() == Mode.STOPPED);
+     @ ensures (\old(modeProperty().get()) == Mode.PAUSED) ==> (modeProperty().get() == Mode.ABORTED);
+     @ ensures (\old(modeProperty().get()) == Mode.RUNNING) ==> (modeProperty().get() == Mode.ABORTED);
+     @ ensures (\old(modeProperty().get()) == Mode.INITIALIZING) ==> (modeProperty().get() == Mode.STOPPED);
+     @ ensures (\old(modeProperty().get()) == Mode.ABORTED) ==> (modeProperty().get() == Mode.ABORTED);
      */
     /**
-     * Stop the execution of the game. The game is finished and needs to be reset / hardReset
+     * Abort or stop the execution of the game. The game is finished and needs to be reset / hardReset
      * or closed.
-     * If the game is already aborted, this does nothing
+     * If the game is running, paused or aborted, the game is aborted.
+     * if the game is initializing or stopped, it is stopped.
      */
     @Override
-    public void abortGame() {
-        mode.set(Mode.ABORTED);
-        if (pauseLock.availablePermits() == 0) {
-            pauseLock.release();
+    public void abortOrStopGame() {
+        if ((mode.get() == Mode.STOPPED) || (mode.get() == Mode.INITIALIZING)) {
+            stopGame();
+        } else {
+            mode.set(Mode.ABORTED);
+            if (pauseLock.availablePermits() == 0) {
+                pauseLock.release();
+            }
+            interruptWaitingThreads();
         }
-        interruptWaitingThreads();
     }
 
     /*@
