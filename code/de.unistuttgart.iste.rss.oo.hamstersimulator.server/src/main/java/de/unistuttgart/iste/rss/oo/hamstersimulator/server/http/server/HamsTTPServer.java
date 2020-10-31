@@ -1,6 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.server;
 
 import com.google.gson.Gson;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.internal.InputMessage;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
 import io.javalin.http.Context;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
@@ -125,7 +127,8 @@ public class HamsTTPServer {
         final HamsterSession session = getSession(context);
         final int inputId = getIntQueryParam(context, "inputId");
         final String input = getQueryParam(context, "input");
-        if (inputId != session.getInputMessage().getInputId()) {
+        final Optional<InputMessage> inputMessage = session.getInputMessage();
+        if (inputMessage.isEmpty() || (inputId != inputMessage.get().getInputId())) {
             throw new StatusCodeException(400, "outdated inputId");
         }
 
