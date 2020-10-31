@@ -84,9 +84,7 @@ public final class HamsterClient extends RemoteInputInterface {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
-                // ok, connection closed
-                // TODO shutdown
+                shutdown();
             }
         }).start();
     }
@@ -183,8 +181,7 @@ public final class HamsterClient extends RemoteInputInterface {
         try {
             this.outputStream.writeObject(operation);
         } catch (IOException e) {
-            //TODO shutdown
-            e.printStackTrace();
+            shutdown();
         }
     }
 
@@ -287,5 +284,13 @@ public final class HamsterClient extends RemoteInputInterface {
     @Override
     protected void onInput(final InputMessage inputMessage) {
         sendOperation(new RequestInputOperation(inputMessage));
+    }
+
+    private void shutdown() {
+        try {
+            this.socket.close();
+        } catch (IOException e) {
+            // ignore
+        }
     }
 }

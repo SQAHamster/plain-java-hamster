@@ -109,7 +109,6 @@ public class HamsterSession {
 
     public void shutdownIfPossible() {
         if ((System.currentTimeMillis() - this.lastKeepAliveTime) > MIN_SHUTDOWN_DELAY && inputMessage == null) {
-            System.out.println("shutdown because it is possible");
             shutdown();
         }
     }

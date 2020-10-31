@@ -48,7 +48,7 @@ public class HamsTTPServer {
         }
     }
 
-    private void startListenForSessions(final ServerSocket serverSocket) throws IOException {
+    private void startListenForSessions(final ServerSocket serverSocket) {
         new Thread(() -> {
             try {
                 while (!serverSocket.isClosed()) {
@@ -58,7 +58,7 @@ public class HamsTTPServer {
                     sessionIdCounter++;
                 }
             } catch (IOException e) {
-                //TODO shutdown
+                shutdown();
             }
         }).start();
     }
@@ -90,11 +90,9 @@ public class HamsTTPServer {
     }
 
     private void startLifetimeRefreshTimer() {
-        System.out.println("lol now start");
         final TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                System.out.println("I want to shut down");
                 sessions.values().forEach(session -> {
                     session.shutdownIfPossible();
                     if (!session.isAlive()) {
