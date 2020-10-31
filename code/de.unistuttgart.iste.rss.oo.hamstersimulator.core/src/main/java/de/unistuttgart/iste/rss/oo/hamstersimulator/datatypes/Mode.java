@@ -27,5 +27,19 @@ public enum Mode {
      *  It is possible to resume the game or to stop it.
      *  It is not possible to load a new territory.
      */
-    PAUSED
+    PAUSED,
+    /**
+     * The game was aborted via api or mainly UI
+     * like STOPPED, however it throws an Exception which is not caught by doRun or runGame
+     * After one executed command, this Mode is automatically converted to STOPPED
+     */
+    ABORTED;
+
+    /**
+     * Checks if the mode is STOPPED or ABORTED
+     * @return true if this is stopped or aborted
+     */
+    public boolean isStoppedOrAborted() {
+        return this == STOPPED || this == ABORTED;
+    }
 }

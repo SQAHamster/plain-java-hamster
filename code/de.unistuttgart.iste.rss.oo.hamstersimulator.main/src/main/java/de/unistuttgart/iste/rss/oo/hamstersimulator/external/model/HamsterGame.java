@@ -234,7 +234,7 @@ public class HamsterGame {
         if (currentMode == Mode.RUNNING) {
             pauseGame();
             this.commandStack.undoAll();
-        } else if (currentMode == Mode.PAUSED || currentMode == Mode.STOPPED) {
+        } else if (currentMode == Mode.PAUSED || currentMode.isStoppedOrAborted()) {
             this.commandStack.undoAll();
         }
     }
@@ -395,7 +395,7 @@ public class HamsterGame {
      * Note: If the game is already started and running, it is not paused
      */
     private void startGameIfNotStarted() {
-        if (getCurrentGameMode() == Mode.STOPPED) {
+        if (getCurrentGameMode().isStoppedOrAborted()) {
             this.hardReset();
             this.startGamePaused();
         } else if (getCurrentGameMode() == Mode.INITIALIZING) {

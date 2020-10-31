@@ -90,8 +90,11 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
 
     @Override
     public void execute(final Command command) {
-        if (this.mode.get() != Mode.RUNNING && this.mode.get() != Mode.PAUSED) {
-            throw new GameAbortedException("The game needs to be running to execute hamster commands");
+        if (this.mode.get() == Mode.ABORTED) {
+            this.mode.set(Mode.STOPPED);
+            throw new GameAbortedException("Stopped execution of command due to abort");
+        } else if (this.mode.get() != Mode.RUNNING && this.mode.get() != Mode.PAUSED) {
+            throw new IllegalStateException("The game needs to be running to execute hamster commands");
         }
         if (!command.canExecute()) {
             mode.set(Mode.STOPPED);
@@ -157,6 +160,33 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
             pauseLock.release();
         }
         interruptWaitingThreads();
+    }
+
+    /*@
+     @ requires true;
+     @ ensures (\old(modeProperty().get()) == Mode.STOPPED) ==> (modeProperty().get() == Mode.STOPPED);
+     @ ensures (\old(modeProperty().get()) == Mode.PAUSED) ==> (modeProperty().get() == Mode.ABORTED);
+     @ ensures (\old(modeProperty().get()) == Mode.RUNNING) ==> (modeProperty().get() == Mode.ABORTED);
+     @ ensures (\old(modeProperty().get()) == Mode.INITIALIZING) ==> (modeProperty().get() == Mode.STOPPED);
+     @ ensures (\old(modeProperty().get()) == Mode.ABORTED) ==> (modeProperty().get() == Mode.ABORTED);
+     */
+    /**
+     * Abort or stop the execution of the game. The game is finished and needs to be reset / hardReset
+     * or closed.
+     * If the game is running, paused or aborted, the game is aborted.
+     * if the game is initializing or stopped, it is stopped.
+     */
+    @Override
+    public void abortOrStopGame() {
+        if ((mode.get() == Mode.STOPPED) || (mode.get() == Mode.INITIALIZING)) {
+            stopGame();
+        } else {
+            mode.set(Mode.ABORTED);
+            if (pauseLock.availablePermits() == 0) {
+                pauseLock.release();
+            }
+            interruptWaitingThreads();
+        }
     }
 
     /*@
