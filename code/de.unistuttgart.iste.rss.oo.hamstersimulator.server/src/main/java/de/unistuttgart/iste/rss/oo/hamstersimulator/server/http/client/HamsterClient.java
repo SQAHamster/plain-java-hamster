@@ -9,13 +9,14 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.Operati
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.clienttoserver.SpeedChangedOperation;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.clienttoserver.*;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.servertoclient.*;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.delta.*;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.delta.type.TileContentType;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMessage;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.delta.*;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.type.TileContentType;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.server.HamsTTPServer;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.internal.InputMessage;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.internal.RemoteInputInterface;
 import de.unistuttgart.iste.rss.utils.LambdaVisitor;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.*;
 
-public final class HamsterClient extends RemoteInputInterface {
+public final class HamsterClient {
 
     private final Map<ObservableTileContent, Integer> contentIdRelation = new IdentityHashMap<>();
     private final Map<ObservableHamster, ChangeListener<Direction>> hamsterDirectionChangeListenerRelation = new IdentityHashMap<>();
@@ -33,11 +34,14 @@ public final class HamsterClient extends RemoteInputInterface {
     private final LambdaVisitor<Operation, Runnable> operationVisitor;
 
     private final HamsterGameController gameController;
+    private final RemoteInputInterface inputInterface;
     private final Socket socket;
     private final ObjectOutputStream outputStream;
 
-    public HamsterClient(final HamsterGameViewModel gameViewModel) throws IOException {
+    private HamsterClient(final HamsterGameViewModel gameViewModel, final RemoteInputInterface inputInterface) throws IOException {
         this.gameController = gameViewModel.getGameController();
+        this.inputInterface = inputInterface;
+        addInputMessageListener(inputInterface);
 
         this.socket = new Socket("127.0.0.1", HamsTTPServer.PORT);
         this.outputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -55,11 +59,18 @@ public final class HamsterClient extends RemoteInputInterface {
         initInitialState(gameViewModel);
     }
 
+    private void addInputMessageListener(final RemoteInputInterface inputInterface) {
+        inputInterface.messageProperty().addListener((observableValue, oldMessage, newMessage) -> {
+            sendOperation(new RequestInputOperation(newMessage.orElse(null)));
+        });
+    }
+
     public static void startAndConnectToServer(final HamsterGameViewModel gameViewModel) {
         try {
             HamsTTPServer.startIfNotRunning();
-            final HamsterClient client = new HamsterClient(gameViewModel);
-            gameViewModel.addInputInterface(client);
+            final RemoteInputInterface inputInterface = new RemoteInputInterface();
+            final HamsterClient client = new HamsterClient(gameViewModel, inputInterface);
+            gameViewModel.addInputInterface(inputInterface);
         } catch (IOException e) {
             throw new RuntimeException("failed to start client", e);
         }
@@ -275,15 +286,10 @@ public final class HamsterClient extends RemoteInputInterface {
 
 
     private void onSetInput(final SetInputOperation operation) {
-        if (getInputID() == operation.getInputId()) {
-            setResult(operation.getResult(), operation.getInputId());
+        if (this.inputInterface.getInputID() == operation.getInputId()) {
+            this.inputInterface.setResult(operation.getResult(), operation.getInputId());
             sendOperation(new AbortInputOperation(operation.getInputId()));
         }
-    }
-
-    @Override
-    protected void onInput(final InputMessage inputMessage) {
-        sendOperation(new RequestInputOperation(inputMessage));
     }
 
     private void shutdown() {

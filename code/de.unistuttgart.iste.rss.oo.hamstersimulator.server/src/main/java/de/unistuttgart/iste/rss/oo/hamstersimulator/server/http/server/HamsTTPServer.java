@@ -1,7 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.server;
 
 import com.google.gson.Gson;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.internal.InputMessage;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMessage;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
 import io.javalin.http.Context;
@@ -38,10 +38,12 @@ public class HamsTTPServer {
     }
 
     public static void startIfNotRunning() {
+        System.out.println("try start");
         try {
             final ServerSocket serverSocket = new ServerSocket(PORT);
             try {
                 new HamsTTPServer(serverSocket);
+                System.out.println("really started");
             } catch (IOException e) {
                 throw new RuntimeException("failed to start server", e);
             }
@@ -67,8 +69,8 @@ public class HamsTTPServer {
 
     private Javalin createHttpServer() {
         return Javalin.create(JavalinConfig::enableCorsForAllOrigins).routes(() -> {
-            path("status", () -> {
-                get(this::getStatus);
+            path("state", () -> {
+                get(this::getState);
             });
             path("gamesList", () -> {
                 get(this::getGamesList);
@@ -109,12 +111,12 @@ public class HamsTTPServer {
     }
 
 
-    private void getStatus(final Context context) {
+    private void getState(final Context context) {
         final HamsterSession session = getSession(context);
         final int since = getIntQueryParam(context, "since");
 
         Gson gson = new Gson();
-        context.result(gson.toJson(session.getStatus(since)));
+        context.result(gson.toJson(session.getGameState(since)));
     }
 
     private void getGamesList(final Context context) {

@@ -1,6 +1,6 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.server.delta;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.delta;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.delta.type.DeltaType;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.type.DeltaType;
 
 import java.io.Serializable;
 

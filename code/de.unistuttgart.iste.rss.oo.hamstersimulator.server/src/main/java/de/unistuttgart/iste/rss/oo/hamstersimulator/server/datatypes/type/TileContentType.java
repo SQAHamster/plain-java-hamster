@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.server.delta.type;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.type;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableGrain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableHamster;

@@ -5,12 +5,10 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.Operati
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.clienttoserver.SpeedChangedOperation;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.clienttoserver.*;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.servertoclient.*;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.delta.Delta;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.internal.GameState;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.internal.GameStatus;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.internal.InputMessage;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.delta.Delta;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.GameState;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMessage;
 import de.unistuttgart.iste.rss.utils.LambdaVisitor;
-import de.unistuttgart.iste.rss.utils.Preconditions;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -285,24 +283,6 @@ public class HamsterSession {
         try {
             return new ArrayList<>(this.deltaList.subList(Math.min(Math.max(index, 0),
                     this.deltaList.size()), this.deltaList.size()));
-        } finally {
-            readWriteLock.readLock().unlock();
-        }
-    }
-
-    /*@
-     @ requires true;
-     @ ensures \result != null;
-     @*/
-    /**
-     * Gets the current GameState, which consists of mode, inputMessage, speed and the
-     * flags canUndo and canRedo
-     * @return the newly created GameState
-     */
-    private GameState getGameState() {
-        readWriteLock.readLock().lock();
-        try {
-            return new GameState(mode, inputMessage, canUndo, canRedo, speed);
         } finally {
             readWriteLock.readLock().unlock();
         }
@@ -604,12 +584,12 @@ public class HamsterSession {
      * @param since the index since which deltas should be included
      * @return the current status of the game
      */
-    public GameStatus getStatus(final int since) {
+    public GameState getGameState(final int since) {
         keepAlive();
 
         this.readWriteLock.readLock().lock();
         try {
-            return new GameStatus(getGameState(), getDeltasSince(since));
+            return new GameState(mode, inputMessage, canUndo, canRedo, speed, getDeltasSince(since));
         } finally {
             this.readWriteLock.readLock().unlock();
         }

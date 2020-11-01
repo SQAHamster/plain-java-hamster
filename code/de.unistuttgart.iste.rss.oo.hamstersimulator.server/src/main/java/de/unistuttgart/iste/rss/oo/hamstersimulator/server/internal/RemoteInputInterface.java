@@ -3,9 +3,16 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.server.internal;
 
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.InputInterface;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMessage;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMode;
+import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -20,7 +27,7 @@ import static de.unistuttgart.iste.rss.utils.Preconditions.*;
  * execution is necessary (e.g. a setResult after a getInputId), use
  * enterCriticalRegion and leaveCriticalRegion. <br>
  */
-public abstract class RemoteInputInterface implements InputInterface {
+public class RemoteInputInterface implements InputInterface {
     private volatile CompletableFuture<Optional<String>> result = new CompletableFuture<>();
 
     /**
@@ -35,7 +42,8 @@ public abstract class RemoteInputInterface implements InputInterface {
     /**
      * The current message message a remote UI should display
      */
-    private volatile InputMessage message;
+    private final ReadOnlyObjectWrapper<Optional<InputMessage>> message
+            = new ReadOnlyObjectWrapper<>(this, "message", Optional.empty());
 
     /**
      * lock for critical sections
@@ -55,8 +63,7 @@ public abstract class RemoteInputInterface implements InputInterface {
         try {
             this.setupNext();
             this.mode = InputMode.READ_INT;
-            this.message = new InputMessage(message, getInputID());
-            onInput(this.message);
+            this.message.set(Optional.of(new InputMessage(message, getInputID())));
         } finally {
             this.leaveCriticalRegion();
         }
@@ -87,8 +94,7 @@ public abstract class RemoteInputInterface implements InputInterface {
         try {
             this.setupNext();
             this.mode = InputMode.READ_STRING;
-            this.message = new InputMessage(message, getInputID());
-            onInput(this.message);
+            this.message.set(Optional.of(new InputMessage(message, getInputID())));
         } finally {
             this.leaveCriticalRegion();
         }
@@ -116,9 +122,8 @@ public abstract class RemoteInputInterface implements InputInterface {
             final PrintWriter printWriter = new PrintWriter(stringWriter);
             throwable.printStackTrace(printWriter);
 
-            this.message = new InputMessage(throwable.getMessage(), getInputID(),
-                    throwable.getClass().getSimpleName(), stringWriter.toString());
-            onInput(this.message);
+            this.message.set(Optional.of(new InputMessage(throwable.getMessage(), getInputID(),
+                    throwable.getClass().getSimpleName(), stringWriter.toString())));
         } finally {
             this.leaveCriticalRegion();
         }
@@ -206,15 +211,9 @@ public abstract class RemoteInputInterface implements InputInterface {
      * @return the current message or an empty optional if
      *         there is none because the input mode is none
      */
-    public Optional<InputMessage> getMessage() {
-        if (this.mode == InputMode.NONE) {
-            return Optional.empty();
-        } else {
-            return Optional.of(this.message);
-        }
+    public ReadOnlyObjectProperty<Optional<InputMessage>> messageProperty() {
+        return this.message.getReadOnlyProperty();
     }
-
-    protected abstract void onInput(final InputMessage inputMessage);
 
     /**
      * Enters a critical region and waits if necessary <br>

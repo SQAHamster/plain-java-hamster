@@ -1,8 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.clienttoserver;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.InputOperation;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.Operation;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.internal.InputMessage;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMessage;
 
 public class RequestInputOperation implements Operation {
 

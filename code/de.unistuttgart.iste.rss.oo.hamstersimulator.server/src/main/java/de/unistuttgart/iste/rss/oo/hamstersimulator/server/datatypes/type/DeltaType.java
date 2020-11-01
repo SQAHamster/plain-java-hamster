@@ -1,6 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.server.delta.type;
-
-import java.io.Serializable;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.type;
 
 public enum DeltaType {
     ADD_TILE_CONTENT,
