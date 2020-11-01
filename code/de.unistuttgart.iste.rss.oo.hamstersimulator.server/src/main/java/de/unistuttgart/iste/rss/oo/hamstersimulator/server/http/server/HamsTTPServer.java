@@ -24,7 +24,6 @@ public class HamsTTPServer {
     private int sessionIdCounter = 0;
 
     public HamsTTPServer(final ServerSocket serverSocket) throws IOException {
-        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "off");
         this.serverSocket = serverSocket;
         startListenForSessions(serverSocket);
         this.httpServer = createHttpServer();
@@ -32,12 +31,10 @@ public class HamsTTPServer {
     }
 
     public static void startIfNotRunning() {
-        System.out.println("try start");
         try {
             final ServerSocket serverSocket = new ServerSocket(PORT);
             try {
                 new HamsTTPServer(serverSocket);
-                System.out.println("really started");
             } catch (IOException e) {
                 throw new RuntimeException("failed to start server", e);
             }

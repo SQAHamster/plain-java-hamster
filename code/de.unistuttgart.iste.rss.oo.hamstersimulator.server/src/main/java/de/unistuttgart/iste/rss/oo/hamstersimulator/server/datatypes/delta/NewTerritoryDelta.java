@@ -9,7 +9,7 @@ public class NewTerritoryDelta extends Delta {
     private final int height;
 
     public NewTerritoryDelta(final int width, final int height) {
-        super(DeltaType.NEW_TERRITORY);
+        super(DeltaType.INITIALIZE_TERRITORY);
         this.width = width;
         this.height = height;
     }
