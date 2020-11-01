@@ -9,14 +9,12 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.Operati
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.clienttoserver.SpeedChangedOperation;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.clienttoserver.*;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.servertoclient.*;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMessage;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.delta.*;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.type.TileContentType;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.server.HamsTTPServer;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.internal.RemoteInputInterface;
 import de.unistuttgart.iste.rss.utils.LambdaVisitor;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 
 import java.io.IOException;
@@ -222,7 +220,6 @@ public final class HamsterClient {
             }
             for (final ObservableTileContent removedContent : change.getRemoved()) {
                 deltas.add(new RemoveTileContentDelta(contentIdRelation.get(removedContent)));
-                contentIdRelation.remove(removedContent);
             }
         }
         sendOperation(new AddDeltasOperation(deltas));
@@ -243,11 +240,16 @@ public final class HamsterClient {
     }
 
     private synchronized Delta addedTileContent(final ObservableTileContent addedContent) {
-        contentIdRelation.put(addedContent, idCounter);
-        final Delta delta = new AddTileContentDelta(TileContentType.fromObservable(addedContent),
-                addedContent.getCurrentLocation().orElseThrow(), idCounter);
-        idCounter++;
-        return delta;
+        if (contentIdRelation.containsKey(addedContent)) {
+            return new AddTileContentDelta(TileContentType.fromObservable(addedContent),
+                    addedContent.getCurrentLocation().orElseThrow(), contentIdRelation.get(addedContent));
+        } else {
+            contentIdRelation.put(addedContent, idCounter);
+            final Delta delta = new AddTileContentDelta(TileContentType.fromObservable(addedContent),
+                    addedContent.getCurrentLocation().orElseThrow(), idCounter);
+            idCounter++;
+            return delta;
+        }
     }
 
     private synchronized Delta addedLogEntry(final ObservableLogEntry logEntry) {
