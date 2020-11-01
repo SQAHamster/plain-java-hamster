@@ -1,10 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.server;
 
 import com.google.gson.Gson;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMessage;
-import io.javalin.Javalin;
-import io.javalin.core.JavalinConfig;
-import io.javalin.http.Context;
+import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -15,16 +12,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static io.javalin.apibuilder.ApiBuilder.path;
-import static io.javalin.apibuilder.ApiBuilder.get;
-import static io.javalin.apibuilder.ApiBuilder.post;
-
 public class HamsTTPServer {
     public static final int PORT = 8008;
     private static final int HTTP_SERVER_PORT = 8080;
 
     private final ServerSocket serverSocket;
-    private final Javalin httpServer;
+    private final HttpServer httpServer;
     private final Map<Integer, HamsterSession> sessions = new ConcurrentHashMap<>();
     private int sessionIdCounter = 0;
 
@@ -33,7 +26,6 @@ public class HamsTTPServer {
         this.serverSocket = serverSocket;
         startListenForSessions(serverSocket);
         this.httpServer = createHttpServer();
-        this.httpServer.start(HTTP_SERVER_PORT);
         startLifetimeRefreshTimer();
     }
 
@@ -67,7 +59,9 @@ public class HamsTTPServer {
         }).start();
     }
 
-    private Javalin createHttpServer() {
+    private HttpServer createHttpServer() throws IOException {
+        final HttpServer server = HttpServer.create();
+        /*
         return Javalin.create(JavalinConfig::enableCorsForAllOrigins).routes(() -> {
             path("state", () -> {
                 get(this::getState);
@@ -91,6 +85,7 @@ public class HamsTTPServer {
             context.result(e.getMessage());
             context.status(500);
         });
+         */
     }
 
     private void startLifetimeRefreshTimer() {
@@ -111,21 +106,21 @@ public class HamsTTPServer {
     }
 
 
-    private void getState(final Context context) {
+    private void getState(final RequestContext context) {
         final HamsterSession session = getSession(context);
         final int since = getIntQueryParam(context, "since");
 
         Gson gson = new Gson();
-        context.result(gson.toJson(session.getGameState(since)));
+        context.setResult(gson.toJson(session.getGameState(since)));
     }
 
-    private void getGamesList(final Context context) {
+    private void getGamesList(final RequestContext context) {
         Gson gson = new Gson();
-        context.result(gson.toJson(this.sessions.keySet()));
+        context.setResult(gson.toJson(this.sessions.keySet()));
     }
 
 
-    private void postInput(final Context context) {
+    private void postInput(final RequestContext context) {
         final HamsterSession session = getSession(context);
         final int inputId = getIntQueryParam(context, "inputId");
         final String input = getQueryParam(context, "input");
@@ -137,7 +132,7 @@ public class HamsTTPServer {
         session.setInputResult(inputId, input);
     }
 
-    private void postAction(final Context context) {
+    private void postAction(final RequestContext context) {
         final HamsterSession session = getSession(context);
         final String action = getQueryParam(context, "action");
 
@@ -150,7 +145,7 @@ public class HamsTTPServer {
         }
     }
 
-    private void postSpeed(final Context context) {
+    private void postSpeed(final RequestContext context) {
         final HamsterSession session = getSession(context);
         final double speed = getDoubleQueryParam(context, "speed");
 
@@ -160,16 +155,16 @@ public class HamsTTPServer {
         session.changeSpeed(speed);
     }
 
-    private String getQueryParam(final Context context, final String parameter) {
-        final String queryParam = context.queryParam(parameter);
-        if (queryParam == null) {
+    private String getQueryParam(final RequestContext context, final String parameter) {
+        final Optional<String> queryParam = context.getQueryParam(parameter);
+        if (queryParam.isEmpty()) {
             throw new StatusCodeException(400, "necessary query parameter not provided: " + parameter);
         } else {
-            return queryParam;
+            return queryParam.get();
         }
     }
 
-    private int getIntQueryParam(final Context context, final String parameter) {
+    private int getIntQueryParam(final RequestContext context, final String parameter) {
         final String queryParam = getQueryParam(context, parameter);
         try {
             return Integer.parseInt(queryParam);
@@ -178,7 +173,7 @@ public class HamsTTPServer {
         }
     }
 
-    private double getDoubleQueryParam(final Context context, final String parameter) {
+    private double getDoubleQueryParam(final RequestContext context, final String parameter) {
         final String queryParam = getQueryParam(context, parameter);
         try {
             return Double.parseDouble(queryParam);
@@ -187,7 +182,7 @@ public class HamsTTPServer {
         }
     }
 
-    private HamsterSession getSession(final Context context) {
+    private HamsterSession getSession(final RequestContext context) {
         final int sessionId = getIntQueryParam(context, "id");
         if (this.sessions.containsKey(sessionId)) {
             final HamsterSession session = this.sessions.get(sessionId);
