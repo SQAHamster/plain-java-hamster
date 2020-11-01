@@ -7,7 +7,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.type.TileCo
 public class AddTileContentDelta extends Delta {
     private static final long serialVersionUID = 4014642903948847027L;
 
-    private final int contentId;
+    private final int tileContentId;
     private final Location location;
     final TileContentType contentType;
 
@@ -15,6 +15,6 @@ public class AddTileContentDelta extends Delta {
         super(DeltaType.ADD_TILE_CONTENT);
         this.contentType = tileContentType;
         this.location = location;
-        this.contentId = tileContentId;
+        this.tileContentId = tileContentId;
     }
 }

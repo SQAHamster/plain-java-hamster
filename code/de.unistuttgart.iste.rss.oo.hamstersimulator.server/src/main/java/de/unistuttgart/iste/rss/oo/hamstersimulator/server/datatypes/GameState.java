@@ -13,15 +13,17 @@ public class GameState {
     private final boolean canRedo;
     private final double speed;
     private final List<Delta> deltas;
+    private final Integer firstDeltaId;
 
     public GameState(final Mode mode, final InputMessage inputMessage,
                      final boolean canUndo, final boolean canRedo, final double speed,
-                     final List<Delta> deltas) {
+                     final List<Delta> deltas, final int firstDeltaId) {
         this.mode = mode;
         this.inputMessage = inputMessage;
         this.canUndo = canUndo;
         this.canRedo = canRedo;
         this.speed = speed;
         this.deltas = deltas;
+        this.firstDeltaId = firstDeltaId;
     }
 }

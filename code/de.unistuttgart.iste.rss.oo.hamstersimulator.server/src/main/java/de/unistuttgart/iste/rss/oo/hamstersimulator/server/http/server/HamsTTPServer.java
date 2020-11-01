@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpServer;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMessage;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -15,15 +16,17 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HamsTTPServer {
-    public static final int PORT = 8008;
-    private static final int HTTP_SERVER_PORT = 8080;
+    private final int httpServerPort;
+    private final InetAddress httpServerInetAddress;
 
     private final ServerSocket serverSocket;
     private final HttpServer httpServer;
     private final Map<Integer, HamsterSession> sessions = new ConcurrentHashMap<>();
     private int sessionIdCounter = 0;
 
-    public HamsTTPServer(final ServerSocket serverSocket) throws IOException {
+    public HamsTTPServer(final ServerSocket serverSocket, final InetAddress httpServerInetAddress, final int httpServerPort) throws IOException {
+        this.httpServerInetAddress = httpServerInetAddress;
+        this.httpServerPort = httpServerPort;
         this.serverSocket = serverSocket;
         startListenForSessions(serverSocket);
         this.httpServer = createHttpServer();
@@ -32,15 +35,21 @@ public class HamsTTPServer {
 
     public static void startIfNotRunning() {
         try {
-            final ServerSocket serverSocket = new ServerSocket(PORT);
+            final ServerSocket serverSocket = new ServerSocket(8008);
             try {
-                new HamsTTPServer(serverSocket);
+                new HamsTTPServer(serverSocket, InetAddress.getByName("127.0.0.1"), 8080);
             } catch (IOException e) {
                 throw new RuntimeException("failed to start server", e);
             }
         } catch (IOException e) {
             //already running
         }
+    }
+
+    public static void startOnPort(final InetAddress httpServerInetAddress, final int httpServerPort,
+                                         final int port) throws IOException {
+        final ServerSocket serverSocket = new ServerSocket(port);
+        new HamsTTPServer(serverSocket, httpServerInetAddress, httpServerPort);
     }
 
     private void startListenForSessions(final ServerSocket serverSocket) {
@@ -59,7 +68,7 @@ public class HamsTTPServer {
     }
 
     private HttpServer createHttpServer() throws IOException {
-        final HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", HTTP_SERVER_PORT), 5);
+        final HttpServer server = HttpServer.create(new InetSocketAddress(httpServerInetAddress, httpServerPort), 5);
         server.setExecutor(null);
 
         final RequestHandler handler = new RequestHandler();
@@ -127,6 +136,7 @@ public class HamsTTPServer {
             case "pause" -> session.pause();
             case "undo" -> session.undo();
             case "redo" -> session.redo();
+            case "abort" -> session.abort();
             default -> throw new StatusCodeException(400, "unknown action: " + action);
         }
     }

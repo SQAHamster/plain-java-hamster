@@ -413,6 +413,7 @@ public class HamsterGame {
     void processCommandSpecification(final CommandSpecification specification) {
         final Optional<Command> territoryCommandPart =
                 territory.getInternalTerritory().getCommandFromSpecification(specification);
+                territory.getInternalTerritory().getCommandFromSpecification(specification);
         final Optional<Command> logCommandPart = this.log.getCommandFromSpecification(specification);
         final Optional<Command> hamsterPart;
         if (specification instanceof AbstractHamsterCommandSpecification) {

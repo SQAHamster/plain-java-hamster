@@ -20,6 +20,7 @@ import javafx.collections.ListChangeListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.*;
 
@@ -36,12 +37,13 @@ public final class HamsterClient {
     private final Socket socket;
     private final ObjectOutputStream outputStream;
 
-    private HamsterClient(final HamsterGameViewModel gameViewModel, final RemoteInputInterface inputInterface) throws IOException {
+    private HamsterClient(final HamsterGameViewModel gameViewModel, final RemoteInputInterface inputInterface,
+                          final int port) throws IOException {
         this.gameController = gameViewModel.getGameController();
         this.inputInterface = inputInterface;
         addInputMessageListener(inputInterface);
 
-        this.socket = new Socket("127.0.0.1", HamsTTPServer.PORT);
+        this.socket = new Socket("127.0.0.1", port);
         this.outputStream = new ObjectOutputStream(socket.getOutputStream());
         startInputListener(socket);
 
@@ -51,7 +53,8 @@ public final class HamsterClient {
                 .on(ResumeOperation.class).then(operation -> () -> onResume(operation))
                 .on(RedoOperation.class).then(operation -> () -> onRedo(operation))
                 .on(SetInputOperation.class).then(operation -> () -> onSetInput(operation))
-                .on(UndoOperation.class).then(operation -> () -> onUndo(operation));
+                .on(UndoOperation.class).then(operation -> () -> onUndo(operation))
+                .on(AbortOperation.class).then(operation -> () -> onAbort(operation));
 
         initListeners(gameViewModel);
         initInitialState(gameViewModel);
@@ -67,11 +70,19 @@ public final class HamsterClient {
         try {
             HamsTTPServer.startIfNotRunning();
             final RemoteInputInterface inputInterface = new RemoteInputInterface();
-            final HamsterClient client = new HamsterClient(gameViewModel, inputInterface);
+            final HamsterClient client = new HamsterClient(gameViewModel, inputInterface, 8008);
             gameViewModel.addInputInterface(inputInterface);
         } catch (IOException e) {
             throw new RuntimeException("failed to start client", e);
         }
+    }
+
+    public static void startAndConnectToServerOnPort(final HamsterGameViewModel gameViewModel,
+                                                     final InetAddress httpServerInetAddress, final int httpServerPort, final int port) throws IOException {
+        HamsTTPServer.startOnPort(httpServerInetAddress, httpServerPort, port);
+        final RemoteInputInterface inputInterface = new RemoteInputInterface();
+        final HamsterClient client = new HamsterClient(gameViewModel, inputInterface, port);
+        gameViewModel.addInputInterface(inputInterface);
     }
 
     private void startInputListener(final Socket socket) throws IOException {
@@ -108,7 +119,7 @@ public final class HamsterClient {
     private void initTerritoryListeners(final ObservableTerritory territory) {
         initTileListeners(territory);
         territory.territorySizeProperty().addListener((observableValue, oldSize, newSize) -> {
-            sendOperation(new AddDeltaOperation(new InitializeTerritoryDelta(newSize)));
+            sendOperation(new AddDeltaOperation(new NewTerritoryDelta(newSize)));
         });
     }
 
@@ -175,7 +186,7 @@ public final class HamsterClient {
     }
 
     private void initInitialTerritoryState(final ObservableTerritory territory, final List<Delta> deltas) {
-        deltas.add(new InitializeTerritoryDelta(territory.getSize()));
+        deltas.add(new NewTerritoryDelta(territory.getSize()));
         territory.tilesProperty().stream().flatMap(tile -> tile.contentProperty().stream())
                 .forEach(content -> deltas.add(addedTileContent(content)));
         territory.hamstersProperty().forEach(hamster -> {
@@ -292,6 +303,10 @@ public final class HamsterClient {
         if (gameController.canUndoProperty().get()) {
             gameController.undo();
         }
+    }
+
+    private void onAbort(final AbortOperation operation) {
+        gameController.abortOrStopGame();
     }
 
 

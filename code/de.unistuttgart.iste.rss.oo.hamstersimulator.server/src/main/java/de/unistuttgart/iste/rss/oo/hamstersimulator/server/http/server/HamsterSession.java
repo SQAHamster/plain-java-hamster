@@ -526,6 +526,21 @@ public class HamsterSession {
 
     /*@
      @ requires isAlive();
+     @*/
+    /**
+     * Aborts the game
+     * This does not have an immediate effect because it is sent to
+     * the client.
+     * @throws IllegalStateException if this session isn't alive
+     */
+    public void abort() {
+        checkState(isAlive(), "session must not be stopped");
+
+        sendOperation(new AbortOperation());
+    }
+
+    /*@
+     @ requires isAlive();
      @ requires (this.inputMessage != null) && (this.inputMessage.getInputId() == inputId);
      @*/
     /**
@@ -589,7 +604,9 @@ public class HamsterSession {
 
         this.readWriteLock.readLock().lock();
         try {
-            return new GameState(mode, inputMessage, canUndo, canRedo, speed, getDeltasSince(since));
+            final List<Delta> deltaSubList = getDeltasSince(since);
+            return new GameState(mode, inputMessage, canUndo, canRedo, speed, deltaSubList,
+                    deltaList.size() - deltaSubList.size());
         } finally {
             this.readWriteLock.readLock().unlock();
         }
