@@ -100,9 +100,16 @@ public final class HamsterClient {
 
     private void initListeners(final HamsterGameViewModel gameViewModel) {
         gameViewModel.getLog().logProperty().addListener(this::onLogChanged);
-        initTileListeners(gameViewModel.getTerritory());
+        initTerritoryListeners(gameViewModel.getTerritory());
         initHamsterListeners(gameViewModel.getTerritory());
         initGameControllerListeners(gameViewModel.getGameController());
+    }
+
+    private void initTerritoryListeners(final ObservableTerritory territory) {
+        initTileListeners(territory);
+        territory.territorySizeProperty().addListener((observableValue, oldSize, newSize) -> {
+            sendOperation(new AddDeltaOperation(new InitializeTerritoryDelta(newSize)));
+        });
     }
 
     private void initTileListeners(final ObservableTerritory territory) {
@@ -168,6 +175,7 @@ public final class HamsterClient {
     }
 
     private void initInitialTerritoryState(final ObservableTerritory territory, final List<Delta> deltas) {
+        deltas.add(new InitializeTerritoryDelta(territory.getSize()));
         territory.tilesProperty().stream().flatMap(tile -> tile.contentProperty().stream())
                 .forEach(content -> deltas.add(addedTileContent(content)));
         territory.hamstersProperty().forEach(hamster -> {

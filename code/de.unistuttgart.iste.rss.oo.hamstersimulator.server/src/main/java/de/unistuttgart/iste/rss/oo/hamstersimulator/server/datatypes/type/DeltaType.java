@@ -6,5 +6,5 @@ public enum DeltaType {
     ROTATE_HAMSTER,
     ADD_LOG_ENTRY,
     REMOVE_LOG_ENTRY,
-    NEW_TERRITORY
+    INITIALIZE_TERRITORY,
 }
