@@ -2,8 +2,10 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.server;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpServer;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMessage;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Map;
@@ -60,32 +62,19 @@ public class HamsTTPServer {
     }
 
     private HttpServer createHttpServer() throws IOException {
-        final HttpServer server = HttpServer.create();
-        /*
-        return Javalin.create(JavalinConfig::enableCorsForAllOrigins).routes(() -> {
-            path("state", () -> {
-                get(this::getState);
-            });
-            path("gamesList", () -> {
-                get(this::getGamesList);
-            });
-            path("input", () -> {
-                post(this::postInput);
-            });
-            path("speed", () -> {
-                post(this::postSpeed);
-            });
-            path("action", () -> {
-                post(this::postAction);
-            });
-        }).exception(StatusCodeException.class, (e, context) -> {
-            context.result(e.getMessage());
-            context.status(e.getStatusCode());
-        }).exception(Exception.class, (e, context) -> {
-            context.result(e.getMessage());
-            context.status(500);
-        });
-         */
+        final HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", HTTP_SERVER_PORT), 5);
+        server.setExecutor(null);
+
+        final RequestHandler handler = new RequestHandler();
+        handler.get("/state", this::getState);
+        handler.get("/gamesList", this::getGamesList);
+        handler.post("/input", this::postInput);
+        handler.post("/speed", this::postSpeed);
+        handler.post("/action", this::postAction);
+
+        server.createContext("/", handler);
+        server.start();
+        return server;
     }
 
     private void startLifetimeRefreshTimer() {
@@ -210,7 +199,7 @@ public class HamsTTPServer {
         } catch (IOException e) {
             // ignore
         }
-        this.httpServer.stop();
+        this.httpServer.stop(0);
     }
 
 }
