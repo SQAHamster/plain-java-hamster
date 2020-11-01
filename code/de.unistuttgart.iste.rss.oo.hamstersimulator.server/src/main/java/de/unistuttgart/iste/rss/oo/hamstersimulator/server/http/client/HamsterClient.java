@@ -138,8 +138,10 @@ public final class HamsterClient {
 
     private void initHamsterListeners(final ObservableTerritory territory) {
         territory.hamstersProperty().addListener((ListChangeListener<ObservableHamster>) change -> {
-            change.getAddedSubList().forEach(this::hamsterAdded);
-            change.getRemoved().forEach(this::hamsterRemoved);
+            while (change.next()) {
+                change.getAddedSubList().forEach(this::hamsterAdded);
+                change.getRemoved().forEach(this::hamsterRemoved);
+            }
         });
         territory.hamstersProperty().forEach(this::hamsterAdded);
         territory.hamstersProperty().addListener(this::onHamsterAdded);
