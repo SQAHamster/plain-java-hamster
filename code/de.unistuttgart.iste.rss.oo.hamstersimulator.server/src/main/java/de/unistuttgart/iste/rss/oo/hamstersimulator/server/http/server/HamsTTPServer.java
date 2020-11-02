@@ -212,7 +212,7 @@ public class HamsTTPServer {
         final HamsterSession session = getSession(context);
         final int since = getIntQueryParam(context, "since");
 
-        Gson gson = new Gson();
+        final Gson gson = new Gson();
         context.setResult(gson.toJson(session.getGameState(since)));
     }
 
@@ -226,7 +226,7 @@ public class HamsTTPServer {
     private void getGamesList(final RequestContext context) {
         checkNotNull(context);
 
-        Gson gson = new Gson();
+        final Gson gson = new Gson();
         context.setResult(gson.toJson(this.sessions.keySet()));
     }
 
