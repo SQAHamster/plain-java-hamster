@@ -223,7 +223,7 @@ public class HamsterSession {
      * Shuts this session down. This closes the socket and
      * therefore ensures that all non-damon threads are interrupted
      */
-    private void shutdown() {
+    public void shutdown() {
         this.readWriteLock.writeLock().lock();
         try {
             if (this.isAlive) {
