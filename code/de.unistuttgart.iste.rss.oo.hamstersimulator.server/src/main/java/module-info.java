@@ -10,4 +10,5 @@ module rss.hamster.server {
     opens de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.type to com.google.gson;
 
     exports de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.client;
+    exports de.unistuttgart.iste.rss.oo.hamstersimulator.server.input;
 }

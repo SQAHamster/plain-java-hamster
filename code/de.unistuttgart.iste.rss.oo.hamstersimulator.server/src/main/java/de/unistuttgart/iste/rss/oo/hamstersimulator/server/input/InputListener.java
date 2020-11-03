@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.server.internal;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.server.input;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMessage;
 

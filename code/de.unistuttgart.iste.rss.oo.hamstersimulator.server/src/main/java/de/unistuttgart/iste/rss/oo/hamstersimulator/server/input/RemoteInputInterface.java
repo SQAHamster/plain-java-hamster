@@ -1,18 +1,15 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.server.internal;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.server.input;
 
 
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.InputInterface;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMessage;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMode;
-import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;

@@ -129,7 +129,7 @@ public class HamsterSession {
                 .on(CanRedoChangedOperation.class).then(operation -> () -> onCanRedoChanged(operation))
                 .on(SpeedChangedOperation.class).then(operation -> () -> onSpeedChanged(operation));
 
-        startInputListener(socket);
+        startOperationsListener(socket);
     }
 
     /*@
@@ -146,7 +146,7 @@ public class HamsterSession {
      * @throws IllegalArgumentException if the socket is closed
      * @throws IllegalStateException if this session isn't alive
      */
-    private void startInputListener(final Socket socket) throws IOException {
+    private void startOperationsListener(final Socket socket) throws IOException {
         checkNotNull(socket, "socket must be != null");
         checkState(isAlive(), "the session must not be closed to start listening for input");
         checkArgument(!socket.isClosed(), "the socket must not be closed");
@@ -193,7 +193,7 @@ public class HamsterSession {
      @ requires isAlive();
      @*/
     /**
-     * Sends and operation to the client via the the outputStream
+     * Sends an operation to the client via the the outputStream
      * if this is not possible, the shutdown is initiated.
      * Requires that the session is alive
      * @param operation the Operation which is sent to the client, must be != null

@@ -15,8 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static de.unistuttgart.iste.rss.utils.Preconditions.checkArgument;
-import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
+import static de.unistuttgart.iste.rss.utils.Preconditions.*;
 
 /**
  * The Server of the HamsterGame
@@ -100,10 +99,9 @@ public class HamsTTPServer {
     }
 
     /*@
-     @ requires serverSocket != null;
-     @ requires !serverSocket.isClosed();
      @ requires httpServerInetAddress != null;
      @ requires (httpServerPort > 0) && (httpServerPort <= 65535);
+     @ requires (port > 0) && (port <= 65535);
      @*/
     /**
      * Starts the HamsTTPServer on the specified port and address
@@ -115,9 +113,14 @@ public class HamsTTPServer {
      * @param httpServerPort the port on which the HTTP server should listen for requests
      * @param port the port on which the TCP server listens for hamster clients
      * @throws IOException if one of the ports is already blocked
+     * @throws IllegalArgumentException if port or httpServerPort is no allowed TCP port
      */
     public static void startOnPort(final InetAddress httpServerInetAddress, final int httpServerPort,
                                          final int port) throws IOException {
+        checkNotNull(httpServerInetAddress);
+        checkArgument((httpServerPort > 0) && (httpServerPort <= 65535));
+        checkArgument((port > 0) && (port <= 65535));
+
         final ServerSocket serverSocket = new ServerSocket(port);
         new HamsTTPServer(serverSocket, httpServerInetAddress, httpServerPort);
     }
@@ -131,6 +134,7 @@ public class HamsTTPServer {
      * This starts another thread, which is shutdown when the serverSocket is closed
      * @param serverSocket the server socket used to accept new hamster clients
      *                     for each client, a new HamsterSession is created and added
+     * @throws IllegalArgumentException if the serverSocket is already closed
      */
     private void startListenForSessions(final ServerSocket serverSocket) {
         checkNotNull(serverSocket);
@@ -151,6 +155,9 @@ public class HamsTTPServer {
         }).start();
     }
 
+    /*@
+     @ requires true;
+     @*/
     /**
      * Creates and starts the http server which handles the UI's HTTP requests.
      * This is non-blocking
@@ -395,6 +402,7 @@ public class HamsTTPServer {
 
     /*@
      @ requires true;
+     @ ensures sessions.containsKey(sessionId);
      @*/
     /**
      * Removes the session with the specified id.
@@ -410,6 +418,7 @@ public class HamsTTPServer {
 
     /*@
      @ requires true;
+     @ ensures serverSocket.isClosed();
      @*/
     /**
      * Shuts this server down.
