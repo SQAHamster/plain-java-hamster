@@ -1,6 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.server;
 
 
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -30,6 +31,11 @@ public class RequestHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         final RequestContext context = new RequestContext(exchange);
         invokeAndCatchExceptions(exchange, context);
+        Headers headers = exchange.getResponseHeaders();
+        headers.add("Access-Control-Allow-Headers","x-prototype-version,x-requested-with");
+        headers.add("Access-Control-Allow-Methods","GET,POST");
+        headers.add("Access-Control-Allow-Origin","*");
+        headers.add("Content-Type","application/json");
         exchange.sendResponseHeaders(context.getStatusCode(), context.getResult().getBytes().length);
         final OutputStream outputStream = exchange.getResponseBody();
         outputStream.write(context.getResult().getBytes());
