@@ -5,6 +5,7 @@ import static de.unistuttgart.iste.rss.utils.Preconditions.checkState;
 
 import java.nio.channels.FileChannel;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.ReentrantLock;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameController;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
@@ -50,17 +51,23 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
      * @throws IllegalStateException if getCurrentGameMode() != Mode.INITIALIZING
      */
     public void startGame(final boolean startPaused) {
-        checkState(mode.get() == Mode.INITIALIZING,
-                "start game is only possible during initialization");
+        getStateLock().lock();
+        try {
+            checkState(mode.get() == Mode.INITIALIZING,
+                    "start game is only possible during initialization");
 
-        this.executedCommands.clear();
-        this.canUndo.set(false);
-        this.canRedo.set(false);
-        if (startPaused) {
-            mode.set(Mode.PAUSED);
-        } else {
-            mode.set(Mode.RUNNING);
+            this.executedCommands.clear();
+            this.canUndo.set(false);
+            this.canRedo.set(false);
+            if (startPaused) {
+                mode.set(Mode.PAUSED);
+            } else {
+                mode.set(Mode.RUNNING);
+            }
+        } finally {
+            getStateLock().unlock();
         }
+
     }
 
     private void delay() {
@@ -90,29 +97,35 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
 
     @Override
     public void execute(final Command command) {
-        if (this.mode.get() == Mode.ABORTED) {
-            this.mode.set(Mode.STOPPED);
-            throw new GameAbortedException("Stopped execution of command due to abort");
-        } else if (this.mode.get() != Mode.RUNNING && this.mode.get() != Mode.PAUSED) {
-            throw new IllegalStateException("The game needs to be running to execute hamster commands");
-        }
-        if (!command.canExecute()) {
-            mode.set(Mode.STOPPED);
-            throw command.getExceptionsFromPreconditions().get(0);
-        }
-        this.executingThread = Thread.currentThread();
-        checkState(!(mode.get() == Mode.STOPPED));
         try {
             pauseLock.acquire();
-            super.execute(command);
+            getStateLock().lock();
+            try {
+                if (this.mode.get() == Mode.ABORTED) {
+                    this.mode.set(Mode.STOPPED);
+                    throw new GameAbortedException("Stopped execution of command due to abort");
+                } else if (this.mode.get() != Mode.RUNNING) {
+                    throw new IllegalStateException("The game needs to be running to execute hamster commands");
+                }
+                if (!command.canExecute()) {
+                    mode.set(Mode.STOPPED);
+                    throw command.getExceptionsFromPreconditions().get(0);
+                }
+                this.executingThread = Thread.currentThread();
+                checkState(!(mode.get() == Mode.STOPPED));
+                try {
+                    super.execute(command);
+                } catch (final Exception e) {
+                    // Stop the game to prevent execution of further commands!
+                    mode.set(Mode.STOPPED);
+                    throw e;
+                }
+            } finally {
+                getStateLock().unlock();
+            }
             delay();
-        } catch (final InterruptedException e) {
-        } catch (final Exception e) {
-            // Stop the game to prevent execution of further commands!
-            mode.set(Mode.STOPPED);
-            throw e;
-        }
-        finally {
+        } catch (InterruptedException e) {
+        } finally {
             pauseLock.release();
         }
     }
@@ -132,10 +145,16 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
      */
     @Override
     public void hardReset() {
-        super.hardReset();
+        getStateLock().lock();
+        try {
+            super.hardReset();
 
-        this.stopGame();
-        this.mode.set(Mode.INITIALIZING);
+            this.stopGame();
+            this.mode.set(Mode.INITIALIZING);
+        } finally {
+            getStateLock().unlock();
+        }
+
     }
 
     private void interruptWaitingThreads() {
@@ -155,11 +174,16 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
      */
     @Override
     public void stopGame() {
-        mode.set(Mode.STOPPED);
-        if (pauseLock.availablePermits() == 0) {
-            pauseLock.release();
+        getStateLock().lock();
+        try {
+            mode.set(Mode.STOPPED);
+            if (pauseLock.availablePermits() == 0) {
+                pauseLock.release();
+            }
+            interruptWaitingThreads();
+        } finally {
+            getStateLock().unlock();
         }
-        interruptWaitingThreads();
     }
 
     /*@
@@ -178,14 +202,19 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
      */
     @Override
     public void abortOrStopGame() {
-        if ((mode.get() == Mode.STOPPED) || (mode.get() == Mode.INITIALIZING)) {
-            stopGame();
-        } else {
-            mode.set(Mode.ABORTED);
-            if (pauseLock.availablePermits() == 0) {
-                pauseLock.release();
+        getStateLock().lock();
+        try {
+            if ((mode.get() == Mode.STOPPED) || (mode.get() == Mode.INITIALIZING)) {
+                stopGame();
+            } else {
+                mode.set(Mode.ABORTED);
+                if (pauseLock.availablePermits() == 0) {
+                    pauseLock.release();
+                }
+                interruptWaitingThreads();
             }
-            interruptWaitingThreads();
+        } finally {
+            getStateLock().unlock();
         }
     }
 
@@ -202,9 +231,14 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
      */
     @Override
     public void pauseAsync() {
-        checkState(mode.get() == Mode.RUNNING, "Cannot pause: game is not running");
+        getStateLock().lock();
+        try {
+            checkState(mode.get() == Mode.RUNNING, "Cannot pause: game is not running");
+            mode.set(Mode.PAUSED);
+        } finally {
+            getStateLock().unlock();
+        }
 
-        mode.set(Mode.PAUSED);
         new Thread(() -> {
             try {
                 this.pauseLock.acquire();
@@ -226,9 +260,14 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
      */
     @Override
     public void pause() {
-        checkState(mode.get() == Mode.RUNNING, "Cannot pause: game is not running");
+        getStateLock().lock();
+        try {
+            checkState(mode.get() == Mode.RUNNING, "Cannot pause: game is not running");
+            mode.set(Mode.PAUSED);
+        } finally {
+            getStateLock().unlock();
+        }
 
-        mode.set(Mode.PAUSED);
         try {
             this.pauseLock.acquire();
         } catch (final InterruptedException e) {
@@ -247,8 +286,13 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
      */
     @Override
     public void resume() {
-        checkState(mode.get() == Mode.PAUSED, "Cannot resume: game is not paused");
-        assert this.pauseLock.availablePermits() == 0;
+        getStateLock().lock();
+        try {
+            checkState(mode.get() == Mode.PAUSED, "Cannot resume: game is not paused");
+            assert this.pauseLock.availablePermits() == 0;
+        } finally {
+            getStateLock().unlock();
+        }
 
         mode.set(Mode.RUNNING);
         this.pauseLock.release();

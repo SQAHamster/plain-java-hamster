@@ -3,6 +3,8 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
@@ -16,12 +18,13 @@ public abstract class CommandStack {
 
     protected final List<Command> executedCommands = new LinkedList<>();
     protected final Stack<Command> undoneCommands = new Stack<>();
+    private final ReentrantLock stateLock = new ReentrantLock(true);
 
     public CommandStack() {
         super();
     }
 
-    public void execute(final Command command) {
+    public synchronized void execute(final Command command) {
         redoAll();
         command.execute();
         this.executedCommands.add(command);
@@ -37,8 +40,13 @@ public abstract class CommandStack {
      * executed
      */
     public void undoAll() {
-        while (canUndo.get()) {
-            undo();
+        getStateLock().lock();
+        try {
+            while (canUndo.get()) {
+                undo();
+            }
+        } finally {
+            getStateLock().unlock();
         }
     }
 
@@ -51,8 +59,13 @@ public abstract class CommandStack {
      * like they where executed first
      */
     public void redoAll() {
-        while (canRedo.get()) {
-            redo();
+        getStateLock().lock();
+        try {
+            while (canRedo.get()) {
+                redo();
+            }
+        } finally {
+            getStateLock().unlock();
         }
     }
 
@@ -66,13 +79,18 @@ public abstract class CommandStack {
      * @throws IllegalStateException if !canUndoProperty().get();
      */
     public void undo() {
-        checkState(canUndo.get(), "Cannot undo");
+        getStateLock().lock();
+        try {
+            checkState(canUndo.get(), "Cannot undo");
 
-        final Command undoneCommand = this.executedCommands.remove(this.executedCommands.size()-1);
-        undoneCommand.undo();
-        undoneCommands.push(undoneCommand);
-        this.canUndo.set(executedCommands.size() > 0);
-        this.canRedo.set(true);
+            final Command undoneCommand = this.executedCommands.remove(this.executedCommands.size()-1);
+            undoneCommand.undo();
+            undoneCommands.push(undoneCommand);
+            this.canUndo.set(executedCommands.size() > 0);
+            this.canRedo.set(true);
+        } finally {
+            getStateLock().unlock();
+        }
     }
 
     /*@
@@ -85,13 +103,18 @@ public abstract class CommandStack {
      * @throws IllegalStateException if !canRedoProperty().get();
      */
     public void redo() {
-        checkState(canRedo.get(), "Cannot redo");
+        getStateLock().lock();
+        try {
+            checkState(canRedo.get(), "Cannot redo");
 
-        final Command undoneCommand = this.undoneCommands.pop();
-        undoneCommand.execute();
-        this.executedCommands.add(undoneCommand);
-        this.canUndo.set(true);
-        this.canRedo.set(undoneCommands.size() > 0);
+            final Command undoneCommand = this.undoneCommands.pop();
+            undoneCommand.execute();
+            this.executedCommands.add(undoneCommand);
+            this.canUndo.set(true);
+            this.canRedo.set(undoneCommands.size() > 0);
+        } finally {
+            getStateLock().unlock();
+        }
     }
 
     /*@
@@ -106,10 +129,15 @@ public abstract class CommandStack {
      * undo all commands. If this behaviour is desired, it is necessary to call undoAll first
      */
     public void hardReset() {
-        this.executedCommands.clear();
-        this.undoneCommands.clear();
-        this.canUndo.set(false);
-        this.canRedo.set(false);
+        getStateLock().lock();
+        try {
+            this.executedCommands.clear();
+            this.undoneCommands.clear();
+            this.canUndo.set(false);
+            this.canRedo.set(false);
+        } finally {
+            getStateLock().unlock();
+        }
     }
 
     /**
@@ -128,6 +156,14 @@ public abstract class CommandStack {
      */
     public ReadOnlyBooleanProperty canRedoProperty() {
         return this.canRedo.getReadOnlyProperty();
+    }
+
+    /**
+     * Gets a lock used to synchronize all state (mode, canUndo, canRedo) related methods
+     * @return the lock (always the same instance)
+     */
+    protected Lock getStateLock() {
+        return this.stateLock;
     }
 
 }
