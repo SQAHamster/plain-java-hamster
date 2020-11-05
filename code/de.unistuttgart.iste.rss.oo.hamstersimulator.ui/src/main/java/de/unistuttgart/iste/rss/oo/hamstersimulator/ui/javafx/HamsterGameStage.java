@@ -23,7 +23,7 @@ class HamsterGameStage extends Stage {
             final HamsterGameController gameController = hamsterGameViewModel.getGameController();
             if (gameController.modeProperty().get() == Mode.PAUSED ||
                 gameController.modeProperty().get() == Mode.RUNNING) {
-                gameController.stopGame();
+                gameController.abortOrStopGame();
             }
         });
     }
