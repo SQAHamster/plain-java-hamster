@@ -45,7 +45,7 @@ public class RemoteInputInterface implements InputInterface {
     /**
      * lock for critical sections
      */
-    private final ReentrantLock lock = new ReentrantLock();
+    private final ReentrantLock lock = new ReentrantLock(true);
 
     /**
      * Read an integer value from a user. This blocks until there is

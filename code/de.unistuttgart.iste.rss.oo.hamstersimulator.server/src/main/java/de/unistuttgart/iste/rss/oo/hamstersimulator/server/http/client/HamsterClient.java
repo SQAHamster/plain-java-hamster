@@ -24,6 +24,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static de.unistuttgart.iste.rss.utils.Preconditions.*;
 
@@ -69,6 +70,10 @@ public final class HamsterClient {
      * Stream used to send messages to the server
      */
     private final ObjectOutputStream outputStream;
+    /**
+     * Lock used for synchronization
+     */
+    private final ReentrantLock lock = new ReentrantLock(true);
 
     /*@
      @ requires gameViewModel != null;
@@ -456,11 +461,14 @@ public final class HamsterClient {
      * if this is not possible, the shutdown is initiated.
      * @param operation the Operation which is sent to the client, must be != null
      */
-    private synchronized void sendOperation(final Operation operation) {
+    private void sendOperation(final Operation operation) {
+        this.lock.lock();
         try {
             this.outputStream.writeObject(operation);
         } catch (IOException e) {
             shutdown();
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -472,23 +480,28 @@ public final class HamsterClient {
      * Handles added and removed log entries
      * @param change the change which describes how the property changed
      */
-    private synchronized void onLogChanged(ListChangeListener.Change<? extends ObservableLogEntry> change) {
-        checkNotNull(change);
+    private void onLogChanged(ListChangeListener.Change<? extends ObservableLogEntry> change) {
+        this.lock.lock();
+        try {
+            checkNotNull(change);
 
-        final List<Delta> deltas = new ArrayList<>();
-        while (change.next()) {
-            if (change.wasAdded() && change.wasRemoved()) {
-                throw new IllegalStateException("add and remove in one change is not supported ");
+            final List<Delta> deltas = new ArrayList<>();
+            while (change.next()) {
+                if (change.wasAdded() && change.wasRemoved()) {
+                    throw new IllegalStateException("add and remove in one change is not supported ");
+                }
+    
+                for (final ObservableLogEntry logEntry : change.getAddedSubList()) {
+                    deltas.add(addedLogEntry(logEntry));
+                }
+                for (final ObservableLogEntry logEntry : change.getRemoved()) {
+                    deltas.add(new RemoveLogEntryDelta());
+                }
             }
-
-            for (final ObservableLogEntry logEntry : change.getAddedSubList()) {
-                deltas.add(addedLogEntry(logEntry));
-            }
-            for (final ObservableLogEntry logEntry : change.getRemoved()) {
-                deltas.add(new RemoveLogEntryDelta());
-            }
+            sendOperation(new AddDeltasOperation(deltas));
+        } finally {
+            this.lock.unlock();
         }
-        sendOperation(new AddDeltasOperation(deltas));
     }
 
     /*@
@@ -499,19 +512,24 @@ public final class HamsterClient {
      * Handles added and removed TileContents
      * @param change the change which describes how the property changed
      */
-    private synchronized void onTileContentsChanged(final ListChangeListener.Change<? extends ObservableTileContent> change) {
-        checkNotNull(change);
+    private void onTileContentsChanged(final ListChangeListener.Change<? extends ObservableTileContent> change) {
+        this.lock.lock();
+        try {
+            checkNotNull(change);
 
-        final List<Delta> deltas = new ArrayList<>();
-        while (change.next()) {
-            for (final ObservableTileContent addedContent : change.getAddedSubList()) {
-                deltas.add(addedTileContent(addedContent));
+            final List<Delta> deltas = new ArrayList<>();
+            while (change.next()) {
+                for (final ObservableTileContent addedContent : change.getAddedSubList()) {
+                    deltas.add(addedTileContent(addedContent));
+                }
+                for (final ObservableTileContent removedContent : change.getRemoved()) {
+                    deltas.add(new RemoveTileContentDelta(contentIdRelation.get(removedContent)));
+                }
             }
-            for (final ObservableTileContent removedContent : change.getRemoved()) {
-                deltas.add(new RemoveTileContentDelta(contentIdRelation.get(removedContent)));
-            }
+            sendOperation(new AddDeltasOperation(deltas));
+        } finally {
+            this.lock.unlock();
         }
-        sendOperation(new AddDeltasOperation(deltas));
     }
 
     /*@
@@ -525,12 +543,17 @@ public final class HamsterClient {
      * @param newDirection the hamster's new direction
      * @throws IllegalStateException if the hamster was not added to the territory
      */
-    private synchronized void onHamsterDirectionChanged(final ObservableHamster hamster, final Direction newDirection) {
-        checkNotNull(hamster);
-        checkNotNull(newDirection);
-        checkState(contentIdRelation.containsKey(hamster));
-        
-        sendOperation(new AddDeltaOperation(new RotateHamsterDelta(contentIdRelation.get(hamster), newDirection)));
+    private void onHamsterDirectionChanged(final ObservableHamster hamster, final Direction newDirection) {
+        this.lock.lock();
+        try {
+            checkNotNull(hamster);
+            checkNotNull(newDirection);
+            checkState(contentIdRelation.containsKey(hamster));
+            
+            sendOperation(new AddDeltaOperation(new RotateHamsterDelta(contentIdRelation.get(hamster), newDirection)));
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     /*@
@@ -541,16 +564,21 @@ public final class HamsterClient {
      * only handles additions, ignores removals
      * @param change the change which describes how the property changed
      */
-    private synchronized void onHamsterAdded(final ListChangeListener.Change<? extends ObservableHamster> change) {
-        checkNotNull(change);
+    private void onHamsterAdded(final ListChangeListener.Change<? extends ObservableHamster> change) {
+        this.lock.lock();
+        try {
+            checkNotNull(change);
 
-        final List<Delta> deltas = new ArrayList<>();
-        while (change.next()) {
-            for (final ObservableHamster hamster : change.getAddedSubList()) {
-                deltas.add(new RotateHamsterDelta(contentIdRelation.get(hamster), hamster.getDirection()));
+            final List<Delta> deltas = new ArrayList<>();
+            while (change.next()) {
+                for (final ObservableHamster hamster : change.getAddedSubList()) {
+                    deltas.add(new RotateHamsterDelta(contentIdRelation.get(hamster), hamster.getDirection()));
+                }
             }
+            sendOperation(new AddDeltasOperation(deltas));
+        } finally {
+            this.lock.unlock();
         }
-        sendOperation(new AddDeltasOperation(deltas));
     }
 
     /*@
@@ -565,18 +593,23 @@ public final class HamsterClient {
      * @param addedContent the ObservableTileContent which was added
      * @return the delta which can be sent to the server
      */
-    private synchronized Delta addedTileContent(final ObservableTileContent addedContent) {
-        checkNotNull(addedContent);
+    private Delta addedTileContent(final ObservableTileContent addedContent) {
+        this.lock.lock();
+        try {
+            checkNotNull(addedContent);
 
-        if (contentIdRelation.containsKey(addedContent)) {
-            return new AddTileContentDelta(TileContentType.fromObservable(addedContent),
-                    addedContent.getCurrentLocation().orElseThrow(), contentIdRelation.get(addedContent));
-        } else {
-            contentIdRelation.put(addedContent, idCounter);
-            final Delta delta = new AddTileContentDelta(TileContentType.fromObservable(addedContent),
-                    addedContent.getCurrentLocation().orElseThrow(), idCounter);
-            idCounter++;
-            return delta;
+            if (contentIdRelation.containsKey(addedContent)) {
+                return new AddTileContentDelta(TileContentType.fromObservable(addedContent),
+                        addedContent.getCurrentLocation().orElseThrow(), contentIdRelation.get(addedContent));
+            } else {
+                contentIdRelation.put(addedContent, idCounter);
+                final Delta delta = new AddTileContentDelta(TileContentType.fromObservable(addedContent),
+                        addedContent.getCurrentLocation().orElseThrow(), idCounter);
+                idCounter++;
+                return delta;
+            }
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -591,12 +624,17 @@ public final class HamsterClient {
      * @return the delta which can be sent to the server
      * @throws IllegalArgumentException if the hamster associated with the log entry is unknown
      */
-    private synchronized Delta addedLogEntry(final ObservableLogEntry logEntry) {
-        checkNotNull(logEntry);
-        checkArgument(logEntry.getHamster() == null || contentIdRelation.containsKey(logEntry.getHamster()));
-
-        return new AddLogEntryDelta(logEntry.getMessage(),
-                contentIdRelation.get(logEntry.getHamster()));
+    private Delta addedLogEntry(final ObservableLogEntry logEntry) {
+        this.lock.lock();
+        try {
+            checkNotNull(logEntry);
+            checkArgument(logEntry.getHamster() == null || contentIdRelation.containsKey(logEntry.getHamster()));
+    
+            return new AddLogEntryDelta(logEntry.getMessage(),
+                    contentIdRelation.get(logEntry.getHamster()));
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     /*@

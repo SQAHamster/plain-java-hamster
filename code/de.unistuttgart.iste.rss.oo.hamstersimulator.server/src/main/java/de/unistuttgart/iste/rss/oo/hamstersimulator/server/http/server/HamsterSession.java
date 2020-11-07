@@ -38,7 +38,7 @@ public class HamsterSession {
     /**
      * lock used for read write synchronization
      */
-    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock(true);
     /**
      * List with all deltas. To reconstruct the state of the client's HamsterGame,
      * all deltas should be applied
@@ -554,7 +554,7 @@ public class HamsterSession {
      *                               or if inputId does not mach the current request
      */
     public void setInputResult(final int inputId, final String result) {
-        this.readWriteLock.readLock().lock();
+        this.readWriteLock.writeLock().lock();
         try {
             checkState(isAlive(), "session must not be stopped");
             checkState(this.inputMessage != null, "no input requested");
@@ -563,7 +563,7 @@ public class HamsterSession {
 
             sendOperation(new SetInputOperation(inputId, result));
         } finally {
-            this.readWriteLock.readLock().unlock();
+            this.readWriteLock.writeLock().unlock();
         }
     }
 
