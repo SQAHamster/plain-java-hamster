@@ -28,7 +28,7 @@ public class RequestHandler implements HttpHandler {
      * @throws IOException if it is not possible to send the result
      */
     @Override
-    public void handle(HttpExchange exchange) throws IOException {
+    public void handle(final HttpExchange exchange) throws IOException {
         final RequestContext context = new RequestContext(exchange);
         invokeAndCatchExceptions(exchange, context);
         Headers headers = exchange.getResponseHeaders();

@@ -23,7 +23,7 @@ public class AddTileContentDelta extends Delta {
     /**
      * The type of the tile content to add
      */
-    final TileContentType contentType;
+    private final TileContentType contentType;
 
     /**
      * Creates a new AddTileContentDelta

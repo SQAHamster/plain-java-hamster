@@ -57,12 +57,14 @@ public class HamsTTPServer {
     /**
      * Creates a new HamsTTPServer which listens for new hamsterClients via the the serverSocket
      * and listens for http requests on port httpServerPort
-     * @param serverSocket the server socket used to accept hamster client tcp connections
+     *
+     * @param serverSocket          the server socket used to accept hamster client tcp connections
      * @param httpServerInetAddress the address on which the http server listens for requests
-     * @param httpServerPort the port on which the http server should listen for requests
+     * @param httpServerPort        the port on which the http server should listen for requests
      * @throws IOException if it is not possible to start the http server
      */
-    private HamsTTPServer(final ServerSocket serverSocket, final InetAddress httpServerInetAddress, final int httpServerPort) throws IOException {
+    private HamsTTPServer(final ServerSocket serverSocket, final InetAddress httpServerInetAddress,
+                          final int httpServerPort) throws IOException {
         checkNotNull(serverSocket);
         checkNotNull(httpServerInetAddress);
         checkArgument(!serverSocket.isClosed());
@@ -107,16 +109,17 @@ public class HamsTTPServer {
      * Starts the HamsTTPServer on the specified port and address
      * If it is not possible to start the server, an IOException is thrown
      * Use with care! Most UIs probably expect the HamsterServer to be running on the default port and address.
+     *
      * @param httpServerInetAddress the address on which the HTTP server should listen for requests.
      *                              e.g. 0.0.0.0 to listen on all network interfaces or 127.0.0.1 to listen
      *                              on localhost
-     * @param httpServerPort the port on which the HTTP server should listen for requests
-     * @param port the port on which the TCP server listens for hamster clients
-     * @throws IOException if one of the ports is already blocked
+     * @param httpServerPort        the port on which the HTTP server should listen for requests
+     * @param port                  the port on which the TCP server listens for hamster clients
+     * @throws IOException              if one of the ports is already blocked
      * @throws IllegalArgumentException if port or httpServerPort is no allowed TCP port
      */
     public static void startOnPort(final InetAddress httpServerInetAddress, final int httpServerPort,
-                                         final int port) throws IOException {
+                                   final int port) throws IOException {
         checkNotNull(httpServerInetAddress);
         checkArgument((httpServerPort > 0) && (httpServerPort <= 65535));
         checkArgument((port > 0) && (port <= 65535));
@@ -132,6 +135,7 @@ public class HamsTTPServer {
     /**
      * starts the tcp server which listens for hamster clients
      * This starts another thread, which is shutdown when the serverSocket is closed
+     *
      * @param serverSocket the server socket used to accept new hamster clients
      *                     for each client, a new HamsterSession is created and added
      * @throws IllegalArgumentException if the serverSocket is already closed
@@ -161,6 +165,7 @@ public class HamsTTPServer {
     /**
      * Creates and starts the http server which handles the UI's HTTP requests.
      * This is non-blocking
+     *
      * @return the HttpServer which is already started
      * @throws IOException if it is not possible to start the server, for example
      *                     if the port is already blocked
@@ -211,6 +216,7 @@ public class HamsTTPServer {
      @*/
     /**
      * Handles the state HTTP GET request
+     *
      * @param context the request context
      */
     private void getState(final RequestContext context) {
@@ -228,6 +234,7 @@ public class HamsTTPServer {
      @*/
     /**
      * Handles the gamesList HTTP GET request
+     *
      * @param context the request context
      */
     private void getGamesList(final RequestContext context) {
@@ -242,6 +249,7 @@ public class HamsTTPServer {
      @*/
     /**
      * Handles the input HTTP POST request
+     *
      * @param context the request context
      */
     private void postInput(final RequestContext context) {
@@ -263,6 +271,7 @@ public class HamsTTPServer {
      @*/
     /**
      * Handles the action HTTP POST request
+     *
      * @param context the request context
      */
     private void postAction(final RequestContext context) {
@@ -286,6 +295,7 @@ public class HamsTTPServer {
      @*/
     /**
      * Handles the speed HTTP POST request
+     *
      * @param context the request context
      */
     private void postSpeed(final RequestContext context) {
@@ -307,10 +317,11 @@ public class HamsTTPServer {
     /**
      * Gets a string query parameter from the specified context and throws a StatusCodeException if
      * the parameter is not provided
-     * @param context the RequestContext which contains the query parameter
+     *
+     * @param context   the RequestContext which contains the query parameter
      * @param parameter the parameter to get
-     * @throws StatusCodeException if the parameter is not set
      * @return the value of the parameter
+     * @throws StatusCodeException if the parameter is not set
      */
     private String getQueryParam(final RequestContext context, final String parameter) {
         checkNotNull(context);
@@ -331,10 +342,11 @@ public class HamsTTPServer {
     /**
      * Gets an int query parameter from the specified context and throws a StatusCodeException if
      * the parameter is not provided or if the provided value is not a valid int
-     * @param context the RequestContext which contains the query parameter
+     *
+     * @param context   the RequestContext which contains the query parameter
      * @param parameter the parameter to get
-     * @throws StatusCodeException if the parameter is not set
      * @return the value of the parameter
+     * @throws StatusCodeException if the parameter is not set
      */
     private int getIntQueryParam(final RequestContext context, final String parameter) {
         checkNotNull(context);
@@ -355,10 +367,11 @@ public class HamsTTPServer {
     /**
      * Gets an double query parameter from the specified context and throws a StatusCodeException if
      * the parameter is not provided or if the provided value is not a valid double
-     * @param context the RequestContext which contains the query parameter
+     *
+     * @param context   the RequestContext which contains the query parameter
      * @param parameter the parameter to get
-     * @throws StatusCodeException if the parameter is not set
      * @return the value of the parameter
+     * @throws StatusCodeException if the parameter is not set
      */
     private double getDoubleQueryParam(final RequestContext context, final String parameter) {
         checkNotNull(context);
@@ -379,9 +392,10 @@ public class HamsTTPServer {
      * Gets the session based on the id query parameter.
      * If no id parameter is provided or if the session with the id does not
      * exist, a StatusCodeException is thrown
+     *
      * @param context the RequestContext which contains the id query parameter
-     * @throws StatusCodeException if the session does not exist or the id parameter is not provided
      * @return the session
+     * @throws StatusCodeException if the session does not exist or the id parameter is not provided
      */
     private HamsterSession getSession(final RequestContext context) {
         checkNotNull(context);
@@ -407,6 +421,7 @@ public class HamsTTPServer {
     /**
      * Removes the session with the specified id.
      * If this was the last session, it shuts the server down
+     *
      * @param sessionId the id of the session to remove
      */
     private void removeSession(final int sessionId) {

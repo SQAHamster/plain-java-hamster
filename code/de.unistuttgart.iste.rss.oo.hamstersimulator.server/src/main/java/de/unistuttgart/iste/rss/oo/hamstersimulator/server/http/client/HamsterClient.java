@@ -480,7 +480,7 @@ public final class HamsterClient {
      * Handles added and removed log entries
      * @param change the change which describes how the property changed
      */
-    private void onLogChanged(ListChangeListener.Change<? extends ObservableLogEntry> change) {
+    private void onLogChanged(final ListChangeListener.Change<? extends ObservableLogEntry> change) {
         this.lock.lock();
         try {
             checkNotNull(change);

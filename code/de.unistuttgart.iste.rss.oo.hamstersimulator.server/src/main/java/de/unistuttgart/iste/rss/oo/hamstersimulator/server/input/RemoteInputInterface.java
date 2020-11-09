@@ -84,7 +84,7 @@ public class RemoteInputInterface implements InputInterface {
      * @return The string value read or an empty optional, if aborted.
      */
     @Override
-    public Optional<String> readString(String message) {
+    public Optional<String> readString(final String message) {
         this.enterCriticalRegion();
         try {
             this.setupNext();
@@ -108,7 +108,7 @@ public class RemoteInputInterface implements InputInterface {
      * @param throwable The throwable which lead to aborting the program.
      */
     @Override
-    public void confirmAlert(Throwable throwable) {
+    public void confirmAlert(final Throwable throwable) {
         this.enterCriticalRegion();
         try {
             this.setupNext();
