@@ -33,7 +33,7 @@ public class HamsterSession {
      * The interval after which the session should shut itself down, if no message /
      * request occurred
      */
-    private static final int MIN_SHUTDOWN_DELAY = 4000;
+    private static final int MIN_SHUTDOWN_DELAY = 30000;
 
     /**
      * lock used for read write synchronization

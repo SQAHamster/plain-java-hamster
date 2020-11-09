@@ -202,7 +202,7 @@ public class HamsTTPServer {
         };
 
         final Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(task, 0, 3000);
+        timer.scheduleAtFixedRate(task, 0, 5000);
     }
 
 
