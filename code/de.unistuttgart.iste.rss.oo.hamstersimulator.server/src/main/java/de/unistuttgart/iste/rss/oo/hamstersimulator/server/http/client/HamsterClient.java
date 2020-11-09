@@ -9,7 +9,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.Operati
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.clienttoserver.SpeedChangedOperation;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.clienttoserver.*;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.servertoclient.*;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMode;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.input.InputMode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.delta.*;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.type.TileContentType;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.server.HamsTTPServer;

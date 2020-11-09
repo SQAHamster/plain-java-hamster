@@ -2,6 +2,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.delta.Delta;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.input.InputMessage;
 
 import java.util.List;
 

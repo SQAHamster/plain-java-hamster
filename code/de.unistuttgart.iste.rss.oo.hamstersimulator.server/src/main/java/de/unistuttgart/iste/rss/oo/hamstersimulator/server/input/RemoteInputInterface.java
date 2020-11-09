@@ -3,8 +3,6 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.server.input;
 
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.InputInterface;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMessage;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMode;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 
@@ -149,7 +147,6 @@ public class RemoteInputInterface implements InputInterface {
      * This requires that there is currently no input request
      * @throws IllegalStateException if there is still a pending input requests
      */
-    @SuppressWarnings("NonAtomicOperationOnVolatileField")
     private void setupNext() {
         checkState(this.mode == InputMode.NONE, "parallel requests are not supported");
 
@@ -206,7 +203,7 @@ public class RemoteInputInterface implements InputInterface {
      * string. If the input mode is SHOW_ALERT, it is a json with the
      * fields type, message and stacktrace.
      * @return the current message or an empty optional if
-     *         there is none because the input mode is none
+     *         there is none bec,ause the input mode is none
      */
     public ReadOnlyObjectProperty<Optional<InputMessage>> messageProperty() {
         return this.message.getReadOnlyProperty();

@@ -2,7 +2,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.server;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpServer;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMessage;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.input.InputMessage;
 
 import java.io.IOException;
 import java.net.InetAddress;

@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.server.input;
 
 /**
  * Enum for the possible input types

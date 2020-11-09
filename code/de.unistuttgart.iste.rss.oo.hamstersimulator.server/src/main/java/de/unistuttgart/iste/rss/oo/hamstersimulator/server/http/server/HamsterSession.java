@@ -7,7 +7,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.clientt
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.servertoclient.*;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.delta.Delta;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.GameState;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.InputMessage;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.input.InputMessage;
 import de.unistuttgart.iste.rss.utils.LambdaVisitor;
 
 import java.io.IOException;
