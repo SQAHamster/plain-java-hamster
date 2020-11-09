@@ -63,7 +63,7 @@ public class RequestHandler implements HttpHandler {
             context.setStatusCode(e.getStatusCode());
         } catch (Exception e) {
             context.setResult(e.getMessage());
-            context.setStatusCode(300);
+            context.setStatusCode(500);
         }
     }
 
