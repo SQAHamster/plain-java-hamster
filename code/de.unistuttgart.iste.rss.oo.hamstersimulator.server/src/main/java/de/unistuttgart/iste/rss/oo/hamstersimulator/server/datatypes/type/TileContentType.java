@@ -5,12 +5,24 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.Observab
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableTileContent;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableWall;
 
+import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
+
+/**
+ * Enum with all possible tile content types
+ */
 public enum TileContentType {
     HAMSTER,
     WALL,
     GRAIN;
 
+    /**
+     *
+     * @param observable the observable to get the TileContentType from, must be != null
+     * @return the TileContentType which represents observable
+     */
     public static TileContentType fromObservable(final ObservableTileContent observable) {
+        checkNotNull(observable);
+
         if (observable instanceof ObservableHamster) {
             return HAMSTER;
         } else if (observable instanceof ObservableWall) {
