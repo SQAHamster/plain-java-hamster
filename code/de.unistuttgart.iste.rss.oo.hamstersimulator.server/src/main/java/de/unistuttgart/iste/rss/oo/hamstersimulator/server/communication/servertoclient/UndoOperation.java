@@ -2,6 +2,9 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.server
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.Operation;
 
+/**
+ * Operation to inform the client that one command shoule be redone
+ */
 public class UndoOperation implements Operation {
     private static final long serialVersionUID = -8517729414270765316L;
 }

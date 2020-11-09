@@ -2,6 +2,9 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.server
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.Operation;
 
+/**
+ * Operation to inform the client that the game should be aborted
+ */
 public class AbortOperation implements Operation {
     private static final long serialVersionUID = 4539892747595922358L;
 }

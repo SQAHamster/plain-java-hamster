@@ -2,6 +2,9 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.server
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.Operation;
 
+/**
+ * Operation to inform the client that the game shoule be resumed
+ */
 public class ResumeOperation implements Operation {
     private static final long serialVersionUID = -2481257008578338463L;
 }
