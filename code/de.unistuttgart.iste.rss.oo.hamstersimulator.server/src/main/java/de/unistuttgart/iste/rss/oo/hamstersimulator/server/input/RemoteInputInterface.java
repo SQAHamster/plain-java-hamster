@@ -53,12 +53,12 @@ public class RemoteInputInterface implements InputInterface {
      * @return The integer value read or an empty optional, if aborted.
      */
     @Override
-    public Optional<Integer> readInteger(String message) {
+    public Optional<Integer> readInteger(final String message) {
         this.enterCriticalRegion();
         try {
             this.setupNext();
             this.mode = InputMode.READ_INT;
-            this.message.set(Optional.of(new InputMessage(message, getInputID())));
+            this.message.set(Optional.of(InputMessage.GetReadIntMessage(message, getInputID())));
         } finally {
             this.leaveCriticalRegion();
         }
@@ -89,7 +89,7 @@ public class RemoteInputInterface implements InputInterface {
         try {
             this.setupNext();
             this.mode = InputMode.READ_STRING;
-            this.message.set(Optional.of(new InputMessage(message, getInputID())));
+            this.message.set(Optional.of(InputMessage.GetReadStringMessage(message, getInputID())));
         } finally {
             this.leaveCriticalRegion();
         }
@@ -112,12 +112,12 @@ public class RemoteInputInterface implements InputInterface {
         this.enterCriticalRegion();
         try {
             this.setupNext();
-            this.mode = InputMode.SHOW_ALERT;
+            this.mode = InputMode.CONFIRM_ALERT;
             final StringWriter stringWriter = new StringWriter();
             final PrintWriter printWriter = new PrintWriter(stringWriter);
             throwable.printStackTrace(printWriter);
 
-            this.message.set(Optional.of(new InputMessage(throwable.getMessage(), getInputID(),
+            this.message.set(Optional.of(InputMessage.GetConfirmAlertMessage(throwable.getMessage(), getInputID(),
                     throwable.getClass().getSimpleName(), stringWriter.toString())));
         } finally {
             this.leaveCriticalRegion();

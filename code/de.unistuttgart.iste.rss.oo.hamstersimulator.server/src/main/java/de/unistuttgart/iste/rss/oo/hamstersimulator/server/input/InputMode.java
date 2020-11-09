@@ -19,5 +19,5 @@ public enum InputMode {
     /**
      * A alter should be shown, no input requested
      */
-    SHOW_ALERT
+    CONFIRM_ALERT
 }
