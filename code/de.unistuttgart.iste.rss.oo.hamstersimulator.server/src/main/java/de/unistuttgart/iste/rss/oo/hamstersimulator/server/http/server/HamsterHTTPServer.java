@@ -55,7 +55,7 @@ public class HamsterHTTPServer {
      @ requires (httpServerPort > 0) && (httpServerPort <= 65535);
      @*/
     /**
-     * Creates a new HamsTTPServer which listens for new hamsterClients via the the serverSocket
+     * Creates a new HamsterHTTPServer which listens for new hamsterClients via the the serverSocket
      * and listens for http requests on port httpServerPort
      *
      * @param serverSocket          the server socket used to accept hamster client tcp connections
@@ -82,7 +82,7 @@ public class HamsterHTTPServer {
      @ requires true;
      @*/
     /**
-     * Starts the HamsTTPServer with the default port and address if possible
+     * Starts the HamsterHTTPServer with the default port and address if possible
      * if the server is already running, it does nothing
      * The default port for the TCP server is 8008, the default address for the HTTP server
      * is 127.0.0.1 and the default port for the HTTP server is 8080
@@ -106,7 +106,7 @@ public class HamsterHTTPServer {
      @ requires (port > 0) && (port <= 65535);
      @*/
     /**
-     * Starts the HamsTTPServer on the specified port and address
+     * Starts the HamsterHTTPServer on the specified port and address
      * If it is not possible to start the server, an IOException is thrown
      * Use with care! Most UIs probably expect the HamsterServer to be running on the default port and address.
      *
