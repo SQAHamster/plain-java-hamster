@@ -3,7 +3,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.server
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.Operation;
 
 /**
- * Operation to inform the client that the game should be paused
+ * Operation to notify the client that the game should be paused
  */
 public class PauseOperation implements Operation {
     private static final long serialVersionUID = 5471451441953655048L;

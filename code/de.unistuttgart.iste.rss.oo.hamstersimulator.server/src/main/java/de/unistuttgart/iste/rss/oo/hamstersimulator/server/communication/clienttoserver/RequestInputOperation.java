@@ -4,7 +4,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.Operati
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.input.InputMessage;
 
 /**
- * Operation to inform the server that a new input is requested
+ * Operation to notify the server that a new input is requested
  */
 public class RequestInputOperation implements Operation {
 

@@ -8,7 +8,7 @@ import java.util.List;
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
 
 /**
- * Operation to inform the server that a list of deltas should be added to the deltasList
+ * Operation to notify the server that a list of deltas should be added to the deltasList
  */
 public class AddDeltasOperation implements Operation {
     private static final long serialVersionUID = -6664716881340223286L;

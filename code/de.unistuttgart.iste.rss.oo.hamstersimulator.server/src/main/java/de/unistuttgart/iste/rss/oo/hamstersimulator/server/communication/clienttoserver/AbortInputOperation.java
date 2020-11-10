@@ -5,7 +5,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.InputOp
 import java.io.Serializable;
 
 /**
- * Operation to inform the server that the input with the specified id is aborted
+ * Operation to notify the server that the input with the specified id is aborted
  */
 public class AbortInputOperation extends InputOperation {
     private static final long serialVersionUID = -5404994225879638660L;

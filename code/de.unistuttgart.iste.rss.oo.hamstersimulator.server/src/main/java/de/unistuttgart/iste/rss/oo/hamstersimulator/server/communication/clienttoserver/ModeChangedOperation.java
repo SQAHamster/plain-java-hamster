@@ -6,7 +6,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.Operati
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
 
 /**
- * Operation to inform the client that the mode changed
+ * Operation to notify the client that the mode changed
  */
 public class ModeChangedOperation implements Operation {
     private static final long serialVersionUID = 21726779971220461L;

@@ -5,7 +5,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.InputOp
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
 
 /**
- * Operation to inform the client that the input with the specified id should be completed
+ * Operation to notify the client that the input with the specified id should be completed
  * with the specified result
  */
 public class SetInputOperation extends InputOperation {

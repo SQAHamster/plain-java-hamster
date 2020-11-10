@@ -6,7 +6,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.delta.Delta
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
 
 /**
- * Operation to inform the server that a single delta should be added to the deltasList
+ * Operation to notify the server that a single delta should be added to the deltasList
  */
 public class AddDeltaOperation implements Operation {
     private static final long serialVersionUID = -3381780974437584031L;

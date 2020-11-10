@@ -5,7 +5,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.Operati
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkArgument;
 
 /**
- * Operation to inform the server that the speed changed
+ * Operation to notify the server that the speed changed
  */
 public class SpeedChangedOperation implements Operation {
     private static final long serialVersionUID = 4585005574432024351L;

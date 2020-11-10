@@ -3,7 +3,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.client
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.Operation;
 
 /**
- * Operation to inform the server that canUndo changed
+ * Operation to notify the server that canUndo changed
  */
 public class CanRedoChangedOperation implements Operation {
     private static final long serialVersionUID = -6385372283517596119L;
