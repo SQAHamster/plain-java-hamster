@@ -121,7 +121,6 @@ public class HamsterSession {
         this.outputStream = new ObjectOutputStream(socket.getOutputStream());
         this.operationVisitor = new LambdaVisitor<Operation, Runnable>()
                 .on(AbortInputOperation.class).then(operation -> () -> onAbortInput(operation))
-                .on(AddDeltaOperation.class).then(operation -> () -> onAddDelta(operation))
                 .on(AddDeltasOperation.class).then(operation -> () -> onAddDeltas(operation))
                 .on(RequestInputOperation.class).then(operation -> () -> onRequestInput(operation))
                 .on(ModeChangedOperation.class).then(operation -> () -> onModeChanged(operation))
@@ -304,27 +303,6 @@ public class HamsterSession {
         readWriteLock.writeLock().lock();
         try {
             this.inputMessage = null;
-        } finally {
-            readWriteLock.writeLock().unlock();
-        }
-    }
-
-    /*@
-     @ requires operation != null;
-     @ requires isAlive();
-     @*/
-    /**
-     * Adds the delta to the end of the deltaList
-     * @param operation the operation from the client, must be != null
-     * @throws IllegalStateException if this session isn't alive
-     */
-    private void onAddDelta(final AddDeltaOperation operation) {
-        checkNotNull(operation, "operation must be != null");
-        checkState(isAlive(), "session must not be stopped");
-
-        readWriteLock.writeLock().lock();
-        try {
-            deltaList.add(operation.getDelta());
         } finally {
             readWriteLock.writeLock().unlock();
         }
