@@ -23,7 +23,7 @@ import static de.unistuttgart.iste.rss.utils.Preconditions.*;
  * Sessions (hamster client) are automatically removed as they are closed, and this server shuts down as soon as
  * the last session is closed.
  */
-public class HamsTTPServer {
+public class HamsterHTTPServer {
     /**
      * port of the HTTP webserver
      */
@@ -63,8 +63,8 @@ public class HamsTTPServer {
      * @param httpServerPort        the port on which the http server should listen for requests
      * @throws IOException if it is not possible to start the http server
      */
-    private HamsTTPServer(final ServerSocket serverSocket, final InetAddress httpServerInetAddress,
-                          final int httpServerPort) throws IOException {
+    private HamsterHTTPServer(final ServerSocket serverSocket, final InetAddress httpServerInetAddress,
+                              final int httpServerPort) throws IOException {
         checkNotNull(serverSocket);
         checkNotNull(httpServerInetAddress);
         checkArgument(!serverSocket.isClosed());
@@ -91,7 +91,7 @@ public class HamsTTPServer {
         try {
             final ServerSocket serverSocket = new ServerSocket(8008);
             try {
-                new HamsTTPServer(serverSocket, InetAddress.getByName("127.0.0.1"), 8080);
+                new HamsterHTTPServer(serverSocket, InetAddress.getByName("127.0.0.1"), 8080);
             } catch (IOException e) {
                 throw new RuntimeException("failed to start server", e);
             }
@@ -125,7 +125,7 @@ public class HamsTTPServer {
         checkArgument((port > 0) && (port <= 65535));
 
         final ServerSocket serverSocket = new ServerSocket(port);
-        new HamsTTPServer(serverSocket, httpServerInetAddress, httpServerPort);
+        new HamsterHTTPServer(serverSocket, httpServerInetAddress, httpServerPort);
     }
 
     /*@

@@ -12,7 +12,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.servert
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.input.InputMode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.delta.*;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.type.TileContentType;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.server.HamsTTPServer;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.server.HamsterHTTPServer;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.input.RemoteInputInterface;
 import de.unistuttgart.iste.rss.utils.LambdaVisitor;
 import javafx.beans.value.ChangeListener;
@@ -147,7 +147,7 @@ public final class HamsterClient {
         checkNotNull(gameViewModel);
 
         try {
-            HamsTTPServer.startIfNotRunning();
+            HamsterHTTPServer.startIfNotRunning();
             final RemoteInputInterface inputInterface = new RemoteInputInterface();
             final HamsterClient client = new HamsterClient(gameViewModel, inputInterface, 8008);
             gameViewModel.addInputInterface(inputInterface);
@@ -182,7 +182,7 @@ public final class HamsterClient {
         checkArgument((httpServerPort > 0) && (httpServerPort <= 65535));
         checkArgument((port > 0) && (port <= 65535));
 
-        HamsTTPServer.startOnPort(httpServerInetAddress, httpServerPort, port);
+        HamsterHTTPServer.startOnPort(httpServerInetAddress, httpServerPort, port);
         final RemoteInputInterface inputInterface = new RemoteInputInterface();
         final HamsterClient client = new HamsterClient(gameViewModel, inputInterface, port);
         gameViewModel.addInputInterface(inputInterface);
