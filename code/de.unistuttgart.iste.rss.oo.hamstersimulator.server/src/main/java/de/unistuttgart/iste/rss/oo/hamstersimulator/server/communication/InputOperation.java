@@ -2,10 +2,15 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication;
 
 /**
  * Base class for all input operations
+ * input operations are operations which handle input, like aborting input,
+ * and therefore refer to an input with a specific id
+ * or requesting input, e.g. RequestInputOperation or AbortInputOperation
  */
 public abstract class InputOperation implements Operation {
     /**
-     * the id of the input to handle
+     * The id of the input to handle
+     * The id is unique for each requested input and ensures that
+     * HTTP requests handle the correct input and not an outdated one
      */
     private final int inputId;
 
@@ -19,6 +24,7 @@ public abstract class InputOperation implements Operation {
 
     /**
      * Getter for the inputId
+     * The inputId identifies this input
      * @return the id
      */
     public int getInputId() {

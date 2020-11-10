@@ -12,6 +12,8 @@ public class InputMessage implements Serializable {
 
     /**
      * the message of this input message
+     * an input id uniquely identifies an input
+     * ensures that HTTP request refer to the correct input
      */
     private final String message;
     /**
@@ -32,7 +34,7 @@ public class InputMessage implements Serializable {
      * Creates a new instance of a InputMessage
      * @param mode  the mode of this input
      * @param message the message to display
-     * @param inputId the id of the request
+     * @param inputId the id of the request, identifies this input
      * @param type the exception type, if it was a showAlert (might be null)
      * @param stacktrace the stacktrace of the exception, if it was a showAlert (might be null)
      */
