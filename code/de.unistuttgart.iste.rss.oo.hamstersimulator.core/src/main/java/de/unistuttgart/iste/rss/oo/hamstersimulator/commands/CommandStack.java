@@ -24,11 +24,16 @@ public abstract class CommandStack {
         super();
     }
 
-    public synchronized void execute(final Command command) {
-        redoAll();
-        command.execute();
-        this.executedCommands.add(command);
-        this.canUndo.set(true);
+    public void execute(final Command command) {
+        getStateLock().lock();
+        try {
+            redoAll();
+            command.execute();
+            this.executedCommands.add(command);
+            this.canUndo.set(true);
+        } finally {
+            getStateLock().unlock();
+        }
     }
 
     /*@
