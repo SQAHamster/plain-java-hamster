@@ -14,4 +14,6 @@ module rss.hamster.core {
     exports de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification
             to rss.hamster.main;
 
+    opens de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes to com.google.gson;
+
 }

@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.config.HamsterConfig;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.client.HamsterClient;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkArgument;
@@ -95,7 +96,7 @@ public abstract class SimpleHamsterGame {
                 JavaFXUI.displayInNewGameWindow(this.game.getModelViewAdapter());
                 break;
             case HTTP:
-                // TODO
+                HamsterClient.startAndConnectToServer(this.game.getModelViewAdapter());
                 break;
             case NONE:
                 // ignore

@@ -1,5 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes;
 
+import java.io.Serializable;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -9,7 +10,8 @@ import java.util.stream.Stream;
  * @author Steffen Becker
  *
  */
-public final class Location {
+public final class Location implements Serializable {
+    private static final long serialVersionUID = 3350332884210359307L;
 
     /**
      * Constant representing the origin (0,0) of the coordinate system. 

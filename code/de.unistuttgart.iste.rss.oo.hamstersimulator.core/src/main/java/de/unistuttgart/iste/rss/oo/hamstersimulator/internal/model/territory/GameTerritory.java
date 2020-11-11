@@ -67,8 +67,8 @@ public class GameTerritory extends EditorTerritory {
         return new CompositeCommand().setCommandConstructor(builder -> {
                 assert specification.getHamster().getCurrentTile().isPresent();
                 final Tile currentTile = specification.getHamster().getCurrentTile().get();
-                builder.newAddToPropertyCommand(currentTile.content, specification.getGrain());
                 builder.newSetPropertyCommand(specification.getGrain().currentTile, Optional.of(currentTile));
+                builder.newAddToPropertyCommand(currentTile.content, specification.getGrain());
             }
         ).setPreconditionConstructor(builder -> {
             builder.addNewPrecondition(MouthEmptyException::new, specification.getHamster().getGrainInMouth()::isEmpty);
