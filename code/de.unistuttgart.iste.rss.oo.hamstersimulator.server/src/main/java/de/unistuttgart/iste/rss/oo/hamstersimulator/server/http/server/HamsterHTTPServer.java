@@ -23,7 +23,7 @@ import static de.unistuttgart.iste.rss.utils.Preconditions.*;
  * Sessions (hamster client) are automatically removed as they are closed, and this server shuts down as soon as
  * the last session is closed.
  */
-public class HamsterHTTPServer {
+public class HamsterHTTPServer extends HamsterServer {
     /**
      * port of the HTTP webserver
      */
@@ -36,17 +36,9 @@ public class HamsterHTTPServer {
     private final InetAddress httpServerInetAddress;
 
     /**
-     * the serverSocket which accepts new hamster clients
-     */
-    private final ServerSocket serverSocket;
-    /**
      * HTTP server which handles HTTP requests from UIs
      */
     private final HttpServer httpServer;
-    /**
-     * map with all sessions (connected hamster clients)
-     */
-    private final Map<Integer, HamsterSession> sessions = new ConcurrentHashMap<>();
 
     /*@
      @ requires serverSocket != null;
@@ -65,19 +57,16 @@ public class HamsterHTTPServer {
      */
     private HamsterHTTPServer(final ServerSocket serverSocket, final InetAddress httpServerInetAddress,
                               final int httpServerPort) throws IOException {
-        checkNotNull(serverSocket);
+        super(serverSocket);
         checkNotNull(httpServerInetAddress);
         checkArgument(!serverSocket.isClosed());
         checkArgument((httpServerPort > 0 && httpServerPort <= 65535));
 
         this.httpServerInetAddress = httpServerInetAddress;
         this.httpServerPort = httpServerPort;
-        this.serverSocket = serverSocket;
-        startListenForSessions(serverSocket);
         this.httpServer = createHttpServer();
-        startLifetimeRefreshTimer();
     }
-
+    
     /*@
      @ requires true;
      @*/
@@ -129,37 +118,6 @@ public class HamsterHTTPServer {
     }
 
     /*@
-     @ requires serverSocket != null;
-     @ requires !serverSocket.isClosed();
-     @*/
-    /**
-     * starts the tcp server which listens for hamster clients
-     * This starts another thread, which is shutdown when the serverSocket is closed
-     *
-     * @param serverSocket the server socket used to accept new hamster clients
-     *                     for each client, a new HamsterSession is created and added
-     * @throws IllegalArgumentException if the serverSocket is already closed
-     */
-    private void startListenForSessions(final ServerSocket serverSocket) {
-        checkNotNull(serverSocket);
-        checkArgument(!serverSocket.isClosed());
-
-        new Thread(() -> {
-            try {
-                int sessionIdCounter = 0;
-                while (!serverSocket.isClosed()) {
-                    Socket socket = serverSocket.accept();
-                    final HamsterSession session = new HamsterSession(socket, sessionIdCounter);
-                    this.sessions.put(sessionIdCounter, session);
-                    sessionIdCounter++;
-                }
-            } catch (IOException e) {
-                shutdown();
-            }
-        }).start();
-    }
-
-    /*@
      @ requires true;
      @*/
     /**
@@ -184,30 +142,6 @@ public class HamsterHTTPServer {
         server.createContext("/", handler);
         server.start();
         return server;
-    }
-
-    /*@
-     @ requires true;
-     @*/
-    /**
-     * Starts a timer which repeatedly invokes shutdownIfPossible on all
-     * sessions and removes them if they aren't alive any longer
-     */
-    private void startLifetimeRefreshTimer() {
-        final TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                sessions.values().forEach(session -> {
-                    session.shutdownIfPossible();
-                    if (!session.isAlive()) {
-                        removeSession(session.getId());
-                    }
-                });
-            }
-        };
-
-        final Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(task, 0, 5000);
     }
 
 
@@ -241,7 +175,7 @@ public class HamsterHTTPServer {
         checkNotNull(context);
 
         final Gson gson = new Gson();
-        context.setResult(gson.toJson(this.sessions.keySet()));
+        context.setResult(gson.toJson(getSessions().keySet()));
     }
 
     /*@
@@ -401,8 +335,8 @@ public class HamsterHTTPServer {
         checkNotNull(context);
 
         final int sessionId = getIntQueryParam(context, "id");
-        if (this.sessions.containsKey(sessionId)) {
-            final HamsterSession session = this.sessions.get(sessionId);
+        if (getSessions().containsKey(sessionId)) {
+            final HamsterSession session = getSessions().get(sessionId);
             if (session.isAlive()) {
                 return session;
             } else {
@@ -414,41 +348,15 @@ public class HamsterHTTPServer {
         }
     }
 
-    /*@
-     @ requires true;
-     @ ensures sessions.containsKey(sessionId);
-     @*/
-    /**
-     * Removes the session with the specified id.
-     * If this was the last session, it shuts the server down
-     *
-     * @param sessionId the id of the session to remove
-     */
-    private void removeSession(final int sessionId) {
-        sessions.remove(sessionId);
-        if (sessions.size() == 0) {
-            shutdown();
-        }
-    }
-
-    /*@
-     @ requires true;
-     @ ensures serverSocket.isClosed();
-     @*/
     /**
      * Shuts this server down.
      * Closes the server socket which accepts new clients
      * and stops the HTTP server.
      * Also shuts all sessions down
      */
-    private void shutdown() {
-        try {
-            this.serverSocket.close();
-        } catch (IOException e) {
-            // ignore
-        }
-        this.sessions.values().forEach(HamsterSession::shutdown);
+    @Override
+    protected void shutdown() {
+        super.shutdown();
         this.httpServer.stop(0);
     }
-
 }
