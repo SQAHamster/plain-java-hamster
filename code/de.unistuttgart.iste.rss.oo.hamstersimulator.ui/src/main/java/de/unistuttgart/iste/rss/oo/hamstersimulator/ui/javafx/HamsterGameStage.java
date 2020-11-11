@@ -21,10 +21,7 @@ class HamsterGameStage extends Stage {
         sceneController.connectToGame(hamsterGameViewModel);
         this.setOnCloseRequest(event -> {
             final HamsterGameController gameController = hamsterGameViewModel.getGameController();
-            if (gameController.modeProperty().get() == Mode.PAUSED ||
-                gameController.modeProperty().get() == Mode.RUNNING) {
-                gameController.abortOrStopGame();
-            }
+            new Thread(gameController::abortOrStopGame).start();
         });
     }
 
