@@ -61,22 +61,22 @@ public class GameSceneController {
 
     @FXML
     void pauseGame(final ActionEvent event) {
-        gameController.pauseAsync();
+        new Thread(gameController::pauseAsync).start();
     }
 
     @FXML
     void undo(final ActionEvent event) {
-        gameController.undo();
+        new Thread(gameController::undo).start();
     }
 
     @FXML
     void redo(final ActionEvent event) {
-        gameController.redo();
+        new Thread(gameController::redo).start();
     }
 
     @FXML
     void startGame(final ActionEvent event) {
-        gameController.resume();
+        new Thread(gameController::resume).start();
     }
 
     @SuppressWarnings("unchecked")
