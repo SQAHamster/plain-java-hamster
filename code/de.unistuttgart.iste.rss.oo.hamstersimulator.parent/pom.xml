@@ -6,14 +6,14 @@
 
 	<distributionManagement>
 		<snapshotRepository>
-			<id>snapshots</id>
-			<name>artifactory-oss-artifactory-0-snapshots</name>
-			<url>https://rss-artifactory.ddnss.org/artifactory/libs-snapshot-local</url>
+			<id>${distributionManagement.server.id}</id>
+			<name>snapshots-dist-server</name>
+			<url>${distributionManagement.snapshots.url}</url>
 		</snapshotRepository>
 		<repository>
-			<id>central</id>
-			<name>artifactory-oss-artifactory-0-releases</name>
-			<url>https://rss-artifactory.ddnss.org/artifactory/libs-release-local</url>
+			<id>${distributionManagement.server.id}</id>
+			<name>releases-dist-server</name>
+			<url>${distributionManagement.releases.url}</url>
 		</repository>
 	</distributionManagement>
 
