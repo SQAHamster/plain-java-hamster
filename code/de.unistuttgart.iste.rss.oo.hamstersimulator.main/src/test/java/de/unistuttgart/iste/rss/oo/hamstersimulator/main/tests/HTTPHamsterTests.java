@@ -274,6 +274,7 @@ public class HTTPHamsterTests {
         delay();
         assertLocation(gameId, 0, location);
         game.getModelViewAdapter().getGameController().redo();
+        delay();
         assertLocation(gameId, 0, location.translate(direction.getMovementVector()));
     }
 
