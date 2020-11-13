@@ -1,11 +1,12 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.clienttoserver;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.InputOperation;
 
 import java.io.Serializable;
 
 /**
- * Operation to notify the server that the input with the specified id is aborted
+ * Operation to notify the server that the input with the specified id is aborted /
+ * Operation to notify the client that the input with the specified id should be aborted
  */
 public class AbortInputOperation extends InputOperation {
     private static final long serialVersionUID = -5404994225879638660L;

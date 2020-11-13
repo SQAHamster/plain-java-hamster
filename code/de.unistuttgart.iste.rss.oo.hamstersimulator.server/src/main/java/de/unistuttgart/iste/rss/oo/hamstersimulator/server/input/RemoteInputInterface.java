@@ -163,8 +163,8 @@ public class RemoteInputInterface implements InputInterface {
     /**
      * Sets the result from a remote source
      * @param result the result of the request
-     *               normally, this should not be null, however it can
-     * @param id the id of the request (only has an effect
+     *               normally, this should not be null, however it can be null
+     * @param id the id of the request (if the id does not match, this has no effect)
      * @throws IllegalArgumentException if the result comes from an outdated request
      */
     public void setResult(final String result, final int id) {
@@ -174,6 +174,23 @@ public class RemoteInputInterface implements InputInterface {
         try {
             this.mode = InputMode.NONE;
             this.result.complete(Optional.ofNullable(result));
+        } finally {
+            leaveCriticalRegion();
+        }
+    }
+
+    /**
+     * Completes the input with no input
+     * @param id the id of the request (if the id does not match, this has no effect)
+     * @throws IllegalArgumentException if the result comes from an outdated request
+     */
+    public void setResultNoInput(final int id) {
+        checkArgument(id == this.inputIdCounter, "illegal input id, possibly outdated");
+
+        enterCriticalRegion();
+        try {
+            this.mode = InputMode.NONE;
+            this.result.complete(Optional.empty());
         } finally {
             leaveCriticalRegion();
         }
@@ -203,7 +220,7 @@ public class RemoteInputInterface implements InputInterface {
      * string. If the input mode is SHOW_ALERT, it is a json with the
      * fields type, message and stacktrace.
      * @return the current message or an empty optional if
-     *         there is none bec,ause the input mode is none
+     *         there is none because the input mode is none
      */
     public ReadOnlyObjectProperty<Optional<InputMessage>> messageProperty() {
         return this.message.getReadOnlyProperty();

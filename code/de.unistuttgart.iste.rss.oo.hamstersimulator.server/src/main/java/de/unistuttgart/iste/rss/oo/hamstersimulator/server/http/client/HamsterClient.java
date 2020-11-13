@@ -2,23 +2,19 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.client;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameController;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameViewModel;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.*;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.AbortInputOperation;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.Operation;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.clienttoserver.SpeedChangedOperation;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.clienttoserver.*;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.servertoclient.*;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.input.InputMode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.delta.*;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.server.datatypes.type.TileContentType;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.server.HamsterHTTPServer;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.input.RemoteInputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.observer.DeltaListener;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.observer.TerritoryLogObserver;
 import de.unistuttgart.iste.rss.utils.LambdaVisitor;
-import javafx.beans.value.ChangeListener;
-import javafx.collections.ListChangeListener;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -100,7 +96,8 @@ public final class HamsterClient implements DeltaListener {
                 .on(RedoOperation.class).then(operation -> () -> onRedo(operation))
                 .on(SetInputOperation.class).then(operation -> () -> onSetInput(operation))
                 .on(UndoOperation.class).then(operation -> () -> onUndo(operation))
-                .on(AbortOperation.class).then(operation -> () -> onAbort(operation));
+                .on(AbortOperation.class).then(operation -> () -> onAbort(operation))
+                .on(AbortInputOperation.class).then(operation -> () -> onAbortInput(operation));
 
         initGameControllerListeners(gameController);
         initInitialGameControllerState(gameController);
@@ -388,6 +385,23 @@ public final class HamsterClient implements DeltaListener {
         checkNotNull(operation);
 
         gameController.abortOrStopGame();
+    }
+
+    /*@
+     @ requires operation != null;
+     @*/
+    /**
+     * handles the server's abort input request
+     * @param operation the operation from the server
+     */
+    private void onAbortInput(final AbortInputOperation operation) {
+        checkNotNull(operation);
+
+        if (this.inputInterface.getInputID() == operation.getInputId()
+                && this.inputInterface.getInputMode() != InputMode.NONE) {
+            this.inputInterface.setResultNoInput(operation.getInputId());
+            sendOperation(new AbortInputOperation(operation.getInputId()));
+        }
     }
 
     /*@

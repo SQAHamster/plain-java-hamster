@@ -1,6 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.server;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.AbortInputOperation;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.Operation;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.clienttoserver.SpeedChangedOperation;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.server.communication.clienttoserver.*;
@@ -540,6 +541,33 @@ public class HamsterSession {
                     "inputId does not match current input request");
 
             sendOperation(new SetInputOperation(inputId, result));
+        } finally {
+            this.readWriteLock.writeLock().unlock();
+        }
+    }
+
+    /*@
+     @ requires isAlive();
+     @ requires (this.inputMessage != null) && (this.inputMessage.getInputId() == inputId);
+     @*/
+    /**
+     * Aborts the current input request
+     * This does not have an immediate effect because it is sent to
+     * the client.
+     * @param inputId the id of the input request which should be aborted, used to check that
+     *                no outdated request aborts the current one
+     * @throws IllegalStateException if this session isn't alive, no input is requested
+     *                               or if inputId does not mach the current request
+     */
+    public void abortInput(final int inputId) {
+        this.readWriteLock.writeLock().lock();
+        try {
+            checkState(isAlive(), "session must not be stopped");
+            checkState(this.inputMessage != null, "no input requested");
+            checkState(this.inputMessage.getInputId() == inputId,
+                    "inputId does not match current input request");
+
+            sendOperation(new AbortInputOperation(inputId));
         } finally {
             this.readWriteLock.writeLock().unlock();
         }
