@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -86,12 +88,13 @@ public class HTTPHamsterTests {
      * gets the latest game id known to the server
      * @return the latest / biggest gameId
      */
-    private int getLatestGameId() {
+    private UUID getLatestGameId() {
         final SimpleResponse response = request("GET", "/gamesList");
         final JsonArray array = JsonParser.parseString(response.getResponse()).getAsJsonArray();
         return StreamSupport.stream(array.spliterator(), false)
-                .mapToInt(JsonElement::getAsInt)
-                .max().orElseThrow();
+                .map(element -> UUID.fromString(element.getAsString()))
+                .reduce((first, second) -> second).orElseThrow();
+                
     }
 
     /**
@@ -99,8 +102,8 @@ public class HTTPHamsterTests {
      * @param gameId the id of the game
      * @return the response form the HamsterHTTPServer
      */
-    private SimpleResponse requestState(final int gameId) {
-        return request("GET", "/state?id=" + gameId + "&since=0");
+    private SimpleResponse requestState(final UUID gameId) {
+        return request("GET", "/state?id=" + gameId.toString() + "&since=0");
     }
 
     /**
@@ -108,7 +111,7 @@ public class HTTPHamsterTests {
      * @param gameId the id of the game
      * @return a list with all deltas returned by the HamsterHTTPServer
      */
-    private JsonArray requestDeltas(final int gameId) {
+    private JsonArray requestDeltas(final UUID gameId) {
         return JsonParser.parseString(requestState(gameId).getResponse())
                 .getAsJsonObject().get("deltas").getAsJsonArray();
     }
@@ -119,7 +122,7 @@ public class HTTPHamsterTests {
      * @param gameId the id of the game to check the mode
      * @param expected the expected mode
      */
-    private void assertMode(final int gameId, final Mode expected) {
+    private void assertMode(final UUID gameId, final Mode expected) {
         final SimpleResponse response = requestState(gameId);
         final String mode = JsonParser.parseString(response.getResponse())
                 .getAsJsonObject().get("mode").getAsString();
@@ -133,7 +136,7 @@ public class HTTPHamsterTests {
      * @param contentId the id of the tile content to check, starts with 0, increases
      * @param expected the expected location
      */
-    private void assertLocation(final int gameId, final int contentId, final Location expected) {
+    private void assertLocation(final UUID gameId, final int contentId, final Location expected) {
         final JsonArray deltas = requestDeltas(gameId);
         final JsonElement locationElement = StreamSupport.stream(deltas.spliterator(), false)
                 .map(JsonElement::getAsJsonObject)
@@ -152,7 +155,7 @@ public class HTTPHamsterTests {
      * @param hamsterId the id of the hamster
      * @param expected the expected direction
      */
-    private void assertDirection(final int gameId, final int hamsterId, final Direction expected) {
+    private void assertDirection(final UUID gameId, final int hamsterId, final Direction expected) {
         final JsonArray deltas = requestDeltas(gameId);
         final String direction = StreamSupport.stream(deltas.spliterator(), false)
                 .map(JsonElement::getAsJsonObject)
@@ -170,7 +173,7 @@ public class HTTPHamsterTests {
      * @param contentId the id of the tile content
      * @param expected the expected type
      */
-    private void assertTileContentType(final int gameId, int contentId, final String expected) {
+    private void assertTileContentType(final UUID gameId, int contentId, final String expected) {
         final JsonArray deltas = requestDeltas(gameId);
         assertTrue(StreamSupport.stream(deltas.spliterator(), false)
                 .map(JsonElement::getAsJsonObject)
@@ -184,7 +187,7 @@ public class HTTPHamsterTests {
     @Test
     public void testRunningMode() {
         final HamsterGame game = createHamsterGame();
-        final int gameId = getLatestGameId();
+        final UUID gameId = getLatestGameId();
         assertMode(gameId, Mode.RUNNING);
         assertTileContentType(gameId, 0, "HAMSTER");
     }
@@ -192,8 +195,8 @@ public class HTTPHamsterTests {
     @Test
     public void testPause() {
         final HamsterGame game = createHamsterGame();
-        final int gameId = getLatestGameId();
-        final SimpleResponse response = request("POST", "/action?id=" + gameId + "&action=pause");
+        final UUID gameId = getLatestGameId();
+        final SimpleResponse response = request("POST", "/action?id=" + gameId.toString() + "&action=pause");
         assertEquals(200, response.getStatusCode());
         delay();
         assertMode(gameId, Mode.PAUSED);
@@ -203,8 +206,8 @@ public class HTTPHamsterTests {
     @Test
     public void testAbort() {
         final HamsterGame game = createHamsterGame();
-        final int gameId = getLatestGameId();
-        final SimpleResponse response = request("POST", "/action?id=" + gameId + "&action=abort");
+        final UUID gameId = getLatestGameId();
+        final SimpleResponse response = request("POST", "/action?id=" + gameId.toString() + "&action=abort");
         assertEquals(200, response.getStatusCode());
         delay();
         assertMode(gameId, Mode.ABORTED);
@@ -214,10 +217,10 @@ public class HTTPHamsterTests {
     @Test
     public void testResume() {
         final HamsterGame game = createHamsterGame();
-        final int gameId = getLatestGameId();
+        final UUID gameId = getLatestGameId();
         game.pauseGame();
         delay();
-        final SimpleResponse response = request("POST", "/action?id=" + gameId + "&action=resume");
+        final SimpleResponse response = request("POST", "/action?id=" + gameId.toString() + "&action=resume");
         assertEquals(200, response.getStatusCode());
         delay();
         assertMode(gameId, Mode.RUNNING);
@@ -227,7 +230,7 @@ public class HTTPHamsterTests {
     @Test
     public void testMove() {
         final HamsterGame game = createHamsterGame();
-        final int gameId = getLatestGameId();
+        final UUID gameId = getLatestGameId();
         final Hamster hamster = game.getTerritory().getDefaultHamster();
         final Location location = hamster.getLocation();
         final Direction direction = hamster.getDirection();
@@ -240,7 +243,7 @@ public class HTTPHamsterTests {
     @Test
     public void testRotateHamster() {
         final HamsterGame game = createHamsterGame();
-        final int gameId = getLatestGameId();
+        final UUID gameId = getLatestGameId();
         final Hamster hamster = game.getTerritory().getDefaultHamster();
         final Direction direction = hamster.getDirection();
         assertDirection(gameId, 0, direction);
@@ -252,7 +255,7 @@ public class HTTPHamsterTests {
     @Test
     public void testSpawnHamster() {
         final HamsterGame game = createHamsterGame();
-        final int gameId = getLatestGameId();
+        final UUID gameId = getLatestGameId();
         final Hamster hamster = new Hamster(game.getTerritory(), Location.from(2,3), Direction.NORTH, 0);
         delay();
         assertTileContentType(gameId, 1, "HAMSTER");
@@ -263,7 +266,7 @@ public class HTTPHamsterTests {
     @Test
     public void testUndoRedo() {
         final HamsterGame game = createHamsterGame();
-        final int gameId = getLatestGameId();
+        final UUID gameId = getLatestGameId();
         final Hamster hamster = game.getTerritory().getDefaultHamster();
         final Location location = hamster.getLocation();
         final Direction direction = hamster.getDirection();

@@ -9,10 +9,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static de.unistuttgart.iste.rss.utils.Preconditions.*;
@@ -176,7 +173,7 @@ public class HamsterHTTPServer extends HamsterServer {
         checkNotNull(context);
 
         final Gson gson = new Gson();
-        context.setResult(gson.toJson(getSessions().keySet()));
+        context.setResult(gson.toJson(getSessions().keySet().stream().map(UUID::toString).toArray()));
     }
 
     /*@
@@ -352,7 +349,7 @@ public class HamsterHTTPServer extends HamsterServer {
     private HamsterSession getSession(final RequestContext context) {
         checkNotNull(context);
 
-        final int sessionId = getIntQueryParam(context, "id");
+        final UUID sessionId = UUID.fromString(getQueryParam(context, "id"));
         if (getSessions().containsKey(sessionId)) {
             final HamsterSession session = getSessions().get(sessionId);
             if (session.isAlive()) {
