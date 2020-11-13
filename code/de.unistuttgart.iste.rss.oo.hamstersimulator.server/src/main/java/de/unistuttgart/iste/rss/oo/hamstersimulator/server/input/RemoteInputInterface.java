@@ -138,6 +138,7 @@ public class RemoteInputInterface implements InputInterface {
     @Override
     public void abort() {
         this.mode = InputMode.NONE;
+        this.message.set(Optional.empty());
         this.result.complete(null);
     }
 
