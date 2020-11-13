@@ -20,6 +20,12 @@ public class InputMessage implements Serializable {
      * the id of the input
      */
     private final int inputId;
+
+    /**
+     * The type of input which is expected
+     */
+    private final InputMode mode;
+
     /**
      * the type of the error
      */
@@ -45,6 +51,7 @@ public class InputMessage implements Serializable {
 
         this.message = message;
         this.inputId = inputId;
+        this.mode = mode;
         this.type = type;
         this.stacktrace = stacktrace;
     }
