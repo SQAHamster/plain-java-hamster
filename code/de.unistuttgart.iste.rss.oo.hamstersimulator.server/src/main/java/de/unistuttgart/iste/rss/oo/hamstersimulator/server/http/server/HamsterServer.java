@@ -3,10 +3,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.server.http.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkArgument;
@@ -24,8 +21,9 @@ class HamsterServer {
 
     /**
      * map with all sessions (connected hamster clients)
+     * Warning: this map does not support concurrent modification
      */
-    private final Map<Integer, HamsterSession> sessions = new ConcurrentHashMap<>();
+    private final Map<UUID, HamsterSession> sessions = Collections.synchronizedMap(new LinkedHashMap<>());
 
     /*@
      @ requires serverSocket != null;
@@ -65,12 +63,11 @@ class HamsterServer {
 
         new Thread(() -> {
             try {
-                int sessionIdCounter = 0;
                 while (!serverSocket.isClosed()) {
                     Socket socket = serverSocket.accept();
-                    final HamsterSession session = new HamsterSession(socket, sessionIdCounter);
-                    this.sessions.put(sessionIdCounter, session);
-                    sessionIdCounter++;
+                    final UUID id = UUID.randomUUID();
+                    final HamsterSession session = new HamsterSession(socket, id);
+                    this.sessions.put(id, session);
                 }
             } catch (IOException e) {
                 shutdown();
@@ -89,12 +86,15 @@ class HamsterServer {
         final TimerTask task = new TimerTask() {
             @Override
             public void run() {
+                // cache which is necessary because the sessions map does not support concurrent modification
+                final List<UUID> toRemove = new ArrayList<>();
                 sessions.values().forEach(session -> {
                     session.shutdownIfPossible();
                     if (!session.isAlive()) {
-                        removeSession(session.getId());
+                        toRemove.add(session.getId());
                     }
                 });
+                toRemove.forEach(HamsterServer.this::removeSession);
             }
         };
 
@@ -112,7 +112,7 @@ class HamsterServer {
      *
      * @param sessionId the id of the session to remove
      */
-    protected void removeSession(final int sessionId) {
+    protected void removeSession(final UUID sessionId) {
         sessions.remove(sessionId);
         if (sessions.size() == 0) {
             shutdown();
@@ -141,7 +141,7 @@ class HamsterServer {
      * Getter for the sessions map
      * @return an unmodifiable version of the sessions map
      */
-    protected Map<Integer, HamsterSession> getSessions() {
+    protected Map<UUID, HamsterSession> getSessions() {
         return Collections.unmodifiableMap(this.sessions);
     }
 }

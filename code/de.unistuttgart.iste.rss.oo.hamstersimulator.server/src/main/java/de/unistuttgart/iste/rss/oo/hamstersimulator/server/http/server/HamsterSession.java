@@ -18,6 +18,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -59,7 +60,7 @@ public class HamsterSession {
      * this is provided as argument in the constructor, the id
      * management is up to the server itself
      */
-    private final int id;
+    private final UUID id;
     /**
      * the socket for the communication with the client
      */
@@ -113,7 +114,7 @@ public class HamsterSession {
      *                     the client
      * @throws IllegalArgumentException if the socket is closed
      */
-    public HamsterSession(final Socket socket, final int id) throws IOException {
+    public HamsterSession(final Socket socket, final UUID id) throws IOException {
         checkNotNull(socket, "socket must be != null");
         checkArgument(!socket.isClosed(), "the socket must not be closed");
 
@@ -661,7 +662,7 @@ public class HamsterSession {
      * Getter for the id
      * @return the id of this session as provided in the constructor
      */
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 }
