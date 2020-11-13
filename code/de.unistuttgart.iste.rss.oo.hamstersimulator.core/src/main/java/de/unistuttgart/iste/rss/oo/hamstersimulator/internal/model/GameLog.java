@@ -33,7 +33,7 @@ public class GameLog implements ObservableLog {
         editCommandFactory = new LambdaVisitor<CommandSpecification, Command>().
                 on(MoveCommandSpecification.class).then(s -> getLogCommand(s.getHamster(), "Move")).
                 on(TurnLeftCommandSpecification.class).then(s -> getLogCommand(s.getHamster(), "Turn Left")).
-                on(InitHamsterCommandSpecification.class).then(s -> getLogCommand(null, "Init Hamster")).
+                on(InitHamsterCommandSpecification.class).then(s -> getLogCommand(s.getHamster(), "Init Hamster")).
                 on(PickGrainCommandSpecification.class).then(s -> getLogCommand(s.getHamster(), "Pick Grain")).
                 on(PutGrainCommandSpecification.class).then(s -> getLogCommand(s.getHamster(), "Put Grain")).
                 on(WriteCommandSpecification.class).then(s -> getLogCommand(s.getHamster(), s.getMessage()));
