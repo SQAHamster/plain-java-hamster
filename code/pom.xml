@@ -4,14 +4,14 @@
 	<parent>
 		<groupId>de.unistuttgart.iste.rss.oo.hamstersimulator</groupId>
 		<artifactId>parent</artifactId>
-		<version>2.3.3-SNAPSHOT</version>
+		<version>2.4</version>
 		<relativePath>./de.unistuttgart.iste.rss.oo.hamstersimulator.parent/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>root</artifactId>
 	<name>Hamster Simulator Root Project</name>
 	<packaging>pom</packaging>
-    <version>2.3.3-SNAPSHOT</version>
+    <version>2.4</version>
 
 	<modules>
 		<module>
@@ -43,6 +43,6 @@
     <scm>
 		<developerConnection>scm:git:ssh://git@git.rss.iste.uni-stuttgart.de:22222/open-to-public/pse.git</developerConnection>
 		<connection>scm:git:ssh://git@git.rss.iste.uni-stuttgart.de:22222/open-to-public/pse.git</connection>
-    <tag>v2.1.1</tag>
+    <tag>v2.4</tag>
   </scm>
 </project>
