@@ -138,6 +138,7 @@ public class HamsterHTTPServer extends HamsterServer {
         handler.post("/input", this::postInput);
         handler.post("/speed", this::postSpeed);
         handler.post("/action", this::postAction);
+        handler.post("/abortInput", this::postAbortInput);
 
         server.createContext("/", handler);
         server.start();
@@ -198,6 +199,23 @@ public class HamsterHTTPServer extends HamsterServer {
         }
 
         session.setInputResult(inputId, input);
+    }
+
+    /*@
+     @ requires context != null;
+     @*/
+    /**
+     * Handles the abort input HTTP POST request
+     *
+     * @param context the request context
+     */
+    private void postAbortInput(final RequestContext context) {
+        checkNotNull(context);
+
+        final HamsterSession session = getSession(context);
+        final int inputId = getIntQueryParam(context, "inputId");
+
+        session.abortInput(inputId);
     }
 
     /*@
