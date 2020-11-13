@@ -15,13 +15,16 @@ public abstract class CommandStack {
 
     protected final ReadOnlyBooleanWrapper canUndo = new ReadOnlyBooleanWrapper(this, "canUndo", false);
     protected final ReadOnlyBooleanWrapper canRedo = new ReadOnlyBooleanWrapper(this, "canRedo", false);
+    protected final ReadOnlyBooleanWrapper hasCommandToUndo = new ReadOnlyBooleanWrapper(this, "hasCommandToUndo", false);
+    protected final ReadOnlyBooleanWrapper hasCommandToRedo = new ReadOnlyBooleanWrapper(this, "hasCommandToRedo", false);
 
     protected final List<Command> executedCommands = new LinkedList<>();
     protected final Stack<Command> undoneCommands = new Stack<>();
     private final ReentrantLock stateLock = new ReentrantLock(true);
 
     public CommandStack() {
-        super();
+        canUndo.bind(hasCommandToUndo);
+        canRedo.bind(hasCommandToRedo);
     }
 
     public void execute(final Command command) {
@@ -30,7 +33,7 @@ public abstract class CommandStack {
             redoAll();
             command.execute();
             this.executedCommands.add(command);
-            this.canUndo.set(true);
+            this.hasCommandToUndo.set(true);
         } finally {
             getStateLock().unlock();
         }
@@ -91,8 +94,8 @@ public abstract class CommandStack {
             final Command undoneCommand = this.executedCommands.remove(this.executedCommands.size()-1);
             undoneCommand.undo();
             undoneCommands.push(undoneCommand);
-            this.canUndo.set(executedCommands.size() > 0);
-            this.canRedo.set(true);
+            this.hasCommandToUndo.set(executedCommands.size() > 0);
+            this.hasCommandToRedo.set(true);
         } finally {
             getStateLock().unlock();
         }
@@ -115,8 +118,8 @@ public abstract class CommandStack {
             final Command undoneCommand = this.undoneCommands.pop();
             undoneCommand.execute();
             this.executedCommands.add(undoneCommand);
-            this.canUndo.set(true);
-            this.canRedo.set(undoneCommands.size() > 0);
+            this.hasCommandToUndo.set(true);
+            this.hasCommandToRedo.set(undoneCommands.size() > 0);
         } finally {
             getStateLock().unlock();
         }
@@ -138,8 +141,8 @@ public abstract class CommandStack {
         try {
             this.executedCommands.clear();
             this.undoneCommands.clear();
-            this.canUndo.set(false);
-            this.canRedo.set(false);
+            this.hasCommandToUndo.set(false);
+            this.hasCommandToRedo.set(false);
         } finally {
             getStateLock().unlock();
         }

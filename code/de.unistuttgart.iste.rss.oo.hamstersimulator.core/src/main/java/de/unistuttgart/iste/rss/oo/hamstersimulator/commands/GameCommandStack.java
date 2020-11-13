@@ -3,20 +3,15 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkArgument;
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkState;
 
-import java.nio.channels.FileChannel;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.locks.ReentrantLock;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameController;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 
 public class GameCommandStack extends EditCommandStack implements HamsterGameController {
 
@@ -31,11 +26,14 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
      * Creates a new instance of the GameCommandStack
      */
     public GameCommandStack() {
+        super();
         // prevent illegal values to be set via biding
         speed.addListener((observable, oldValue, newValue) -> {
             checkState(newValue.doubleValue() >= 0 && newValue.doubleValue() <= 10,
                     "Provided speed is not in range [0, 10]");
         });
+        this.canUndo.bind(this.hasCommandToUndo.and(this.mode.isNotEqualTo(Mode.RUNNING)));
+        this.canRedo.bind(this.hasCommandToRedo.and(this.mode.isNotEqualTo(Mode.RUNNING)));
     }
 
     /*@
@@ -57,8 +55,8 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
                     "start game is only possible during initialization");
 
             this.executedCommands.clear();
-            this.canUndo.set(false);
-            this.canRedo.set(false);
+            this.hasCommandToUndo.set(false);
+            this.hasCommandToRedo.set(false);
             if (startPaused) {
                 mode.set(Mode.PAUSED);
             } else {
@@ -293,7 +291,7 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
         } finally {
             getStateLock().unlock();
         }
-
+        redoAll();
         mode.set(Mode.RUNNING);
         this.pauseLock.release();
     }

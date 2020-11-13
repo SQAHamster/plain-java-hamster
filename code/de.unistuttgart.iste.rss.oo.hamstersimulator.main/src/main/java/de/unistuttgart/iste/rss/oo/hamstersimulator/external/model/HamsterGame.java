@@ -156,6 +156,7 @@ public class HamsterGame {
         try {
             initialize(getClass().getResourceAsStream(DEFAULT_HAMSTER_TERRITORY));
         } catch (final RuntimeException e) {
+            e.printStackTrace();
             throw new IllegalStateException("Unable to load default territory. "
                     + "This should not happen. Check jar for completeness.");
         }
@@ -252,6 +253,7 @@ public class HamsterGame {
      * This does not unload the currently loaded territory! <br>
      */
     public void hardReset() {
+        stopGame();
         this.commandStack.undoAll();
         this.commandStack.hardReset();
     }

@@ -83,11 +83,10 @@ public class GameSceneController {
     public void connectToGame(final HamsterGameViewModel hamsterGameViewModel) {
         this.gameController = hamsterGameViewModel.getGameController();
         this.hamsterGrid.bindToTerritory(hamsterGameViewModel.getTerritory());
-        final BooleanBinding runningBinding = Bindings.createBooleanBinding(() -> gameController.modeProperty().get() == Mode.RUNNING, gameController.modeProperty());
-        this.play.disableProperty().bind(Bindings.createBooleanBinding(() -> gameController.modeProperty().get() == Mode.PAUSED, gameController.modeProperty()).not());
-        this.pause.disableProperty().bind(runningBinding.not());
-        this.undo.disableProperty().bind(this.gameController.canUndoProperty().not().or(runningBinding));
-        this.redo.disableProperty().bind(this.gameController.canRedoProperty().not().or(runningBinding));
+        this.play.disableProperty().bind(gameController.modeProperty().isNotEqualTo(Mode.PAUSED));
+        this.pause.disableProperty().bind(gameController.modeProperty().isNotEqualTo(Mode.RUNNING));
+        this.undo.disableProperty().bind(this.gameController.canUndoProperty().not());
+        this.redo.disableProperty().bind(this.gameController.canRedoProperty().not());
         this.speed.valueProperty().bindBidirectional(this.gameController.speedProperty());
         this.log.setCellFactory(list -> new CellFormat());
         this.log.itemsProperty().bind((ReadOnlyListProperty<ObservableLogEntry>) hamsterGameViewModel.getLog().logProperty());
