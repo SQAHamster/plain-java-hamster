@@ -346,13 +346,8 @@ public class GameCommandStack extends EditCommandStack implements HamsterGameCon
         } finally {
             getStateLock().unlock();
         }
-<<<<<<< HEAD
-        redoAll();
+        this.redoAll();
         mode.set(Mode.RUNNING);
-=======
-
-        this.mode.set(Mode.RUNNING);
->>>>>>> 3bf15c3 (Added enableDelay/disableDelay Command to CommandStack for faster execution)
         this.pauseLock.release();
     }
 
