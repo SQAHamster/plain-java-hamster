@@ -1,4 +1,10 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
+
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameViewModel;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.config.HamsterConfig;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.ui.javafx.JavaFXUI;
+
 import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +25,6 @@ import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
  * To be used in lectures 2-8 of PSE as predefined base class.
  *
  * @author Steffen Becker
- *
  */
 public abstract class SimpleHamsterGame {
 
@@ -55,7 +60,7 @@ public abstract class SimpleHamsterGame {
     public SimpleHamsterGame() {
         game.startGame();
 
-        paule = game.getTerritory().getDefaultHamster();
+        this.paule = this.game.getTerritory().getDefaultHamster();
     }
 
     /**
@@ -66,7 +71,7 @@ public abstract class SimpleHamsterGame {
     protected abstract void run();
 
     /**
-     * Method to start a hamster game and handle any exceptions happening
+     * Method to start the execution of a hamster game and handle any exceptions happening
      * while running.
      */
     public final void doRun() {
@@ -78,7 +83,7 @@ public abstract class SimpleHamsterGame {
             this.game.confirmAlert(e);
             throw e;
         }
-        game.stopGame();
+        this.game.stopGame();
     }
 
     /**
@@ -88,21 +93,22 @@ public abstract class SimpleHamsterGame {
      * The default is JAVA_FX.
      */
     protected void displayInNewGameWindow() {
-        final UIMode mode = getUIModeFromEnvironmentVariable()
+        final String mode = getUIModeFromEnvironmentVariable()
                 .orElse(getUIModeFromConfig()
                         .orElse(UIMode.JAVA_FX));
         switch (mode) {
-            case JAVA_FX:
+            case UIMode.JAVA_FX:
                 JavaFXUI.displayInNewGameWindow(this.game.getModelViewAdapter());
                 break;
-            case HTTP:
+            case UIMode.HTTP:
                 HamsterClient.startAndConnectToServer(this.game.getModelViewAdapter());
                 break;
-            case NONE:
+            case UIMode.NONE:
                 // ignore
                 break;
             default:
-                throw new IllegalStateException("not handled output interface case");
+                throw new IllegalStateException("Unknown output interface type, possible values are: " +
+                        UIMode.JAVA_FX + ", " + UIMode.HTTP + " or " + UIMode.NONE);
         }
     }
 
@@ -131,21 +137,22 @@ public abstract class SimpleHamsterGame {
 
     /**
      * Loads the UI Mode from the config if possible
+     *
      * @return The UI mode if it was found in the default config, if the file is not present
-     *         an empty optional
+     * an empty optional
      * @throws IllegalStateException if something goes wrong reading the file or if the config file
-     *         contains an illegal value
+     *                               contains an illegal value
      */
-    private Optional<UIMode> getUIModeFromConfig() {
+    private static Optional<String> getUIModeFromConfig() {
         if (Files.exists(Path.of("config.json"))) {
             try {
                 final HamsterConfig config = HamsterConfig.load();
                 if (config.getOutput() != null) {
-                    return Optional.of(UIMode.valueOf(config.getOutput()));
+                    return Optional.of(config.getOutput());
                 } else {
                     return Optional.empty();
                 }
-            } catch (IOException | IllegalArgumentException e) {
+            } catch (final IOException | IllegalArgumentException e) {
                 throw new IllegalStateException("Illegal config", e);
             }
         } else {
@@ -155,15 +162,16 @@ public abstract class SimpleHamsterGame {
 
     /**
      * Loads the UI Mode from the environment variable if possible
+     *
      * @return The UI mode if the environment variable was set, otherwise an empty optional
      * @throws IllegalStateException if an illegal value is set
      */
-    private Optional<UIMode> getUIModeFromEnvironmentVariable() {
-        final String value = System.getenv(OUTPUT_INTERFACE_ENVIRONMENT_VARIABLE_NAME);
+    private static Optional<String> getUIModeFromEnvironmentVariable() {
+        final String value = System.getenv(SimpleHamsterGame.OUTPUT_INTERFACE_ENVIRONMENT_VARIABLE_NAME);
         if (value != null) {
             try {
-                return Optional.of(UIMode.valueOf(value));
-            } catch (IllegalArgumentException e) {
+                return Optional.of(value);
+            } catch (final IllegalArgumentException e) {
                 throw new IllegalStateException("Illegal environmental variable", e);
             }
         } else {
@@ -172,12 +180,13 @@ public abstract class SimpleHamsterGame {
     }
 
     /**
-     * enum for different UI types
+     * Different UI types
+     * No enum is used because enums use reflection for valueOf which can cause issues if reflection is forbidden
      */
-    private enum UIMode {
-        JAVA_FX,
-        HTTP,
-        NONE;
+    private static final class UIMode {
+        public static final String JAVA_FX = "JAVA_FX";
+        public static final String HTTP = "HTTP";
+        public static final String NONE = "NONE";
     }
 
 }
