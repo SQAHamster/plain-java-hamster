@@ -3,8 +3,17 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.ObservableCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 
+/**
+ * Base interface for all ObservableCommandSpecifications that need a location, like
+ * ObservableAddGrainsToTileCommandSpecification used to add grains to a tile
+ * or ObservableAddWallToTileCommandSpecification which adds a wall to a tile
+ */
 public interface ObservableAbstractTerritoryTileCommandSpecification extends ObservableCommandSpecification {
 
+    /**
+     * Get the location associated with the command
+     * @return the location, != null
+     */
     Location getLocation();
 
 }
