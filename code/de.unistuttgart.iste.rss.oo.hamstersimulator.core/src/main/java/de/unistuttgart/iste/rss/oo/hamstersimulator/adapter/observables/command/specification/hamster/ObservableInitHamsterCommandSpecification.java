@@ -8,7 +8,8 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 /**
  * Observable version of command specification used to initialize hamster
  */
-public interface ObservableInitHamsterCommandSpecification extends ObservableAbstractHamsterCommandSpecification, ObservableAbstractTerritoryTileCommandSpecification {
+public interface ObservableInitHamsterCommandSpecification extends ObservableAbstractHamsterCommandSpecification,
+        ObservableAbstractTerritoryTileCommandSpecification {
 
     /**
      * Get the hamster's new direction

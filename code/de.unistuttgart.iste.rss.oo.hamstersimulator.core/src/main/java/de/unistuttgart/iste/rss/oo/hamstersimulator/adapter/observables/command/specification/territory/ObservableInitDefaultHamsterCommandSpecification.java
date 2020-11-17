@@ -7,8 +7,16 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
  */
 public interface ObservableInitDefaultHamsterCommandSpecification extends ObservableAbstractTerritoryTileCommandSpecification {
 
+    /**
+     * Get the hamster's new direction
+     * @return the hamster's new direction (!= null)
+     */
     Direction getDirection();
 
+    /**
+     * Get the hamster's new grain count
+     * @return the hamster's new grain count (>= 0)
+     */
     int getGrainCount();
 
 }
