@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.testFramework;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.testframework;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

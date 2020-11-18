@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.rss.oo.hamstersimulator.testFramework;
+package de.unistuttgart.iste.rss.oo.hamstersimulator.testframework;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.SimpleHamsterGame;
 import org.junit.jupiter.api.extension.ExtensionContext;
