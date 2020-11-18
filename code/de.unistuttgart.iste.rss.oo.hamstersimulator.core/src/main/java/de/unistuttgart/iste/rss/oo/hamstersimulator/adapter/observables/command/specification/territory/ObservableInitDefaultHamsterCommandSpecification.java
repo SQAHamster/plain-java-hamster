@@ -15,7 +15,7 @@ public interface ObservableInitDefaultHamsterCommandSpecification extends Observ
 
     /**
      * Get the hamster's new grain count
-     * @return the hamster's new grain count (>= 0)
+     * @return the hamster's new grain count (greater than or equal to 0)
      */
     int getGrainCount();
 

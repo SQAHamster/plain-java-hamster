@@ -7,7 +7,7 @@ public interface ObservableAddGrainsToTileCommandSpecification extends Observabl
 
     /**
      * Get the amount of grains added to the tile
-     * @return the amount of grains added to the tile, >= 0
+     * @return the amount of grains added to the tile, greater than or equal to 0
      */
     int getAmount();
 
