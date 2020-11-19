@@ -65,7 +65,7 @@ public class LogEntry implements ObservableLogEntry {
      * The command specification that caused this log entry to be generated.
      *
      * @return An instance of a {@link de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification}
-     *         which describes the event this log message (it also caused this LogEntry).
+     *         which describes the event this log message represents (it also caused this LogEntry).
      *         This won't be null
      */
     @Override
