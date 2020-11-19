@@ -1,9 +1,9 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableWriteCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.GameHamster;
 
-public class WriteCommandSpecification extends AbstractHamsterCommandSpecification implements CommandSpecification {
+public class WriteCommandSpecification extends AbstractHamsterCommandSpecification implements ObservableWriteCommandSpecification {
 
     private final String message;
 
@@ -12,8 +12,9 @@ public class WriteCommandSpecification extends AbstractHamsterCommandSpecificati
         this.message = message;
     }
 
+    @Override
     public String getMessage() {
-        return message;
+        return this.message;
     }
 
 }

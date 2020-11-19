@@ -38,6 +38,7 @@
 		<module>
 			de.unistuttgart.iste.rss.oo.hamstersimulator.config
 		</module>
+		<module>de.unistuttgart.iste.rss.oo.hamstersimulator.testframework</module>
 	</modules>
 
     <scm>

@@ -15,8 +15,10 @@ public interface ObservableHamster extends ObservableTileContent {
      @ requires true;
      @ ensures \result != null;
      @*/
+
     /**
      * Get the current hamster looking direction.
+     *
      * @return The current hamster's looking direction.
      */
     Direction getDirection();
@@ -24,7 +26,9 @@ public interface ObservableHamster extends ObservableTileContent {
     /**
      * Getter for the direction property of the hamster, which represents
      * the direction this hamster is facing
+     *
      * @return the property, not null
      */
     ReadOnlyObjectProperty<Direction> directionProperty();
+    
 }

@@ -1,20 +1,15 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster;
 
-import java.util.Collections;
-import java.util.List;
-
-import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableHamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Grain;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TileContent;
-import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
-import javafx.beans.property.ReadOnlyListProperty;
-import javafx.beans.property.ReadOnlyListWrapper;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
+
+import java.util.Collections;
+import java.util.List;
 
 public class ReadOnlyHamster extends TileContent implements ObservableHamster {
 
@@ -24,7 +19,7 @@ public class ReadOnlyHamster extends TileContent implements ObservableHamster {
 
     public ReadOnlyHamster() {
         super();
-        grainCount.bind(grainInMouth.sizeProperty());
+        this.grainCount.bind(this.grainInMouth.sizeProperty());
     }
 
     /*@
@@ -32,26 +27,29 @@ public class ReadOnlyHamster extends TileContent implements ObservableHamster {
      @ requires true;
      @ ensures \result != null;
      @*/
+
     /**
      * Get the current hamster looking direction.
+     *
      * @return The current hamster's looking direction.
      */
     @Override
     public Direction getDirection() {
-        return direction.get();
+        return this.direction.get();
     }
 
     public List<Grain> getGrainInMouth() {
-        return Collections.unmodifiableList(grainInMouth.get());
+        return Collections.unmodifiableList(this.grainInMouth.get());
     }
 
     public /*@ pure helper @*/ int getGrainCount() {
-        return grainCount.get();
+        return this.grainCount.get();
     }
 
     /**
      * Getter for the direction property of the hamster, which represents
      * the direction this hamster is facing
+     *
      * @return the property, not null
      */
     @Override

@@ -1,9 +1,5 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster;
 
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.IntStream;
-
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
@@ -15,13 +11,17 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.comma
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.Grain;
 import de.unistuttgart.iste.rss.utils.LambdaVisitor;
 
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.IntStream;
+
 public class GameHamster extends EditorHamster {
-    
+
     private final Function<CommandSpecification, Command> editCommandFactory;
 
     public GameHamster() {
         super();
-        editCommandFactory = new LambdaVisitor<CommandSpecification, Command>().
+        this.editCommandFactory = new LambdaVisitor<CommandSpecification, Command>().
                 on(InitHamsterCommandSpecification.class).then(this::createInitHamsterCommand).
                 on(PickGrainCommandSpecification.class).then(this::createPickGrainCommand).
                 on(PutGrainCommandSpecification.class).then(this::createPutGrainCommand).
@@ -39,32 +39,32 @@ public class GameHamster extends EditorHamster {
 
     private Command createInitHamsterCommand(final InitHamsterCommandSpecification specification) {
         return new CompositeCommand().setCommandConstructor(builder -> {
-                builder.newSetPropertyCommand(direction, specification.getNewDirection());
-                IntStream.
+            builder.newSetPropertyCommand(this.direction, specification.getNewDirection());
+            IntStream.
                     range(0, specification.getNewGrainCount()).
-                    forEach(i -> builder.newAddToPropertyCommand(grainInMouth, new Grain()));
-            }).setPreconditionConstructor(builder -> {
-                builder.addNewPrecondition(HamsterNotOnNonBlockingTileException::new, 
-                        () -> specification.getTerritory().getTileAt(specification.getLocation()).isBlocked());
-            });
+                    forEach(i -> builder.newAddToPropertyCommand(this.grainInMouth, new Grain()));
+        }).setPreconditionConstructor(builder -> {
+            builder.addNewPrecondition(HamsterNotOnNonBlockingTileException::new,
+                    () -> specification.getTerritory().getTileAt(specification.getLocation()).isBlocked());
+        });
     }
 
     private Command createPickGrainCommand(final PickGrainCommandSpecification specification) {
         return new CompositeCommand().setCommandConstructor(builder -> {
-                builder.newAddToPropertyCommand(grainInMouth, specification.getGrain());
+            builder.newAddToPropertyCommand(this.grainInMouth, specification.getGrain());
         });
     }
 
     private Command createPutGrainCommand(final PutGrainCommandSpecification specification) {
         return new CompositeCommand().setCommandConstructor(builder -> {
-                builder.newRemoveFromPropertyCommand(grainInMouth, specification.getGrain());
+            builder.newRemoveFromPropertyCommand(this.grainInMouth, specification.getGrain());
         });
     }
 
     private Command createTurnLeftCommand(final TurnLeftCommandSpecification specification) {
         return new CompositeCommand().setCommandConstructor(builder -> {
-                builder.newSetPropertyCommand(direction, getDirection().left());
+            builder.newSetPropertyCommand(this.direction, this.getDirection().left());
         });
     }
-    
+
 }

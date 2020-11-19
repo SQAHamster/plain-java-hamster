@@ -1,4 +1,6 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.commands;
 
-public interface CommandSpecification extends Cloneable {
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.ObservableCommandSpecification;
+
+public interface CommandSpecification extends Cloneable, ObservableCommandSpecification {
 }
