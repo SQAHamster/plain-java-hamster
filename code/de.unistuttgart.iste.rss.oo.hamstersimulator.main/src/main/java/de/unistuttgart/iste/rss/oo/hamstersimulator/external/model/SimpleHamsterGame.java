@@ -47,6 +47,12 @@ public abstract class SimpleHamsterGame {
     protected final HamsterGame game = new HamsterGame();
 
     /**
+     * The current SimpleHamsterGame. Can be used to load a territory or to
+     * display the game in a new game window.
+     */
+    protected final SimpleHamsterGame currentGame = this;
+
+    /**
      * A console object to demonstrate IO besides using the read or write methods
      * of hamsters.
      */
