@@ -1,4 +1,4 @@
-module rss.hamster.testFramework {
+module rss.hamster.testframework {
     requires transitive rss.hamster.main;
 
     requires org.junit.jupiter.engine;
