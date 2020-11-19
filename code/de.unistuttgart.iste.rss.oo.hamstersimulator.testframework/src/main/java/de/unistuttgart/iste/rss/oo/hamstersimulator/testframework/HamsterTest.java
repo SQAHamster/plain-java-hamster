@@ -6,7 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * Used to tell the HamsterGameResolver which SimpleHamsterGame class is used to create
+ * the HamsterGameTestEnvironment. <br>
+ * The fully qualified class name must be used!
+ * @see HamsterGameTestEnvironment
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

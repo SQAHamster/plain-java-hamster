@@ -11,8 +11,9 @@ import java.lang.reflect.Parameter;
 import java.util.Optional;
 
 /**
- * Parameter resolver which can resolve TestUtils parameters
- * Uses the game value from the HamsterTest annotation
+ * Parameter resolver which can resolve HamsterGameTestEnvironment parameters
+ * Uses the game value from the HamsterTest annotation to find out which SimpleHamsterGame
+ * is instantiated
  */
 public class HamsterGameResolver implements ParameterResolver {
 
