@@ -18,4 +18,6 @@
         </dependency>
     </dependencies>
 
+	<name>Hamstersimulator Configuration Support</name>
+
 </project>
