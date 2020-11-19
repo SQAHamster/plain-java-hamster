@@ -31,7 +31,7 @@ public class HamsterGameResolver implements ParameterResolver {
     @Override
     public boolean supportsParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        return parameterContext.getParameter().getType().equals(TestUtils.class);
+        return parameterContext.getParameter().getType().equals(HamsterGameTestEnvironment.class);
     }
 
     /**
@@ -58,7 +58,7 @@ public class HamsterGameResolver implements ParameterResolver {
 
         try {
             final SimpleHamsterGame hamsterGame = simpleHamsterGameClass.getDeclaredConstructor().newInstance();
-            return new TestUtils(hamsterGame);
+            return new HamsterGameTestEnvironment(hamsterGame);
         } catch (final NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new ParameterResolutionException("The simple hamster game to instantiate has public constructor without parameters", e);
         }

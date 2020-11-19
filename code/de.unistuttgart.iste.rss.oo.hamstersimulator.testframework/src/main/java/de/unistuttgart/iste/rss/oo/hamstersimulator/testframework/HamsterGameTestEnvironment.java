@@ -4,10 +4,12 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameViewModel
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.SimpleHamsterGame;
 
 /**
- * Utils to test a SimpleHamsterGame
- * Provides the viewmodel of the underlying game and makes it possible to execute the game
+ * Environment to test a SimpleHamsterGame
+ * Provides the viewmodel of the underlying game.
+ * If runGame is called, doRun is called on the provided game. It is possible to call runGame
+ * multiple times, however this might result is strange behaviour and therefore is discouraged
  */
-public class TestUtils {
+public class HamsterGameTestEnvironment {
 
     /**
      * HamsterGameViewModel of the underlying game
@@ -19,10 +21,13 @@ public class TestUtils {
     private final SimpleHamsterGame game;
 
     /**
-     * Creates a new TestUtils instance which the specified SimpleHamsterGame
+     * Creates a new HamsterGameTestEnvironment instance which the specified SimpleHamsterGame
+     * Also disables the delay on the provided game
+     * To get the desired behaviour, it is encouraged to provide a SimpleHamsterGame which
+     * was not executed before
      * @param game the SimpleHamsterGame used to execute the HamsterGame
      */
-    public TestUtils(final SimpleHamsterGame game) {
+    public HamsterGameTestEnvironment(final SimpleHamsterGame game) {
         this.viewModel = game.getGameViewModel();
         this.game = game;
         this.viewModel.getGameController().disableDelay();
@@ -39,6 +44,8 @@ public class TestUtils {
     /**
      * Runs the underlying HamsterGame by calling doRun on the
      * SimpleHamsterGame
+     * Warning: it is possible to call this multiple times, and each time doRun is called on the
+     * SimpleHamsterGame. This might cause strange behavior and therefore is highly discouraged
      */
     public void runGame() {
         this.game.doRun();
