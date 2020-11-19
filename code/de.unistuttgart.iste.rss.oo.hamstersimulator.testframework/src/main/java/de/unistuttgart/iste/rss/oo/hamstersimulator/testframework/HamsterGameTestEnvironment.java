@@ -8,6 +8,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.SimpleHamster
  * Provides the viewmodel of the underlying game.
  * If runGame is called, doRun is called on the provided game. It is possible to call runGame
  * multiple times, however this might result is strange behaviour and therefore is discouraged
+ * For an example, see TestUtilsHamsterGameTest in tests
  */
 public class HamsterGameTestEnvironment {
 
