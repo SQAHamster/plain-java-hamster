@@ -14,6 +14,8 @@ import java.util.Optional;
  * Parameter resolver which can resolve HamsterGameTestEnvironment parameters
  * Uses the game value from the HamsterTest annotation to find out which SimpleHamsterGame
  * is instantiated
+ * If the HamsterTest annotation is used, this should be added as an extension via ExtendWith
+ * @see org.junit.jupiter.api.extension.ExtendWith
  */
 public class HamsterGameResolver implements ParameterResolver {
 
