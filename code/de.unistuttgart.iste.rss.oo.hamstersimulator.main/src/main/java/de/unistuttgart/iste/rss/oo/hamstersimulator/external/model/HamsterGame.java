@@ -448,10 +448,14 @@ public class HamsterGame {
      * @throws IllegalStateException if no input interface is registered
      */
     public void confirmAlert(final Throwable throwable) {
-        this.executeAndGetFirstResult(inputInterface -> () -> {
-            inputInterface.confirmAlert(throwable);
-            return Optional.empty();
-        });
+        // Temporary fix for #12
+        // Ensures meaningful exceptions
+        if (!this.adapter.getInputInterfaces().isEmpty()) {
+            this.executeAndGetFirstResult(inputInterface -> () -> {
+                inputInterface.confirmAlert(throwable);
+                return Optional.empty();
+            });
+        }
     }
 
     /**
