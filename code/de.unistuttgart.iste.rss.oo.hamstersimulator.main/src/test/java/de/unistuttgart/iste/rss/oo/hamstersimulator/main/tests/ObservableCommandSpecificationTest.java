@@ -1,23 +1,15 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.main.tests;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameViewModel;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.InputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableLogEntry;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.ObservableCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableMoveCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservablePutGrainCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableTurnLeftCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableWriteCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.Hamster;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.HamsterGame;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.TerritoryBuilder;
 import javafx.beans.property.ReadOnlyListProperty;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -29,29 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * Tests which use the functionality of a SimpleHamsterGame by obtaining ObservableCommandSpecifications
  * via the ObservableLog
  */
-public class ObservableCommandSpecificationTest {
-
-    /**
-     * HamsterGame used to execute tests, set with BeforeEach
-     */
-    private HamsterGame game;
-
-    /**
-     * Initializes game as 10x10 territory with the default hamster in the top left corner facing south and 10 grains
-     * Also adds a mock InputInterface and starts the game
-     */
-    @BeforeEach
-    public void initGame() {
-        game = new HamsterGame();
-        final TerritoryBuilder builder = game.getNewTerritoryBuilder();
-        builder.initializeTerritory(new Size(10, 10));
-        builder.defaultHamsterAt(Location.from(0, 0), Direction.SOUTH, 10);
-        game.initialize(builder);
-        final HamsterGameViewModel viewModel = game.getModelViewAdapter();
-        viewModel.addInputInterface(getInputInterfaceMock());
-        viewModel.getGameController().disableDelay();
-        game.startGame();
-    }
+public class ObservableCommandSpecificationTest extends BaseHamsterGameTest {
 
     /**
      * Tests that the default hamster walks exactly 5 times
@@ -118,22 +88,6 @@ public class ObservableCommandSpecificationTest {
         assertEquals(10, putGrainSpecifications.size());
     }
 
-    /**
-     * Executes the provided hamsterProgram with the default hamster and returns a list with all
-     * ObservableCommandSpecification in the log
-     *
-     * @param hamsterProgram the program to execute, must be != null
-     * @return a list with all ObservableCommandSpecifications from the log
-     */
-    private List<ObservableCommandSpecification> executeGame(final Consumer<Hamster> hamsterProgram) {
-        game.runGame(territory -> hamsterProgram.accept(territory.getDefaultHamster()));
-        final HamsterGameViewModel viewModel = game.getModelViewAdapter();
-        final ReadOnlyListProperty<? extends ObservableLogEntry> log = viewModel.getLog().logProperty();
-        return log.stream()
-                .map(ObservableLogEntry::getCommandSpecification)
-                .collect(Collectors.toList());
-    }
-
     private <T extends ObservableCommandSpecification> List<ObservableCommandSpecification> filterCommandSpecifications(
             final List<ObservableCommandSpecification> specifications, Class<T> cls) {
         return specifications.stream()
@@ -142,10 +96,18 @@ public class ObservableCommandSpecificationTest {
     }
 
     /**
-     * Gets a mock for the input interface
-     * @return the mock
+     * Executes the provided hamsterProgram with the default hamster and returns a list with all
+     * ObservableCommandSpecification in the log
+     *
+     * @param hamsterProgram the program to execute, must be != null
+     * @return a list with all ObservableCommandSpecifications from the log
      */
-    private InputInterface getInputInterfaceMock() {
-        return Mockito.mock(InputInterface.class);
+    protected List<ObservableCommandSpecification> executeGame(final Consumer<Hamster> hamsterProgram) {
+        game.runGame(territory -> hamsterProgram.accept(territory.getDefaultHamster()));
+        final HamsterGameViewModel viewModel = game.getModelViewAdapter();
+        final ReadOnlyListProperty<? extends ObservableLogEntry> log = viewModel.getLog().logProperty();
+        return log.stream()
+                .map(ObservableLogEntry::getCommandSpecification)
+                .collect(Collectors.toList());
     }
 }
