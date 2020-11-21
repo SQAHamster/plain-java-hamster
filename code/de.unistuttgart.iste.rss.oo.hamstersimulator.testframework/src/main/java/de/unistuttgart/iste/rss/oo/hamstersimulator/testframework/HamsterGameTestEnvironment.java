@@ -13,29 +13,30 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.SimpleHamster
 public class HamsterGameTestEnvironment {
 
     /**
-     * HamsterGameViewModel of the underlying game
+     * HamsterGameViewModel of the underlying game.
      */
     private final HamsterGameViewModel viewModel;
+
     /**
-     * the SimpleHamsterGame used to execute the game
+     * the SimpleHamsterGame used to execute the game.
      */
     private final SimpleHamsterGame game;
 
     /**
-     * Creates a new HamsterGameTestEnvironment instance which the specified SimpleHamsterGame
+     * Creates a new HamsterGameTestEnvironment instance which the specified SimpleHamsterGame.
      * Also disables the delay on the provided game
      * To get the desired behaviour, it is encouraged to provide a SimpleHamsterGame which
      * was not executed before
-     * @param game the SimpleHamsterGame used to execute the HamsterGame
+     * @param targetGame the SimpleHamsterGame used to execute the HamsterGame
      */
-    public HamsterGameTestEnvironment(final SimpleHamsterGame game) {
-        this.viewModel = game.getGameViewModel();
-        this.game = game;
+    public HamsterGameTestEnvironment(final SimpleHamsterGame targetGame) {
+        this.viewModel = targetGame.getGameViewModel();
+        this.game = targetGame;
         this.viewModel.getGameController().disableDelay();
     }
 
     /**
-     * Gets the viewmodel of the underlying HamsterGame
+     * Gets the viewmodel of the underlying HamsterGame.
      * @return the viewmodel which represents the HamsterGame
      */
     public final HamsterGameViewModel getViewModel() {

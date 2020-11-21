@@ -1,17 +1,17 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.testframework;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.SimpleHamsterGame;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
+
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Parameter;
-import java.util.Optional;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.SimpleHamsterGame;
 
 /**
- * Parameter resolver which can resolve HamsterGameTestEnvironment parameters
+ * Parameter resolver which can resolve HamsterGameTestEnvironment parameters.
  * Uses the game value from the HamsterTest annotation to find out which SimpleHamsterGame
  * is instantiated
  * If the HamsterTest annotation is used, this should be added as an extension via ExtendWith
@@ -68,11 +68,12 @@ public class HamsterGameResolver implements ParameterResolver {
     }
 
     /**
-     * Gets the Class of the SimpleHamsterGame specified via the HamsterTest annotation
+     * Gets the Class of the SimpleHamsterGame specified via the HamsterTest annotation.
      * @param parameterContext the context for the parameter which an argument should be resolved, != null
      * @return an empty optional if the class is not found or does not extend SimpleHamsterGame,
      *         otherwise an optional with the Class of the specified SimpleHamsterGame
      */
+    @SuppressWarnings("unchecked")
     private static Optional<Class<? extends SimpleHamsterGame>> getHamsterGameClass(final ParameterContext parameterContext) {
         try {
             final HamsterTest hamsterTest = parameterContext.getDeclaringExecutable().getDeclaringClass()
@@ -81,11 +82,11 @@ public class HamsterGameResolver implements ParameterResolver {
                 return Optional.empty();
             }
             final String hamsterClassName = hamsterTest.game();
-            final Class<?> simpleHamsterGame = Class.forName(hamsterClassName);
-            if (!SimpleHamsterGame.class.isAssignableFrom(simpleHamsterGame)) {
+            final Class<?> declaredGameClass = Class.forName(hamsterClassName);
+            if (!SimpleHamsterGame.class.isAssignableFrom(declaredGameClass)) {
                 return Optional.empty();
             }
-            return Optional.of((Class<? extends SimpleHamsterGame>) simpleHamsterGame);
+            return Optional.of((Class<? extends SimpleHamsterGame>) declaredGameClass);
         } catch (final ClassNotFoundException classEx) {
             return Optional.empty();
         }

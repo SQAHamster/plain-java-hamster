@@ -3,7 +3,7 @@ module rss.hamster.testframework {
 
     requires org.junit.jupiter.engine;
     requires org.junit.platform.launcher;
-    requires org.junit.jupiter.api;
+    requires transitive org.junit.jupiter.api;
 
     exports de.unistuttgart.iste.rss.oo.hamstersimulator.testframework;
 }

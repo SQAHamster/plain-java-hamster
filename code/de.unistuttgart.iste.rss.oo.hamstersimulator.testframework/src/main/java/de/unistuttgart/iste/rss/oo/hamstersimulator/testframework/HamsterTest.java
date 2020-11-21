@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 public @interface HamsterTest {
     /**
      * Used to provide the HamsterGameResolver the fully qualified class name of a SimpleHamsterGame
-     * which can be used to provide the TestUtils parameter
+     * which can be used to provide the TestUtils parameter.
      * @return the value provided to the annotation, default the SimpleHamsterGame's fully qualified
      *         class name
      */
