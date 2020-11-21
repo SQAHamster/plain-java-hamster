@@ -18,7 +18,7 @@
 	    <dependency>
       		<groupId>org.openjfx</groupId>
     		<artifactId>javafx-base</artifactId>
-    		<version>14</version>
+    		<version>15</version>
   		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
