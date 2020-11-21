@@ -2,7 +2,12 @@ package de.unistuttgart.iste.rss.utils;
 
 import java.util.Objects;
 
-public class Preconditions {
+/**
+ * A utility class to implement precondition checks in Java.
+ * @author Steffen Becker
+ *
+ */
+public final class Preconditions {
 
     public static void checkNotNull(final Object o, final String message) {
         Objects.requireNonNull(o, message);
@@ -34,6 +39,9 @@ public class Preconditions {
         if (!check) {
             throw new IllegalStateException();
         }
+    }
+
+    private Preconditions() {
     }
 
 }
