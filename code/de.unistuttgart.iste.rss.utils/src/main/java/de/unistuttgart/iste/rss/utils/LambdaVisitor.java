@@ -13,9 +13,17 @@ public final class LambdaVisitor<B, A> implements Function<B, A> {
 
     @Override
     public A apply(final Object o) {
-        final Function<Object, A> f = fMap.get(o.getClass());
+        Function<Object, A> f = fMap.get(o.getClass());
         if (f == null) {
-            return null;
+            for (final Class<?> interfaceClazz : o.getClass().getInterfaces()) {
+                if (fMap.containsKey(interfaceClazz)) {
+                    f = fMap.get(interfaceClazz);
+                    break;
+                }
+            }
+            if (f == null) {
+                return null;
+            }
         }
         return f.apply(o);
     }
