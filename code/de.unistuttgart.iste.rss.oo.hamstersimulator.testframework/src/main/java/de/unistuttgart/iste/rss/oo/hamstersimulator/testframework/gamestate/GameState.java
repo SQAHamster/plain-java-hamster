@@ -44,6 +44,25 @@ public final class GameState implements Cloneable {
      */
     private final ArrayList<WrittenMessage> writtenMessages;
 
+    GameState(final Size size) {
+        this(size.getRowCount(), size.getColumnCount());
+    }
+
+    private GameState(final int rowCount, final int columnCount) {
+        super();
+        territoryGrainCount = new int[rowCount][columnCount];
+        hamsterStates = new HashMap<>();
+        writtenMessages = new ArrayList<>();
+    }
+
+    private GameState(final GameState previousState) {
+        super();
+        territoryGrainCount = clone2dArray(previousState);
+        hamsterStates = new HashMap<ObservableHamster, HamsterState>(previousState.getHamsterStates());
+        writtenMessages = new ArrayList<WrittenMessage>(previousState.writtenMessages);
+        previousGameState = Optional.of(previousState);
+    }
+
     /**
      * Query the number of grains on the tile with the given location.
      * @param location Location of the tile for which the number of grains is returned.
@@ -117,12 +136,8 @@ public final class GameState implements Cloneable {
      * Create a new immutable copy of this game state.
      */
     @Override
-    public Object clone() {
+    public GameState clone() {
         return new GameState(this);
-    }
-
-    GameState(final Size size) {
-        this(size.getRowCount(), size.getColumnCount());
     }
 
     int[][] getTerritoryGrainCount() {
@@ -135,21 +150,6 @@ public final class GameState implements Cloneable {
 
     List<WrittenMessage> messageList() {
         return writtenMessages;
-    }
-
-    private GameState(final int rowCount, final int columnCount) {
-        super();
-        territoryGrainCount = new int[rowCount][columnCount];
-        hamsterStates = new HashMap<>();
-        writtenMessages = new ArrayList<>();
-    }
-
-    private GameState(final GameState previousState) {
-        super();
-        territoryGrainCount = clone2dArray(previousState);
-        hamsterStates = new HashMap<ObservableHamster, HamsterState>(previousState.getHamsterStates());
-        writtenMessages = new ArrayList<WrittenMessage>(previousState.writtenMessages);
-        previousGameState = Optional.of(previousState);
     }
 
     private int[][] clone2dArray(final GameState previousState) {

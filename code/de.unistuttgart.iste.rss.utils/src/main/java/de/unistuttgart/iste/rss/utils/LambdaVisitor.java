@@ -20,6 +20,8 @@ public final class LambdaVisitor<B, A> implements Function<B, A> {
                     f = fMap.get(interfaceClazz);
                     break;
                 }
+                // TODO: Do not only support dispatch on implemented interfaces but also on
+                // superclasses.
             }
             if (f == null) {
                 return null;

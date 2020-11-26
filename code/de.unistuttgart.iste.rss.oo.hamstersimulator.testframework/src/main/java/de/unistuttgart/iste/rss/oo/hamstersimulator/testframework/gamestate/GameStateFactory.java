@@ -14,6 +14,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservablePutGrainCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableTurnLeftCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableWriteCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.territory.ObservableInitializeTerritoryCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.utils.LambdaVisitor;
 import de.unistuttgart.iste.rss.utils.Preconditions;
@@ -76,7 +77,7 @@ final class GameStateFactory {
     public GameStateFactory cloneFromPreviousState(final GameState previousState) {
         Preconditions.checkNotNull(previousState);
         Preconditions.checkState(this.constructedState.isEmpty());
-        this.constructedState = Optional.of((GameState) previousState.clone());
+        this.constructedState = Optional.of(previousState.clone());
         return this;
     }
 
@@ -124,7 +125,12 @@ final class GameStateFactory {
                 .on(ObservablePutGrainCommandSpecification.class).then(spec -> fromPutGrain(spec))
                 .on(ObservablePickGrainCommandSpecification.class).then(spec -> fromPickGrain(spec))
                 .on(ObservableInitHamsterCommandSpecification.class).then(spec -> fromInit(spec))
-                .on(ObservableWriteCommandSpecification.class).then(spec -> fromWrite(spec));
+                .on(ObservableWriteCommandSpecification.class).then(spec -> fromWrite(spec))
+                .on(ObservableInitializeTerritoryCommandSpecification.class).then(spec -> fromInitTerritory(spec));
+    }
+
+    private Object fromInitTerritory(final ObservableInitializeTerritoryCommandSpecification spec) {
+        throw new UnsupportedOperationException("Hard resetting a recorded game is not (yet) supported.");
     }
 
     private Void fromWrite(final ObservableWriteCommandSpecification writeCommandSpecification) {
