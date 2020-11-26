@@ -129,7 +129,7 @@ final class GameStateFactory {
                 .on(ObservableInitializeTerritoryCommandSpecification.class).then(spec -> fromInitTerritory(spec));
     }
 
-    private Object fromInitTerritory(final ObservableInitializeTerritoryCommandSpecification spec) {
+    private Void fromInitTerritory(final ObservableInitializeTerritoryCommandSpecification spec) {
         throw new UnsupportedOperationException("Hard resetting a recorded game is not (yet) supported.");
     }
 

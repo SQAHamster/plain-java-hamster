@@ -44,6 +44,12 @@ public final class GameState implements Cloneable {
      */
     private final ArrayList<WrittenMessage> writtenMessages;
 
+    /**
+     * Time stamp of this game state. It is counted in number of commands executed from the start
+     * of the game onwards. The initial state has time stamp 0.
+     */
+    private final int timeStamp;
+
     GameState(final Size size) {
         this(size.getRowCount(), size.getColumnCount());
     }
@@ -53,6 +59,7 @@ public final class GameState implements Cloneable {
         territoryGrainCount = new int[rowCount][columnCount];
         hamsterStates = new HashMap<>();
         writtenMessages = new ArrayList<>();
+        timeStamp = 0;
     }
 
     private GameState(final GameState previousState) {
@@ -61,6 +68,7 @@ public final class GameState implements Cloneable {
         hamsterStates = new HashMap<ObservableHamster, HamsterState>(previousState.getHamsterStates());
         writtenMessages = new ArrayList<WrittenMessage>(previousState.writtenMessages);
         previousGameState = Optional.of(previousState);
+        timeStamp = previousState.timeStamp + 1;
     }
 
     /**
@@ -97,6 +105,15 @@ public final class GameState implements Cloneable {
     public GameState getPreviousGameState() {
         Preconditions.checkState(!isInitialState());
         return previousGameState.get();
+    }
+
+    /**
+     * Time stamp of this game state. It is counted in number of commands executed from the start
+     * of the game onwards. The initial state has time stamp 0.
+     * @return The time stamp of this game state.
+     */
+    public int getTimestamp() {
+        return timeStamp;
     }
 
     /**
