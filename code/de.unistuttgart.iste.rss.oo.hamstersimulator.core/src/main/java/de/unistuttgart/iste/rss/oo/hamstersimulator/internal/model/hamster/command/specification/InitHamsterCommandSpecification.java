@@ -1,11 +1,13 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification;
 
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableInitHamsterCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.GameHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
 
-public final class InitHamsterCommandSpecification extends AbstractHamsterCommandSpecification {
+public final class InitHamsterCommandSpecification extends AbstractHamsterCommandSpecification
+        implements ObservableInitHamsterCommandSpecification {
 
     private final ReadOnlyTerritory territory;
     private final Location location;
@@ -20,18 +22,22 @@ public final class InitHamsterCommandSpecification extends AbstractHamsterComman
         this.newGrainCount = newGrainCount;
     }
 
+    @Override
     public Location getLocation() {
         return this.location;
     }
 
+    @Override
     public Direction getNewDirection() {
         return this.newDirection;
     }
 
+    @Override
     public int getNewGrainCount() {
         return this.newGrainCount;
     }
 
+    @Override
     public ReadOnlyTerritory getTerritory() {
         return this.territory;
     }
