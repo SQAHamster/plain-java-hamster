@@ -1,6 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -130,4 +131,32 @@ public final class RecordingHamsterGameTestEnvironmentTest {
         assertEquals(ROWS_WALKED, finalGameState.getHamsterState(paula).getGrainCollected());
     }
 
+    /**
+     * Tests if game states have proper time stamps and are connected correctly.
+     */
+    @Test
+    public void testHamsterStateLinking() {
+        testEnvironment.runGame();
+        final List<GameState> gameStates = testEnvironment.getGameStates();
+        assertEquals(EXPECTED_NO_OF_STATES, gameStates.size());
+        final GameState initialGameState = gameStates.get(0);
+        final GameState finalGameState = gameStates.get(gameStates.size() - 1);
+        for (int i = 0; i < gameStates.size(); i++) {
+            final GameState ithGameState = gameStates.get(i);
+            assertEquals(i, ithGameState.getTimestamp());
+            assertTrue(!(i == 0) || ithGameState.isInitialState());
+            assertTrue(!(i != 0) || !ithGameState.isInitialState());
+            assertTrue(!(i == gameStates.size() - 1) || ithGameState.isFinalState());
+            assertTrue(!(i != gameStates.size() - 1) || !ithGameState.isFinalState());
+        }
+        GameState current = finalGameState;
+        while (!current.isInitialState()) {
+            current = current.getPreviousGameState();
+        }
+        assertEquals(initialGameState, current);
+        while (!current.isFinalState()) {
+            current = current.getNextGameState();
+        }
+        assertEquals(finalGameState, current);
+    }
 }

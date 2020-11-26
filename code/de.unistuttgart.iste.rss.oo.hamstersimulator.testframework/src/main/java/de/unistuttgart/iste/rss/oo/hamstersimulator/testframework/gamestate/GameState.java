@@ -40,6 +40,11 @@ public final class GameState implements Cloneable {
     private Optional<GameState> previousGameState = Optional.empty();
 
     /**
+     * Optional reference to the next game state. Is empty for the final state.
+     */
+    private Optional<GameState> nextGameState = Optional.empty();
+
+    /**
      * List of messages written by any of the hamsters.
      */
     private final ArrayList<WrittenMessage> writtenMessages;
@@ -68,6 +73,7 @@ public final class GameState implements Cloneable {
         hamsterStates = new HashMap<ObservableHamster, HamsterState>(previousState.getHamsterStates());
         writtenMessages = new ArrayList<WrittenMessage>(previousState.writtenMessages);
         previousGameState = Optional.of(previousState);
+        previousState.nextGameState = Optional.of(this);
         timeStamp = previousState.timeStamp + 1;
     }
 
@@ -100,11 +106,26 @@ public final class GameState implements Cloneable {
     }
 
     /**
+     * @return whether this game state is the final state of the game.
+     */
+    public boolean isFinalState() {
+        return nextGameState.isEmpty();
+    }
+
+    /**
      * @return The predecessor of this game state.
      */
     public GameState getPreviousGameState() {
         Preconditions.checkState(!isInitialState());
         return previousGameState.get();
+    }
+
+    /**
+     * @return The successor of this game state.
+     */
+    public GameState getNextGameState() {
+        Preconditions.checkState(!isFinalState());
+        return nextGameState.get();
     }
 
     /**

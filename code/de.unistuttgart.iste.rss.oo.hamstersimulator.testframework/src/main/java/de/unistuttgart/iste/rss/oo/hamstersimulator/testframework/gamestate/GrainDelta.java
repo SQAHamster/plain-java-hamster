@@ -28,14 +28,14 @@ final class GrainDelta {
     /**
      * Create a new grain delta object.
      * @param newDeltaPickedGrains Number of grains picked up in the last command. Has to be >= 0.
-     * @param deltaDroppedGrains Number of grains dropped in the last command. Has to be >= 0.
+     * @param newDeltaDroppedGrains Number of grains dropped in the last command. Has to be >= 0.
      */
-    GrainDelta(final int newDeltaPickedGrains, final int deltaDroppedGrains) {
+    GrainDelta(final int newDeltaPickedGrains, final int newDeltaDroppedGrains) {
         super();
         Preconditions.checkArgument(newDeltaPickedGrains >= 0);
-        Preconditions.checkArgument(deltaDroppedGrains >= 0);
+        Preconditions.checkArgument(newDeltaDroppedGrains >= 0);
         this.deltaPickedGrains = newDeltaPickedGrains;
-        this.deltaDroppedGrains = deltaDroppedGrains;
+        this.deltaDroppedGrains = newDeltaDroppedGrains;
     }
 
     /**

@@ -4,13 +4,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.util.Optional;
 
-import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.RecordingHamsterGameTestEnvironment;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.SimpleHamsterGame;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.RecordingHamsterGameTestEnvironment;
 
 /**
  * Parameter resolver which can resolve HamsterGameTestEnvironment (and supported subclasses) parameters.
@@ -78,7 +78,7 @@ public class HamsterGameResolver implements ParameterResolver {
     }
 
     /**
-     * Creates a new HamsterGameTestEnvironment based on the specified type with the provided game
+     * Creates a new HamsterGameTestEnvironment based on the specified type with the provided game.
      * @param game the SimpleHamsterGame the test environment is based of
      * @param type the type of test environment to create
      * @return the HamsterGameTestEnvironment based on game
