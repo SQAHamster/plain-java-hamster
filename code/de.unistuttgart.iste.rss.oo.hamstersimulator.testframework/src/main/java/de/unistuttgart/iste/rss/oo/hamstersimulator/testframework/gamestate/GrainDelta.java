@@ -2,6 +2,12 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate;
 
 import de.unistuttgart.iste.rss.utils.Preconditions;
 
+/**
+ * Objects of this class describe the amount of grains picked up or dropped
+ * as a consequence of executing commands.
+ * @author Steffen Becker
+ *
+ */
 final class GrainDelta {
 
     /**

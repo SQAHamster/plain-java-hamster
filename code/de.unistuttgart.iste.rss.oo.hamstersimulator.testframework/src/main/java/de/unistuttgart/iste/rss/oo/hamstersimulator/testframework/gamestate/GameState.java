@@ -35,7 +35,7 @@ public final class GameState implements Cloneable {
     private final HashMap<ObservableHamster, HamsterState> hamsterStates;
 
     /**
-     * Optional reference to the previous game state. Is empty for the intial state.
+     * Optional reference to the previous game state. Is empty for the initial state.
      */
     private Optional<GameState> previousGameState = Optional.empty();
 
@@ -66,7 +66,7 @@ public final class GameState implements Cloneable {
     }
 
     /**
-     * @return whether this game state is the inital state of the game.
+     * @return whether this game state is the initial state of the game.
      */
     public boolean isInitialState() {
         return previousGameState.isEmpty();
@@ -92,7 +92,7 @@ public final class GameState implements Cloneable {
         final int prime = 31;
         int result = 1;
         result = prime * result + Arrays.deepHashCode(territoryGrainCount);
-        result = prime * result + Objects.hash(hamsterStates, previousGameState);
+        result = prime * result + Objects.hash(hamsterStates);
         return result;
     }
 
@@ -144,13 +144,11 @@ public final class GameState implements Cloneable {
         writtenMessages = new ArrayList<>();
     }
 
-    @SuppressWarnings("unchecked")
     private GameState(final GameState previousState) {
         super();
         territoryGrainCount = clone2dArray(previousState);
-        hamsterStates = (HashMap<ObservableHamster, HamsterState>) (previousState.getHamsterStates())
-                .clone();
-        writtenMessages = (ArrayList<WrittenMessage>) previousState.writtenMessages.clone();
+        hamsterStates = new HashMap<ObservableHamster, HamsterState>(previousState.getHamsterStates());
+        writtenMessages = new ArrayList<WrittenMessage>(previousState.writtenMessages);
         previousGameState = Optional.of(previousState);
     }
 

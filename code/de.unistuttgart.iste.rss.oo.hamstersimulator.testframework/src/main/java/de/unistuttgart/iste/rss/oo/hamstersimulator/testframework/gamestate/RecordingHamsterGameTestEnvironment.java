@@ -12,6 +12,12 @@ import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 
+/**
+ * This class extends {@link HamsterGameTestEnvironment} by the functionality to
+ * record all states of the game while it is running.
+ * @author Steffen Becker
+ *
+ */
 public class RecordingHamsterGameTestEnvironment extends HamsterGameTestEnvironment {
 
     /**
@@ -24,7 +30,7 @@ public class RecordingHamsterGameTestEnvironment extends HamsterGameTestEnvironm
      * A lambda containing the event handler called when a new log entry is added to the game log.
      */
     private final ListChangeListener<? super ObservableLogEntry> commandAdditionHandler =
-            (ListChangeListener<? super ObservableLogEntry>) change -> {
+            change -> {
                 while (change.next()) {
                     if (change.wasAdded()) {
                         for (final ObservableLogEntry newLog : change.getAddedSubList()) {

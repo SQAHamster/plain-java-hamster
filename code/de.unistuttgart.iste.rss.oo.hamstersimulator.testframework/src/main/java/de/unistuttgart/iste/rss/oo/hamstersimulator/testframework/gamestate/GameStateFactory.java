@@ -28,6 +28,16 @@ import de.unistuttgart.iste.rss.utils.Preconditions;
 final class GameStateFactory {
 
     /**
+     * Delta of the grains when exactly one grain is picked up.
+     */
+    private static final GrainDelta PICK_GRAIN_DELTA = new GrainDelta(1, 0);
+
+    /**
+     * Delta of the grains when exactly one grain is put on the territory.
+     */
+    private static final GrainDelta PUT_GRAIN_DELTA = new GrainDelta(0, 1);
+
+    /**
      * Number of grains removed from a tile on a pick command.
      */
     private static final int GRAIN_PICKED = -1;
@@ -47,7 +57,7 @@ final class GameStateFactory {
      * Dispatcher used to execute state change logic dependant on the command
      * specification executed on the previous state. The return value is not used here.
      */
-    private final LambdaVisitor<ObservableCommandSpecification, Object> logVisitor;
+    private final LambdaVisitor<ObservableCommandSpecification, Void> logVisitor;
 
     /**
      * @return A new game state factory. The factory is not initialized and requires
@@ -84,9 +94,9 @@ final class GameStateFactory {
     /**
      * Construct an initial game state from the state of the passed territory. It is assumed
      * that the given territory is in the state right after its initialization (i.e., only the default
-     * hamster exisits).
-     * @param observableTerritory The territory used to create the inital state from.
-     * @return The newly constructed inital state.
+     * hamster exists).
+     * @param observableTerritory The territory used to create the initial state from.
+     * @return The newly constructed initial state.
      */
     public GameState fromInitialTerritory(final ObservableTerritory observableTerritory) {
         Preconditions.checkNotNull(observableTerritory);
@@ -108,7 +118,7 @@ final class GameStateFactory {
 
     private GameStateFactory() {
         super();
-        this.logVisitor = new LambdaVisitor<ObservableCommandSpecification, Object>()
+        this.logVisitor = new LambdaVisitor<ObservableCommandSpecification, Void>()
                 .on(ObservableMoveCommandSpecification.class).then(spec -> fromMove(spec))
                 .on(ObservableTurnLeftCommandSpecification.class).then(spec -> fromTurnLeft(spec))
                 .on(ObservablePutGrainCommandSpecification.class).then(spec -> fromPutGrain(spec))
@@ -117,7 +127,7 @@ final class GameStateFactory {
                 .on(ObservableWriteCommandSpecification.class).then(spec -> fromWrite(spec));
     }
 
-    private Object fromWrite(final ObservableWriteCommandSpecification writeCommandSpecification) {
+    private Void fromWrite(final ObservableWriteCommandSpecification writeCommandSpecification) {
         final GameState gameStateToUpdate = this.constructedState.get();
         final WrittenMessage newWrittenMessage = new WrittenMessage(writeCommandSpecification.getMessage(),
                 writeCommandSpecification.getHamster());
@@ -125,7 +135,7 @@ final class GameStateFactory {
         return null;
     }
 
-    private Object fromInit(final ObservableInitHamsterCommandSpecification initCommandSpecification) {
+    private Void fromInit(final ObservableInitHamsterCommandSpecification initCommandSpecification) {
         final GameState gameStateToUpdate = this.constructedState.get();
         final HashMap<ObservableHamster, HamsterState> hamsterMapToUpdate = gameStateToUpdate.getHamsterStates();
         final ObservableHamster hamsterToUpdate = initCommandSpecification.getHamster();
@@ -136,26 +146,24 @@ final class GameStateFactory {
         return null;
     }
 
-    private Object fromMove(final ObservableMoveCommandSpecification moveCommandSpecification) {
+    private Void fromMove(final ObservableMoveCommandSpecification moveCommandSpecification) {
         updateHamsterState(moveCommandSpecification, GrainDelta.NO_CHANGE);
         return null;
     }
 
-    private Object fromTurnLeft(final ObservableTurnLeftCommandSpecification turnCommandSpecification) {
+    private Void fromTurnLeft(final ObservableTurnLeftCommandSpecification turnCommandSpecification) {
         updateHamsterState(turnCommandSpecification, GrainDelta.NO_CHANGE);
         return null;
     }
 
-    private Object fromPutGrain(final ObservablePutGrainCommandSpecification putCommandSpecification) {
-        final GrainDelta newDelta = new GrainDelta(0, 1);
-        updateHamsterState(putCommandSpecification, newDelta);
+    private Void fromPutGrain(final ObservablePutGrainCommandSpecification putCommandSpecification) {
+        updateHamsterState(putCommandSpecification, PUT_GRAIN_DELTA);
         updateGrainCountAt(putCommandSpecification.getHamster().getCurrentLocation().get(), GRAIN_DROPPED);
         return null;
     }
 
-    private Object fromPickGrain(final ObservablePickGrainCommandSpecification pickCommandSpecification) {
-        final GrainDelta newDelta = new GrainDelta(1, 0);
-        updateHamsterState(pickCommandSpecification, newDelta);
+    private Void fromPickGrain(final ObservablePickGrainCommandSpecification pickCommandSpecification) {
+        updateHamsterState(pickCommandSpecification, PICK_GRAIN_DELTA);
         updateGrainCountAt(pickCommandSpecification.getHamster().getCurrentLocation().get(), GRAIN_PICKED);
         return null;
     }
