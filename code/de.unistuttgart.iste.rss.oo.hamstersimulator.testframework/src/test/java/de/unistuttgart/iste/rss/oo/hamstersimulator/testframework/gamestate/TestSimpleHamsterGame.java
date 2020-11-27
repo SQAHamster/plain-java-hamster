@@ -13,7 +13,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.TerritoryBuil
 class TestSimpleHamsterGame extends SimpleHamsterGame {
 
     /**
-     * Inital grain count of paule in this scenario.
+     * Initial grain count of paule in this scenario.
      */
     private static final int PAULES_INITIAL_GAIN_COUNT = 10;
 

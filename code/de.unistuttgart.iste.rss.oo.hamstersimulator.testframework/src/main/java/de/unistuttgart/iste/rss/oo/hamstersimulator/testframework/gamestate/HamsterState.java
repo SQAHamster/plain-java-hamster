@@ -37,7 +37,7 @@ public class HamsterState {
      * @param newDirection The looking direction of the hamster.
      * @param newLocation The location of the hamster.
      * @param newGrainCollected The number of grains picked up by the hamster since it was initialized.
-     * @param newGrainDropped The number of grains dropped by the hamster science it was initalized.
+     * @param newGrainDropped The number of grains dropped by the hamster science it was initialized.
      */
     public HamsterState(final Direction newDirection, final Location newLocation, final int newGrainCollected, final int newGrainDropped) {
         super();

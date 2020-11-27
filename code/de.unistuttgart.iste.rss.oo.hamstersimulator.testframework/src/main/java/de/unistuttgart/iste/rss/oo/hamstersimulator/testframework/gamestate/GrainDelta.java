@@ -16,12 +16,12 @@ final class GrainDelta {
     static final GrainDelta NO_CHANGE = new GrainDelta(0, 0);
 
     /**
-     * Amount of additional grain picked up.
+     * Amount of additional grains picked up.
      */
     private final int deltaPickedGrains;
 
     /**
-     * Amount of grain dropped.
+     * Amount of grains dropped.
      */
     private final int deltaDroppedGrains;
 

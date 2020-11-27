@@ -3,7 +3,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableHamster;
 
 /**
- * Objects of this class store immutably a single message produced by a write command.
+ * Objects of this class immutably store a single message produced by a write command on a hamster.
  * @author Steffen Becker
  *
  */

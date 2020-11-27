@@ -65,14 +65,25 @@ public class HamsterGameResolver implements ParameterResolver {
         if (!this.supportsParameter(parameterContext, extensionContext)) {
             throw new ParameterResolutionException("Unsupported parameter type");
         }
+
+        final SimpleHamsterGame game = createSimpleHamsterGame(parameterContext);
+        final Class<?> type = parameterContext.getParameter().getType();
+        return resolveTestEnvironment(game, type);
+    }
+
+    /**
+     * Creates a new instance of the SimpleHamsterGame specified with the HamsterTest annotation
+     * @param parameterContext he context for the parameter for which an argument should
+     *      * be resolved, used to get the annotation
+     * @return the created SimpleHamsterGame
+     * @throws ParameterResolutionException if it is not possible to create an instance of the specified SimpleHamsterGame
+     */
+    private SimpleHamsterGame createSimpleHamsterGame(final ParameterContext parameterContext) throws ParameterResolutionException {
         final Class<? extends SimpleHamsterGame> simpleHamsterGameClass = HamsterGameResolver.getHamsterGameClass(parameterContext)
                 .orElseThrow(() -> new ParameterResolutionException("The given class is no SimpleHamsterGame or doesn't exist"));
-
         try {
-            final SimpleHamsterGame hamsterGame = simpleHamsterGameClass.getDeclaredConstructor().newInstance();
-            final Class<?> type = parameterContext.getParameter().getType();
-            return resolveTestEnvironment(hamsterGame, type);
-        } catch (final NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            return simpleHamsterGameClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new ParameterResolutionException("The simple hamster game to instantiate has public constructor without parameters", e);
         }
     }
