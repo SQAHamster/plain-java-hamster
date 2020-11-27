@@ -82,12 +82,13 @@ final class GameStateFactory {
     }
 
     /**
-     * Construct the next game state and return it. Requires that the previous state has been
-     * configured before.
+     * Construct the next game state and return it. Requires that the new state has been
+     * constructed already via cloneFromPreviousState.
      * @param commandSpecification Specification of the command to apply to the previous state.
      * @return The constructed next state.
      */
     public GameState constructNextState(final ObservableCommandSpecification commandSpecification) {
+        Preconditions.checkState(!constructedState.isEmpty());
         this.logVisitor.apply(commandSpecification);
         return constructedState.get();
     }
@@ -120,13 +121,13 @@ final class GameStateFactory {
     private GameStateFactory() {
         super();
         this.logVisitor = new LambdaVisitor<ObservableCommandSpecification, Void>()
-                .on(ObservableMoveCommandSpecification.class).then(spec -> fromMove(spec))
-                .on(ObservableTurnLeftCommandSpecification.class).then(spec -> fromTurnLeft(spec))
-                .on(ObservablePutGrainCommandSpecification.class).then(spec -> fromPutGrain(spec))
-                .on(ObservablePickGrainCommandSpecification.class).then(spec -> fromPickGrain(spec))
-                .on(ObservableInitHamsterCommandSpecification.class).then(spec -> fromInit(spec))
-                .on(ObservableWriteCommandSpecification.class).then(spec -> fromWrite(spec))
-                .on(ObservableInitializeTerritoryCommandSpecification.class).then(spec -> fromInitTerritory(spec));
+                .on(ObservableMoveCommandSpecification.class).then(this::fromMove)
+                .on(ObservableTurnLeftCommandSpecification.class).then(this::fromTurnLeft)
+                .on(ObservablePutGrainCommandSpecification.class).then(this::fromPutGrain)
+                .on(ObservablePickGrainCommandSpecification.class).then(this::fromPickGrain)
+                .on(ObservableInitHamsterCommandSpecification.class).then(this::fromInit)
+                .on(ObservableWriteCommandSpecification.class).then(this::fromWrite)
+                .on(ObservableInitializeTerritoryCommandSpecification.class).then(this::fromInitTerritory);
     }
 
     private Void fromInitTerritory(final ObservableInitializeTerritoryCommandSpecification spec) {

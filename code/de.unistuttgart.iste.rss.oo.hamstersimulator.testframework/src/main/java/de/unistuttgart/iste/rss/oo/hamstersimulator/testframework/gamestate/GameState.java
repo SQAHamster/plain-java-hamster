@@ -79,10 +79,14 @@ public final class GameState implements Cloneable {
 
     /**
      * Query the number of grains on the tile with the given location.
-     * @param location Location of the tile for which the number of grains is returned.
+     * @param location Location of the tile for which the number of grains is returned. 
+     *                 Has to be null and has to be inside the territory.
      * @return Number of grains on the tile at the given location.
      */
     public int grainCountAt(final Location location) {
+        Preconditions.checkNotNull(location);
+        Preconditions.checkArgument(territoryGrainCount.length > location.getRow());
+        Preconditions.checkArgument(territoryGrainCount[0].length > location.getColumn());
         return getTerritoryGrainCount()[location.getRow()][location.getColumn()];
     }
 
@@ -148,6 +152,7 @@ public final class GameState implements Cloneable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + timeStamp;
         result = prime * result + Arrays.deepHashCode(territoryGrainCount);
         result = prime * result + Objects.hash(hamsterStates);
         return result;
@@ -167,11 +172,14 @@ public final class GameState implements Cloneable {
         final GameState other = (GameState) obj;
         return Objects.equals(hamsterStates, other.hamsterStates)
                 && Objects.equals(previousGameState, other.previousGameState)
+                && Objects.equals(nextGameState, other.nextGameState) && Objects.equals(timeStamp, other.timeStamp)
                 && Arrays.deepEquals(territoryGrainCount, other.territoryGrainCount);
     }
 
     /**
-     * Create a new immutable copy of this game state.
+     * Create a new copy of this game state. The game state can only be changed by
+     * the classes in this package. This clone is an exact copy. It will be updated
+     * by the factory.
      */
     @Override
     public GameState clone() {

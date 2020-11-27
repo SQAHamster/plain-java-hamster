@@ -1,6 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableHamster;
+import de.unistuttgart.iste.rss.utils.Preconditions;
 
 /**
  * Objects of this class immutably store a single message produced by a write command on a hamster.
@@ -21,11 +22,14 @@ public final class WrittenMessage {
 
     /**
      * Constructs a new written message state object.
-     * @param newMessage The message which has been written.
-     * @param newHamster The hamster who wrote the message.
+     * @param newMessage The message which has been written. Has to be non-null and not empty.
+     * @param newHamster The hamster who wrote the message. Has to be non-null.
      */
     public WrittenMessage(final String newMessage, final ObservableHamster newHamster) {
         super();
+        Preconditions.checkNotNull(newHamster);
+        Preconditions.checkNotNull(newMessage);
+        Preconditions.checkArgument(!newMessage.isEmpty());
         this.message = newMessage;
         this.hamster = newHamster;
     }
