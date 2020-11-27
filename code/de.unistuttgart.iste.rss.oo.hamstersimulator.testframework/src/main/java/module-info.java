@@ -9,4 +9,5 @@ module rss.hamster.testframework {
 
     exports de.unistuttgart.iste.rss.oo.hamstersimulator.testframework;
     exports de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate;
+    exports de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.ltl;
 }
