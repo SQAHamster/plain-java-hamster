@@ -3,23 +3,30 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkNotNull;
 import static de.unistuttgart.iste.rss.utils.Preconditions.checkState;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.HamsterGameViewModel;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.*;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.InputInterface;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.Command;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.CompositeCommand;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.EditCommandStack;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.commands.GameCommandStack;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Mode;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.exceptions.GameAbortedException;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.GameLog;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.InputInterface;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.hamster.command.specification.AbstractHamsterCommandSpecification;
-import de.unistuttgart.iste.rss.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
 import de.unistuttgart.iste.rss.utils.Preconditions;
 
 /**
@@ -93,7 +100,7 @@ public class HamsterGame {
         checkNotNull(newInputInterfaces);
 
         this.executorService = Executors.newCachedThreadPool(r -> {
-            Thread t = Executors.defaultThreadFactory().newThread(r);
+            final Thread t = Executors.defaultThreadFactory().newThread(r);
             t.setDaemon(true);
             return t;
         });
@@ -430,11 +437,11 @@ public class HamsterGame {
                 if (territoryCommandPart.isPresent()) {
                     builder.add(territoryCommandPart.get());
                 }
-                if (logCommandPart.isPresent()) {
-                    builder.add(logCommandPart.get());
-                }
                 if (hamsterPart.isPresent()) {
                     builder.add(hamsterPart.get());
+                }
+                if (logCommandPart.isPresent()) {
+                    builder.add(logCommandPart.get());
                 }
             }
         };
@@ -548,9 +555,9 @@ public class HamsterGame {
     private <R> Optional<R> getFirstResult(final CompletionService<Optional<R>> completionService) {
         try {
             return completionService.take().get();
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             throw new IllegalStateException("interrupted");
-        } catch (ExecutionException e) {
+        } catch (final ExecutionException e) {
             throw new RuntimeException("nothing returned", e);
         }
     }
@@ -567,7 +574,7 @@ public class HamsterGame {
         for (int i = 0; i < this.adapter.getInputInterfaces().size() - 1; i++) {
             try {
                 completionService.take();
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 //ignore
             }
         }
