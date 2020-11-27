@@ -2,6 +2,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.ltl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
@@ -119,6 +120,20 @@ public final class LTLChecksTests {
     }
 
     /**
+     * Tests if game states have proper time stamps and are connected correctly.
+     */
+    @Test
+    public void testUntilOperator() {
+        testEnvironment.runGame();
+        final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
+        final BasicPredicate stateReachedByMoving = new BasicPredicate(gameStates, stateWasReachedByMovingCondition);
+        assertTrue(new UntilFormula(new NotFormula(stateReachedByMoving), stateReachedByMoving)
+                .appliesTo(gameStates.get(0)));
+        assertTrue(new UntilFormula(new NotFormula(stateReachedByMoving),
+                new NextFormula(new NotFormula(stateReachedByMoving))).appliesTo(gameStates.get(0)));
+    }
+
+    /**
      * Tests that before paule makes any move he always drops a grain.
      */
     @Test
@@ -154,10 +169,29 @@ public final class LTLChecksTests {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
         final BasicPredicate stateReachedByMoving = new BasicPredicate(gameStates, stateWasReachedByMovingCondition);
+        assertEquals(ROWS_WALKED, stateReachedByMoving.getMatchingStates().size());
         LTLFormula check = stateReachedByMoving;
-        for (int i = 0; i < ROWS_WALKED; i++) {
-            check = new FinallyFormula(check);
+        for (int i = 0; i < 1; i++) {
+            check = new UntilFormula(new NotFormula(stateReachedByMoving), new NextFormula(check));
         }
         assertTrue(check.appliesTo(gameStates.get(0)));
+    }
+
+    /**
+     * Tests that overall paule executed 6 times move. This test should fail.
+     */
+    @Test
+    public void testWrongHamsterGame() {
+        testEnvironment.runGame();
+        final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
+        final BasicPredicate stateReachedByMoving = new BasicPredicate(gameStates, stateWasReachedByMovingCondition);
+        assertThrows(StateCheckException.class, () -> {
+            LTLFormula check = stateReachedByMoving;
+            for (int i = 0; i < ROWS_WALKED + 1; i++) {
+                check = new FinallyFormula(check);
+            }
+            StateCheckException.checkAndThrow(check, gameStates.get(0),
+                    "Paule was expected to move 4 times during the whole game's execution");
+        });
     }
 }

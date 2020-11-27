@@ -10,10 +10,7 @@ public final class FinallyFormula extends UnaryLTLFormula implements LTLFormula 
 
     @Override
     public boolean appliesTo(final GameState state) {
-        if (state.isFinalState()) {
-            return false;
-        }
-        GameState current = state.getNextGameState();
+        GameState current = state;
         do {
             if (innerFormula.appliesTo(current)) {
                 return true;
