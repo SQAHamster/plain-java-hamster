@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.LocationVector;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.HamsterGameResolver;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.HamsterTest;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
@@ -23,6 +25,8 @@ import javafx.collections.ObservableList;
  * of the hamster on the territory.
  * @author Steffen Becker
  */
+@HamsterTest(game = "de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.TestSimpleHamsterGame")
+@ExtendWith(HamsterGameResolver.class)
 public final class RecordingHamsterGameTestEnvironmentTest {
 
     /**
@@ -42,30 +46,11 @@ public final class RecordingHamsterGameTestEnvironmentTest {
     private static final int EXPECTED_NO_OF_STATES = 23;
 
     /**
-     * RecordingHamsterGameTestEnvironment for all tests.
-     */
-    private RecordingHamsterGameTestEnvironment testEnvironment;
-
-    /**
-     * Reference to the default hamster on the game territory.
-     */
-    private ObservableHamster paule;
-
-    /**
-     * Initializes the RecordingHamsterGameTestEnvironment with the game defined in {@link TestSimpleHamsterGame}.
-     */
-    @BeforeEach
-    public void initTestEnvironment() {
-        testEnvironment = new RecordingHamsterGameTestEnvironment(new TestSimpleHamsterGame());
-        paule = testEnvironment.getViewModel().getTerritory().getDefaultHamster();
-    }
-
-
-    /**
      * This tests whether the recording of game states works while the hamster game is executing.
-     */
+     * @param testEnvironment The injected test environment to run the test with.
+    */
     @Test
-    public void testOnlineRecorder() {
+    public void testOnlineRecorder(final RecordingHamsterGameTestEnvironment testEnvironment) {
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
         final AtomicInteger additions = new AtomicInteger(0);
         gameStates.addListener((ListChangeListener<GameState>) change -> {
@@ -79,9 +64,10 @@ public final class RecordingHamsterGameTestEnvironmentTest {
 
     /**
      * Tests recording of the grain counts on the tiles of the territory.
-     */
+     * @param testEnvironment The injected test environment to run the test with.
+    */
     @Test
-    public void testTerritoryStateRecording() {
+    public void testTerritoryStateRecording(final RecordingHamsterGameTestEnvironment testEnvironment) {
         testEnvironment.runGame();
         final List<GameState> gameStates = testEnvironment.getGameStates();
         assertEquals(EXPECTED_NO_OF_STATES, gameStates.size());
@@ -98,11 +84,13 @@ public final class RecordingHamsterGameTestEnvironmentTest {
 
     /**
      * Tests recording of written messages.
+     * @param testEnvironment The injected test environment to run the test with.
      */
     @Test
-    public void testWrittenMessageRecording() {
+    public void testWrittenMessageRecording(final RecordingHamsterGameTestEnvironment testEnvironment) {
         testEnvironment.runGame();
         final List<GameState> gameStates = testEnvironment.getGameStates();
+        final ObservableHamster paule = getDefaultHamster(testEnvironment);
         assertEquals(EXPECTED_NO_OF_STATES, gameStates.size());
         final GameState initialGameState = gameStates.get(0);
         final GameState beforePaulaState = gameStates.get(12);
@@ -114,12 +102,14 @@ public final class RecordingHamsterGameTestEnvironmentTest {
 
     /**
      * Tests if hamster states are recorded correctly.
+     * @param testEnvironment The injected test environment to run the test with.
      */
     @Test
-    public void testHamsterStateRecording() {
+    public void testHamsterStateRecording(final RecordingHamsterGameTestEnvironment testEnvironment) {
         testEnvironment.runGame();
         final List<GameState> gameStates = testEnvironment.getGameStates();
         final ObservableHamster paula = testEnvironment.getViewModel().getTerritory().getHamsters().get(1);
+        final ObservableHamster paule = getDefaultHamster(testEnvironment);
         final List<HamsterState> paulesStates = gameStates.stream().map(gameState -> gameState.getHamsterState(paule))
                 .collect(Collectors.toList());
         assertEquals(EXPECTED_NO_OF_STATES, gameStates.size());
@@ -133,9 +123,10 @@ public final class RecordingHamsterGameTestEnvironmentTest {
 
     /**
      * Tests if game states have proper time stamps and are connected correctly.
+     * @param testEnvironment The injected test environment to run the test with.
      */
     @Test
-    public void testHamsterStateLinking() {
+    public void testHamsterStateLinking(final RecordingHamsterGameTestEnvironment testEnvironment) {
         testEnvironment.runGame();
         final List<GameState> gameStates = testEnvironment.getGameStates();
         assertEquals(EXPECTED_NO_OF_STATES, gameStates.size());
@@ -158,6 +149,10 @@ public final class RecordingHamsterGameTestEnvironmentTest {
             current = current.getNextGameState();
         }
         assertEquals(finalGameState, current);
+    }
+
+    private ObservableHamster getDefaultHamster(final RecordingHamsterGameTestEnvironment testEnvironment) {
+        return testEnvironment.getViewModel().getTerritory().getDefaultHamster();
     }
 
     private boolean implies(final boolean condition, final boolean conclusion) {
