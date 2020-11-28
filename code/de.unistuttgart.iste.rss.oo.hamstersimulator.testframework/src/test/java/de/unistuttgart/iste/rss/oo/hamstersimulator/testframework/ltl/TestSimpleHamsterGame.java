@@ -10,7 +10,7 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.TerritoryBuil
 /**
  * Basic SimpleHamsterGame which creates a 6x6 territory with the Hamster at 0,0 facing south.
  */
-class TestSimpleHamsterGame extends SimpleHamsterGame {
+public final class TestSimpleHamsterGame extends SimpleHamsterGame {
 
     /**
      * Inital grain count of paule in this scenario.
@@ -26,7 +26,7 @@ class TestSimpleHamsterGame extends SimpleHamsterGame {
      * Creates a new TestSimpleHamsterGame, creates a 6x6 territory with the Hamster at 0,0 facing south.
      * Starts the game, but adds no InputInterface.
      */
-    TestSimpleHamsterGame() {
+    public TestSimpleHamsterGame() {
         final TerritoryBuilder builder = game.getNewTerritoryBuilder();
         builder.initializeTerritory(TEST_TERRITORY_SIZE);
         builder.defaultHamsterAt(Location.ORIGIN, Direction.SOUTH, PAULES_INITIAL_GAIN_COUNT);

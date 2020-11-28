@@ -72,7 +72,7 @@ public class HamsterGameResolver implements ParameterResolver {
     }
 
     /**
-     * Creates a new instance of the SimpleHamsterGame specified with the HamsterTest annotation
+     * Creates a new instance of the SimpleHamsterGame specified with the HamsterTest annotation.
      * @param parameterContext he context for the parameter for which an argument should
      *      * be resolved, used to get the annotation
      * @return the created SimpleHamsterGame
