@@ -10,7 +10,11 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.Game
  */
 public final class GloballyFormula extends UnaryLTLFormula implements LTLFormula {
 
-    GloballyFormula(final LTLFormula operand) {
+    /**
+     * Creates a new globally operator.
+     * @param operand Inner ltl formula, must not be null.
+     */
+    public GloballyFormula(final LTLFormula operand) {
         super(operand);
     }
 
@@ -18,13 +22,13 @@ public final class GloballyFormula extends UnaryLTLFormula implements LTLFormula
     public boolean appliesTo(final GameState state) {
         GameState current = state;
         do {
-            if (!innerFormula.appliesTo(current)) {
+            if (!getInnerFormula().appliesTo(current)) {
                 return false;
             }
             current = current.getNextGameState();
         } while (!current.isFinalState());
         assert current.isFinalState();
-        return innerFormula.appliesTo(current);
+        return getInnerFormula().appliesTo(current);
     }
 
 }

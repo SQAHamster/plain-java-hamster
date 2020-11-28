@@ -10,13 +10,18 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.Game
  */
 public final class OrFormula extends BinaryLTLFormula implements LTLFormula {
 
-    OrFormula(final LTLFormula first, final LTLFormula second) {
+    /**
+     * Create a new instance of the or operator.
+     * @param first First Operand, must not be null.
+     * @param second Second Operand, must not be null.
+     */
+    public OrFormula(final LTLFormula first, final LTLFormula second) {
         super(first, second);
     }
 
     @Override
     public boolean appliesTo(final GameState state) {
-        return this.firstOperand.appliesTo(state) | this.secondOperand.appliesTo(state);
+        return this.getFirstOperand().appliesTo(state) | this.getSecondOperand().appliesTo(state);
     }
 
 }

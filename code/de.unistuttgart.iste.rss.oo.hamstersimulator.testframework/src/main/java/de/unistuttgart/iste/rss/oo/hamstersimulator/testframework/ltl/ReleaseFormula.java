@@ -2,20 +2,32 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.ltl;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.GameState;
 
-public class ReleaseFormula extends BinaryLTLFormula implements LTLFormula {
+/**
+ * Implementation of a temporal release. The formula evaluates to true
+ * if the second operand applies to the state given and all its successors
+ * and eventually the first operand applies too.
+ * @author Steffen Becker
+ *
+ */
+public final class ReleaseFormula extends BinaryLTLFormula implements LTLFormula {
 
-    ReleaseFormula(final LTLFormula first, final LTLFormula second) {
+    /**
+     * Create a new instance of the release operator.
+     * @param first First Operand, must not be null.
+     * @param second Second Operand, must not be null.
+     */
+    public ReleaseFormula(final LTLFormula first, final LTLFormula second) {
         super(first, second);
     }
 
     @Override
     public boolean appliesTo(final GameState state) {
         GameState current = state;
-        while (secondOperand.appliesTo(state)) {
+        while (getSecondOperand().appliesTo(state)) {
             if (current.isFinalState()) {
                 return true;
             }
-            if (firstOperand.appliesTo(current)) {
+            if (getFirstOperand().appliesTo(current)) {
                 return true;
             }
             current = current.getNextGameState();

@@ -2,9 +2,20 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.ltl;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.GameState;
 
+/**
+ * Implementation the temporal finally operator. The formula evaluates to the true
+ * if the given operand is a true formula for the any successor of the given game state
+ * or the state itself.
+ * @author Steffen Becker
+ *
+ */
 public final class FinallyFormula extends UnaryLTLFormula implements LTLFormula {
 
-    FinallyFormula(final LTLFormula operand) {
+    /**
+     * Creates a new finally operator.
+     * @param operand Inner ltl formula, must not be null.
+     */
+    public FinallyFormula(final LTLFormula operand) {
         super(operand);
     }
 
@@ -12,13 +23,13 @@ public final class FinallyFormula extends UnaryLTLFormula implements LTLFormula 
     public boolean appliesTo(final GameState state) {
         GameState current = state;
         do {
-            if (innerFormula.appliesTo(current)) {
+            if (getInnerFormula().appliesTo(current)) {
                 return true;
             }
             current = current.getNextGameState();
         } while (!current.isFinalState());
         assert current.isFinalState();
-        return innerFormula.appliesTo(current);
+        return getInnerFormula().appliesTo(current);
     }
 
 }

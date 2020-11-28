@@ -12,6 +12,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableHamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.ObservableCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableAbstractHamsterCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableMoveCommandSpecification;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservablePutGrainCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Direction;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.GameState;
@@ -19,10 +23,9 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.Reco
 import javafx.collections.ObservableList;
 
 /**
- * Test to test the functionality of RecordingHamsterGameTestEnvironment.
- * It creates a hamster game, executes it and records all game states. Later
- * it demonstrates how the game states can be used to track all movements, etc.
- * of the hamster on the territory.
+ * Test to test the functionality of the LTL-based checker.
+ * It executes test on the various LTL-operators to check
+ * various conditions on the recorded sequence of game states.
  * @author Steffen Becker
  */
 public final class LTLChecksTests {
@@ -47,27 +50,62 @@ public final class LTLChecksTests {
      */
     private ObservableHamster paule;
 
-    final Predicate<GameState> pauleIsOnOriginCondition = state -> state.getHamsterState(paule).getLocation()
+    /**
+     * Predicate that marks all states in which paule is on the territory origin.
+     */
+    private final Predicate<GameState> pauleIsOnOriginCondition = state -> state.getHamsterState(paule).getLocation()
             .equals(Location.ORIGIN);
-    final Predicate<GameState> pauleIsOnTargetCondition = state -> state.getHamsterState(paule).getLocation()
+
+    /**
+     * Predicate that marks all states in which paule is on his target state.
+     */
+    private final Predicate<GameState> pauleIsOnTargetCondition = state -> state.getHamsterState(paule).getLocation()
             .equals(FINAL_HAMSTER_LOCATION);
-    final Predicate<GameState> pauleLooksToSouthCondition = state -> state.getHamsterState(paule)
+
+    /**
+     * Predicate that marks all states in which paule looks to the south.
+     */
+    private final Predicate<GameState> pauleLooksToSouthCondition = state -> state.getHamsterState(paule)
             .getDirection() == Direction.SOUTH;
-    final Predicate<GameState> stateWasReachedByDroppingAGrainCondition = state -> {
+
+    /**
+     * Predicate which marks all states which have been reached from their
+     * previous state by executing a putGrain command.
+     */
+    private final Predicate<GameState> stateWasReachedByDroppingAGrainCondition = state -> {
         if (state.isInitialState()) {
             return false;
         }
-        final GameState previousGameState = state.getPreviousGameState();
-        return (state.getHamsterState(paule).getGrainDropped() != previousGameState.getHamsterState(paule)
-                .getGrainDropped());
+        final ObservableCommandSpecification commandSpecification = state.getCommandSpecification().get();
+        return (commandSpecification instanceof ObservablePutGrainCommandSpecification);
     };
-    final Predicate<GameState> stateWasReachedByMovingCondition = state -> {
+
+    /**
+     * Predicate which marks all states which have been reached from their
+     * previous state by executing a command on paule.
+     */
+    private final Predicate<GameState> stateWasChangedByPauleCondition = state -> {
         if (state.isInitialState()) {
             return false;
         }
-        final GameState previousGameState = state.getPreviousGameState();
-        return (!state.getHamsterState(paule).getLocation()
-                .equals(previousGameState.getHamsterState(paule).getLocation()));
+        final ObservableCommandSpecification commandSpecification = state.getCommandSpecification().get();
+        if (!(commandSpecification instanceof ObservableAbstractHamsterCommandSpecification)) {
+            return false;
+        }
+        final var hamsterCommandSpecification = (ObservableAbstractHamsterCommandSpecification) commandSpecification;
+        return hamsterCommandSpecification.getHamster() == paule;
+    };
+
+    /**
+     * Predicate which marks all states which have been reached from their
+     * previous state by executing a move command.
+     */
+    private final Predicate<GameState> stateWasReachedByMovingCondition = state -> {
+        if (state.isInitialState()) {
+            return false;
+        }
+        final ObservableCommandSpecification commandSpecification = state.getCommandSpecification().get();
+        return (commandSpecification instanceof ObservableMoveCommandSpecification);
     };
 
     /**
@@ -162,19 +200,19 @@ public final class LTLChecksTests {
     }
 
     /**
-     * Tests that overall paule executed 5 times move.
+     * Tests that overall paule executed 5 times move. For this test, it does not matter when
+     * during the game's execution paule executed the moves. It only matters that it is 5x.
      */
     @Test
     public void testFiveMoves() {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
         final BasicPredicate stateReachedByMoving = new BasicPredicate(gameStates, stateWasReachedByMovingCondition);
-        assertEquals(ROWS_WALKED, stateReachedByMoving.getMatchingStates().size());
-        LTLFormula check = stateReachedByMoving;
-        for (int i = 0; i < 1; i++) {
-            check = new UntilFormula(new NotFormula(stateReachedByMoving), new NextFormula(check));
-        }
-        assertTrue(check.appliesTo(gameStates.get(0)));
+        final BasicPredicate stateWasChangedByPaule = new BasicPredicate(gameStates, stateWasChangedByPauleCondition);
+        final LTLFormula combindedPredicate = new AndFormula(stateReachedByMoving, stateWasChangedByPaule);
+        assertFalse(getNTimesFormula(combindedPredicate, ROWS_WALKED - 1).appliesTo(gameStates.get(0)));
+        assertTrue(getNTimesFormula(combindedPredicate, ROWS_WALKED).appliesTo(gameStates.get(0)));
+        assertFalse(getNTimesFormula(combindedPredicate, ROWS_WALKED + 1).appliesTo(gameStates.get(0)));
     }
 
     /**
@@ -185,13 +223,19 @@ public final class LTLChecksTests {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
         final BasicPredicate stateReachedByMoving = new BasicPredicate(gameStates, stateWasReachedByMovingCondition);
+        final BasicPredicate stateWasChangedByPaule = new BasicPredicate(gameStates, stateWasChangedByPauleCondition);
+        final LTLFormula combindedPredicate = new AndFormula(stateReachedByMoving, stateWasChangedByPaule);
         assertThrows(StateCheckException.class, () -> {
-            LTLFormula check = stateReachedByMoving;
-            for (int i = 0; i < ROWS_WALKED + 1; i++) {
-                check = new FinallyFormula(check);
-            }
-            StateCheckException.checkAndThrow(check, gameStates.get(0),
-                    "Paule was expected to move 4 times during the whole game's execution");
+            StateCheckException.checkAndThrow(getNTimesFormula(combindedPredicate, ROWS_WALKED - 1),
+                    gameStates.get(0), "Paule was expected to move exactly 4 times during the whole game's execution");
         });
+    }
+
+    private LTLFormula getNTimesFormula(final LTLFormula combindedPredicate, final int timesMoved) {
+        LTLFormula check = new GloballyFormula(new NotFormula(combindedPredicate));
+        for (int i = 0; i < timesMoved; i++) {
+            check = new UntilFormula(new NotFormula(combindedPredicate), new NextFormula(check));
+        }
+        return check;
     }
 }

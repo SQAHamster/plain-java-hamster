@@ -17,7 +17,7 @@ public final class ImpliesFormula extends BinaryLTLFormula implements LTLFormula
 
     @Override
     public boolean appliesTo(final GameState state) {
-        return !this.firstOperand.appliesTo(state) | this.secondOperand.appliesTo(state);
+        return !this.getFirstOperand().appliesTo(state) | this.getSecondOperand().appliesTo(state);
     }
 
 }

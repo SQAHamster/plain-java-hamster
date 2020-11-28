@@ -11,6 +11,10 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.Game
  */
 public final class NextFormula extends UnaryLTLFormula implements LTLFormula {
 
+    /**
+     * Creates a new next operator.
+     * @param operand Inner ltl formula, must not be null.
+     */
     public NextFormula(final LTLFormula operand) {
         super(operand);
     }
@@ -21,7 +25,7 @@ public final class NextFormula extends UnaryLTLFormula implements LTLFormula {
             return false;
         }
         final GameState next = state.getNextGameState();
-        return innerFormula.appliesTo(next);
+        return getInnerFormula().appliesTo(next);
     }
 
 }
