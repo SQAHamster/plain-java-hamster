@@ -10,12 +10,18 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.external.model.SimpleHamsterGame;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.RecordingHamsterGameTestEnvironment;
 
 /**
- * Parameter resolver which can resolve HamsterGameTestEnvironment parameters.
+ * Parameter resolver which can resolve HamsterGameTestEnvironment (and supported subclasses) parameters.
  * Uses the game value from the HamsterTest annotation to find out which SimpleHamsterGame
  * is instantiated
- * If the HamsterTest annotation is used, this should be added as an extension via ExtendWith
+ * If the HamsterTest annotation is used, this should be added as an extension via ExtendWith <br>
+ * Currently, the following types are supported:
+ * <ul>
+ *     <li>HamsterGameTestEnvironment</li>
+ *     <li>RecordingHamsterGameTestEnvironment</li>
+ * </ul>
  * @see org.junit.jupiter.api.extension.ExtendWith
  */
 public class HamsterGameResolver implements ParameterResolver {
@@ -35,7 +41,9 @@ public class HamsterGameResolver implements ParameterResolver {
     @Override
     public boolean supportsParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        return parameterContext.getParameter().getType().equals(HamsterGameTestEnvironment.class);
+        final Class<?> type = parameterContext.getParameter().getType();
+        return type.equals(HamsterGameTestEnvironment.class)
+                || type.equals(RecordingHamsterGameTestEnvironment.class);
     }
 
     /**
@@ -57,14 +65,42 @@ public class HamsterGameResolver implements ParameterResolver {
         if (!this.supportsParameter(parameterContext, extensionContext)) {
             throw new ParameterResolutionException("Unsupported parameter type");
         }
+
+        final SimpleHamsterGame game = createSimpleHamsterGame(parameterContext);
+        final Class<?> type = parameterContext.getParameter().getType();
+        return resolveTestEnvironment(game, type);
+    }
+
+    /**
+     * Creates a new instance of the SimpleHamsterGame specified with the HamsterTest annotation
+     * @param parameterContext he context for the parameter for which an argument should
+     *      * be resolved, used to get the annotation
+     * @return the created SimpleHamsterGame
+     * @throws ParameterResolutionException if it is not possible to create an instance of the specified SimpleHamsterGame
+     */
+    private SimpleHamsterGame createSimpleHamsterGame(final ParameterContext parameterContext) throws ParameterResolutionException {
         final Class<? extends SimpleHamsterGame> simpleHamsterGameClass = HamsterGameResolver.getHamsterGameClass(parameterContext)
                 .orElseThrow(() -> new ParameterResolutionException("The given class is no SimpleHamsterGame or doesn't exist"));
-
         try {
-            final SimpleHamsterGame hamsterGame = simpleHamsterGameClass.getDeclaredConstructor().newInstance();
-            return new HamsterGameTestEnvironment(hamsterGame);
-        } catch (final NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            return simpleHamsterGameClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new ParameterResolutionException("The simple hamster game to instantiate has public constructor without parameters", e);
+        }
+    }
+
+    /**
+     * Creates a new HamsterGameTestEnvironment based on the specified type with the provided game.
+     * @param game the SimpleHamsterGame the test environment is based of
+     * @param type the type of test environment to create
+     * @return the HamsterGameTestEnvironment based on game
+     */
+    private HamsterGameTestEnvironment resolveTestEnvironment(final SimpleHamsterGame game, final Class<?> type) {
+        if (type.equals(HamsterGameTestEnvironment.class)) {
+            return new HamsterGameTestEnvironment(game);
+        } else if (type.equals(RecordingHamsterGameTestEnvironment.class)) {
+            return new RecordingHamsterGameTestEnvironment(game);
+        } else {
+            throw new IllegalStateException("cannot resolve type: " + type.getName());
         }
     }
 
