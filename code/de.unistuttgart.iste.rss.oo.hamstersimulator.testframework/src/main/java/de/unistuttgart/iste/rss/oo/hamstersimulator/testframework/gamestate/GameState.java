@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableHamster;
+import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.ObservableCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.datatypes.Size;
 import de.unistuttgart.iste.rss.utils.Preconditions;
@@ -45,6 +46,12 @@ public final class GameState {
     private Optional<GameState> nextGameState = Optional.empty();
 
     /**
+     * Optional reference to the command specification that was
+     * executed as command and created this state. Is empty for the initial state.
+     */
+    private Optional<ObservableCommandSpecification> commandSpecification = Optional.empty();
+
+    /**
      * List of messages written by any of the hamsters.
      */
     private final ArrayList<WrittenMessage> writtenMessages;
@@ -72,10 +79,14 @@ public final class GameState {
      * as previous state. The new game state can only be changed by
      * the classes in this package. This copy is configured to become a valid successor
      * of the provided previous state. It is supposed to be further updated by the factory.
-     * @param previousState
+     * @param previousState The predecessor game state of the newly created game state
      */
     GameState(final GameState previousState) {
         super();
+
+        Preconditions.checkNotNull(previousState);
+        Preconditions.checkState(previousState.isFinalState());
+
         territoryGrainCount = clone2dArray(previousState);
         hamsterStates = new HashMap<ObservableHamster, HamsterState>(previousState.getHamsterStates());
         writtenMessages = new ArrayList<WrittenMessage>(previousState.writtenMessages);
@@ -149,6 +160,14 @@ public final class GameState {
     }
 
     /**
+     * @return the commandSpecification whose execution has lead to this new game state.
+     *         Optional is empty for the initial state.
+     */
+    public Optional<ObservableCommandSpecification> getCommandSpecification() {
+        return commandSpecification;
+    }
+
+    /**
      * @return An immutable list of all the messages produced by write commands until this state.
      */
     public List<WrittenMessage> getMessageList() {
@@ -193,6 +212,13 @@ public final class GameState {
 
     List<WrittenMessage> messageList() {
         return writtenMessages;
+    }
+
+    /**
+     * @param newCommandSpecification the commandSpecification to set
+     */
+    void setCommandSpecification(final ObservableCommandSpecification newCommandSpecification) {
+        this.commandSpecification = Optional.of(newCommandSpecification);
     }
 
     private int[][] clone2dArray(final GameState previousState) {

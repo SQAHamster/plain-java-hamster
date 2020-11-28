@@ -89,6 +89,7 @@ final class GameStateFactory {
      */
     public GameState constructNextState(final ObservableCommandSpecification commandSpecification) {
         Preconditions.checkState(!constructedState.isEmpty());
+        constructedState.get().setCommandSpecification(commandSpecification);
         this.logVisitor.apply(commandSpecification);
         return constructedState.get();
     }
