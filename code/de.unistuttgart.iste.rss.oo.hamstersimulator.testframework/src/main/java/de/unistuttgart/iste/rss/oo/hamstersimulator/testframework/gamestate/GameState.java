@@ -21,7 +21,7 @@ import de.unistuttgart.iste.rss.utils.Preconditions;
  * @author Steffen Becker
  *
  */
-public final class GameState implements Cloneable {
+public final class GameState {
 
     /**
      * 2D-Array (row x column) capturing the grain count per tile. Does not treat wall tiles any special.
@@ -30,7 +30,7 @@ public final class GameState implements Cloneable {
 
     /**
      * A map containing for all hamsters on the territory their current state.
-     * Has to be a concrete hashmap for clone support.
+     * Has to be an instance of hashmap for clone support.
      */
     private final HashMap<ObservableHamster, HamsterState> hamsterStates;
 
@@ -67,7 +67,14 @@ public final class GameState implements Cloneable {
         timeStamp = 0;
     }
 
-    private GameState(final GameState previousState) {
+    /**
+     * Create a new game state based on the provided game state which will be used
+     * as previous state. The new game state can only be changed by
+     * the classes in this package. This copy is configured to become a valid successor
+     * of the provided previous state. It is supposed to be further updated by the factory.
+     * @param previousState
+     */
+    GameState(final GameState previousState) {
         super();
         territoryGrainCount = clone2dArray(previousState);
         hamsterStates = new HashMap<ObservableHamster, HamsterState>(previousState.getHamsterStates());
@@ -79,7 +86,7 @@ public final class GameState implements Cloneable {
 
     /**
      * Query the number of grains on the tile with the given location.
-     * @param location Location of the tile for which the number of grains is returned. 
+     * @param location Location of the tile for which the number of grains is returned.
      *                 Has to be null and has to be inside the territory.
      * @return Number of grains on the tile at the given location.
      */
@@ -174,16 +181,6 @@ public final class GameState implements Cloneable {
                 && Objects.equals(previousGameState, other.previousGameState)
                 && Objects.equals(nextGameState, other.nextGameState) && Objects.equals(timeStamp, other.timeStamp)
                 && Arrays.deepEquals(territoryGrainCount, other.territoryGrainCount);
-    }
-
-    /**
-     * Create a new copy of this game state. The game state can only be changed by
-     * the classes in this package. This clone is an exact copy. It will be updated
-     * by the factory.
-     */
-    @Override
-    public GameState clone() {
-        return new GameState(this);
     }
 
     int[][] getTerritoryGrainCount() {

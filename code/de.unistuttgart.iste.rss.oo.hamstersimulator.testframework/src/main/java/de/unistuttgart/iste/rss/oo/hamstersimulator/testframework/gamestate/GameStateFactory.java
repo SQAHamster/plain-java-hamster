@@ -77,7 +77,7 @@ final class GameStateFactory {
     public GameStateFactory cloneFromPreviousState(final GameState previousState) {
         Preconditions.checkNotNull(previousState);
         Preconditions.checkState(this.constructedState.isEmpty());
-        this.constructedState = Optional.of(previousState.clone());
+        this.constructedState = Optional.of(new GameState(previousState));
         return this;
     }
 
