@@ -144,10 +144,10 @@ public final class RecordingHamsterGameTestEnvironmentTest {
         for (int i = 0; i < gameStates.size(); i++) {
             final GameState ithGameState = gameStates.get(i);
             assertEquals(i, ithGameState.getTimestamp());
-            assertTrue(!(i == 0) || ithGameState.isInitialState());
-            assertTrue(!(i != 0) || !ithGameState.isInitialState());
-            assertTrue(!(i == gameStates.size() - 1) || ithGameState.isFinalState());
-            assertTrue(!(i != gameStates.size() - 1) || !ithGameState.isFinalState());
+            assertTrue(implies(i == 0, ithGameState.isInitialState()));
+            assertTrue(implies(i != 0, !ithGameState.isInitialState()));
+            assertTrue(implies(i == gameStates.size() - 1, ithGameState.isFinalState()));
+            assertTrue(implies(i != gameStates.size() - 1, !ithGameState.isFinalState()));
         }
         GameState current = finalGameState;
         while (!current.isInitialState()) {
@@ -158,5 +158,9 @@ public final class RecordingHamsterGameTestEnvironmentTest {
             current = current.getNextGameState();
         }
         assertEquals(finalGameState, current);
+    }
+
+    private boolean implies(final boolean condition, final boolean conclusion) {
+        return !condition || conclusion;
     }
 }
