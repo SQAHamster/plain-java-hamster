@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>de.unistuttgart.iste.rss.oo.hamstersimulator</groupId>
 		<artifactId>parent</artifactId>
-		<version>2.6.1-SNAPSHOT</version>
+		<version>3.0</version>
 		<relativePath>../de.unistuttgart.iste.rss.oo.hamstersimulator.parent</relativePath>
 	</parent>
 
@@ -19,12 +19,12 @@
 		<dependency>
 			<groupId>de.unistuttgart.iste.rss</groupId>
 			<artifactId>utils</artifactId>
-			<version>2.6.1-SNAPSHOT</version>
+			<version>3.0</version>
 		</dependency>
         <dependency>
             <groupId>de.unistuttgart.iste.rss.oo.hamstersimulator</groupId>
             <artifactId>core</artifactId>
-            <version>2.6.1-SNAPSHOT</version>
+            <version>3.0</version>
         </dependency>
 		<dependency>
 			<groupId>org.openjfx</groupId>
