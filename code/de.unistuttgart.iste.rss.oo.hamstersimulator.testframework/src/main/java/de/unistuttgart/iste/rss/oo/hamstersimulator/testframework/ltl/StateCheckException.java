@@ -53,7 +53,7 @@ public final class StateCheckException extends RuntimeException {
     }
 
     /**
-     * Factory method to create new instances of this exception. The given formula is checked
+     * Helper method for writing JUnit tests. The given formula is checked
      * against the given game state. If this check is true, the method returns. Otherwise, a
      * new {@link StateCheckException} is generated and thrown.
      * @param formula The ltl formula to check against.
@@ -61,15 +61,14 @@ public final class StateCheckException extends RuntimeException {
      * @param message The user defined message which should describe the intention of the
      *                ltl formula in natural language.
      */
-    public static void checkAndThrow(final LTLFormula formula, final GameState gameState, final String message) {
-        if (formula.appliesTo(gameState)) {
-            return;
+    public static void checkOrThrow(final LTLFormula formula, final GameState gameState, final String message) {
+        if (!formula.appliesTo(gameState)) {
+            final StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("The executed hamster game reached an unexpected state\n");
+            stringBuilder.append("The reason given is: ");
+            stringBuilder.append(message);
+            stringBuilder.append("\n\n");
+            throw new StateCheckException(stringBuilder.toString(), formula, gameState);
         }
-        final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("The executed hamster game reached an unexpected state\n");
-        stringBuilder.append("The reason given is: ");
-        stringBuilder.append(message);
-        stringBuilder.append("\n\n");
-        throw new StateCheckException(stringBuilder.toString(), formula, gameState);
     }
 }

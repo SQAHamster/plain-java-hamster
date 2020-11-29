@@ -1,6 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.ltl;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.GameState;
+import de.unistuttgart.iste.rss.utils.Preconditions;
 
 /**
  * Implementation of a logical not. The formula evaluates to true
@@ -20,6 +21,7 @@ public final class NotFormula extends UnaryLTLFormula implements LTLFormula {
 
     @Override
     public boolean appliesTo(final GameState state) {
+        Preconditions.checkNotNull(state);
         return !getInnerFormula().appliesTo(state);
     }
 

@@ -1,5 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.ltl;
 
+import de.unistuttgart.iste.rss.utils.Preconditions;
+
 /**
  * Abstract base class of all unary ltl operators like next, not, ...
  * @author Steffen Becker
@@ -8,7 +10,7 @@ package de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.ltl;
 abstract class UnaryLTLFormula {
 
     /**
-     * First operand of this operator.
+     * Operand of this operator.
      */
     private final LTLFormula innerFormula;
 
@@ -18,6 +20,7 @@ abstract class UnaryLTLFormula {
      */
     UnaryLTLFormula(final LTLFormula operand) {
         super();
+        Preconditions.checkNotNull(operand);
         this.innerFormula = operand;
     }
 

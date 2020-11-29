@@ -52,7 +52,7 @@ public final class LTLChecksTests {
     public void testBasicGameStatePredicate(final RecordingHamsterGameTestEnvironment testEnvironment) {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
-        final BasicPredicate pauleIsOnOrigin = new BasicPredicate(gameStates,
+        final GameStatePredicate pauleIsOnOrigin = new GameStatePredicate(gameStates,
                 getHamsterOnLocationCondition(getDefaultHamster(testEnvironment), Location.ORIGIN));
         final Collection<GameState> matchingStates = pauleIsOnOrigin.getMatchingStates();
         assertEquals(2, matchingStates.size());
@@ -70,7 +70,7 @@ public final class LTLChecksTests {
     public void testFinallyOperator(final RecordingHamsterGameTestEnvironment testEnvironment) {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
-        final BasicPredicate pauleIsOnTarget = new BasicPredicate(gameStates,
+        final GameStatePredicate pauleIsOnTarget = new GameStatePredicate(gameStates,
                 getHamsterOnLocationCondition(getDefaultHamster(testEnvironment), FINAL_HAMSTER_LOCATION));
         assertTrue(new FinallyFormula(pauleIsOnTarget).appliesTo(gameStates.get(0)));
         assertFalse(new NotFormula(new FinallyFormula(pauleIsOnTarget)).appliesTo(gameStates.get(0)));
@@ -84,7 +84,7 @@ public final class LTLChecksTests {
     public void testGloballyOperator(final RecordingHamsterGameTestEnvironment testEnvironment) {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
-        final BasicPredicate pauleLooksToSouth = new BasicPredicate(gameStates,
+        final GameStatePredicate pauleLooksToSouth = new GameStatePredicate(gameStates,
                 getHamsterLooksToCondition(getDefaultHamster(testEnvironment), Direction.SOUTH));
         assertTrue(new GloballyFormula(pauleLooksToSouth).appliesTo(gameStates.get(0)));
         assertFalse(new NotFormula(new GloballyFormula(pauleLooksToSouth)).appliesTo(gameStates.get(0)));
@@ -98,7 +98,7 @@ public final class LTLChecksTests {
     public void testUntilOperator(final RecordingHamsterGameTestEnvironment testEnvironment) {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
-        final BasicPredicate stateReachedByMoving = new BasicPredicate(gameStates,
+        final GameStatePredicate stateReachedByMoving = new GameStatePredicate(gameStates,
                 getStateReachedViaCommandCondition(ObservableMoveCommandSpecification.class));
         assertTrue(new UntilFormula(new NotFormula(stateReachedByMoving), stateReachedByMoving)
                 .appliesTo(gameStates.get(0)));
@@ -114,9 +114,9 @@ public final class LTLChecksTests {
     public void testComplexFormula1(final RecordingHamsterGameTestEnvironment testEnvironment) {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
-        final BasicPredicate stateReachedByMoving = new BasicPredicate(gameStates,
+        final GameStatePredicate stateReachedByMoving = new GameStatePredicate(gameStates,
                 getStateReachedViaCommandCondition(ObservableMoveCommandSpecification.class));
-        final BasicPredicate stateReachedByDropping = new BasicPredicate(gameStates,
+        final GameStatePredicate stateReachedByDropping = new GameStatePredicate(gameStates,
                 getStateReachedViaCommandCondition(ObservablePutGrainCommandSpecification.class));
         final LTLFormula complex = new GloballyFormula(
                 new ImpliesFormula(stateReachedByDropping, new NextFormula(stateReachedByMoving)));
@@ -131,7 +131,7 @@ public final class LTLChecksTests {
     public void testComplexFormula2(final RecordingHamsterGameTestEnvironment testEnvironment) {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
-        final BasicPredicate pauleIsOnTarget = new BasicPredicate(gameStates,
+        final GameStatePredicate pauleIsOnTarget = new GameStatePredicate(gameStates,
                 getHamsterOnLocationCondition(getDefaultHamster(testEnvironment), FINAL_HAMSTER_LOCATION));
         final LTLFormula complex = new UntilFormula(new NotFormula(pauleIsOnTarget),
                 new GloballyFormula(pauleIsOnTarget));
@@ -147,14 +147,20 @@ public final class LTLChecksTests {
     public void testFiveMoves(final RecordingHamsterGameTestEnvironment testEnvironment) {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
-        final BasicPredicate stateReachedByMoving = new BasicPredicate(gameStates,
+        final GameStatePredicate stateReachedByMoving = new GameStatePredicate(gameStates,
                 getStateReachedViaCommandCondition(ObservableMoveCommandSpecification.class));
-        final BasicPredicate stateWasChangedByPaule = new BasicPredicate(gameStates,
+        final GameStatePredicate stateWasChangedByPaule = new GameStatePredicate(gameStates,
                 getStateChangedByHamsterCondition(getDefaultHamster(testEnvironment)));
-        final LTLFormula combindedPredicate = new AndFormula(stateReachedByMoving, stateWasChangedByPaule);
-        assertFalse(getNTimesFormula(combindedPredicate, ROWS_WALKED - 1).appliesTo(gameStates.get(0)));
-        assertTrue(getNTimesFormula(combindedPredicate, ROWS_WALKED).appliesTo(gameStates.get(0)));
-        assertFalse(getNTimesFormula(combindedPredicate, ROWS_WALKED + 1).appliesTo(gameStates.get(0)));
+        final LTLFormula combinedPredicate = new AndFormula(stateReachedByMoving, stateWasChangedByPaule);
+        final GameState initialState = gameStates.get(0);
+        assertFalse(getNTimesFormula(combinedPredicate, ROWS_WALKED - 1).appliesTo(initialState));
+        assertTrue(getNTimesFormula(combinedPredicate, 0).appliesTo(gameStates.get(ROWS_WALKED * 2 + 1)));
+        for (int i = 0; i < ROWS_WALKED; i++) {
+            assertTrue(getNTimesFormula(combinedPredicate, i + 1).appliesTo(gameStates.get((ROWS_WALKED - i) * 2)));
+            assertTrue(getNTimesFormula(combinedPredicate, i + 1).appliesTo(gameStates.get((ROWS_WALKED - i) * 2 - 1)));
+            assertFalse(getNTimesFormula(combinedPredicate, i).appliesTo(gameStates.get((ROWS_WALKED - i) * 2)));
+            assertFalse(getNTimesFormula(combinedPredicate, i).appliesTo(gameStates.get((ROWS_WALKED - i) * 2 - 1)));
+        }
     }
 
     /**
@@ -165,23 +171,45 @@ public final class LTLChecksTests {
     public void testWrongHamsterGame(final RecordingHamsterGameTestEnvironment testEnvironment) {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
-        final BasicPredicate stateReachedByMoving = new BasicPredicate(gameStates,
+        final GameStatePredicate stateReachedByMoving = new GameStatePredicate(gameStates,
                 getStateReachedViaCommandCondition(ObservableMoveCommandSpecification.class));
-        final BasicPredicate stateWasChangedByPaule = new BasicPredicate(gameStates,
+        final GameStatePredicate stateWasChangedByPaule = new GameStatePredicate(gameStates,
                 getStateChangedByHamsterCondition(getDefaultHamster(testEnvironment)));
-        final LTLFormula combindedPredicate = new AndFormula(stateReachedByMoving, stateWasChangedByPaule);
+        final LTLFormula combinedPredicate = new AndFormula(stateReachedByMoving, stateWasChangedByPaule);
         assertThrows(StateCheckException.class, () -> {
-            StateCheckException.checkAndThrow(getNTimesFormula(combindedPredicate, ROWS_WALKED - 1),
+            StateCheckException.checkOrThrow(getNTimesFormula(combinedPredicate, ROWS_WALKED - 1),
                     gameStates.get(0), "Paule was expected to move exactly 4 times during the whole game's execution");
         });
     }
 
-    private LTLFormula getNTimesFormula(final LTLFormula combindedPredicate, final int timesMoved) {
-        LTLFormula check = new GloballyFormula(new NotFormula(combindedPredicate));
-        for (int i = 0; i < timesMoved; i++) {
-            check = new UntilFormula(new NotFormula(combindedPredicate), new NextFormula(check));
+    /**
+     * Creates a ltl formula that evaluates to true if and only if the predicate is valid for exactly
+     * repetionCount states until reaching the final state. The formula is composed of two basic parts:
+     * 1) a formula that checks after the last occurrence of a state matching the predicate that it does not
+     * match any further state. 2) a series of until formulas that match one occurrence of a state matching the provided
+     * predicate plus any number of states in front of that state which do not match the given predicate. So basically
+     * the sequence of states matched is (no-match-state* match-state)^repetitionCount no-match-state* end-of-sequence
+     * @param predicate The predicate defining the state to be matched repetionCount times
+     * @param repetionCount The number of exact matches of the defined state in the sequnce of states against which
+     *                      this ltl formula will be evaluated in the end
+     * @return A ltl formula matching states fulfilling the predicate repetitonCount times with arbitrary states in-between
+     */
+    private LTLFormula getNTimesFormula(final LTLFormula predicate, final int repetionCount) {
+        LTLFormula check = getNoMatchUntilEndFormula(predicate);
+        for (int i = 0; i < repetionCount; i++) {
+            check = new UntilFormula(new NotFormula(predicate), predicate.and(new NextFormula(check)));
         }
         return check;
+    }
+
+    /**
+     * Create a ltl formula which is true if and only if non of the states it evaluates against fulfills the given
+     * predicate until the end of the sequence of states is reached.
+     * @param predicate The predicate which none of the states has to fulfill
+     * @return A ltl formula which is true if no state matches the predicate until the end of the sequence of states.
+     */
+    private GloballyFormula getNoMatchUntilEndFormula(final LTLFormula predicate) {
+        return new GloballyFormula(new NotFormula(predicate));
     }
 
     private Predicate<GameState> getHamsterLooksToCondition(final ObservableHamster hamster,

@@ -1,11 +1,13 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.ltl;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.GameState;
+import de.unistuttgart.iste.rss.utils.Preconditions;
 
 /**
- * Implementation of a temporal until operator. The formula evaluates to true
- * if the first operand applies to the given state and its successors until
- * the second formula is a valid formula for a successor or the given state itself.
+ * Implementation of a temporal until operator. For the formula to evaluate to true
+ * the first operand has to hold at least until the second operand becomes true,
+ * which (i.e., that second operand) must hold at the current or a future position.
+ * See <a href="https://en.wikipedia.org/wiki/Linear_temporal_logic">Wikipedia</a> for details.
  * @author Steffen Becker
  *
  */
@@ -22,15 +24,20 @@ public final class UntilFormula extends BinaryLTLFormula implements LTLFormula {
 
     @Override
     public boolean appliesTo(final GameState state) {
+        Preconditions.checkNotNull(state);
         GameState current = state;
-        while (getFirstOperand().appliesTo(current)) {
+        // loop invariant: all states starting from state until one state in front of
+        // current fulfill first operand and not the second
+        while (!getSecondOperand().appliesTo(current)) {
             if (current.isFinalState()) {
+                return false;
+            }
+            if (!getFirstOperand().appliesTo(current)) {
                 return false;
             }
             current = current.getNextGameState();
         }
-        assert !getFirstOperand().appliesTo(current);
-        return getSecondOperand().appliesTo(current);
+        return true;
     }
 
 }

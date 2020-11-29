@@ -1,6 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.ltl;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.GameState;
+import de.unistuttgart.iste.rss.utils.Preconditions;
 
 /**
  * Implementation of a logical and. The formula evaluates to true
@@ -21,7 +22,8 @@ public final class AndFormula extends BinaryLTLFormula implements LTLFormula {
 
     @Override
     public boolean appliesTo(final GameState state) {
-        return this.getFirstOperand().appliesTo(state) & this.getSecondOperand().appliesTo(state);
+        Preconditions.checkNotNull(state);
+        return this.getFirstOperand().appliesTo(state) && this.getSecondOperand().appliesTo(state);
     }
 
 }

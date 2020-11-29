@@ -1,6 +1,7 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.ltl;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.GameState;
+import de.unistuttgart.iste.rss.utils.Preconditions;
 
 /**
  * Implementation the temporal finally operator. The formula evaluates to the true
@@ -21,6 +22,7 @@ public final class FinallyFormula extends UnaryLTLFormula implements LTLFormula 
 
     @Override
     public boolean appliesTo(final GameState state) {
+        Preconditions.checkNotNull(state);
         GameState current = state;
         do {
             if (getInnerFormula().appliesTo(current)) {
@@ -28,7 +30,6 @@ public final class FinallyFormula extends UnaryLTLFormula implements LTLFormula 
             }
             current = current.getNextGameState();
         } while (!current.isFinalState());
-        assert current.isFinalState();
         return getInnerFormula().appliesTo(current);
     }
 

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.function.Predicate;
 
 import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.GameState;
+import de.unistuttgart.iste.rss.utils.Preconditions;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.collections.FXCollections;
@@ -17,7 +18,7 @@ import javafx.collections.ObservableList;
  * predicate. The basic logical predicate must not contain any temporal operators.
  * @author Steffen Becker
  */
-public final class BasicPredicate implements LTLFormula {
+public final class GameStatePredicate implements LTLFormula {
 
     /**
      * The list of game states. The list is allowed to update. On updates
@@ -37,32 +38,42 @@ public final class BasicPredicate implements LTLFormula {
     private final Predicate<GameState> condition;
 
     /**
-     * Event handler to handle updated to the game state list.
+     * Event handler to handle updated to the game state list. This can only handle adding of states. Other
+     * operations are not supported.
      */
-    private final ListChangeListener<GameState> updateMatchingStates =
+    private final ListChangeListener<GameState> updateMatchingStatesListener =
             change -> {
                 while (change.next()) {
-                    BasicPredicate.this.updateMatchingStates(change.getAddedSubList());
+                    if (change.wasRemoved() || change.wasPermutated() || change.wasUpdated() || change.wasReplaced()) {
+                        throw new UnsupportedOperationException(
+                                "Game states should only be added, not altered in any other way.");
+                    }
+                    GameStatePredicate.this.updateMatchingStates(change.getAddedSubList());
                 }
             };
 
     /**
      * Constructs a new basic predicate object and starts tracking the provided list of game states in order
      * to provide an up-to-date list of matching states.
-     * @param gameStates List of game states. The list is allowed to update after the call to this constructor.
+     * @param gameStates List of game states. The list is allowed to update after the call to this constructor
+     *        by adding new game states. Must not be null. Changes or removals are intentionally not supported.
      * @param inclusionCondition The basic logic predicate which defines which states to include into the list of
-     *                           matching game states
+     *                           matching game states. Must not be null.
      */
-    public BasicPredicate(final ObservableList<GameState> gameStates, final Predicate<GameState> inclusionCondition) {
+    public GameStatePredicate(final ObservableList<GameState> gameStates, final Predicate<GameState> inclusionCondition) {
         super();
+        Preconditions.checkNotNull(gameStates);
+        Preconditions.checkNotNull(inclusionCondition);
         this.allStates = gameStates;
         this.condition = inclusionCondition;
         updateMatchingStates(allStates);
-        this.allStates.addListener(updateMatchingStates);
+        this.allStates.addListener(updateMatchingStatesListener);
     }
 
     @Override
     public boolean appliesTo(final GameState state) {
+        Preconditions.checkNotNull(state);
+        Preconditions.checkArgument(allStates.contains(state));
         return matchingStates.contains(state);
     }
 
