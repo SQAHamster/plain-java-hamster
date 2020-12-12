@@ -22,6 +22,8 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.Reco
  *     <li>HamsterGameTestEnvironment</li>
  *     <li>RecordingHamsterGameTestEnvironment</li>
  * </ul>
+ * If the TestClass has the HamsterTest annotation, that one is used, otherwise the annotation
+ * of the class with declares the method which gets the environment injected is used
  * @see org.junit.jupiter.api.extension.ExtendWith
  */
 public class HamsterGameResolver implements ParameterResolver {
@@ -66,7 +68,7 @@ public class HamsterGameResolver implements ParameterResolver {
             throw new ParameterResolutionException("Unsupported parameter type");
         }
 
-        final SimpleHamsterGame game = createSimpleHamsterGame(parameterContext);
+        final SimpleHamsterGame game = createSimpleHamsterGame(parameterContext, extensionContext);
         final Class<?> type = parameterContext.getParameter().getType();
         return resolveTestEnvironment(game, type);
     }
@@ -74,12 +76,16 @@ public class HamsterGameResolver implements ParameterResolver {
     /**
      * Creates a new instance of the SimpleHamsterGame specified with the HamsterTest annotation.
      * @param parameterContext he context for the parameter for which an argument should
-     *      * be resolved, used to get the annotation
+     *        be resolved, used to get the annotation
+     * @param extensionContext the extension context for the Executable
+     *        about to be invoked; != null
      * @return the created SimpleHamsterGame
      * @throws ParameterResolutionException if it is not possible to create an instance of the specified SimpleHamsterGame
      */
-    private SimpleHamsterGame createSimpleHamsterGame(final ParameterContext parameterContext) throws ParameterResolutionException {
-        final Class<? extends SimpleHamsterGame> simpleHamsterGameClass = HamsterGameResolver.getHamsterGameClass(parameterContext)
+    private SimpleHamsterGame createSimpleHamsterGame(final ParameterContext parameterContext,
+                                                      final ExtensionContext extensionContext) throws ParameterResolutionException {
+        final Class<? extends SimpleHamsterGame> simpleHamsterGameClass
+                = HamsterGameResolver.getHamsterGameClass(parameterContext, extensionContext)
                 .orElseThrow(() -> new ParameterResolutionException("The given class is no SimpleHamsterGame or doesn't exist"));
         try {
             return simpleHamsterGameClass.getDeclaredConstructor().newInstance();
@@ -106,26 +112,48 @@ public class HamsterGameResolver implements ParameterResolver {
 
     /**
      * Gets the Class of the SimpleHamsterGame specified via the HamsterTest annotation.
-     * @param parameterContext the context for the parameter which an argument should be resolved, != null
+     * @param parameterContext the parameter context for the parameter which an argument should be resolved, != null
+     * @param extensionContext the extension context for the Executable about to be invoked; != null
      * @return an empty optional if the class is not found or does not extend SimpleHamsterGame,
      *         otherwise an optional with the Class of the specified SimpleHamsterGame
      */
     @SuppressWarnings("unchecked")
-    private static Optional<Class<? extends SimpleHamsterGame>> getHamsterGameClass(final ParameterContext parameterContext) {
+    private static Optional<Class<? extends SimpleHamsterGame>> getHamsterGameClass(final ParameterContext parameterContext,
+                                                                                    final ExtensionContext extensionContext) {
         try {
-            final HamsterTest hamsterTest = parameterContext.getDeclaringExecutable().getDeclaringClass()
-                    .getAnnotation(HamsterTest.class);
-            if (hamsterTest == null) {
+            Optional<HamsterTest> hamsterTest = getHamsterTestAnnotation(parameterContext, extensionContext);
+            if (hamsterTest.isPresent()) {
+                final String hamsterClassName = hamsterTest.get().game();
+                final Class<?> declaredGameClass = Class.forName(hamsterClassName);
+                if (!SimpleHamsterGame.class.isAssignableFrom(declaredGameClass)) {
+                    return Optional.empty();
+                }
+                return Optional.of((Class<? extends SimpleHamsterGame>) declaredGameClass);
+            } else {
                 return Optional.empty();
             }
-            final String hamsterClassName = hamsterTest.game();
-            final Class<?> declaredGameClass = Class.forName(hamsterClassName);
-            if (!SimpleHamsterGame.class.isAssignableFrom(declaredGameClass)) {
-                return Optional.empty();
-            }
-            return Optional.of((Class<? extends SimpleHamsterGame>) declaredGameClass);
         } catch (final ClassNotFoundException classEx) {
             return Optional.empty();
+        }
+    }
+
+    /**
+     * Gets the HamsterTest annotation based on on the parameterContext and the extensionContext
+     * If the test class has the annotation, this one is returned, otherwise the one of the declaring class
+     * is returned. If none is present, an empty Optional is returned
+     * @param parameterContext the parameter context for the parameter which an argument should be resolved, != null
+     * @param extensionContext the extension context for the Executable about to be invoked; != null
+     * @return the HamsterTest annotation if possible, otherwise an empty Optional
+     */
+    private static Optional<HamsterTest> getHamsterTestAnnotation(final ParameterContext parameterContext,
+                                                                  final ExtensionContext extensionContext) {
+        final Optional<HamsterTest> annotationFromTestClass = extensionContext.getTestClass()
+                .map(testClass -> testClass.getAnnotation(HamsterTest.class));
+        if (annotationFromTestClass.isPresent()) {
+            return annotationFromTestClass;
+        } else {
+            return Optional.ofNullable(parameterContext.getDeclaringExecutable().getDeclaringClass()
+                    .getAnnotation(HamsterTest.class));
         }
     }
 }
