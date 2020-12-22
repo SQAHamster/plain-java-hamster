@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?eclipse-pydev version="1.0"?><pydev_project>
+        
+    <pydev_pathproperty name="org.python.pydev.PROJECT_SOURCE_PATH">
+                
+        <path>/${PROJECT_DIR_NAME}</path>
+                
+        <path>/${PROJECT_DIR_NAME}/src</path>
+            
+    </pydev_pathproperty>
+        
+    <pydev_property name="org.python.pydev.PYTHON_PROJECT_VERSION">jython interpreter</pydev_property>
+        
+    <pydev_property name="org.python.pydev.PYTHON_PROJECT_INTERPRETER">Default</pydev_property>
+        
+    <pydev_pathproperty name="org.python.pydev.PROJECT_EXTERNAL_SOURCE_PATH">
+        <path>/Users/snowball/git/pse/code/de.unistuttgart.iste.rss.oo.hamstersimulator.main/target/main-3.0.jar</path>
+        <path>/Users/snowball/git/pse/code/de.unistuttgart.iste.rss.oo.hamstersimulator.core/target/core-3.0.jar</path>
+        <path>/Users/snowball/git/pse/code/de.unistuttgart.iste.rss.utils/target/utils-3.0.jar</path>
+        <path>/Users/snowball/git/pse/code/de.unistuttgart.iste.rss.oo.hamstersimulator.ui/target/ui-3.0.jar</path>
+        <path>/Users/snowball/.m2/repository/org/openjfx/javafx-base/15/javafx-base-15.jar</path>
+        <path>/Users/snowball/.m2/repository/org/openjfx/javafx-base/15/javafx-base-15-mac.jar</path>
+        <path>/Users/snowball/.m2/repository/org/openjfx/javafx-controls/15/javafx-controls-15.jar</path>
+        <path>/Users/snowball/.m2/repository/org/openjfx/javafx-fxml/15/javafx-fxml-15.jar</path>
+        <path>/Users/snowball/.m2/repository/org/openjfx/javafx-graphics/15/javafx-graphics-15.jar</path>
+        <path>/Users/snowball/.m2/repository/org/openjfx/javafx-graphics/15/javafx-graphics-15-mac.jar</path>
+        <path>/Users/snowball/.m2/repository/org/openjfx/javafx-controls/15/javafx-controls-15-mac.jar</path>
+        <path>/Users/snowball/.m2/repository/org/openjfx/javafx-fxml/15/javafx-fxml-15-mac.jar</path>
+        <path>/Library/Java/JavaVirtualMachines/jdk-15.0.1.jdk/Contents/Home/jmods/java.base.jmod</path>
+    </pydev_pathproperty>
+    
+</pydev_project>
