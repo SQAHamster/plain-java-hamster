@@ -1,0 +1,2 @@
+module HamsterInScala {
+}
