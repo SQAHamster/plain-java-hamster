@@ -10,16 +10,27 @@ import de.unistuttgart.iste.rss.utils.Preconditions;
  * @author Steffen Becker
  *
  */
-public final class ImpliesFormula extends BinaryLTLFormula implements LTLFormula {
+public final class ImpliesFormula extends BinaryLTLFormula {
 
     /**
      * Create a new instance of the implies operator. The order of the operands is important as
      * implies is non-commutative.
      * @param first First Operand, must not be null.
      * @param second Second Operand, must not be null.
+     * @param message Message of the formula.
+     */
+    public ImpliesFormula(final LTLFormula first, final LTLFormula second, final String message) {
+        super(first, second, message);
+    }
+
+    /**
+     * Create a new instance of the implies operator using a default message. The order of the operands is important as
+     * implies is non-commutative.
+     * @param first First Operand, must not be null.
+     * @param second Second Operand, must not be null.
      */
     public ImpliesFormula(final LTLFormula first, final LTLFormula second) {
-        super(first, second);
+        this(first, second, "(" + first.getMessage() + ") ==> (" + second.getMessage() + ")");
     }
 
     @Override
@@ -27,5 +38,4 @@ public final class ImpliesFormula extends BinaryLTLFormula implements LTLFormula
         Preconditions.checkNotNull(state);
         return !this.getFirstOperand().appliesTo(state) || this.getSecondOperand().appliesTo(state);
     }
-
 }

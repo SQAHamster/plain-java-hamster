@@ -10,14 +10,23 @@ import de.unistuttgart.iste.rss.utils.Preconditions;
  * @author Steffen Becker
  *
  */
-public final class NextFormula extends UnaryLTLFormula implements LTLFormula {
+public final class NextFormula extends UnaryLTLFormula {
 
     /**
      * Creates a new next operator.
      * @param operand Inner ltl formula, must not be null.
+     * @param message Message of this formula.
+     */
+    public NextFormula(final LTLFormula operand, final String message) {
+        super(operand, message);
+    }
+
+    /**
+     * Creates a new next operator using a default message.
+     * @param operand Inner ltl formula, must not be null.
      */
     public NextFormula(final LTLFormula operand) {
-        super(operand);
+        this(operand, "FOR THE NEXT STATE (" + operand.getMessage() + ")");
     }
 
     @Override
@@ -29,5 +38,4 @@ public final class NextFormula extends UnaryLTLFormula implements LTLFormula {
         final GameState next = state.getNextGameState();
         return getInnerFormula().appliesTo(next);
     }
-
 }
