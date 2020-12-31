@@ -11,15 +11,25 @@ import de.unistuttgart.iste.rss.utils.Preconditions;
  * @author Steffen Becker
  *
  */
-public final class UntilFormula extends BinaryLTLFormula implements LTLFormula {
+public final class UntilFormula extends BinaryLTLFormula {
 
     /**
      * Create a new instance of the until operator.
      * @param first First Operand, must not be null.
      * @param second Second Operand, must not be null.
+     * @param message Message of this formula.
+     */
+    public UntilFormula(final LTLFormula first, final LTLFormula second, final String message) {
+        super(first, second, message);
+    }
+
+    /**
+     * Create a new instance of the until operator using a default message.
+     * @param first First Operand, must not be null.
+     * @param second Second Operand, must not be null.
      */
     public UntilFormula(final LTLFormula first, final LTLFormula second) {
-        super(first, second);
+        this(first, second, "(" + first.getMessage() + ") UNTIL (" + second.getMessage() + ")");
     }
 
     @Override
@@ -39,5 +49,4 @@ public final class UntilFormula extends BinaryLTLFormula implements LTLFormula {
         }
         return true;
     }
-
 }

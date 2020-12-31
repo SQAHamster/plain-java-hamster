@@ -10,14 +10,23 @@ import de.unistuttgart.iste.rss.utils.Preconditions;
  * @author Steffen Becker
  *
  */
-public final class FinallyFormula extends UnaryLTLFormula implements LTLFormula {
+public final class FinallyFormula extends UnaryLTLFormula {
 
     /**
      * Creates a new finally operator.
      * @param operand Inner ltl formula, must not be null.
+     * @param message Message of this formula.
+     */
+    public FinallyFormula(final LTLFormula operand, final String message) {
+        super(operand, message);
+    }
+
+    /**
+     * Creates a new finally operator using a default message.
+     * @param operand Inner ltl formula, must not be null.
      */
     public FinallyFormula(final LTLFormula operand) {
-        super(operand);
+        this(operand, "FOR THIS OR ANY FUTURE STATE (" + operand.getMessage() + ")");
     }
 
     @Override
@@ -32,5 +41,4 @@ public final class FinallyFormula extends UnaryLTLFormula implements LTLFormula 
         } while (!current.isFinalState());
         return getInnerFormula().appliesTo(current);
     }
-
 }

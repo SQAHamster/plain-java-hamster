@@ -1,16 +1,5 @@
 package de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.ltl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Collection;
-import java.util.function.Predicate;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.ObservableHamster;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.ObservableCommandSpecification;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableAbstractHamsterCommandSpecification;
@@ -23,11 +12,19 @@ import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.HamsterTest;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.GameState;
 import de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.gamestate.RecordingHamsterGameTestEnvironment;
 import javafx.collections.ObservableList;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import java.util.Collection;
+import java.util.function.Predicate;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test to test the functionality of the LTL-based checker.
  * It executes test on the various LTL-operators to check
  * various conditions on the recorded sequence of game states.
+ *
  * @author Steffen Becker
  */
 @HamsterTest(game = "de.unistuttgart.iste.rss.oo.hamstersimulator.testframework.ltl.TestSimpleHamsterGame")
@@ -46,6 +43,7 @@ public final class LTLChecksTests {
 
     /**
      * Tests if game states have proper time stamps and are connected correctly.
+     *
      * @param testEnvironment The injected test environment used in this test
      */
     @Test
@@ -53,7 +51,7 @@ public final class LTLChecksTests {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
         final GameStatePredicate pauleIsOnOrigin = new GameStatePredicate(gameStates,
-                getHamsterOnLocationCondition(getDefaultHamster(testEnvironment), Location.ORIGIN));
+                getHamsterOnLocationCondition(getDefaultHamster(testEnvironment), Location.ORIGIN), "Paule is at the origin location.");
         final Collection<GameState> matchingStates = pauleIsOnOrigin.getMatchingStates();
         assertEquals(2, matchingStates.size());
         for (final GameState state : gameStates) {
@@ -64,6 +62,7 @@ public final class LTLChecksTests {
 
     /**
      * Tests if game states have proper time stamps and are connected correctly.
+     *
      * @param testEnvironment The injected test environment used in this test
      */
     @Test
@@ -71,13 +70,14 @@ public final class LTLChecksTests {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
         final GameStatePredicate pauleIsOnTarget = new GameStatePredicate(gameStates,
-                getHamsterOnLocationCondition(getDefaultHamster(testEnvironment), FINAL_HAMSTER_LOCATION));
+                getHamsterOnLocationCondition(getDefaultHamster(testEnvironment), FINAL_HAMSTER_LOCATION), "Paule is at his final location (5, 0).");
         assertTrue(new FinallyFormula(pauleIsOnTarget).appliesTo(gameStates.get(0)));
         assertFalse(new NotFormula(new FinallyFormula(pauleIsOnTarget)).appliesTo(gameStates.get(0)));
     }
 
     /**
      * Tests if game states have proper time stamps and are connected correctly.
+     *
      * @param testEnvironment The injected test environment used in this test
      */
     @Test
@@ -85,21 +85,22 @@ public final class LTLChecksTests {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
         final GameStatePredicate pauleLooksToSouth = new GameStatePredicate(gameStates,
-                getHamsterLooksToCondition(getDefaultHamster(testEnvironment), Direction.SOUTH));
+                getHamsterLooksToCondition(getDefaultHamster(testEnvironment), Direction.SOUTH), "Paule is looking south.");
         assertTrue(new GloballyFormula(pauleLooksToSouth).appliesTo(gameStates.get(0)));
         assertFalse(new NotFormula(new GloballyFormula(pauleLooksToSouth)).appliesTo(gameStates.get(0)));
     }
 
     /**
      * Tests if game states have proper time stamps and are connected correctly.
-      * @param testEnvironment The injected test environment used in this test
-    */
+     *
+     * @param testEnvironment The injected test environment used in this test
+     */
     @Test
     public void testUntilOperator(final RecordingHamsterGameTestEnvironment testEnvironment) {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
         final GameStatePredicate stateReachedByMoving = new GameStatePredicate(gameStates,
-                getStateReachedViaCommandCondition(ObservableMoveCommandSpecification.class));
+                getStateReachedViaCommandCondition(ObservableMoveCommandSpecification.class), "Paule moved with last command.");
         assertTrue(new UntilFormula(new NotFormula(stateReachedByMoving), stateReachedByMoving)
                 .appliesTo(gameStates.get(0)));
         assertTrue(new UntilFormula(new NotFormula(stateReachedByMoving),
@@ -108,16 +109,17 @@ public final class LTLChecksTests {
 
     /**
      * Tests that before paule makes any move he always drops a grain.
+     *
      * @param testEnvironment The injected test environment used in this test
-    */
+     */
     @Test
     public void testComplexFormula1(final RecordingHamsterGameTestEnvironment testEnvironment) {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
         final GameStatePredicate stateReachedByMoving = new GameStatePredicate(gameStates,
-                getStateReachedViaCommandCondition(ObservableMoveCommandSpecification.class));
+                getStateReachedViaCommandCondition(ObservableMoveCommandSpecification.class), "Paule moved with last command.");
         final GameStatePredicate stateReachedByDropping = new GameStatePredicate(gameStates,
-                getStateReachedViaCommandCondition(ObservablePutGrainCommandSpecification.class));
+                getStateReachedViaCommandCondition(ObservablePutGrainCommandSpecification.class), "Paule put a grain on the tile with last command.");
         final LTLFormula complex = new GloballyFormula(
                 new ImpliesFormula(stateReachedByDropping, new NextFormula(stateReachedByMoving)));
         assertTrue(complex.appliesTo(gameStates.get(0)));
@@ -125,14 +127,15 @@ public final class LTLChecksTests {
 
     /**
      * Tests that once paule has reached the target tile he stays on that tile until the game ends.
+     *
      * @param testEnvironment The injected test environment used in this test
-    */
+     */
     @Test
     public void testComplexFormula2(final RecordingHamsterGameTestEnvironment testEnvironment) {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
         final GameStatePredicate pauleIsOnTarget = new GameStatePredicate(gameStates,
-                getHamsterOnLocationCondition(getDefaultHamster(testEnvironment), FINAL_HAMSTER_LOCATION));
+                getHamsterOnLocationCondition(getDefaultHamster(testEnvironment), FINAL_HAMSTER_LOCATION), "Paule is on the final location (5, 0).");
         final LTLFormula complex = new UntilFormula(new NotFormula(pauleIsOnTarget),
                 new GloballyFormula(pauleIsOnTarget));
         assertTrue(complex.appliesTo(gameStates.get(0)));
@@ -141,6 +144,7 @@ public final class LTLChecksTests {
     /**
      * Tests that overall paule executed 5 times move. For this test, it does not matter when
      * during the game's execution paule executed the moves. It only matters that it is 5x.
+     *
      * @param testEnvironment The injected test environment used in this test
      */
     @Test
@@ -148,9 +152,9 @@ public final class LTLChecksTests {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
         final GameStatePredicate stateReachedByMoving = new GameStatePredicate(gameStates,
-                getStateReachedViaCommandCondition(ObservableMoveCommandSpecification.class));
+                getStateReachedViaCommandCondition(ObservableMoveCommandSpecification.class), "Paule moved with last command.");
         final GameStatePredicate stateWasChangedByPaule = new GameStatePredicate(gameStates,
-                getStateChangedByHamsterCondition(getDefaultHamster(testEnvironment)));
+                getStateChangedByHamsterCondition(getDefaultHamster(testEnvironment)), "Only paule did an action.");
         final LTLFormula combinedPredicate = new AndFormula(stateReachedByMoving, stateWasChangedByPaule);
         final GameState initialState = gameStates.get(0);
         assertFalse(getNTimesFormula(combinedPredicate, ROWS_WALKED - 1).appliesTo(initialState));
@@ -165,6 +169,7 @@ public final class LTLChecksTests {
 
     /**
      * Tests that overall paule executed 6 times move. This test should fail.
+     *
      * @param testEnvironment The injected test environment used in this test
      */
     @Test
@@ -172,9 +177,9 @@ public final class LTLChecksTests {
         testEnvironment.runGame();
         final ObservableList<GameState> gameStates = testEnvironment.getGameStates();
         final GameStatePredicate stateReachedByMoving = new GameStatePredicate(gameStates,
-                getStateReachedViaCommandCondition(ObservableMoveCommandSpecification.class));
+                getStateReachedViaCommandCondition(ObservableMoveCommandSpecification.class), "Paule moved with last command.");
         final GameStatePredicate stateWasChangedByPaule = new GameStatePredicate(gameStates,
-                getStateChangedByHamsterCondition(getDefaultHamster(testEnvironment)));
+                getStateChangedByHamsterCondition(getDefaultHamster(testEnvironment)), "Only paule did an action.");
         final LTLFormula combinedPredicate = new AndFormula(stateReachedByMoving, stateWasChangedByPaule);
         assertThrows(StateCheckException.class, () -> {
             StateCheckException.checkOrThrow(getNTimesFormula(combinedPredicate, ROWS_WALKED - 1),
@@ -189,7 +194,8 @@ public final class LTLChecksTests {
      * match any further state. 2) a series of until formulas that match one occurrence of a state matching the provided
      * predicate plus any number of states in front of that state which do not match the given predicate. So basically
      * the sequence of states matched is (no-match-state* match-state)^repetitionCount no-match-state* end-of-sequence
-     * @param predicate The predicate defining the state to be matched repetionCount times
+     *
+     * @param predicate     The predicate defining the state to be matched repetionCount times
      * @param repetionCount The number of exact matches of the defined state in the sequnce of states against which
      *                      this ltl formula will be evaluated in the end
      * @return A ltl formula matching states fulfilling the predicate repetitonCount times with arbitrary states in-between
@@ -205,6 +211,7 @@ public final class LTLChecksTests {
     /**
      * Create a ltl formula which is true if and only if non of the states it evaluates against fulfills the given
      * predicate until the end of the sequence of states is reached.
+     *
      * @param predicate The predicate which none of the states has to fulfill
      * @return A ltl formula which is true if no state matches the predicate until the end of the sequence of states.
      */
@@ -213,12 +220,12 @@ public final class LTLChecksTests {
     }
 
     private Predicate<GameState> getHamsterLooksToCondition(final ObservableHamster hamster,
-            final Direction direction) {
+                                                            final Direction direction) {
         return state -> state.getHamsterState(hamster).getDirection() == direction;
     }
 
     private Predicate<GameState> getHamsterOnLocationCondition(final ObservableHamster hamster,
-            final Location location) {
+                                                               final Location location) {
         return state -> state.getHamsterState(hamster).getLocation().equals(location);
     }
 

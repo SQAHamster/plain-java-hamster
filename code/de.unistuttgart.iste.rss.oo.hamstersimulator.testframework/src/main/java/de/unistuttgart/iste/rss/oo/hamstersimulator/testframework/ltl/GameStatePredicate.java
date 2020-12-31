@@ -21,6 +21,11 @@ import javafx.collections.ObservableList;
 public final class GameStatePredicate implements LTLFormula {
 
     /**
+     * Message associated with this GameStatePredicate;
+     */
+    private final String message;
+
+    /**
      * The list of game states. The list is allowed to update. On updates
      * this predicate's collection of matching states is also updated.
      */
@@ -29,8 +34,8 @@ public final class GameStatePredicate implements LTLFormula {
     /**
      * Public property containing all states which fulfill the provided basic logic predicate.
      */
-    private final ReadOnlyListWrapper<GameState> matchingStates = new ReadOnlyListWrapper<>(this, "matchingStates",
-            FXCollections.observableArrayList());
+    private final ReadOnlyListWrapper<GameState> matchingStates =
+            new ReadOnlyListWrapper<>(this, "matchingStates", FXCollections.observableArrayList());
 
     /**
      * The basic logical condition which is tested against all known game states.
@@ -41,16 +46,16 @@ public final class GameStatePredicate implements LTLFormula {
      * Event handler to handle updated to the game state list. This can only handle adding of states. Other
      * operations are not supported.
      */
-    private final ListChangeListener<GameState> updateMatchingStatesListener =
-            change -> {
-                while (change.next()) {
-                    if (change.wasRemoved() || change.wasPermutated() || change.wasUpdated() || change.wasReplaced()) {
-                        throw new UnsupportedOperationException(
-                                "Game states should only be added, not altered in any other way.");
-                    }
-                    GameStatePredicate.this.updateMatchingStates(change.getAddedSubList());
-                }
-            };
+    private final ListChangeListener<GameState> updateMatchingStatesListener = change -> {
+        while (change.next()) {
+            if (change.wasRemoved() || change.wasPermutated() || change.wasUpdated()
+                    || change.wasReplaced()) {
+                throw new UnsupportedOperationException(
+                        "Game states should only be added, not altered in any other way.");
+            }
+            GameStatePredicate.this.updateMatchingStates(change.getAddedSubList());
+        }
+    };
 
     /**
      * Constructs a new basic predicate object and starts tracking the provided list of game states in order
@@ -59,11 +64,16 @@ public final class GameStatePredicate implements LTLFormula {
      *        by adding new game states. Must not be null. Changes or removals are intentionally not supported.
      * @param inclusionCondition The basic logic predicate which defines which states to include into the list of
      *                           matching game states. Must not be null.
+     * @param message A short description of the predicate. 
      */
-    public GameStatePredicate(final ObservableList<GameState> gameStates, final Predicate<GameState> inclusionCondition) {
+    public GameStatePredicate(final ObservableList<GameState> gameStates,
+            final Predicate<GameState> inclusionCondition, final String message) {
         super();
         Preconditions.checkNotNull(gameStates);
         Preconditions.checkNotNull(inclusionCondition);
+        Preconditions.checkNotNull(message);
+
+        this.message = message;
         this.allStates = gameStates;
         this.condition = inclusionCondition;
         updateMatchingStates(allStates);
@@ -75,6 +85,11 @@ public final class GameStatePredicate implements LTLFormula {
         Preconditions.checkNotNull(state);
         Preconditions.checkArgument(allStates.contains(state));
         return matchingStates.contains(state);
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
     }
 
     /**

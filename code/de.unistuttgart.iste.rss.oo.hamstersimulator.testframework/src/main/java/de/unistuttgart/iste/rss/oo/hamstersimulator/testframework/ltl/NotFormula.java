@@ -9,14 +9,23 @@ import de.unistuttgart.iste.rss.utils.Preconditions;
  * @author Steffen Becker
  *
  */
-public final class NotFormula extends UnaryLTLFormula implements LTLFormula {
+public final class NotFormula extends UnaryLTLFormula {
 
     /**
      * Creates a new not operator.
      * @param operand Inner ltl formula, must not be null.
+     * @param message Message of this formula.
+     */
+    public NotFormula(final LTLFormula operand, final String message) {
+        super(operand, message);
+    }
+
+    /**
+     * Creates a new not operator using a default message.
+     * @param operand Inner ltl formula, must not be null.
      */
     public NotFormula(final LTLFormula operand) {
-        super(operand);
+        this(operand, "NOT (" + operand.getMessage() + ")");
     }
 
     @Override
@@ -24,5 +33,4 @@ public final class NotFormula extends UnaryLTLFormula implements LTLFormula {
         Preconditions.checkNotNull(state);
         return !getInnerFormula().appliesTo(state);
     }
-
 }

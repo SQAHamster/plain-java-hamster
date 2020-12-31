@@ -9,18 +9,30 @@ import de.unistuttgart.iste.rss.utils.Preconditions;
  * the first operand first becomes true; if the first operand never becomes true, the second operand
  * must remain true forever.
  * See <a href="https://en.wikipedia.org/wiki/Linear_temporal_logic">Wikipedia</a> for details.
- * @author Steffen Becker
  *
+ * @author Steffen Becker
  */
-public final class ReleaseFormula extends BinaryLTLFormula implements LTLFormula {
+public final class ReleaseFormula extends BinaryLTLFormula {
 
     /**
      * Create a new instance of the release operator.
-     * @param first First Operand, must not be null.
+     *
+     * @param first   First Operand, must not be null.
+     * @param second  Second Operand, must not be null.
+     * @param message Message of this formula.
+     */
+    public ReleaseFormula(final LTLFormula first, final LTLFormula second, final String message) {
+        super(first, second, message);
+    }
+
+    /**
+     * Create a new instance of the release operator using a default message.
+     *
+     * @param first  First Operand, must not be null.
      * @param second Second Operand, must not be null.
      */
     public ReleaseFormula(final LTLFormula first, final LTLFormula second) {
-        super(first, second);
+        this(first, second, "(" + second.getMessage() + ") MUST ALWAYS APPLY UNTIL (" + first.getMessage() + ")");
     }
 
     @Override
@@ -38,5 +50,4 @@ public final class ReleaseFormula extends BinaryLTLFormula implements LTLFormula
         }
         return false;
     }
-
 }

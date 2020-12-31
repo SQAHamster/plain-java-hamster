@@ -8,8 +8,8 @@ import de.unistuttgart.iste.rss.utils.Preconditions;
  * a given ltl formula expressing a specification of the executed program
  * did not evaluate to true. Objects of this class are immutable. The message
  * tries to be explaining.
- * @author Steffen Becker
  *
+ * @author Steffen Becker
  */
 public final class StateCheckException extends RuntimeException {
 
@@ -53,20 +53,24 @@ public final class StateCheckException extends RuntimeException {
     }
 
     /**
+     * @param formula   The ltl formula to check against.
+     * @param gameState The game state against which the ltl formula is checked.
+     * @param message   The user defined message which should describe the intention of the
+     *                  ltl formula in natural language.
+     *
      * Helper method for writing JUnit tests. The given formula is checked
      * against the given game state. If this check is true, the method returns. Otherwise, a
      * new {@link StateCheckException} is generated and thrown.
-     * @param formula The ltl formula to check against.
-     * @param gameState The game state against which the ltl formula is checked.
-     * @param message The user defined message which should describe the intention of the
-     *                ltl formula in natural language.
      */
     public static void checkOrThrow(final LTLFormula formula, final GameState gameState, final String message) {
         if (!formula.appliesTo(gameState)) {
             final StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("The executed hamster game reached an unexpected state\n");
-            stringBuilder.append("The reason given is: ");
+            stringBuilder.append("The executed hamster game reached an unexpected state.\n");
+            stringBuilder.append("The reason given is:");
             stringBuilder.append(message);
+            stringBuilder.append("\n\n");
+            stringBuilder.append("Underlying logic:");
+            stringBuilder.append(formula.getMessage());
             stringBuilder.append("\n\n");
             throw new StateCheckException(stringBuilder.toString(), formula, gameState);
         }
