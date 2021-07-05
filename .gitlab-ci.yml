@@ -48,24 +48,24 @@ cache:
 # Validate merge requests using JDK8
 validate:jdk15:
   <<: *validate
-  image: maven:3.6.3-openjdk-15
+  image: maven:3.6.3-openjdk-16
 
 test:jdk15:
   stage: test
   script:
     - 'mvn $MAVEN_CLI_OPTS test'
-  image: maven:3.6.3-openjdk-15
+  image: maven:3.6.3-openjdk-16
 
 # Verify merge requests using JDK14
 verify:jdk15:
   <<: *verify
-  image: maven:3.6.3-openjdk-15
+  image: maven:3.6.3-openjdk-16
 
 javadoc:jdk15:
   stage: test
   script:
     - 'mvn $MAVEN_CLI_OPTS javadoc:aggregate-jar'
-  image: maven:3.6.3-openjdk-15
+  image: maven:3.6.3-openjdk-16
   artifacts:
     name: "rss-hamster-javadoc-$CI_COMMIT_SHA"
     when: on_success
@@ -83,7 +83,7 @@ deploy:jdk15:
   stage: deploy
   script:
     - 'mvn $MAVEN_CLI_OPTS deploy'
-  image: maven:3.6.3-openjdk-15
+  image: maven:3.6.3-openjdk-16
   only:
     - master
 #  # Archive up the built documentation site.
