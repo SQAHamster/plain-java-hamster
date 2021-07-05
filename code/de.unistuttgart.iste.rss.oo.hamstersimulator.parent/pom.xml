@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.unistuttgart.iste.rss.oo.hamstersimulator</groupId>
 	<artifactId>parent</artifactId>
-	<version>3.1.7-SNAPSHOT</version>
+	<version>3.1.7</version>
 
 	<distributionManagement>
 		<snapshotRepository>
@@ -158,6 +158,6 @@
 	<scm>
 		<developerConnection>scm:git:ssh://git@git.rss.iste.uni-stuttgart.de:22222/open-to-public/pse.git</developerConnection>
 		<connection>scm:git:ssh://git@git.rss.iste.uni-stuttgart.de:22222/open-to-public/pse.git</connection>
-		<tag>v2.1.1</tag>
+		<tag>v3.1.7</tag>
 	</scm>
 </project>
