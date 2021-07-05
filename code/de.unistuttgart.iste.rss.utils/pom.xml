@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>de.unistuttgart.iste.rss.oo.hamstersimulator</groupId>
 		<artifactId>parent</artifactId>
-		<version>3.1.5</version>
+		<version>3.1.6-SNAPSHOT</version>
 		<relativePath>../de.unistuttgart.iste.rss.oo.hamstersimulator.parent</relativePath>
 	</parent>
 </project>
