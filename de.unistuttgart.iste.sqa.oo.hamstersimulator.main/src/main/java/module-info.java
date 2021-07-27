@@ -1,10 +1,10 @@
-module rss.hamster.main {
-    requires transitive rss.hamster.core;
+module sqa.hamster.main {
+    requires transitive sqa.hamster.core;
     requires java.logging;
-    requires transitive rss.hamster.ui;
-    requires rss.hamster.config;
-    requires rss.hamster.server;
+    requires transitive sqa.hamster.ui;
+    requires sqa.hamster.config;
+    requires sqa.hamster.server;
     requires com.google.gson;
 
-    exports de.unistuttgart.iste.rss.oo.hamstersimulator.external.model;
+    exports de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model;
 }

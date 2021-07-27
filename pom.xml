@@ -34,7 +34,7 @@
             de.unistuttgart.iste.sqa.utils
         </module>
         <module>
-            de.unistuttgart.iste.rss.oo.hamstersimulator.examples
+            de.unistuttgart.iste.sqa.oo.hamstersimulator.examples
         </module>
         <module>
             de.unistuttgart.iste.sqa.oo.hamstersimulator.config

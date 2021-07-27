@@ -67,9 +67,9 @@ javadoc:jdk15:
     - 'mvn $MAVEN_CLI_OPTS javadoc:aggregate-jar'
   image: maven:3.6.3-openjdk-16
   artifacts:
-    name: "rss-hamster-javadoc-$CI_COMMIT_SHA"
+    name: "sqa-hamster-javadoc-$CI_COMMIT_SHA"
     when: on_success
-    paths: 
+    paths:
     - code/target/apidocs
     expire_in: 4 weeks
 
