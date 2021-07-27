@@ -1,6 +1,7 @@
 # SQA Hamstersimulator
 
-[ ![Download](https://api.bintray.com/packages/snowball77/RSS-Hamstersimulator/HamstersimulatorMain/images/download.svg) ](https://bintray.com/snowball77/RSS-Hamstersimulator/HamstersimulatorMain)
+## CI Build
+[![Java CI with Maven](https://github.com/SQAHamster/plain-java-hamster/actions/workflows/maven.yml/badge.svg)](https://github.com/SQAHamster/plain-java-hamster/actions/workflows/maven.yml)
 
 ## Introduction
 
