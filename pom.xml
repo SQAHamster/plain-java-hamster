@@ -1,49 +1,44 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>de.unistuttgart.iste.rss.oo.hamstersimulator</groupId>
-		<artifactId>parent</artifactId>
-		<version>3.1.8-SNAPSHOT</version>
-		<relativePath>./de.unistuttgart.iste.rss.oo.hamstersimulator.parent/pom.xml</relativePath>
-	</parent>
+    <parent>
+        <groupId>de.unistuttgart.iste.sqa.oo.hamstersimulator</groupId>
+        <artifactId>parent</artifactId>
+        <version>3.1.8-SNAPSHOT</version>
+        <relativePath>./de.unistuttgart.iste.sqa.oo.hamstersimulator.parent/pom.xml</relativePath>
+    </parent>
 
-	<artifactId>root</artifactId>
-	<name>Hamster Simulator Root Project</name>
-	<packaging>pom</packaging>
+    <artifactId>root</artifactId>
+    <name>SQA Hamster Simulator Root Project</name>
+    <packaging>pom</packaging>
     <version>3.1.8-SNAPSHOT</version>
 
-	<modules>
-		<module>
-			de.unistuttgart.iste.rss.oo.hamstersimulator.parent
-		</module>
-		<module>
-			de.unistuttgart.iste.rss.oo.hamstersimulator.core
-		</module>
-		<module>
-			de.unistuttgart.iste.rss.oo.hamstersimulator.main
-		</module>
-		<module>
-			de.unistuttgart.iste.rss.oo.hamstersimulator.ui
-		</module>
-		<module>
-			de.unistuttgart.iste.rss.oo.hamstersimulator.server
-		</module>
-		<module>
-			de.unistuttgart.iste.rss.utils
-		</module>
-		<module>
-			de.unistuttgart.iste.rss.oo.hamstersimulator.examples
-		</module>
-		<module>
-			de.unistuttgart.iste.rss.oo.hamstersimulator.config
-		</module>
-		<module>de.unistuttgart.iste.rss.oo.hamstersimulator.testframework</module>
-	</modules>
-
-    <scm>
-		<developerConnection>scm:git:ssh://git@git.rss.iste.uni-stuttgart.de:22222/open-to-public/pse.git</developerConnection>
-		<connection>scm:git:ssh://git@git.rss.iste.uni-stuttgart.de:22222/open-to-public/pse.git</connection>
-    <tag>v2.1.1</tag>
-  </scm>
+    <modules>
+        <module>
+            de.unistuttgart.iste.sqa.oo.hamstersimulator.parent
+        </module>
+        <module>
+            de.unistuttgart.iste.sqa.oo.hamstersimulator.core
+        </module>
+        <module>
+            de.unistuttgart.iste.sqa.oo.hamstersimulator.main
+        </module>
+        <module>
+            de.unistuttgart.iste.sqa.oo.hamstersimulator.ui
+        </module>
+        <module>
+            de.unistuttgart.iste.sqa.oo.hamstersimulator.server
+        </module>
+        <module>
+            de.unistuttgart.iste.sqa.utils
+        </module>
+        <module>
+            de.unistuttgart.iste.rss.oo.hamstersimulator.examples
+        </module>
+        <module>
+            de.unistuttgart.iste.sqa.oo.hamstersimulator.config
+        </module>
+        <module>de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework</module>
+    </modules>
 </project>
