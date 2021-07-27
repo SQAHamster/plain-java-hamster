@@ -35,7 +35,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>3.0.0-M1</version>
+				<version>3.0.0-M4</version>
 				<configuration>
 					<tagNameFormat>v@{project.version}</tagNameFormat>
 					<releaseProfiles>bintray</releaseProfiles>
@@ -106,7 +106,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>3.3.0</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -117,8 +117,8 @@
 				</executions>
 				<configuration>
 					<links>
-						<link>https://docs.oracle.com/en/java/javase/15/docs/api/</link>
-						<link>https://openjfx.io/javadoc/15/</link>
+						<link>https://docs.oracle.com/en/java/javase/16/docs/api/</link>
+						<link>https://openjfx.io/javadoc/16/</link>
 						<link>https://junit.org/junit5/docs/current/api/</link>
 					</links>
 					<detectJavaApiLink>false</detectJavaApiLink>
@@ -133,7 +133,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>3.3.0</version>
 				<reportSets>
 					<reportSet>
 						<id>non-aggregate</id>
