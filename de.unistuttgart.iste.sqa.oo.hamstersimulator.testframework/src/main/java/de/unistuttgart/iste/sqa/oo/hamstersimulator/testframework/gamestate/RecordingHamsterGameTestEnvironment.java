@@ -6,11 +6,16 @@ import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.Observab
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.ObservableCommandSpecification;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.SimpleHamsterGame;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.HamsterGameTestEnvironment;
+import de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamelog.GameLogFactory;
+import de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamelog.datatypes.LogEntry;
 import de.unistuttgart.iste.sqa.utils.Preconditions;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class extends {@link HamsterGameTestEnvironment} by the functionality to
@@ -40,6 +45,10 @@ public class RecordingHamsterGameTestEnvironment extends HamsterGameTestEnvironm
             }
             };
 
+    private final GameLogFactory gameLogFactory;
+
+    private final Map<GameState, LogEntry> stateLogEntryLookup = new HashMap<>();
+
     /**
      * Constructs a new recording environment. This environment encapsulates a simple hamster
      * game. This game is observed for all commands executed. For each command, a new
@@ -56,6 +65,7 @@ public class RecordingHamsterGameTestEnvironment extends HamsterGameTestEnvironm
 
         final GameState initialState = GameStateFactory.newGameStateFactory().fromInitialTerritory(territory);
         gameStates.add(initialState);
+        this.gameLogFactory = new GameLogFactory(territory);
     }
 
     /**
@@ -76,7 +86,13 @@ public class RecordingHamsterGameTestEnvironment extends HamsterGameTestEnvironm
         final GameState nextState = GameStateFactory.newGameStateFactory()
                 .cloneFromPreviousState(gameStates.get(gameStates.size() - 1))
                 .constructNextState(observableCommandSpecification);
+        final LogEntry logEntry = this.gameLogFactory.applyNextCommand(observableCommandSpecification);
         gameStates.add(nextState);
+        this.stateLogEntryLookup.put(nextState, logEntry);
+    }
+
+    public void setMessage(final GameState state, final String message) {
+        this.stateLogEntryLookup.get(state).setMessage(message);
     }
 
 }
