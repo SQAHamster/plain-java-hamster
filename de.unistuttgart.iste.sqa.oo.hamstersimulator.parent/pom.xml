@@ -4,21 +4,22 @@
 	<artifactId>parent</artifactId>
 	<version>3.1.8-SNAPSHOT</version>
 
+	<scm>
+		<developerConnection>scm:git:https://github.com/SQAHamster/plain-java-hamster.git</developerConnection>
+	</scm>
+
 	<distributionManagement>
-		<snapshotRepository>
-			<id>${distributionManagement.server.id}</id>
-			<name>snapshots-dist-server</name>
-			<url>${distributionManagement.snapshots.url}</url>
-		</snapshotRepository>
 		<repository>
-			<id>${distributionManagement.server.id}</id>
-			<name>releases-dist-server</name>
-			<url>${distributionManagement.releases.url}</url>
+		  <id>github</id>
+		  <name>GitHub</name>
+		  <url>https://maven.pkg.github.com/SQAHamster/plain-java-hamster</url>  
 		</repository>
 	</distributionManagement>
-
+	  
+		  
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.scm.id>github</project.scm.id>  
 	</properties>
 
 	<build>
