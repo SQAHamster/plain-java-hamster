@@ -1,18 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>de.unistuttgart.iste.sqa.oo.hamstersimulator</groupId>
         <artifactId>parent</artifactId>
-        <version>3.1.8-SNAPSHOT</version>
+        <version>3.1.8</version>
         <relativePath>./de.unistuttgart.iste.sqa.oo.hamstersimulator.parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>root</artifactId>
     <name>SQA Hamster Simulator Root Project</name>
     <packaging>pom</packaging>
-    <version>3.1.8-SNAPSHOT</version>
+    <version>3.1.8</version>
 
     <modules>
         <module>
@@ -52,5 +51,6 @@
 
   <scm>
     <developerConnection>scm:git:https://github.com/SQAHamster/plain-java-hamster.git</developerConnection>
+    <tag>v3.1.8</tag>
   </scm>
 </project>

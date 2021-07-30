@@ -2,11 +2,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.unistuttgart.iste.sqa.oo.hamstersimulator</groupId>
 	<artifactId>parent</artifactId>
-	<version>3.1.8-SNAPSHOT</version>
+	<version>3.1.8</version>
 
 	<scm>
 		<developerConnection>scm:git:https://github.com/SQAHamster/plain-java-hamster.git</developerConnection>
-	</scm>
+	  <tag>v3.1.8</tag>
+  </scm>
 
 	<distributionManagement>
 		<repository>

@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>de.unistuttgart.iste.sqa.oo.hamstersimulator</groupId>
 		<artifactId>parent</artifactId>
-		<version>3.1.8-SNAPSHOT</version>
+		<version>3.1.8</version>
 		<relativePath>../de.unistuttgart.iste.sqa.oo.hamstersimulator.parent</relativePath>
 	</parent>
 
@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>de.unistuttgart.iste.sqa</groupId>
 			<artifactId>utils</artifactId>
-			<version>3.1.8-SNAPSHOT</version>
+			<version>3.1.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -52,28 +52,28 @@
 				de.unistuttgart.iste.sqa.oo.hamstersimulator
 			</groupId>
 			<artifactId>core</artifactId>
-			<version>3.1.8-SNAPSHOT</version>
+			<version>3.1.8</version>
 		</dependency>
 		<dependency>
 			<groupId>
 				de.unistuttgart.iste.sqa.oo.hamstersimulator
 			</groupId>
 			<artifactId>ui</artifactId>
-			<version>3.1.8-SNAPSHOT</version>
+			<version>3.1.8</version>
 		</dependency>
 		<dependency>
 			<groupId>
 				de.unistuttgart.iste.sqa.oo.hamstersimulator
 			</groupId>
 			<artifactId>config</artifactId>
-			<version>3.1.8-SNAPSHOT</version>
+			<version>3.1.8</version>
 		</dependency>
 		<dependency>
 			<groupId>
 				de.unistuttgart.iste.sqa.oo.hamstersimulator
 			</groupId>
 			<artifactId>server</artifactId>
-			<version>3.1.8-SNAPSHOT</version>
+			<version>3.1.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
