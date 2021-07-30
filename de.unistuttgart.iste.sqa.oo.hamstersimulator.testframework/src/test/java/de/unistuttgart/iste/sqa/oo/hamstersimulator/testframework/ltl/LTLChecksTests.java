@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author Steffen Becker
  */
-@HamsterTest(game = "TestSimpleHamsterGame")
+@HamsterTest(game = "de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.ltl.TestSimpleHamsterGame")
 @ExtendWith(HamsterGameResolver.class)
 public final class LTLChecksTests {
 
