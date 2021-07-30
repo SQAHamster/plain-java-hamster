@@ -25,7 +25,7 @@ import javafx.collections.ObservableList;
  * of the hamster on the territory.
  * @author Steffen Becker
  */
-@HamsterTest(game = "TestSimpleHamsterGame")
+@HamsterTest(game = "de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamestate.TestSimpleHamsterGame")
 @ExtendWith(HamsterGameResolver.class)
 public final class RecordingHamsterGameTestEnvironmentTest {
 

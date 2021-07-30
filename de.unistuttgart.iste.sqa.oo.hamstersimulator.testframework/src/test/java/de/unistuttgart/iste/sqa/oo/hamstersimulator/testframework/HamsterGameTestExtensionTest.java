@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * Tests the extension functionality
  */
 @ExtendWith(HamsterGameResolver.class)
-@HamsterTest(game = "TestSimpleHamsterGame")
+@HamsterTest(game = "de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.TestSimpleHamsterGame")
 public class HamsterGameTestExtensionTest extends HamsterGameTestExtensionTestBase {
     /**
      * Tests that the BeforeEach method in the super class works as expected
