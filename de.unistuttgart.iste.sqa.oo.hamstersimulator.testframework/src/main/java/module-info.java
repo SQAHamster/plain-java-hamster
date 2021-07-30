@@ -6,6 +6,7 @@ module sqa.hamster.testframework {
     requires transitive org.junit.jupiter.api;
     requires sqa.hamster.core;
     requires javafx.base;
+    requires com.google.gson;
 
     exports de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework;
     exports de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamestate;

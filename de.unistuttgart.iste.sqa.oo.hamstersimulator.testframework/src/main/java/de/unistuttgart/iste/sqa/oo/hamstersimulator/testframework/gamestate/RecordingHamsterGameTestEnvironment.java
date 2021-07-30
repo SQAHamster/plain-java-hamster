@@ -13,6 +13,8 @@ import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import com.google.gson.Gson;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -93,6 +95,11 @@ public class RecordingHamsterGameTestEnvironment extends HamsterGameTestEnvironm
 
     public void setMessage(final GameState state, final String message) {
         this.stateLogEntryLookup.get(state).setMessage(message);
+    }
+
+    public String getLogJson() {
+        final Gson gson = new Gson();
+        return gson.toJson(this.gameLogFactory.toGameLog());
     }
 
 }
