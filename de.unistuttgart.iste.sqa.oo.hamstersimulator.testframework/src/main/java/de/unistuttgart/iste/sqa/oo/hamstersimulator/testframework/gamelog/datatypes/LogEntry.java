@@ -4,13 +4,13 @@ import java.util.Optional;
 
 public class LogEntry {
     private final LogEntryType type;
-    private Optional<String> message = Optional.empty();
+    private String errorMessage;
 
     protected LogEntry(final LogEntryType type) {
         this.type = type;
     }
 
-    public void setMessage(final String message) {
-        this.message = Optional.of(message);
+    public void setErrorMessage(final String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 }

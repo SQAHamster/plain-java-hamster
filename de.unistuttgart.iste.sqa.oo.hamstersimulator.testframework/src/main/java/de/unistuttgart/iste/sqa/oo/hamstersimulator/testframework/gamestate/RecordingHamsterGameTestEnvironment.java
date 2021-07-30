@@ -93,8 +93,8 @@ public class RecordingHamsterGameTestEnvironment extends HamsterGameTestEnvironm
         this.stateLogEntryLookup.put(nextState, logEntry);
     }
 
-    public void setMessage(final GameState state, final String message) {
-        this.stateLogEntryLookup.get(state).setMessage(message);
+    public void setErrorMessage(final GameState state, final String errorMessage) {
+        this.stateLogEntryLookup.get(state).setErrorMessage(errorMessage);
     }
 
     public String getLogJson() {
