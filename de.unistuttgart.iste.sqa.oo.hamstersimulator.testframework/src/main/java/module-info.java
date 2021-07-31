@@ -11,4 +11,6 @@ module sqa.hamster.testframework {
     exports de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework;
     exports de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamestate;
     exports de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.ltl;
+
+    opens de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamelog.datatypes to com.google.gson;
 }

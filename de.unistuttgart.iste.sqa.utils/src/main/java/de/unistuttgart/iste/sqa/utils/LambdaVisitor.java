@@ -15,7 +15,7 @@ public final class LambdaVisitor<B, A> implements Function<B, A> {
     @Override
     public A apply(final Object o) {
         final Optional<Function<Object, A>> result = this.applyInternal(o.getClass());
-        return result.map(function -> function.apply(o)).orElseThrow();
+        return result.map(function -> function.apply(o)).orElse(null);
     }
 
     private Optional<Function<Object, A>> applyInternal(final Class<?> clazz) {

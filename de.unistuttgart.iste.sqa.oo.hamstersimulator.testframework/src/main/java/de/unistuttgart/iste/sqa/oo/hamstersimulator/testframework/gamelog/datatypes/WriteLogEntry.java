@@ -4,7 +4,7 @@ public class WriteLogEntry extends HamsterLogEntry {
     private final String message;
 
     public WriteLogEntry(final int hamsterId, final String message) {
-        super(LogEntryType.PICK_GRAIN, hamsterId);
+        super(LogEntryType.WRITE, hamsterId);
         this.message = message;
     }
 }
