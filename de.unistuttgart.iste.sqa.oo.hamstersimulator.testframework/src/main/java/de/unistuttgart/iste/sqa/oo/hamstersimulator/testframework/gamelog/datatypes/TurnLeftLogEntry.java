@@ -2,6 +2,6 @@ package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamelog.datat
 
 public class TurnLeftLogEntry extends HamsterLogEntry {
     public TurnLeftLogEntry(final int hamsterId) {
-        super(LogEntryType.PICK_GRAIN, hamsterId);
+        super(LogEntryType.TURN_LEFT, hamsterId);
     }
 }

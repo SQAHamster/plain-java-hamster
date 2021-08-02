@@ -2,6 +2,6 @@ package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamelog.datat
 
 public class PutGrainLogEntry extends HamsterLogEntry {
     public PutGrainLogEntry(final int hamsterId) {
-        super(LogEntryType.PICK_GRAIN, hamsterId);
+        super(LogEntryType.PUT_GRAIN, hamsterId);
     }
 }
