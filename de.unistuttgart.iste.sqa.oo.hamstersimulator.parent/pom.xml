@@ -7,8 +7,11 @@
 	<scm>
 		<developerConnection>scm:git:https://github.com/SQAHamster/plain-java-hamster.git</developerConnection>
 	</scm>
+    <modules>
+        <module>../de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector</module>
+    </modules>
 
-	<distributionManagement>
+    <distributionManagement>
 		<repository>
 		  <id>github</id>
 		  <name>GitHub</name>

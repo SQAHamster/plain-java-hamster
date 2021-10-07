@@ -10,7 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-class HamsterGameStage extends Stage {
+public class HamsterGameStage extends Stage {
 
     private GameSceneController sceneController;
 
