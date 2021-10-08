@@ -8,7 +8,7 @@ import javafx.collections.FXCollections;
 
 import java.util.List;
 
-public class ClassViewModel<T> extends NamedViewModel {
+public class ClassViewModel<T> extends HideableViewModel {
 
     private final ReadOnlyListWrapper<MethodViewModel<T>> constructors;
     private final ReadOnlyListWrapper<MethodViewModel<?>> staticMethods;

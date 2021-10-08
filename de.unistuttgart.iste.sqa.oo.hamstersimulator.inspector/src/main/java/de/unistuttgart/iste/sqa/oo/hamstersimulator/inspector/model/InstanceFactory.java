@@ -1,6 +1,7 @@
 package de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model;
 
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel.*;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -79,6 +80,16 @@ public final class InstanceFactory {
                     e.printStackTrace();
                 }
             });
+            ChangeListener<Boolean> isVisibleListener = (change, oldVal, newVal) -> {
+                if (change.getValue()) {
+                    try {
+                        viewModel.valueProperty().setValue(field.get(instance));
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            viewModel.isVisibleProperty().addListener(isVisibleListener);
             return viewModel;
         } catch (IllegalAccessException e) {
             e.printStackTrace();
