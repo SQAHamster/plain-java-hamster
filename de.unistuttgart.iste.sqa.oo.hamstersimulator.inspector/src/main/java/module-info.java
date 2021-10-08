@@ -12,4 +12,5 @@ module sqa.hamster.inspector {
     exports de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.ui;
     exports de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel;
     exports de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model;
+    exports de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.testdata;
 }

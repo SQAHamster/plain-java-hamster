@@ -1,9 +1,9 @@
 package de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.ui;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.Instance;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.Primitives;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.Type;
+import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.TypeCategory;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel.InspectionViewModel;
+import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel.InstanceViewModel;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -33,29 +33,30 @@ public class InputControl extends HBox {
     private boolean changeFromInputControl = false;
     private final List<ChangeListener<?>> currentChangeListeners = new ArrayList<>();
     private final List<ListChangeListener<?>> currentListChangeListeners = new ArrayList<>();
-    private final ComboBox<Type> multiTypeComboBox;
+    private final Optional<ComboBox<Type>> multiTypeComboBox;
 
-    private final InspectionViewModel viewModel;
+    private final InspectionViewModel inspectionViewModel;
     private final SimpleObjectProperty<Object> value = new SimpleObjectProperty<>(this, "value");
     private final SimpleBooleanProperty isValid = new SimpleBooleanProperty(this, "isValid");
     private final SimpleBooleanProperty isNewObjectValue = new SimpleBooleanProperty(this, "isNewObjectValue", false);
 
-    public InputControl(final Type type, final InspectionViewModel viewModel) {
+    public InputControl(final Type type, final InspectionViewModel hamsterUI) {
         this.type = type;
-        this.viewModel = viewModel;
+        this.inspectionViewModel = hamsterUI;
         this.value.addListener((observable, oldValue, newValue) -> {
             this.handleValueChanged(newValue);
         });
-        final Primitives primitiveType = type.getPrimitiveType();
+        final TypeCategory category = type.getCategory();
 
-        /*if (primitiveType == Primitives.COMPLEX || primitiveType == Primitives.OPTIONAL) {
-            this.multiTypeComboBox = this.createMultiTypeComboBox();
-            this.getChildren().add(this.multiTypeComboBox);
+        if (category == TypeCategory.OBJECT || category == TypeCategory.OPTIONAL) {
+            final ComboBox<Type> multiTypeComboBox = this.createMultiTypeComboBox();
+            this.multiTypeComboBox = Optional.of(multiTypeComboBox);
+            this.getChildren().add(multiTypeComboBox);
             this.currentType = multiTypeComboBox.getValue();
-        } else {*/
+        } else {
             this.currentType = type;
-            this.multiTypeComboBox = null;
-        //}
+            this.multiTypeComboBox = Optional.empty();
+        }
         this.createSimpleInputControl();
         this.getChildren().add(this.currentInputControl);
         this.getChildren().add(this.createAddObjectButton());
@@ -72,31 +73,30 @@ public class InputControl extends HBox {
 
     private void handleValueChanged(Object value) {
         if (!this.changeFromInputControl) {
-            if (this.type.getPrimitiveType() == Primitives.OPTIONAL) {
+            if (this.type.getCategory() == TypeCategory.OPTIONAL) {
                 assert value instanceof Optional;
                 value = ((Optional<?>)value).orElse(null);
             }
             if (value != null
-                    && (this.type.getPrimitiveType() == Primitives.COMPLEX || this.type.getPrimitiveType() == Primitives.OPTIONAL)) {
-                final Type newType = Type.typeForClass(value.getClass());
-                final Primitives newPrimitiveType = newType.getPrimitiveType();
-                final Primitives currentPrimitiveType = this.currentType.getPrimitiveType();
-                if (newPrimitiveType == Primitives.ENUM && !this.currentType.getType().isAssignableFrom(newType.getType())) {
+                    && (this.type.getCategory() == TypeCategory.OBJECT || this.type.getCategory() == TypeCategory.OPTIONAL)) {
+                final Type newType = new Type(value.getClass());
+                final TypeCategory newCategory = newType.getCategory();
+                final TypeCategory currentCategory = this.currentType.getCategory();
+                if (newCategory == TypeCategory.ENUM && !this.currentType.getType().isAssignableFrom(newType.getType())) {
                     boolean foundMatchingEnumType = false;
-                    //TODO: Understand
-                    /*for (final Type inputType : this.classObjectCollection.multiInputTypesProperty()) {
-                        if (inputType.getPrimitiveType() == Primitives.ENUM && inputType.getType().isAssignableFrom(newType.getType())) {
-                            this.multiTypeComboBox.setValue(inputType);
+                    for (final Type type : this.inspectionViewModel.multiInputTypesProperty()) {
+                        if (type.getCategory() == TypeCategory.ENUM && type.getType().isAssignableFrom(newType.getType())) {
+                            this.multiTypeComboBox.orElseThrow().setValue(type);
                             foundMatchingEnumType = true;
                             break;
                         }
-                    }*/
+                    }
                     if (!foundMatchingEnumType) {
-                        this.multiTypeComboBox.setValue(Type.typeForClass(Object.class));
+                        this.multiTypeComboBox.orElseThrow().setValue(Type.OBJECT_TYPE);
                     }
                 }
-                if (newPrimitiveType != currentPrimitiveType && currentPrimitiveType != Primitives.COMPLEX) {
-                    this.multiTypeComboBox.setValue(newType);
+                if (newCategory != currentCategory && currentCategory != TypeCategory.OBJECT) {
+                    this.multiTypeComboBox.orElseThrow().setValue(newType);
                 }
             }
             this.onValueChanged.accept(value);
@@ -106,17 +106,17 @@ public class InputControl extends HBox {
     private ValidationResult validateString(final String textValue) {
         assert textValue != null;
 
-        if (this.currentType.getPrimitiveType() == Primitives.STRING) {
+        if (this.currentType.getCategory() == TypeCategory.STRING) {
             return ValidationResult.OK;
         }
         if (!this.currentType.isPrimitive() && textValue.isBlank()) {
-            if (this.type.getPrimitiveType() == Primitives.OPTIONAL) {
+            if (this.type.getCategory() == TypeCategory.OPTIONAL) {
                 return ValidationResult.OK;
             } else {
                 return ValidationResult.WARNING;
             }
         }
-        if (this.currentType.getPrimitiveType() == Primitives.CHAR) {
+        if (this.currentType.getCategory() == TypeCategory.CHARACTER) {
             if (textValue.length() == 1) {
                 return ValidationResult.OK;
             } else {
@@ -124,7 +124,7 @@ public class InputControl extends HBox {
             }
         }
         try {
-            switch (this.currentType.getPrimitiveType()) {
+            switch (this.currentType.getCategory()) {
                 case BYTE -> Byte.parseByte(textValue);
                 case SHORT -> Short.parseShort(textValue);
                 case INTEGER -> Integer.parseInt(textValue);
@@ -167,14 +167,14 @@ public class InputControl extends HBox {
     private void setFromString(final String textValue) {
         assert this.validateString(textValue) == ValidationResult.OK;
 
-        if (this.currentType.getPrimitiveType() == Primitives.STRING) {
+        if (this.currentType.getCategory() == TypeCategory.STRING) {
             this.setValue(textValue);
-        } else if (this.currentType.getPrimitiveType() == Primitives.CHAR && textValue.length() == 1) {
+        } else if (this.currentType.getCategory() == TypeCategory.CHARACTER && textValue.length() == 1) {
             this.setValue(textValue.charAt(0));
         } else if (textValue.isBlank()) {
             this.setValue(null);
         } else {
-            switch (this.currentType.getPrimitiveType()) {
+            switch (this.currentType.getCategory()) {
                 case BYTE -> this.setValue(Byte.parseByte(textValue));
                 case SHORT -> this.setValue(Short.parseShort(textValue));
                 case INTEGER -> this.setValue(Integer.parseInt(textValue));
@@ -188,7 +188,7 @@ public class InputControl extends HBox {
 
     private void setValue(final Object value) {
         this.changeFromInputControl = true;
-        if (this.type.getPrimitiveType() == Primitives.OPTIONAL) {
+        if (this.type.getCategory() == TypeCategory.OPTIONAL) {
             this.value.set(Optional.ofNullable(value));
         } else {
             this.value.set(value);
@@ -197,13 +197,13 @@ public class InputControl extends HBox {
     }
 
     private String sanitizeString(final String textValue) {
-        final Primitives primitiveType = this.currentType.getPrimitiveType();
-        if (primitiveType == Primitives.BYTE
-                || primitiveType == Primitives.SHORT
-                || primitiveType == Primitives.INTEGER
-                || primitiveType == Primitives.LONG) {
+        final TypeCategory category = this.currentType.getCategory();
+        if (category == TypeCategory.BYTE
+                || category == TypeCategory.SHORT
+                || category == TypeCategory.INTEGER
+                || category == TypeCategory.LONG) {
             return textValue.replaceAll("[^0-9]", "");
-        } else if (primitiveType == Primitives.FLOAT || primitiveType == Primitives.DOUBLE) {
+        } else if (category == TypeCategory.FLOAT || category == TypeCategory.DOUBLE) {
             final String partialSanitized = textValue.replaceAll("[^.0-9]", "");
             if (partialSanitized.indexOf('.') != partialSanitized.lastIndexOf('.')) {
                 final int firstDotIndex = partialSanitized.indexOf('.');
@@ -231,12 +231,9 @@ public class InputControl extends HBox {
         return addButton;
     }
 
-    /**
-     * TODO: Understand
-     */
-    /*private ComboBox<Type> createMultiTypeComboBox() {
+    private ComboBox<Type> createMultiTypeComboBox() {
         final ComboBox<Type> multiTypeComboBox = new SearchableComboBox<>(
-                this.classObjectCollection.multiInputTypesProperty());
+                this.inspectionViewModel.multiInputTypesProperty());
         multiTypeComboBox.setValue(multiTypeComboBox.getItems().get(0));
         multiTypeComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -248,29 +245,29 @@ public class InputControl extends HBox {
         return multiTypeComboBox;
     }
 
-    private void onMultiTypeChanged(final Type newInputType) {
-        if (this.currentType != newInputType) {
+    private void onMultiTypeChanged(final Type newType) {
+        if (this.currentType != newType) {
             this.isNewObjectValue.set(false);
-            this.currentType = newInputType;
+            this.currentType = newType;
             this.createSimpleInputControl();
             this.getChildren().set(1, this.currentInputControl);
-            if (this.type.getPrimitiveType() == Primitives.OPTIONAL) {
+            if (this.type.getCategory() == TypeCategory.OPTIONAL) {
                 this.value.set(Optional.empty());
             } else {
                 this.value.set(null);
             }
             this.onValueChanged.accept(null);
         }
-    }*/
+    }
 
     private void createSimpleInputControl() {
         this.currentChangeListeners.clear();
         this.currentListChangeListeners.clear();
-        final Primitives category = this.currentType.getPrimitiveType();
+        final TypeCategory category = this.currentType.getCategory();
         switch (category) {
             case ENUM -> this.createEnumComboBox();
             case BOOLEAN -> this.createBooleanComboBox();
-            case COMPLEX/*, OF_CLASS*/ -> this.createObjectComboBox();
+            case OBJECT, COMPLEX -> this.createObjectComboBox();
             default -> this.createTextField();
         }
         this.currentInputControl.setPrefWidth(1000);
@@ -305,7 +302,7 @@ public class InputControl extends HBox {
 
     private void createBooleanComboBox() {
         final ComboBox<String> comboBox = new ComboBox<>(FXCollections.observableList(
-                this.currentType.isNullable() ? Arrays.asList("true", "false") : Arrays.asList("true", "false", "null")));
+                this.currentType.isPrimitive() ? Arrays.asList("true", "false") : Arrays.asList("true", "false", "null")));
         this.currentInputControl = comboBox;
         this.onValueChanged = (value) -> {
             if (value == null) {
@@ -331,7 +328,7 @@ public class InputControl extends HBox {
     }
 
     private void createEnumComboBox() {
-        assert this.currentType.getPrimitiveType() == Primitives.ENUM;
+        assert this.currentType.getCategory() == TypeCategory.ENUM;
 
         final ArrayList<Object> enumValues = new ArrayList<>(List.of(this.currentType.getType().getEnumConstants()));
         enumValues.add("null");
@@ -359,70 +356,67 @@ public class InputControl extends HBox {
         this.validateComboBoxValue(comboBox.getValue());
     }
 
-    /**
-     * TODO: Check if changes broke fancy selection
-     */
     private void createObjectComboBox() {
-        final ObservableList<Instance> itemsList = FXCollections.observableList(new ArrayList<>());
-        itemsList.add(viewModel.instanceForObject(null));
-        for (final WeakReference<Instance> objectInfo : viewModel.allInstancesProperty()) {
-            this.addToObjectList(itemsList, objectInfo.get());
+        final ObservableList<OptionalInstance> itemsList = FXCollections.observableList(new ArrayList<>());
+        itemsList.add(new OptionalInstance(Optional.empty(), "null", false));
+        for (final InstanceViewModel<?> instanceViewModel : this.inspectionViewModel.instancesProperty()) {
+            this.addToObjectList(itemsList, instanceViewModel);
         }
 
-        final ComboBox<Instance> comboBox = new SearchableComboBox<>(itemsList);
+        final ComboBox<OptionalInstance> comboBox = new SearchableComboBox<>(itemsList);
         this.currentInputControl = comboBox;
 
-        final ListChangeListener<WeakReference<Instance>> objectInfoListChangeListener = change -> {
-            final Instance selectedInstance = comboBox.getValue();
-            for (final WeakReference<Instance> addedObjectInfoRef : change.getAddedSubList()) {
-                final Instance addedObjectInfo = addedObjectInfoRef.get();
-                if (addedObjectInfo != null) {
-                    this.addToObjectList(itemsList, addedObjectInfo);
-                    if (selectedInstance.getValue() != null && addedObjectInfo.getValue() == selectedInstance.getValue()) {
-                        itemsList.remove(selectedInstance);
-                        comboBox.setValue(itemsList.get(0));
+        final ListChangeListener<InstanceViewModel<?>> instanceViewModelListChangeListener = change -> {
+            while(change.next()) {
+                final OptionalInstance selectedOptionalInstance = comboBox.getValue();
+                for (final InstanceViewModel<?> addedInstanceViewModel : change.getAddedSubList()) {
+                    final Optional<OptionalInstance> newInstance = this.addToObjectList(itemsList, addedInstanceViewModel);
+                    if (selectedOptionalInstance != null
+                            && selectedOptionalInstance.isNew()
+                            && newInstance.isPresent()
+                            && selectedOptionalInstance.equals(newInstance.get())) {
+                        itemsList.remove(selectedOptionalInstance);
+                        comboBox.setValue(newInstance.get());
                     }
                 }
-            }
-            if (change.getRemovedSize() > 0) {
-                itemsList.removeIf(instance -> instance.getValue() != null
-                        && change.getRemoved().contains(instance));
+                for (final InstanceViewModel<?> removedInstanceViewModel : change.getRemoved()) {
+                    itemsList.remove(new OptionalInstance(Optional.of(removedInstanceViewModel.valueProperty().get()), "", false));
+                }
             }
         };
-        viewModel.allInstancesProperty().addListener(objectInfoListChangeListener);
-        this.currentListChangeListeners.add(objectInfoListChangeListener);
+        this.inspectionViewModel.instancesProperty().addListener(instanceViewModelListChangeListener);
+        this.currentListChangeListeners.add(instanceViewModelListChangeListener);
 
         this.onValueChanged = value -> {
+            itemsList.removeIf(OptionalInstance::isNew);
             if (value != null) {
-                final Instance valueInstance = viewModel.instanceForObject(value);
-                if (valueInstance.getValue() != null) {
-                    if (itemsList.stream().anyMatch(instance -> instance == valueInstance)) {
-                        comboBox.setValue(valueInstance);
-                    } else {
-                        this.addToObjectList(itemsList, valueInstance);
-                    }
+                if (this.inspectionViewModel.hasViewModelForObject(value)) {
+                    final OptionalInstance toSelect = itemsList.stream().filter(optionalInstance -> {
+                        if (optionalInstance.instance().isEmpty()) {
+                            return false;
+                        } else {
+                            return optionalInstance.instance().get() == value;
+                        }
+                    }).findFirst().orElseThrow();
+                    comboBox.setValue(toSelect);
                 } else {
-                    //TODO: Offer "new"/"create" (because no instance is known
-                    /*final OptionalObjectInfo newObjectInfo = new OptionalObjectInfo(Optional.of(
-                            new ObjectInfo<>("«new»", new ClassInfo<>("",
-                                    Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-                                    Object.class), Collections.emptyList(), Collections.emptyList(), value)), true);
-                    itemsList.add(0, newObjectInfo);
-                    comboBox.setValue(newObjectInfo);*/
+                    final OptionalInstance newInstanceViewModel = new OptionalInstance(Optional.of(value), "«new»", true);
+                    itemsList.add(0, newInstanceViewModel);
+                    comboBox.setValue(newInstanceViewModel);
                 }
             } else {
                 comboBox.setValue(itemsList.get(itemsList.size() - 1));
             }
         };
-        final ChangeListener<Instance> changeListener = (observable, oldValue, newValue) -> {
+        final ChangeListener<OptionalInstance> changeListener = (observable, oldValue, newValue) -> {
             if (newValue != null) {
                 this.validateComboBoxValue(newValue);
-                if (newValue.equals("null")) {
+                if (newValue.instance().isEmpty()) {
                     this.setValue(null);
                 } else {
                     this.setValue(newValue);
                 }
-                //this.isNewObjectValue.set(newValue.isUnlisted());
+                this.isNewObjectValue.set(newValue.isNew());
             }
         };
         comboBox.valueProperty().addListener(new WeakChangeListener<>(changeListener));
@@ -430,50 +424,46 @@ public class InputControl extends HBox {
         this.validateComboBoxValue(comboBox.getValue());
     }
 
-    private void addToObjectList(final ObservableList<Instance> itemsList, final Instance instance) {
-        if (instance != null) {
-            if (this.currentType.getPrimitiveType() != Primitives.COMPLEX
-                    || (instance.getType() != null && this.currentType.getType().isAssignableFrom(instance.getType().getType()))) {
-                itemsList.add(0, instance);
-            }
+    private Optional<OptionalInstance> addToObjectList(final ObservableList<OptionalInstance> itemsList, final InstanceViewModel<?> instanceViewModel) {
+        if (this.currentType.getCategory() != TypeCategory.COMPLEX
+                || this.currentType.getType().isAssignableFrom(instanceViewModel.valueProperty().get().getClass())) {
+            final OptionalInstance newInstance = new OptionalInstance(Optional.of(instanceViewModel.valueProperty().get()), instanceViewModel.nameProperty().get(), false);
+            itemsList.add(0, newInstance);
+            return Optional.of(newInstance);
+        } else {
+            return Optional.empty();
         }
     }
 
     private void validateComboBoxValue(final Object value) {
         if (value == null) {
             this.updateIsValid(ValidationResult.ERROR);
-        } else if (value.toString().equals("null") && this.type.getPrimitiveType() != Primitives.OPTIONAL) {
+        } else if (value.toString().equals("null") && this.type.getCategory() != TypeCategory.OPTIONAL) {
             this.updateIsValid(ValidationResult.WARNING);
         } else {
             this.updateIsValid(ValidationResult.OK);
         }
     }
-}
 
-/*class OptionalObjectInfo {
+    private static record OptionalInstance(Optional<Object> instance, String text, boolean isNew) {
 
-    private final Optional<ObjectInfo<?>> objectInfo;
-    private final boolean unlisted;
+        @Override
+        public String toString() {
+            return this.text;
+        }
 
-    public OptionalObjectInfo(final Optional<ObjectInfo<?>> objectInfo, final boolean isUnlisted) {
-        this.objectInfo = objectInfo;
-        this.unlisted = isUnlisted;
-    }
-
-    public Optional<ObjectInfo<?>> getObjectInfo() {
-        return objectInfo;
-    }
-
-    public boolean isUnlisted() {
-        return unlisted;
-    }
-
-    @Override
-    public String toString() {
-        if (this.objectInfo.isPresent()) {
-            return this.objectInfo.get().nameProperty().get();
-        } else {
-            return "null";
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null || obj.getClass() != OptionalInstance.class) {
+                return false;
+            } else {
+                final Optional<Object> otherInstance = ((OptionalInstance)obj).instance();
+                if (this.instance.isPresent()) {
+                    return this.instance.get() == otherInstance.orElse(null);
+                } else {
+                    return otherInstance.isEmpty();
+                }
+            }
         }
     }
-}*/
+}

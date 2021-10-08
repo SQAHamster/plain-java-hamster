@@ -1,67 +1,63 @@
 package de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model;
 
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-
-import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.Optional;
 
 public class Type {
+
+    public static final Type OBJECT_TYPE = new Type(Object.class);
+
+    private final TypeCategory category;
     private final Class<?> type;
-    private final Type parentType;
-    private final Primitives primitiveType;
-    private final SimpleListProperty<Type> referencesTypes = new SimpleListProperty<>(this, "referencesTypes", FXCollections.observableList(new ArrayList<>()));
 
-    private static final Map<Class<?>, Type> knownTypes = new HashMap<>();
-
-    protected Type(Class<?> type, Type parent) {
+    public Type(final Class<?> type) {
         this.type = type;
-        this.primitiveType = Primitives.getForClass(type);
-        this.parentType = parent;
+        if (type == byte.class || type == Byte.class) {
+            this.category = TypeCategory.BYTE;
+        } else if (type == short.class || type == Short.class) {
+            this.category = TypeCategory.SHORT;
+        } else if (type == int.class || type == Integer.class) {
+            this.category = TypeCategory.INTEGER;
+        } else if (type == long.class || type == Long.class) {
+            this.category = TypeCategory.LONG;
+        } else if (type == float.class || type == Float.class) {
+            this.category = TypeCategory.FLOAT;
+        } else if (type == double.class || type == Double.class) {
+            this.category = TypeCategory.DOUBLE;
+        } else if (type == boolean.class || type == Boolean.class) {
+            this.category = TypeCategory.BOOLEAN;
+        } else if (type == char.class || type == Character.class) {
+            this.category = TypeCategory.CHARACTER;
+        } else if (type == String.class) {
+            this.category = TypeCategory.STRING;
+        } else if (type == Object.class) {
+            this.category = TypeCategory.OBJECT;
+        } else if (type == Optional.class) {
+            this.category = TypeCategory.OPTIONAL;
+        } else if (type.isEnum()) {
+            this.category = TypeCategory.ENUM;
+        } else {
+            this.category = TypeCategory.COMPLEX;
+        }
     }
 
-    public Optional<Type> getParent() {
-        return Optional.ofNullable(parentType);
-    }
-
-    public ListProperty<Type> referencesTypesProperty() {
-        return this.referencesTypes;
-    }
-
-    public Class<?> getType() {
-        return this.type;
-    }
-
-    public Primitives getPrimitiveType() {
-        return this.primitiveType;
+    public TypeCategory getCategory() {
+        return this.category;
     }
 
     public boolean isPrimitive() {
         return this.type.isPrimitive();
     }
 
-    public boolean isNullable() {
-        return this.type.isPrimitive(); //TODO: Think of a better solution or eliminate
-    }
-
-    public static Type typeForClass(Class<?> cls) {
-        Type t = Type.knownTypes.get(cls);
-        if (t == null) {
-            Class<?> superClass = cls.getSuperclass();
-            Type superType = null;
-            if (superClass != null) {
-                superType = Type.typeForClass(superClass);
-            }
-            t = new Type(cls, superType);
-            Type.knownTypes.put(cls, t);
-        }
-        return t;
+    public Class<?> getType() {
+        return this.type;
     }
 
     @Override
     public String toString() {
-        return this.type.getSimpleName();
+        if (this.category != TypeCategory.ENUM) {
+            return this.category.toString();
+        } else {
+            return "Enum: " + this.type.getSimpleName();
+        }
     }
 }

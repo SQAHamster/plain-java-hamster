@@ -1,57 +1,94 @@
 package de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.Hamster;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.HamsterGame;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.SimpleHamsterGame;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.Instance;
+import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.ClassFactory;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.InstanceFactory;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.InstanceMethod;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.Type;
+import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.testdata.B;
+import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.testdata.C;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import javafx.collections.MapChangeListener;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
+import javafx.collections.ListChangeListener;
 
-import java.lang.ref.WeakReference;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class InspectionViewModel {
+    private final ReadOnlyListWrapper<ClassViewModel<?>> classes;
+    private final SimpleListProperty<InstanceViewModel<?>> instances;
+    private final SimpleListProperty<Type> multiTypes
+            = new SimpleListProperty<>(this, "multiInputTypes", FXCollections.observableList(new ArrayList<>()));
+    private final Map<Class<?>, Type> enumInputTypeLookup = new HashMap<>();
+    private final InstanceFactory instanceFactory;
+    private final ClassFactory classFactory;
 
-    private final SimpleMapProperty<String, Instance> variables = new SimpleMapProperty<>(this, "variables", FXCollections.observableMap(new HashMap<>()));
-    private final SimpleListProperty<Type> types = new SimpleListProperty<>(this, "types", FXCollections.observableList(new ArrayList<>()));
-    private final SimpleListProperty<WeakReference<Instance>> allInstances = new SimpleListProperty<>(this, "allInstances", FXCollections.observableList(new ArrayList<>()));
+    public InspectionViewModel(final HamsterGame hamsterGame) {
+        this.classes = new ReadOnlyListWrapper<>(this, "classes", FXCollections.observableList(new ArrayList<>()));
+        this.instances = new SimpleListProperty<>(this, "objects", FXCollections.observableList(new ArrayList<>()));
+        this.multiTypes.add(Type.OBJECT_TYPE);
+        this.multiTypes.addAll(Stream.of(String.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class)
+                .map(Type::new).collect(Collectors.toList()));
 
-    private HamsterGame game;
-    private InstanceFactory instanceFactory = new InstanceFactory(this);
+        this.classes.addListener((ListChangeListener<ClassViewModel<?>>) change -> {
+            while(change.next()) {
+                for (final ClassViewModel<?> addedInfo : change.getAddedSubList()) {
+                    final Class<?> cls = addedInfo.valueProperty().get();
+                    if (Enum.class.isAssignableFrom(cls)) {
+                        final Type type = new Type(cls);
+                        this.enumInputTypeLookup.put(cls, type);
+                        this.multiTypes.add(type);
+                    }
+                }
+                for (final ClassViewModel<?> removedInfo: change.getRemoved()) {
+                    final Class<?> cls = removedInfo.valueProperty().get();
+                    if (this.enumInputTypeLookup.containsKey(cls)) {
+                        this.multiTypes.remove(this.enumInputTypeLookup.remove(cls));
+                    }
+                }
+            }
+        });
 
-    public InspectionViewModel(HamsterGame game) {
-        this.game = game;
-        types.add(Type.typeForClass(game.getClass()));
-        types.add(Type.typeForClass(SimpleHamsterGame.class));
-        types.add(Type.typeForClass(Hamster.class));
-        variables.put("game", this.instanceForObject(game));
-        variables.put("test", this.instanceForObject(15));
-        variables.put("hamster", this.instanceForObject(new B()));
-        variables.put("hamster2", this.instanceForObject(new C()));
+        this.instanceFactory = new InstanceFactory(this);
+        this.classFactory = new ClassFactory(this);
 
+        this.viewModelForClass(hamsterGame.getClass());
+        this.viewModelForClass(SimpleHamsterGame.class);
+        this.viewModelForClass(Hamster.class);
+        final InstanceViewModel<HamsterGame> hamsterGameViewModel = this.createInstanceViewModel(hamsterGame, "hamsterGame");
     }
 
-    public MapProperty<String, Instance> variablesProperty() {
-        return this.variables;
+    public ReadOnlyListProperty<ClassViewModel<?>> classesProperty() {
+        return this.classes.getReadOnlyProperty();
     }
 
-    public ListProperty<Type> typesProperty() {
-        return this.types;
+    public ListProperty<InstanceViewModel<?>> instancesProperty() {
+        return this.instances;
     }
 
-    public ListProperty<WeakReference<Instance>> allInstancesProperty() {
-        return this.allInstances;
+    public ListProperty<Type> multiInputTypesProperty() {
+        return this.multiTypes;
     }
 
-    public Instance instanceForObject(Object obj) {
-        return this.instanceFactory.instanceForObject(obj);
+    public <T> Optional<InstanceViewModel<T>> getViewModelForObject(final T object) {
+        return this.instanceFactory.getViewModelForObject(object);
+    }
+
+    public <T> InstanceViewModel<T> createInstanceViewModel(final T obj, final String name) {
+        return this.instanceFactory.createInstanceViewModel(obj, name);
+    }
+
+    public boolean hasViewModelForObject(final Object object) {
+        return this.instanceFactory.hasViewModelForObject(object);
+    }
+    
+    public <T> ClassViewModel<T> viewModelForClass(final Class<T> cls) {
+        return this.classFactory.viewModelForClass(cls);
+    }
+
+    public boolean hasViewModelForClass(final Class<?> cls) {
+        return this.classFactory.hasViewModelForClass(cls);
     }
 }
