@@ -1,6 +1,9 @@
 package de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.ui;
 
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.HamsterGameViewModel;
+import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.HamsterGame;
+import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.Instance;
+import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.Type;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel.InspectionViewModel;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.javafx.HamsterGameStage;
 import javafx.geometry.Pos;
@@ -13,6 +16,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import org.controlsfx.control.PopOver;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,15 +24,16 @@ import java.util.Collections;
 import java.util.List;
 
 public class InpectableHamsterGameStage extends HamsterGameStage {
+
     public InpectableHamsterGameStage(HamsterGameViewModel hamsterGameViewModel, InspectionViewModel inspect) throws IOException {
         super(hamsterGameViewModel);
         Thread showing = new Thread(() -> {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     System.out.println("Classes:");
-                    inspect.getTypes().forEach(System.out::println);
+                    inspect.typesProperty().forEach(System.out::println);
                     System.out.println("Variables:");
-                    inspect.getVariables().forEach((key, val) -> System.out.println(key + ": " + val.toString()));
+                    inspect.variablesProperty().forEach((key, val) -> System.out.println(key + ": " + val.toString()));
                     Thread.sleep(1000);
                 }
             } catch (InterruptedException e) {
@@ -38,13 +43,13 @@ public class InpectableHamsterGameStage extends HamsterGameStage {
         showing.setDaemon(true);
         showing.start();
         VBox split = new VBox();
-        split.getChildren().add(createLayout());
+        split.getChildren().add(createLayout(inspect));
         split.getChildren().add(this.getScene().getRoot());
         Scene newScene = new Scene(split, 1280, 720);
         this.setScene(newScene);
     }
 
-    private Parent createLayout() {
+    private Parent createLayout(InspectionViewModel inspect) {
         final VBox outer = new VBox();
         final FlowPane flowPane = new FlowPane();
         flowPane.setVgap(10);
@@ -70,16 +75,11 @@ public class InpectableHamsterGameStage extends HamsterGameStage {
 
         outer.getChildren().add(flowPane);
 
-        /*final var testClassInfo = new ClassInfo<>("TestClass", Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), TestClass.class);
+        final Type testType = Type.typeForClass(Object.class);
+        final InputControl testInputControl = new InputControl(testType, inspect);
 
-        final var testInstanceInfo = new ObjectInfo<>("Instance1", testClassInfo, Collections.emptyList(), Collections.emptyList(), new TestClass());
-
-        final var testHamsterUI = new ClassObjectCollection(new ArrayList<>(List.of(testClassInfo)), new ArrayList<>(List.of(testInstanceInfo)));*/
-
-        final InputType testType = new InputType(Object.class);
-        final InputControl testInputControl = new InputControl(testType, testHamsterUI);
-        final FieldInfo testFieldInfo = new FieldInfo("test", Object.class, testInstanceInfo);
-        testInputControl.valueProperty().bindBidirectional(testFieldInfo.valueProperty());
+        //final FieldInfo testFieldInfo = new FieldInfo("test", Object.class, testInstanceInfo);
+        //testInputControl.valueProperty().bindBidirectional(testFieldInfo.valueProperty());
         outer.getChildren().add(testInputControl);
 
         return outer;

@@ -6,6 +6,9 @@ import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.HamsterGame;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.Instance;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.InstanceMethod;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.Type;
+import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
@@ -13,23 +16,35 @@ import java.util.*;
 
 public class InspectionViewModel {
 
-    private Map<String, Instance> variables = new HashMap<>();
-    private List<Type> types = new ArrayList<>();
+    private final SimpleMapProperty<String, Instance> variables = new SimpleMapProperty<>(this, "variables", FXCollections.observableMap(new HashMap<>()));
+    private final SimpleListProperty<Type> types = new SimpleListProperty<>(this, "types", FXCollections.observableList(new ArrayList<>()));
+    private final SimpleListProperty<Instance> allInstances = new SimpleListProperty<>(this, "allInstances", FXCollections.observableList(new ArrayList<>()));
 
     private HamsterGame game;
 
     public InspectionViewModel(HamsterGame game) {
         this.game = game;
         types.add(Type.typeForClass(game.getClass()));
-        variables.put("game", new Instance(game, Type.typeForClass(game.getClass())));
-        variables.put("test", new Instance(15, Type.typeForClass(Integer.class)));
+        variables.put("game", Instance.instanceForObject(game));
+        variables.put("test", Instance.instanceForObject(15));
+        MapChangeListener<String, Instance> instanceChangeListener = change -> {
+            allInstances.removeIf(i -> change.getValueAdded() == i);
+            if (change.wasAdded() && !allInstances.contains(change.getValueAdded())) {
+                allInstances.add(change.getValueAdded());
+            }
+        };
+        variables.addListener(instanceChangeListener);
     }
 
-    public ObservableMap<String, Instance> getVariables() {
-        return new ObservableMapWrapper<>(Collections.unmodifiableMap(this.variables));
+    public MapProperty<String, Instance> variablesProperty() {
+        return this.variables;
     }
 
-    public ObservableList<Type> getTypes() {
-        return new ObservableListWrapper<>(Collections.unmodifiableList(types));
+    public ListProperty<Type> typesProperty() {
+        return this.types;
+    }
+
+    public ReadOnlyListProperty<Instance> allInstancesProperty() {
+        return this.allInstances;
     }
 }

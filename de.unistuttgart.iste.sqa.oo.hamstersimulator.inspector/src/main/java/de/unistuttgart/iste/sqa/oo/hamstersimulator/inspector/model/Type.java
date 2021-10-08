@@ -1,33 +1,38 @@
 package de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model;
 
 import com.sun.javafx.collections.ObservableListWrapper;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.*;
 
 public class Type {
-    private Class<?> type;
-    private Type parentType;
-    private List<Type> referencesTypes = new ArrayList<>();
-    private Primitives primitiveType;
+    private final Class<?> type;
+    private final Type parentType;
+    private final Primitives primitiveType;
+    private final SimpleListProperty<Type> referencesTypes = new SimpleListProperty<>(this, "referencesTypes", FXCollections.observableList(new ArrayList<>()));
+    private final SimpleListProperty<Instance> knownInstances = new SimpleListProperty<>(this, "knownInstances", FXCollections.observableList(new ArrayList<>()));
 
-    private static Map<Class<?>, Type> knownTypes = new HashMap<>();
+    private static final Map<Class<?>, Type> knownTypes = new HashMap<>();
 
     protected Type(Class<?> type, Type parent) {
         this.type = type;
         this.primitiveType = Primitives.getForClass(type);
+        this.parentType = parent;
     }
 
     public Optional<Type> getParent() {
         return Optional.ofNullable(parentType);
     }
 
-    public ObservableList<Type> getReferences() {
-        return new ObservableListWrapper<>(Collections.unmodifiableList(referencesTypes));
+    public ListProperty<Type> referencesTypesProperty() {
+        return this.referencesTypes;
     }
 
     public Class<?> getType() {
-        return type;
+        return this.type;
     }
 
     public Primitives getPrimitiveType() {
@@ -36,6 +41,14 @@ public class Type {
 
     public boolean isPrimitive() {
         return this.type.isPrimitive();
+    }
+
+    public boolean isNullable() {
+        return this.type.isPrimitive(); //TODO: Think of a better solution or eliminate
+    }
+
+    public ListProperty<Instance> getKnownInstances() {
+        return this.knownInstances;
     }
 
     public static Type typeForClass(Class<?> cls) {

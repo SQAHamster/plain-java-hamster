@@ -11,7 +11,7 @@ public record InstanceMethod(Instance instance,
 
     public Instance call(Instance ... params) {
         try {
-            Object result = method.invoke(instance, Arrays.stream(params).map(Instance::value));
+            Object result = method.invoke(instance, Arrays.stream(params).map(Instance::getValue));
             if (result == null) {
                 return null;
             } else {
