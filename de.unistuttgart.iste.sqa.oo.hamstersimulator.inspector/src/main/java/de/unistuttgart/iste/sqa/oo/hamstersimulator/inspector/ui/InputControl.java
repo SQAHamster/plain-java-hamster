@@ -364,8 +364,8 @@ public class InputControl extends HBox {
      */
     private void createObjectComboBox() {
         final ObservableList<Instance> itemsList = FXCollections.observableList(new ArrayList<>());
-        itemsList.add(Instance.instanceForObject(null));
-        for (final WeakReference<Instance> objectInfo : Instance.allInstancesProperty()) {
+        itemsList.add(viewModel.instanceForObject(null));
+        for (final WeakReference<Instance> objectInfo : viewModel.allInstancesProperty()) {
             this.addToObjectList(itemsList, objectInfo.get());
         }
 
@@ -389,12 +389,12 @@ public class InputControl extends HBox {
                         && change.getRemoved().contains(instance));
             }
         };
-        Instance.allInstancesProperty().addListener(objectInfoListChangeListener);
+        viewModel.allInstancesProperty().addListener(objectInfoListChangeListener);
         this.currentListChangeListeners.add(objectInfoListChangeListener);
 
         this.onValueChanged = value -> {
             if (value != null) {
-                final Instance valueInstance = Instance.instanceForObject(value);
+                final Instance valueInstance = viewModel.instanceForObject(value);
                 if (valueInstance.getValue() != null) {
                     if (itemsList.stream().anyMatch(instance -> instance == valueInstance)) {
                         comboBox.setValue(valueInstance);

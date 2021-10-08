@@ -13,7 +13,6 @@ public class Type {
     private final Type parentType;
     private final Primitives primitiveType;
     private final SimpleListProperty<Type> referencesTypes = new SimpleListProperty<>(this, "referencesTypes", FXCollections.observableList(new ArrayList<>()));
-    private final SimpleListProperty<WeakReference<Instance>> knownInstances = new SimpleListProperty<>(this, "knownInstances", FXCollections.observableList(new ArrayList<>()));
 
     private static final Map<Class<?>, Type> knownTypes = new HashMap<>();
 
@@ -45,10 +44,6 @@ public class Type {
 
     public boolean isNullable() {
         return this.type.isPrimitive(); //TODO: Think of a better solution or eliminate
-    }
-
-    public ListProperty<WeakReference<Instance>> getKnownInstances() {
-        return this.knownInstances;
     }
 
     public static Type typeForClass(Class<?> cls) {

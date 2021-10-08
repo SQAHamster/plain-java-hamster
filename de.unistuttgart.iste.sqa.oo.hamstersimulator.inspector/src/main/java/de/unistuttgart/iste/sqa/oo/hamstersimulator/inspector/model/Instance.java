@@ -11,9 +11,8 @@ import java.util.stream.Collectors;
 
 public class Instance {
 
-    private static final WeakHashMap<Object, WeakReference<Instance>> knownObjects = new WeakHashMap<>();
-    private static final SimpleListProperty<WeakReference<Instance>> allInstances = new SimpleListProperty<>(Instance.class, "allInstances", FXCollections.observableList(new ArrayList<>()));
-    private static final Instance NULL_INSTANCE = new Instance(null, null);
+    static final WeakHashMap<Object, WeakReference<Instance>> knownObjects = new WeakHashMap<>();
+    public static final Instance NULL_INSTANCE = new Instance(null, null);
 
     private final Object value;
     private final Type type;
@@ -37,28 +36,6 @@ public class Instance {
 
     public Type getType() {
         return this.type;
-    }
-
-    public static Instance instanceForObject(Object obj) {
-        if (obj == null) {
-            return Instance.NULL_INSTANCE;
-        }
-        WeakReference<Instance> instanceRef = Instance.knownObjects.get(obj);
-        Instance i = (instanceRef == null ? null : instanceRef.get());
-        if (i == null) {
-            Type t = Type.typeForClass(obj.getClass());
-            i = new Instance(obj, t);
-            instanceRef = new WeakReference<>(i);
-            t.getKnownInstances().add(instanceRef);//TODO: Potentioally remove because non needed
-            Instance.allInstances.removeIf(ref -> ref.get() == null);
-            Instance.allInstances.add(instanceRef);
-            Instance.knownObjects.put(obj, instanceRef);
-        }
-        return i;
-    }
-
-    public static ListProperty<WeakReference<Instance>> allInstancesProperty() {
-        return Instance.allInstances;
     }
 
     @Override
