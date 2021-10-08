@@ -20,6 +20,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import org.controlsfx.control.SearchableComboBox;
 
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -364,20 +365,23 @@ public class InputControl extends HBox {
     private void createObjectComboBox() {
         final ObservableList<Instance> itemsList = FXCollections.observableList(new ArrayList<>());
         itemsList.add(Instance.instanceForObject(null));
-        for (final Instance objectInfo : this.type.getKnownInstances()) {
-            this.addToObjectList(itemsList, objectInfo);
+        for (final WeakReference<Instance> objectInfo : Instance.allInstancesProperty()) {
+            this.addToObjectList(itemsList, objectInfo.get());
         }
 
         final ComboBox<Instance> comboBox = new SearchableComboBox<>(itemsList);
         this.currentInputControl = comboBox;
 
-        final ListChangeListener<Instance> objectInfoListChangeListener = change -> {
+        final ListChangeListener<WeakReference<Instance>> objectInfoListChangeListener = change -> {
             final Instance selectedInstance = comboBox.getValue();
-            for (final Instance addedObjectInfo : change.getAddedSubList()) {
-                this.addToObjectList(itemsList, addedObjectInfo);
-                if (selectedInstance.getValue() != null && addedObjectInfo.getValue() == selectedInstance.getValue()) {
-                    itemsList.remove(selectedInstance);
-                    comboBox.setValue(itemsList.get(0));
+            for (final WeakReference<Instance> addedObjectInfoRef : change.getAddedSubList()) {
+                final Instance addedObjectInfo = addedObjectInfoRef.get();
+                if (addedObjectInfo != null) {
+                    this.addToObjectList(itemsList, addedObjectInfo);
+                    if (selectedInstance.getValue() != null && addedObjectInfo.getValue() == selectedInstance.getValue()) {
+                        itemsList.remove(selectedInstance);
+                        comboBox.setValue(itemsList.get(0));
+                    }
                 }
             }
             if (change.getRemovedSize() > 0) {
@@ -385,7 +389,7 @@ public class InputControl extends HBox {
                         && change.getRemoved().contains(instance));
             }
         };
-        this.viewModel.allInstancesProperty().addListener(objectInfoListChangeListener);
+        Instance.allInstancesProperty().addListener(objectInfoListChangeListener);
         this.currentListChangeListeners.add(objectInfoListChangeListener);
 
         this.onValueChanged = value -> {
@@ -427,9 +431,11 @@ public class InputControl extends HBox {
     }
 
     private void addToObjectList(final ObservableList<Instance> itemsList, final Instance instance) {
-        if (this.currentType.getPrimitiveType() != Primitives.COMPLEX
-                || (instance.getType() != null && this.currentType.getType().isAssignableFrom(instance.getType().getType()))) {
-            itemsList.add(0, instance);
+        if (instance != null) {
+            if (this.currentType.getPrimitiveType() != Primitives.COMPLEX
+                    || (instance.getType() != null && this.currentType.getType().isAssignableFrom(instance.getType().getType()))) {
+                itemsList.add(0, instance);
+            }
         }
     }
 

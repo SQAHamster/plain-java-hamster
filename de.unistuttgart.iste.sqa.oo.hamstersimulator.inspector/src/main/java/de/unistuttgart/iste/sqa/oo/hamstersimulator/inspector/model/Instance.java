@@ -1,15 +1,18 @@
 package de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model;
 
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
+
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Instance {
 
-    private static final Map<Object, Instance> knownObjects = new HashMap<>();
+    private static final WeakHashMap<Object, WeakReference<Instance>> knownObjects = new WeakHashMap<>();
+    private static final SimpleListProperty<WeakReference<Instance>> allInstances = new SimpleListProperty<>(Instance.class, "allInstances", FXCollections.observableList(new ArrayList<>()));
     private static final Instance NULL_INSTANCE = new Instance(null, null);
 
     private final Object value;
@@ -40,12 +43,22 @@ public class Instance {
         if (obj == null) {
             return Instance.NULL_INSTANCE;
         }
-        Instance i = Instance.knownObjects.get(obj);
+        WeakReference<Instance> instanceRef = Instance.knownObjects.get(obj);
+        Instance i = (instanceRef == null ? null : instanceRef.get());
         if (i == null) {
-            i = new Instance(obj, Type.typeForClass(obj.getClass()));
-            Instance.knownObjects.put(obj, i);
+            Type t = Type.typeForClass(obj.getClass());
+            i = new Instance(obj, t);
+            instanceRef = new WeakReference<>(i);
+            t.getKnownInstances().add(instanceRef);//TODO: Potentioally remove because non needed
+            Instance.allInstances.removeIf(ref -> ref.get() == null);
+            Instance.allInstances.add(instanceRef);
+            Instance.knownObjects.put(obj, instanceRef);
         }
         return i;
+    }
+
+    public static ListProperty<WeakReference<Instance>> allInstancesProperty() {
+        return Instance.allInstances;
     }
 
     @Override
@@ -57,7 +70,7 @@ public class Instance {
         } else if (Arrays.stream(value.getClass().getDeclaredMethods()).anyMatch(method -> method.getName().equals("toString"))) {
             return value.toString();
         } else {
-            return "[Object]";
+            return value.toString();
         }
     }
 }

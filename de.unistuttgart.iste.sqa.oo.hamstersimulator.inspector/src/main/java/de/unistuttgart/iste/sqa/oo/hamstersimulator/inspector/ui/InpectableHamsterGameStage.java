@@ -1,9 +1,13 @@
 package de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.ui;
 
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.HamsterGameViewModel;
+import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.Hamster;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.HamsterGame;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.Instance;
+import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.Primitives;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.Type;
+import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel.A;
+import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel.C;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel.InspectionViewModel;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.javafx.HamsterGameStage;
 import javafx.geometry.Pos;
@@ -41,11 +45,14 @@ public class InpectableHamsterGameStage extends HamsterGameStage {
             }
         });
         showing.setDaemon(true);
-        showing.start();
+        //showing.start();
         VBox split = new VBox();
         split.getChildren().add(createLayout(inspect));
         split.getChildren().add(this.getScene().getRoot());
+        split.setSpacing(20);
         Scene newScene = new Scene(split, 1280, 720);
+        newScene.getStylesheets().add("style.css");
+        newScene.getStylesheets().addAll(this.getScene().getStylesheets());
         this.setScene(newScene);
     }
 
@@ -75,7 +82,7 @@ public class InpectableHamsterGameStage extends HamsterGameStage {
 
         outer.getChildren().add(flowPane);
 
-        final Type testType = Type.typeForClass(Object.class);
+        final Type testType = Type.typeForClass(A.class);
         final InputControl testInputControl = new InputControl(testType, inspect);
 
         //final FieldInfo testFieldInfo = new FieldInfo("test", Object.class, testInstanceInfo);
