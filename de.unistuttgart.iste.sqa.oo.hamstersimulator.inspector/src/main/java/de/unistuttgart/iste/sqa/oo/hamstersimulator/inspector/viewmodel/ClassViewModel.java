@@ -10,12 +10,12 @@ import java.util.List;
 
 public class ClassViewModel<T> extends HideableViewModel {
 
-    private final ReadOnlyListWrapper<MethodViewModel<T>> constructors;
+    private final ReadOnlyListWrapper<ConstructorViewModel<T>> constructors;
     private final ReadOnlyListWrapper<MethodViewModel<?>> staticMethods;
     private final ReadOnlyListWrapper<FieldViewModel> staticFields;
     private final ReadOnlyObjectWrapper<Class<T>> value;
 
-    public ClassViewModel(final String name, final List<MethodViewModel<T>> constructors, final List<MethodViewModel<?>> staticMethods, List<FieldViewModel> staticFields, final Class<T> value) {
+    public ClassViewModel(final String name, final List<ConstructorViewModel<T>> constructors, final List<MethodViewModel<?>> staticMethods, List<FieldViewModel> staticFields, final Class<T> value) {
         super(name);
         this.constructors = new ReadOnlyListWrapper<>(this, "constructors", FXCollections.observableList(constructors));
         this.staticMethods = new ReadOnlyListWrapper<>(this, "staticMethods", FXCollections.observableList(staticMethods));
@@ -23,7 +23,7 @@ public class ClassViewModel<T> extends HideableViewModel {
         this.value = new ReadOnlyObjectWrapper<>(this, "value", value);
     }
 
-    public ReadOnlyListProperty<MethodViewModel<T>> constructorsProperty() {
+    public ReadOnlyListProperty<ConstructorViewModel<T>> constructorsProperty() {
         return this.constructors.getReadOnlyProperty();
     }
 
