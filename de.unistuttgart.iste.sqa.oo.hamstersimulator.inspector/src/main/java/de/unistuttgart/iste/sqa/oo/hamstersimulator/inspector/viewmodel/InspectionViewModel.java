@@ -1,7 +1,5 @@
 package de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel;
 
-import com.sun.javafx.collections.ObservableListWrapper;
-import com.sun.javafx.collections.ObservableMapWrapper;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.HamsterGame;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.Instance;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.InstanceMethod;

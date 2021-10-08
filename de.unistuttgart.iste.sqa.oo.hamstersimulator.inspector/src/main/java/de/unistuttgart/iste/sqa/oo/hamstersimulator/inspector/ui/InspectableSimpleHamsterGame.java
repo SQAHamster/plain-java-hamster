@@ -1,13 +1,11 @@
 package de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.ui;
 
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.HamsterGameViewModel;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.config.HamsterConfig;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.exceptions.GameAbortedException;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.Hamster;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.HamsterGame;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.SimpleHamsterGame;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel.InspectionViewModel;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.http.client.HamsterClient;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.javafx.JavaFXUI;
 
 import java.io.Console;

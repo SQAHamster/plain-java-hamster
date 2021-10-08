@@ -1,6 +1,5 @@
 package de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model;
 
-import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;

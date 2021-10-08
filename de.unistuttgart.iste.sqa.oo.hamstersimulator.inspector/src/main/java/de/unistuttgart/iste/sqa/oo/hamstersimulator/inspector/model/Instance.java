@@ -50,7 +50,9 @@ public class Instance {
 
     @Override
     public String toString() {
-        if (this.type.getPrimitiveType() != Primitives.COMPLEX) {
+        if (this.value == null) {
+            return "null";
+        } else if (this.type.getPrimitiveType() != Primitives.COMPLEX) {
             return value.toString();
         } else if (Arrays.stream(value.getClass().getDeclaredMethods()).anyMatch(method -> method.getName().equals("toString"))) {
             return value.toString();
