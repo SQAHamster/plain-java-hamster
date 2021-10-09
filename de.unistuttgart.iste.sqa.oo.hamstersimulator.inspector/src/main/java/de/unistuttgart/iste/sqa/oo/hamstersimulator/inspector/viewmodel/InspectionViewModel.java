@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class InspectionViewModel {
-    private final ReadOnlyListWrapper<ClassViewModel<?>> classes;
-    private final SimpleListProperty<InstanceViewModel<?>> instances;
+    private final ReadOnlyListWrapper<ClassViewModel> classes;
+    private final SimpleListProperty<InstanceViewModel> instances;
     private final SimpleListProperty<Type> multiTypes
             = new SimpleListProperty<>(this, "multiInputTypes", FXCollections.observableList(new ArrayList<>()));
     private final Map<Class<?>, Type> enumInputTypeLookup = new HashMap<>();
@@ -32,9 +32,9 @@ public class InspectionViewModel {
         this.multiTypes.addAll(Stream.of(String.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class)
                 .map(Type::new).collect(Collectors.toList()));
 
-        this.classes.addListener((ListChangeListener<ClassViewModel<?>>) change -> {
+        this.classes.addListener((ListChangeListener<ClassViewModel>) change -> {
             while(change.next()) {
-                for (final ClassViewModel<?> addedInfo : change.getAddedSubList()) {
+                for (final ClassViewModel addedInfo : change.getAddedSubList()) {
                     final Class<?> cls = addedInfo.valueProperty().get();
                     if (Enum.class.isAssignableFrom(cls)) {
                         final Type type = new Type(cls);
@@ -42,7 +42,7 @@ public class InspectionViewModel {
                         this.multiTypes.add(type);
                     }
                 }
-                for (final ClassViewModel<?> removedInfo: change.getRemoved()) {
+                for (final ClassViewModel removedInfo: change.getRemoved()) {
                     final Class<?> cls = removedInfo.valueProperty().get();
                     if (this.enumInputTypeLookup.containsKey(cls)) {
                         this.multiTypes.remove(this.enumInputTypeLookup.remove(cls));
@@ -57,14 +57,14 @@ public class InspectionViewModel {
         this.viewModelForClass(hamsterGame.getClass());
         this.viewModelForClass(SimpleHamsterGame.class);
         this.viewModelForClass(Hamster.class);
-        final InstanceViewModel<HamsterGame> hamsterGameViewModel = this.createInstanceViewModel(hamsterGame, "hamsterGame");
+        final InstanceViewModel hamsterGameViewModel = this.createInstanceViewModel(hamsterGame, "hamsterGame");
     }
 
-    public ReadOnlyListProperty<ClassViewModel<?>> classesProperty() {
+    public ReadOnlyListProperty<ClassViewModel> classesProperty() {
         return this.classes.getReadOnlyProperty();
     }
 
-    public ListProperty<InstanceViewModel<?>> instancesProperty() {
+    public ListProperty<InstanceViewModel> instancesProperty() {
         return this.instances;
     }
 
@@ -72,11 +72,11 @@ public class InspectionViewModel {
         return this.multiTypes;
     }
 
-    public <T> Optional<InstanceViewModel<T>> getViewModelForObject(final T object) {
+    public Optional<InstanceViewModel> getViewModelForObject(final Object object) {
         return this.instanceFactory.getViewModelForObject(object);
     }
 
-    public <T> InstanceViewModel<T> createInstanceViewModel(final T obj, final String name) {
+    public InstanceViewModel createInstanceViewModel(final Object obj, final String name) {
         return this.instanceFactory.createInstanceViewModel(obj, name);
     }
 
@@ -84,7 +84,7 @@ public class InspectionViewModel {
         return this.instanceFactory.hasViewModelForObject(object);
     }
     
-    public <T> ClassViewModel<T> viewModelForClass(final Class<T> cls) {
+    public ClassViewModel viewModelForClass(final Class<?> cls) {
         return this.classFactory.viewModelForClass(cls);
     }
 

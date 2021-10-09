@@ -17,28 +17,28 @@ import java.util.stream.Collectors;
 public final class InstanceFactory {
 
     private final InspectionViewModel viewModel;
-    private final IdentityHashMap<Object, InstanceViewModel<?>> instanceViewModelLookup = new IdentityHashMap<>();
+    private final IdentityHashMap<Object, InstanceViewModel> instanceViewModelLookup = new IdentityHashMap<>();
 
     public InstanceFactory(final InspectionViewModel viewModel) {
         this.viewModel = viewModel;
-        viewModel.instancesProperty().addListener((ListChangeListener<InstanceViewModel<?>>) change -> {
+        viewModel.instancesProperty().addListener((ListChangeListener<InstanceViewModel>) change -> {
             while(change.next()) {
-                for (final InstanceViewModel<?> addedInfo : change.getAddedSubList()) {
+                for (final InstanceViewModel addedInfo : change.getAddedSubList()) {
                     this.instanceViewModelLookup.put(addedInfo.valueProperty().get(), addedInfo);
                 }
-                for (final InstanceViewModel<?> removedInfo : change.getRemoved()) {
+                for (final InstanceViewModel removedInfo : change.getRemoved()) {
                     this.instanceViewModelLookup.remove(removedInfo.valueProperty().get());
                 }
             }
         });
     }
 
-    public <T> InstanceViewModel<T> createInstanceViewModel(final T obj, final String name) {
+    public InstanceViewModel createInstanceViewModel(final Object obj, final String name) {
         if (obj == null) {
             throw new IllegalArgumentException("cannot get InstanceViewModel for null");
         }
 
-        final InstanceViewModel<T> newInstance = new InstanceViewModel<>(name,
+        final InstanceViewModel newInstance = new InstanceViewModel(name,
                 this.viewModel.viewModelForClass(obj.getClass()),
                 Arrays.stream(obj.getClass().getDeclaredMethods())
                         .filter(method -> !Modifier.isStatic(method.getModifiers()))
@@ -55,7 +55,7 @@ public final class InstanceFactory {
         return newInstance;
     }
 
-    private MethodViewModel<?> createInstanceMethodViewModel(final Object instance, final Method method) {
+    private MethodViewModel createInstanceMethodViewModel(final Object instance, final Method method) {
         final Function<List<?>, Object> invokeMethod = params -> {
             try {
                 return method.invoke(instance, params.toArray());
@@ -64,7 +64,7 @@ public final class InstanceFactory {
                 return null;
             }
         };
-        return new MethodViewModel<>(method.toGenericString(),
+        return new MethodViewModel(method.toGenericString(),
                 Arrays.stream(method.getParameters()).map(ParamViewModel::fromParameter).collect(Collectors.toList()),
                 method.getReturnType(),
                 invokeMethod);
@@ -97,12 +97,12 @@ public final class InstanceFactory {
         }
     }
 
-    public <T> Optional<InstanceViewModel<T>> getViewModelForObject(final T obj) {
+    public Optional<InstanceViewModel> getViewModelForObject(final Object obj) {
         if (obj == null) {
             throw new IllegalArgumentException("cannot get InstanceViewModel for null");
         }
 
-        return Optional.ofNullable((InstanceViewModel<T>) this.instanceViewModelLookup.get(obj));
+        return Optional.ofNullable(this.instanceViewModelLookup.get(obj));
     }
 
     public boolean hasViewModelForObject(final Object object) {

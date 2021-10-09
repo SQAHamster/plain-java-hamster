@@ -4,30 +4,39 @@ import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel.Inspecti
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel.ClassViewModel;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.control.Accordion;
 import javafx.scene.layout.VBox;
 
 public class ClassDetailControl extends VBox {
 
-    private final SimpleObjectProperty<ClassViewModel<?>> cls;
+    private final SimpleObjectProperty<ClassViewModel> cls;
 
     public ClassDetailControl(final InspectionViewModel inspectionViewModel) {
         this.cls = new SimpleObjectProperty<>(this, "class");
 
-        final Accordion accordion = new Accordion();
-        final FieldsTitledPane fieldsPane = new FieldsTitledPane(inspectionViewModel);
-        accordion.getPanes().addAll(fieldsPane);
-        this.getChildren().add(accordion);
+        final MethodsTitledPane constructorsPane = new MethodsTitledPane(inspectionViewModel);
+        constructorsPane.setText("Constructors");
+
+        final FieldsTitledPane staticFieldsPane = new FieldsTitledPane(inspectionViewModel);
+        staticFieldsPane.setText("Fields");
+
+        final MethodsTitledPane staticMethodsPane = new MethodsTitledPane(inspectionViewModel);
+        staticMethodsPane.setText("Methods");
+
+        this.getChildren().addAll(constructorsPane, staticFieldsPane, staticMethodsPane);
 
         this.cls.addListener((observable, oldValue, newValue) -> {
-            fieldsPane.fieldsProperty().unbind();
+            constructorsPane.methodsProperty().unbind();
+            staticFieldsPane.fieldsProperty().unbind();
+            staticMethodsPane.methodsProperty().unbind();
             if (newValue != null) {
-                fieldsPane.fieldsProperty().bind(newValue.staticFieldsProperty());
+                constructorsPane.methodsProperty().bind(newValue.constructorsProperty());
+                staticFieldsPane.fieldsProperty().bind(newValue.staticFieldsProperty());
+                staticMethodsPane.methodsProperty().bind(newValue.staticMethodsProperty());
             }
         });
     }
 
-    public ObjectProperty<ClassViewModel<?>> classProperty(){
+    public ObjectProperty<ClassViewModel> classProperty(){
         return this.cls;
     }
 }

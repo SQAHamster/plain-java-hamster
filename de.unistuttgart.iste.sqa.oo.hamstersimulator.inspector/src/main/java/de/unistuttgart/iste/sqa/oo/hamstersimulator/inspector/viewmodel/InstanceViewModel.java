@@ -10,14 +10,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class InstanceViewModel<T> extends NamedViewModel {
+public class InstanceViewModel extends NamedViewModel {
 
-    private final ReadOnlyObjectWrapper<ClassViewModel<?>> classInfo;
-    private final ReadOnlyListWrapper<MethodViewModel<?>> methods;
+    private final ReadOnlyObjectWrapper<ClassViewModel> classInfo;
+    private final ReadOnlyListWrapper<MethodViewModel> methods;
     private final ReadOnlyListWrapper<FieldViewModel> fields;
-    private final ReadOnlyObjectWrapper<T> value;
+    private final ReadOnlyObjectWrapper<?> value;
 
-    public InstanceViewModel(final String name, final ClassViewModel<?> classInfo, final List<MethodViewModel<?>> methods, List<FieldViewModel> fields, final T value) {
+    public InstanceViewModel(final String name, final ClassViewModel classInfo, final List<MethodViewModel> methods, List<FieldViewModel> fields, final Object value) {
         super(name);
         this.classInfo = new ReadOnlyObjectWrapper<>(this, "classInfo", classInfo);
         this.methods = new ReadOnlyListWrapper<>(this, "methods", FXCollections.observableList(methods));
@@ -25,11 +25,11 @@ public class InstanceViewModel<T> extends NamedViewModel {
         this.value = new ReadOnlyObjectWrapper<>(this, "value", value);
     }
 
-    public ReadOnlyObjectProperty<ClassViewModel<?>> classInfoProperty() {
+    public ReadOnlyObjectProperty<ClassViewModel> classInfoProperty() {
         return this.classInfo.getReadOnlyProperty();
     }
 
-    public ReadOnlyListProperty<MethodViewModel<?>> methodsProperty() {
+    public ReadOnlyListProperty<MethodViewModel> methodsProperty() {
         return this.methods.getReadOnlyProperty();
     }
 
@@ -37,7 +37,7 @@ public class InstanceViewModel<T> extends NamedViewModel {
         return this.fields.getReadOnlyProperty();
     }
 
-    public ReadOnlyObjectProperty<T> valueProperty() {
+    public ReadOnlyObjectProperty<?> valueProperty() {
         return this.value;
     }
 

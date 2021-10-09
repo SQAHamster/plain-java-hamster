@@ -5,7 +5,6 @@ import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel.Inspecti
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.ListChangeListener;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.ColumnConstraints;
@@ -30,6 +29,7 @@ public class FieldsTitledPane extends TitledPane {
         this.contentGrid.getColumnConstraints().addAll(firstColumnConstraints, secondColumnConstraints);
         this.setContent(this.contentGrid);
         this.fields.addListener((ListChangeListener<FieldViewModel>) change -> this.updateLayout(this.fields));
+        this.disableProperty().bind(this.fields.emptyProperty());
     }
 
     private void updateLayout(final List<FieldViewModel> fields) {

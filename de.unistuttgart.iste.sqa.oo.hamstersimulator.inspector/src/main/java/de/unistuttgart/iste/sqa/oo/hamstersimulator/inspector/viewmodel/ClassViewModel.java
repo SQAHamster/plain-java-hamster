@@ -8,14 +8,14 @@ import javafx.collections.FXCollections;
 
 import java.util.List;
 
-public class ClassViewModel<T> extends HideableViewModel {
+public class ClassViewModel extends HideableViewModel {
 
-    private final ReadOnlyListWrapper<ConstructorViewModel<T>> constructors;
-    private final ReadOnlyListWrapper<MethodViewModel<?>> staticMethods;
+    private final ReadOnlyListWrapper<MethodViewModel> constructors;
+    private final ReadOnlyListWrapper<MethodViewModel> staticMethods;
     private final ReadOnlyListWrapper<FieldViewModel> staticFields;
-    private final ReadOnlyObjectWrapper<Class<T>> value;
+    private final ReadOnlyObjectWrapper<Class<?>> value;
 
-    public ClassViewModel(final String name, final List<ConstructorViewModel<T>> constructors, final List<MethodViewModel<?>> staticMethods, List<FieldViewModel> staticFields, final Class<T> value) {
+    public ClassViewModel(final String name, final List<MethodViewModel> constructors, final List<MethodViewModel> staticMethods, List<FieldViewModel> staticFields, final Class<?> value) {
         super(name);
         this.constructors = new ReadOnlyListWrapper<>(this, "constructors", FXCollections.observableList(constructors));
         this.staticMethods = new ReadOnlyListWrapper<>(this, "staticMethods", FXCollections.observableList(staticMethods));
@@ -23,11 +23,11 @@ public class ClassViewModel<T> extends HideableViewModel {
         this.value = new ReadOnlyObjectWrapper<>(this, "value", value);
     }
 
-    public ReadOnlyListProperty<ConstructorViewModel<T>> constructorsProperty() {
+    public ReadOnlyListProperty<MethodViewModel> constructorsProperty() {
         return this.constructors.getReadOnlyProperty();
     }
 
-    public ReadOnlyListProperty<MethodViewModel<?>> staticMethodsProperty() {
+    public ReadOnlyListProperty<MethodViewModel> staticMethodsProperty() {
         return this.staticMethods.getReadOnlyProperty();
     }
 
@@ -35,7 +35,7 @@ public class ClassViewModel<T> extends HideableViewModel {
         return this.staticFields.getReadOnlyProperty();
     }
 
-    public ReadOnlyObjectProperty<Class<T>> valueProperty() {
+    public ReadOnlyObjectProperty<Class<?>> valueProperty() {
         return this.value.getReadOnlyProperty();
     }
 }

@@ -357,17 +357,17 @@ public class InputControl extends HBox {
     private void createObjectComboBox() {
         final ObservableList<OptionalInstance> itemsList = FXCollections.observableList(new ArrayList<>());
         itemsList.add(new OptionalInstance(Optional.empty(), "null", false));
-        for (final InstanceViewModel<?> instanceViewModel : this.inspectionViewModel.instancesProperty()) {
+        for (final InstanceViewModel instanceViewModel : this.inspectionViewModel.instancesProperty()) {
             this.addToObjectList(itemsList, instanceViewModel);
         }
 
         final ComboBox<OptionalInstance> comboBox = new SearchableComboBox<>(itemsList);
         this.currentInputControl = comboBox;
 
-        final ListChangeListener<InstanceViewModel<?>> instanceViewModelListChangeListener = change -> {
+        final ListChangeListener<InstanceViewModel> instanceViewModelListChangeListener = change -> {
             while(change.next()) {
                 final OptionalInstance selectedOptionalInstance = comboBox.getValue();
-                for (final InstanceViewModel<?> addedInstanceViewModel : change.getAddedSubList()) {
+                for (final InstanceViewModel addedInstanceViewModel : change.getAddedSubList()) {
                     final Optional<OptionalInstance> newInstance = this.addToObjectList(itemsList, addedInstanceViewModel);
                     if (selectedOptionalInstance != null
                             && selectedOptionalInstance.isNew()
@@ -377,7 +377,7 @@ public class InputControl extends HBox {
                         comboBox.setValue(newInstance.get());
                     }
                 }
-                for (final InstanceViewModel<?> removedInstanceViewModel : change.getRemoved()) {
+                for (final InstanceViewModel removedInstanceViewModel : change.getRemoved()) {
                     itemsList.remove(new OptionalInstance(Optional.of(removedInstanceViewModel.valueProperty().get()), "", false));
                 }
             }
@@ -422,7 +422,7 @@ public class InputControl extends HBox {
         this.validateComboBoxValue(comboBox.getValue());
     }
 
-    private Optional<OptionalInstance> addToObjectList(final ObservableList<OptionalInstance> itemsList, final InstanceViewModel<?> instanceViewModel) {
+    private Optional<OptionalInstance> addToObjectList(final ObservableList<OptionalInstance> itemsList, final InstanceViewModel instanceViewModel) {
         if (this.currentType.getCategory() != TypeCategory.COMPLEX
                 || this.currentType.getType().isAssignableFrom(instanceViewModel.valueProperty().get().getClass())) {
             final OptionalInstance newInstance = new OptionalInstance(Optional.of(instanceViewModel.valueProperty().get()), instanceViewModel.nameProperty().get(), false);

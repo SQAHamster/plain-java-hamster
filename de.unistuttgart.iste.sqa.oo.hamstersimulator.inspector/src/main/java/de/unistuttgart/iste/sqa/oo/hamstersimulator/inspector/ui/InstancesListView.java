@@ -6,7 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 
-public class InstancesListView extends CardListView<InstanceViewModel<?>> {
+public class InstancesListView extends CardListView<InstanceViewModel> {
 
     private final InstanceDetailControl instanceDetailControl;
 
@@ -16,7 +16,7 @@ public class InstancesListView extends CardListView<InstanceViewModel<?>> {
     }
 
     @Override
-    protected Node createCardContent(InstanceViewModel<?> item) {
+    protected Node createCardContent(InstanceViewModel item) {
         final Label label = new Label();
         label.textProperty().bind(item.nameProperty());
         label.setMaxWidth(100);
@@ -24,7 +24,7 @@ public class InstancesListView extends CardListView<InstanceViewModel<?>> {
     }
 
     @Override
-    protected Region createPopOverContent(InstanceViewModel<?> item) {
+    protected Region createPopOverContent(InstanceViewModel item) {
         this.instanceDetailControl.instanceProperty().set(item);
         return instanceDetailControl;
     }
