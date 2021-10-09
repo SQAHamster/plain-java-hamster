@@ -221,9 +221,7 @@ public class InputControl extends HBox {
         addButton.setText("+");
         addButton.managedProperty().bind(this.isNewObjectValue);
         addButton.visibleProperty().bind(this.isNewObjectValue);
-        addButton.setOnMouseClicked(event -> {
-            System.out.println("Clicked this shit");
-        });
+        //TODO handler functionality
         addButton.prefWidthProperty().bind(addButton.heightProperty());
         addButton.minWidthProperty().bind(addButton.prefWidthProperty());
         return addButton;
@@ -356,12 +354,14 @@ public class InputControl extends HBox {
 
     private void createObjectComboBox() {
         final ObservableList<OptionalInstance> itemsList = FXCollections.observableList(new ArrayList<>());
-        itemsList.add(new OptionalInstance(Optional.empty(), "null", false));
+        final OptionalInstance nullValue = new OptionalInstance(Optional.empty(), "null", false);
+        itemsList.add(nullValue);
         for (final InstanceViewModel instanceViewModel : this.inspectionViewModel.instancesProperty()) {
             this.addToObjectList(itemsList, instanceViewModel);
         }
 
         final ComboBox<OptionalInstance> comboBox = new SearchableComboBox<>(itemsList);
+        comboBox.setValue(nullValue);
         this.currentInputControl = comboBox;
 
         final ListChangeListener<InstanceViewModel> instanceViewModelListChangeListener = change -> {
