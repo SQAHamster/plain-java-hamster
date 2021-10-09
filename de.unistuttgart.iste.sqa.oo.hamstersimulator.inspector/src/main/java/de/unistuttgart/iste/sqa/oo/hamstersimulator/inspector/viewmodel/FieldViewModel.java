@@ -1,11 +1,18 @@
 package de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel;
 
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model.Type;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.EventHandler;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class FieldViewModel extends ParamViewModel {
-    private SimpleObjectProperty<Object> value;
+    private final SimpleObjectProperty<Object> value;
 
     public FieldViewModel(final String name, final Type type, final Object value) {
         super(name, type);
