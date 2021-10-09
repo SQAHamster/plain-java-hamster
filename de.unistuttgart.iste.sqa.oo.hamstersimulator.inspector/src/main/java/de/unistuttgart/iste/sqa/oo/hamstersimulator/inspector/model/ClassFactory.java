@@ -38,7 +38,7 @@ public final class ClassFactory {
     }
 
     private <T> ClassViewModel<T> createClassViewModel(Class<T> cls) {
-        return new ClassViewModel<>(cls.getName(),
+        return new ClassViewModel<>(cls.getSimpleName(),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),

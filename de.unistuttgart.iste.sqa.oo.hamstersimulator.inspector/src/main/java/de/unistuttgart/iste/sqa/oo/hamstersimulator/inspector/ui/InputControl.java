@@ -19,8 +19,6 @@ import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import org.controlsfx.control.SearchableComboBox;
-
-import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -33,7 +31,7 @@ public class InputControl extends HBox {
     private boolean changeFromInputControl = false;
     private final List<ChangeListener<?>> currentChangeListeners = new ArrayList<>();
     private final List<ListChangeListener<?>> currentListChangeListeners = new ArrayList<>();
-    private final Optional<ComboBox<Type>> multiTypeComboBox;
+    private final ComboBox<Type> multiTypeComboBox;
 
     private final InspectionViewModel inspectionViewModel;
     private final SimpleObjectProperty<Object> value = new SimpleObjectProperty<>(this, "value");
@@ -50,12 +48,12 @@ public class InputControl extends HBox {
 
         if (category == TypeCategory.OBJECT || category == TypeCategory.OPTIONAL) {
             final ComboBox<Type> multiTypeComboBox = this.createMultiTypeComboBox();
-            this.multiTypeComboBox = Optional.of(multiTypeComboBox);
+            this.multiTypeComboBox = multiTypeComboBox;
             this.getChildren().add(multiTypeComboBox);
             this.currentType = multiTypeComboBox.getValue();
         } else {
             this.currentType = type;
-            this.multiTypeComboBox = Optional.empty();
+            this.multiTypeComboBox = null;
         }
         this.createSimpleInputControl();
         this.getChildren().add(this.currentInputControl);
@@ -86,17 +84,17 @@ public class InputControl extends HBox {
                     boolean foundMatchingEnumType = false;
                     for (final Type type : this.inspectionViewModel.multiInputTypesProperty()) {
                         if (type.getCategory() == TypeCategory.ENUM && type.getType().isAssignableFrom(newType.getType())) {
-                            this.multiTypeComboBox.orElseThrow().setValue(type);
+                            this.multiTypeComboBox.setValue(type);
                             foundMatchingEnumType = true;
                             break;
                         }
                     }
                     if (!foundMatchingEnumType) {
-                        this.multiTypeComboBox.orElseThrow().setValue(Type.OBJECT_TYPE);
+                        this.multiTypeComboBox.setValue(Type.OBJECT_TYPE);
                     }
                 }
                 if (newCategory != currentCategory && currentCategory != TypeCategory.OBJECT) {
-                    this.multiTypeComboBox.orElseThrow().setValue(newType);
+                    this.multiTypeComboBox.setValue(newType);
                 }
             }
             this.onValueChanged.accept(value);
@@ -240,7 +238,7 @@ public class InputControl extends HBox {
                 this.onMultiTypeChanged(newValue);
             }
         });
-        multiTypeComboBox.setPrefWidth(100);
+        multiTypeComboBox.setPrefWidth(85);
         multiTypeComboBox.minWidthProperty().bind(multiTypeComboBox.prefWidthProperty());
         return multiTypeComboBox;
     }

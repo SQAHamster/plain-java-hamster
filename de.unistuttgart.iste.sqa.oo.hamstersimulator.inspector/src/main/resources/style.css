@@ -10,3 +10,7 @@
 .error {
     -fx-background-color: #FF000055;
 }
+
+.scroll-pane {
+    -fx-background-color: transparent
+}

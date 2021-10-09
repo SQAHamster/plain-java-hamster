@@ -71,7 +71,7 @@ public final class InstanceFactory {
 
     private FieldViewModel createInstanceFieldViewModel(final Object instance, final Field field) {
         try {
-            final FieldViewModel viewModel = new FieldViewModel(field.toGenericString(), field.getType(), field.get(instance));
+            final FieldViewModel viewModel = new FieldViewModel(field.toGenericString(), new Type(field.getType()), field.get(instance));
             viewModel.valueProperty().addListener((observable, oldValue, newValue) -> {
                 try {
                     field.set(instance, newValue);
