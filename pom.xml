@@ -41,16 +41,4 @@
         </module>
         <module>de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework</module>
     </modules>
-    
-  <distributionManagement>
-    <repository>
-      <id>github</id>
-      <name>GitHub Packages</name>
-      <url>https://maven.pkg.github.com/SQAHamster/plain-java-hamster</url>
-    </repository>
-  </distributionManagement>
-
-  <scm>
-    <developerConnection>scm:git:https://github.com/SQAHamster/plain-java-hamster.git</developerConnection>
-  </scm>
 </project>
