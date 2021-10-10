@@ -9,16 +9,14 @@
 	</scm>
 
 	<distributionManagement>
-		<repository>
-			<id>nexus</id>
-			<name>Maven Central</name>
-			<url>http://localhost:8081/repository/maven-releases/</url>  
-		</repository>
-		<snapshotRepository>
-			<id>nexus</id>
-			<name>Maven Central</name>
-			<url>http://localhost:8081/repository/maven-snapshots/</url>  
-		</snapshotRepository>
+	<snapshotRepository>
+		<id>ossrh</id>
+		<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+	</snapshotRepository>
+	<repository>
+		<id>ossrh</id>
+		<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+	</repository>
 	</distributionManagement>
 	  
 	<properties>
