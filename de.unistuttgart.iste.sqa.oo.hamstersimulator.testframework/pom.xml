@@ -7,7 +7,7 @@
 
     <parent>
         <artifactId>parent</artifactId>
-        <groupId>de.unistuttgart.iste.sqa.oo.hamstersimulator</groupId>
+        <groupId>de.hamstersimulator.objectsfirst</groupId>
         <version>3.1.8-SNAPSHOT</version>
         <relativePath>../de.unistuttgart.iste.sqa.oo.hamstersimulator.parent/pom.xml</relativePath>
     </parent>

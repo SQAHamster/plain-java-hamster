@@ -5,7 +5,7 @@
     <name>Hamstersimulator Http Server</name>
 
     <parent>
-        <groupId>de.unistuttgart.iste.sqa.oo.hamstersimulator</groupId>
+        <groupId>de.hamstersimulator.objectsfirst</groupId>
         <artifactId>parent</artifactId>
         <version>3.1.8-SNAPSHOT</version>
         <relativePath>../de.unistuttgart.iste.sqa.oo.hamstersimulator.parent</relativePath>
@@ -23,7 +23,7 @@
             <version>3.1.8-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>de.unistuttgart.iste.sqa.oo.hamstersimulator</groupId>
+            <groupId>de.hamstersimulator.objectsfirst</groupId>
             <artifactId>core</artifactId>
             <version>3.1.8-SNAPSHOT</version>
         </dependency>
