@@ -28,7 +28,9 @@ public class Type {
 
     @Override
     public String toString() {
-        if (this.category != TypeCategory.ENUM) {
+        if (this.category == TypeCategory.COMPLEX) {
+            return this.type.getSimpleName();
+        } else if (this.category != TypeCategory.ENUM) {
             return this.category.toString();
         } else {
             return "Enum: " + this.type.getSimpleName();

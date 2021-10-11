@@ -45,7 +45,7 @@ public final class ClassFactory {
     }
 
     private ClassViewModel createClassViewModel(Class<?> cls) {
-        return new ClassViewModel(cls.getName(),
+        return new ClassViewModel(cls.getSimpleName(),
                 Arrays.stream(cls.getConstructors())
                         .filter(AccessibleObject::trySetAccessible)
                         .map(this::createConstructorViewModel)

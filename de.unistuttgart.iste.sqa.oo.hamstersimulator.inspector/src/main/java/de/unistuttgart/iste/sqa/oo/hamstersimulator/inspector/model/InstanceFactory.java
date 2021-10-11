@@ -3,16 +3,15 @@ package de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel.*;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class InstanceFactory {
 
@@ -22,7 +21,7 @@ public final class InstanceFactory {
     public InstanceFactory(final InspectionViewModel viewModel) {
         this.viewModel = viewModel;
         viewModel.instancesProperty().addListener((ListChangeListener<InstanceViewModel>) change -> {
-            while(change.next()) {
+            while (change.next()) {
                 for (final InstanceViewModel addedInfo : change.getAddedSubList()) {
                     this.instanceViewModelLookup.put(addedInfo.valueProperty().get(), addedInfo);
                 }
@@ -45,14 +44,42 @@ public final class InstanceFactory {
                         .filter(method -> Modifier.isPublic(method.getModifiers())) //TODO improve this check
                         .map(method -> this.createInstanceMethodViewModel(obj, method))
                         .collect(Collectors.toList()),
+                this.createSuperclassMethodViewModels(obj.getClass(), obj),
                 Arrays.stream(obj.getClass().getDeclaredFields())
                         .filter(field -> !Modifier.isStatic(field.getModifiers()))
                         .filter(field -> Modifier.isPublic(field.getModifiers())) //TODO improve this check
                         .map(field -> this.createInstanceFieldViewModel(obj, field))
                         .collect(Collectors.toList()),
+                this.createSuperclassFieldViewModels(obj.getClass(), obj),
                 obj);
         this.viewModel.instancesProperty().add(newInstance);
         return newInstance;
+    }
+
+    private List<MethodViewModel> createSuperclassMethodViewModels(final Class<?> cls, final Object obj) {
+        Class<?> superclass = cls.getSuperclass();
+        if (superclass == null) {
+            return Collections.emptyList();
+        }
+        return Stream.concat(Arrays.stream(superclass.getDeclaredMethods())
+                                .filter(method -> !Modifier.isStatic(method.getModifiers()))
+                                .filter(method -> Modifier.isPublic(method.getModifiers())) //TODO improve this check
+                                .map(method -> this.createInstanceMethodViewModel(obj, method)),
+                        this.createSuperclassMethodViewModels(superclass, obj).stream())
+                .collect(Collectors.toList());
+    }
+
+    private List<FieldViewModel> createSuperclassFieldViewModels(final Class<?> cls, final Object obj) {
+        Class<?> superclass = cls.getSuperclass();
+        if (superclass == null) {
+            return Collections.emptyList();
+        }
+        return Stream.concat(Arrays.stream(obj.getClass().getDeclaredFields())
+                                .filter(field -> !Modifier.isStatic(field.getModifiers()))
+                                .filter(field -> Modifier.isPublic(field.getModifiers())) //TODO improve this check
+                                .map(field -> this.createInstanceFieldViewModel(obj, field)),
+                        this.createSuperclassFieldViewModels(superclass, obj).stream())
+                .collect(Collectors.toList());
     }
 
     private MethodViewModel createInstanceMethodViewModel(final Object instance, final Method method) {
