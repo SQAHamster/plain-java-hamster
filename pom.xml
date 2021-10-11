@@ -31,7 +31,7 @@
             de.hamstersimulator.objectsfirst.server
         </module>
         <module>
-            de.unistuttgart.iste.sqa.utils
+            de.hamstersimulator.objectsfirst.utils
         </module>
         <module>
             de.hamstersimulator.objectsfirst.examples

@@ -12,7 +12,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>de.unistuttgart.iste.sqa</groupId>
+			<groupId>de.hamstersimulator.objectsfirst</groupId>
 			<artifactId>utils</artifactId>
 			<version>3.1.8-SNAPSHOT</version>
 		</dependency>
