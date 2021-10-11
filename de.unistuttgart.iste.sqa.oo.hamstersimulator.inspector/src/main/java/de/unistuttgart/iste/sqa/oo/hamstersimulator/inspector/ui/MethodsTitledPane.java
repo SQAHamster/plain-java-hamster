@@ -2,18 +2,21 @@ package de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.ui;
 
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel.MethodViewModel;
 import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel.InspectionViewModel;
+import de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.viewmodel.ParamViewModel;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class MethodsTitledPane extends TitledPane {
 
@@ -42,7 +45,18 @@ public class MethodsTitledPane extends TitledPane {
             nameLabel.textProperty().bind(method.nameProperty());
             this.contentGrid.add(nameLabel, 0, i);
             final Button callButton = new Button("Call");
-            //TODO listener
+            callButton.setOnMouseClicked(e -> {
+                final CallMethodDialog dialog = new CallMethodDialog(method, this.inspectionViewModel);
+                dialog.setWidth(400);
+                final boolean needsInput = !method.paramsProperty().get().isEmpty();
+                final Optional<List<Object>> values = needsInput
+                        ? new CallMethodDialog(method, this.inspectionViewModel).showAndWait()
+                        : Optional.of(Collections.emptyList());
+                if (values.isPresent()) {
+                    final Object result = method.call(values.get());
+                    new ResultDialog(result, this.inspectionViewModel).showAndWait();
+                }
+            });
             this.contentGrid.add(callButton, 1, i);
         }
         if (methods.isEmpty()) {

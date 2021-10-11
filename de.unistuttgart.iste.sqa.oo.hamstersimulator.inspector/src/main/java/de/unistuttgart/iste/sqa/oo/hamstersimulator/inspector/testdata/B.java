@@ -19,4 +19,8 @@ public class B implements A {
     public String testing() {
         return "Hello world";
     }
+
+    public void writeString(final String value, int testing) {
+        System.out.println(value);
+    }
 }

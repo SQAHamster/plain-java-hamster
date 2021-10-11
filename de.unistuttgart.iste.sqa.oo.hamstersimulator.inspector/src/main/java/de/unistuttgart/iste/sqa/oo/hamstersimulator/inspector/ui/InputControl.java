@@ -13,10 +13,8 @@ import javafx.beans.value.WeakChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Control;
-import javafx.scene.control.TextField;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import org.controlsfx.control.SearchableComboBox;
 import java.util.*;
@@ -37,6 +35,7 @@ public class InputControl extends HBox {
     private final SimpleObjectProperty<Object> value = new SimpleObjectProperty<>(this, "value");
     private final SimpleBooleanProperty isValid = new SimpleBooleanProperty(this, "isValid");
     private final SimpleBooleanProperty isNewObjectValue = new SimpleBooleanProperty(this, "isNewObjectValue", false);
+    private final SimpleBooleanProperty isReadOnly = new SimpleBooleanProperty(this, "isReadOnly", false);
 
     public InputControl(final Type type, final InspectionViewModel hamsterUI) {
         this.type = type;
@@ -51,14 +50,23 @@ public class InputControl extends HBox {
             this.multiTypeComboBox = multiTypeComboBox;
             this.getChildren().add(multiTypeComboBox);
             this.currentType = multiTypeComboBox.getValue();
+            this.isReadOnly.addListener((observable, oldValue, newValue) -> {
+                this.createSimpleInputControl();
+                this.getChildren().set(1, this.currentInputControl);
+            });
         } else {
             this.currentType = type;
             this.multiTypeComboBox = null;
+            this.isReadOnly.addListener((observable, oldValue, newValue) -> {
+                this.createSimpleInputControl();
+                this.getChildren().set(0, this.currentInputControl);
+            });
         }
         this.createSimpleInputControl();
         this.getChildren().add(this.currentInputControl);
         this.getChildren().add(this.createAddObjectButton());
         this.setSpacing(5);
+        this.setAlignment(Pos.CENTER);
     }
 
     public ObjectProperty<Object> valueProperty() {
@@ -67,6 +75,10 @@ public class InputControl extends HBox {
 
     public BooleanProperty isValidProperty() {
         return this.isValid;
+    }
+
+    public BooleanProperty isReadOnlyProperty() {
+        return this.isReadOnly;
     }
 
     private void handleValueChanged(Object value) {
@@ -221,7 +233,9 @@ public class InputControl extends HBox {
         addButton.setText("+");
         addButton.managedProperty().bind(this.isNewObjectValue);
         addButton.visibleProperty().bind(this.isNewObjectValue);
-        //TODO handler functionality
+        addButton.setOnMouseClicked(e -> {
+            AddInstanceDialogWrapper.showAndWait(this.inspectionViewModel, this.value.get());
+        });
         addButton.prefWidthProperty().bind(addButton.heightProperty());
         addButton.minWidthProperty().bind(addButton.prefWidthProperty());
         return addButton;
@@ -238,6 +252,7 @@ public class InputControl extends HBox {
         });
         multiTypeComboBox.setPrefWidth(85);
         multiTypeComboBox.minWidthProperty().bind(multiTypeComboBox.prefWidthProperty());
+        multiTypeComboBox.managedProperty().bind(this.isReadOnly.not());
         return multiTypeComboBox;
     }
 
@@ -260,13 +275,47 @@ public class InputControl extends HBox {
         this.currentChangeListeners.clear();
         this.currentListChangeListeners.clear();
         final TypeCategory category = this.currentType.getCategory();
-        switch (category) {
-            case ENUM -> this.createEnumComboBox();
-            case BOOLEAN -> this.createBooleanComboBox();
-            case OBJECT, COMPLEX -> this.createObjectComboBox();
-            default -> this.createTextField();
+        if (this.isReadOnly.get()) {
+            this.createReadOnlyLabel();
+        } else {
+            switch (category) {
+                case ENUM -> this.createEnumComboBox();
+                case BOOLEAN -> this.createBooleanComboBox();
+                case OBJECT, COMPLEX -> this.createObjectComboBox();
+                default -> this.createTextField();
+            }
         }
         this.currentInputControl.setPrefWidth(1000);
+    }
+
+    private void createReadOnlyLabel() {
+        final Label label = new Label();
+        this.onValueChanged = (value) -> {
+            if (value != null) {
+                switch (this.currentType.getCategory()) {
+                    case OBJECT, COMPLEX -> {
+                        final Optional<InstanceViewModel> instanceViewModel = this.inspectionViewModel.getViewModelForObject(value);
+                        if (instanceViewModel.isPresent()) {
+                            instanceViewModel.get().nameProperty().get();
+                            this.isNewObjectValue.set(false);
+                        } else {
+                            label.setText("«new»");
+                            this.isNewObjectValue.set(true);
+                        }
+                    }
+                    case ENUM -> {
+                        label.setText(((Enum<?>)value).name());
+                    }
+                    default -> {
+                        label.setText(value.toString());
+                    }
+                }
+            } else {
+                label.setText("null");
+            }
+        };
+        this.currentInputControl = label;
+        this.onValueChanged.accept(this.value.get());
     }
 
     private void createTextField() {
@@ -412,7 +461,7 @@ public class InputControl extends HBox {
                 if (newValue.instance().isEmpty()) {
                     this.setValue(null);
                 } else {
-                    this.setValue(newValue);
+                    this.setValue(newValue.instance().get());
                 }
                 this.isNewObjectValue.set(newValue.isNew());
             }
