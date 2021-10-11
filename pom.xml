@@ -6,7 +6,7 @@
         <groupId>de.hamstersimulator.objectsfirst</groupId>
         <artifactId>parent</artifactId>
         <version>3.1.8-SNAPSHOT</version>
-        <relativePath>./de.unistuttgart.iste.sqa.oo.hamstersimulator.parent/pom.xml</relativePath>
+        <relativePath>./de.hamstersimulator.objectsfirst.parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>root</artifactId>
@@ -16,29 +16,29 @@
 
     <modules>
         <module>
-            de.unistuttgart.iste.sqa.oo.hamstersimulator.parent
+            de.hamstersimulator.objectsfirst.parent
         </module>
         <module>
-            de.unistuttgart.iste.sqa.oo.hamstersimulator.core
+            de.hamstersimulator.objectsfirst.core
         </module>
         <module>
-            de.unistuttgart.iste.sqa.oo.hamstersimulator.main
+            de.hamstersimulator.objectsfirst.main
         </module>
         <module>
-            de.unistuttgart.iste.sqa.oo.hamstersimulator.ui
+            de.hamstersimulator.objectsfirst.ui
         </module>
         <module>
-            de.unistuttgart.iste.sqa.oo.hamstersimulator.server
+            de.hamstersimulator.objectsfirst.server
         </module>
         <module>
             de.unistuttgart.iste.sqa.utils
         </module>
         <module>
-            de.unistuttgart.iste.sqa.oo.hamstersimulator.examples
+            de.hamstersimulator.objectsfirst.examples
         </module>
         <module>
-            de.unistuttgart.iste.sqa.oo.hamstersimulator.config
+            de.hamstersimulator.objectsfirst.config
         </module>
-        <module>de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework</module>
+        <module>de.hamstersimulator.objectsfirst.testframework</module>
     </modules>
 </project>

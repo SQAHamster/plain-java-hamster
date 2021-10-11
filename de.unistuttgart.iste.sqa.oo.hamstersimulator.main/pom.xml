@@ -9,7 +9,7 @@
 		<groupId>de.hamstersimulator.objectsfirst</groupId>
 		<artifactId>parent</artifactId>
 		<version>3.1.8-SNAPSHOT</version>
-		<relativePath>../de.unistuttgart.iste.sqa.oo.hamstersimulator.parent</relativePath>
+		<relativePath>../de.hamstersimulator.objectsfirst.parent</relativePath>
 	</parent>
 
 	<build>
@@ -49,28 +49,28 @@
 		</dependency>
 		<dependency>
 			<groupId>
-				de.unistuttgart.iste.sqa.oo.hamstersimulator
+				de.hamstersimulator.objectsfirst
 			</groupId>
 			<artifactId>core</artifactId>
 			<version>3.1.8-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>
-				de.unistuttgart.iste.sqa.oo.hamstersimulator
+				de.hamstersimulator.objectsfirst
 			</groupId>
 			<artifactId>ui</artifactId>
 			<version>3.1.8-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>
-				de.unistuttgart.iste.sqa.oo.hamstersimulator
+				de.hamstersimulator.objectsfirst
 			</groupId>
 			<artifactId>config</artifactId>
 			<version>3.1.8-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>
-				de.unistuttgart.iste.sqa.oo.hamstersimulator
+				de.hamstersimulator.objectsfirst
 			</groupId>
 			<artifactId>server</artifactId>
 			<version>3.1.8-SNAPSHOT</version>

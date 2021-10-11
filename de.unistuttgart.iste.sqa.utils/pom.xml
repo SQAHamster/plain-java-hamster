@@ -10,6 +10,6 @@
         <groupId>de.hamstersimulator.objectsfirst</groupId>
         <artifactId>parent</artifactId>
         <version>3.1.8-SNAPSHOT</version>
-        <relativePath>../de.unistuttgart.iste.sqa.oo.hamstersimulator.parent</relativePath>
+        <relativePath>../de.hamstersimulator.objectsfirst.parent</relativePath>
     </parent>
 </project>
