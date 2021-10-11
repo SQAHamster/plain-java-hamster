@@ -1,22 +1,22 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory;
+package de.hamstersimulator.objectsfirst.internal.model.territory;
 
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CompositeCommand;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Size;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.EditorHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.command.specification.AddGrainsToTileCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.command.specification.AddWallToTileCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.command.specification.ClearTileCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.command.specification.InitDefaultHamsterCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.command.specification.InitializeTerritoryCommandSpecification;
-import de.unistuttgart.iste.sqa.utils.LambdaVisitor;
+import de.hamstersimulator.objectsfirst.commands.Command;
+import de.hamstersimulator.objectsfirst.commands.CommandSpecification;
+import de.hamstersimulator.objectsfirst.commands.CompositeCommand;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.datatypes.Size;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.EditorHamster;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.ReadOnlyHamster;
+import de.hamstersimulator.objectsfirst.internal.model.territory.command.specification.AddGrainsToTileCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.territory.command.specification.AddWallToTileCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.territory.command.specification.ClearTileCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.territory.command.specification.InitDefaultHamsterCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.territory.command.specification.InitializeTerritoryCommandSpecification;
+import de.hamstersimulator.objectsfirst.utils.LambdaVisitor;
 
 public class EditorTerritory extends ReadOnlyTerritory {
 

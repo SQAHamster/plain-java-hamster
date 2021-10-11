@@ -1,15 +1,15 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.http.server;
+package de.hamstersimulator.objectsfirst.server.http.server;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Mode;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.AbortInputOperation;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.Operation;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.clienttoserver.SpeedChangedOperation;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.clienttoserver.*;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.servertoclient.*;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.delta.Delta;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.GameState;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.input.InputMessage;
-import de.unistuttgart.iste.sqa.utils.LambdaVisitor;
+import de.hamstersimulator.objectsfirst.datatypes.Mode;
+import de.hamstersimulator.objectsfirst.server.communication.AbortInputOperation;
+import de.hamstersimulator.objectsfirst.server.communication.Operation;
+import de.hamstersimulator.objectsfirst.server.communication.clienttoserver.SpeedChangedOperation;
+import de.hamstersimulator.objectsfirst.server.communication.clienttoserver.*;
+import de.hamstersimulator.objectsfirst.server.communication.servertoclient.*;
+import de.hamstersimulator.objectsfirst.server.datatypes.delta.Delta;
+import de.hamstersimulator.objectsfirst.server.datatypes.GameState;
+import de.hamstersimulator.objectsfirst.server.input.InputMessage;
+import de.hamstersimulator.objectsfirst.utils.LambdaVisitor;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -22,7 +22,7 @@ import java.util.UUID;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.*;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.*;
 
 /**
  * A session represents a HamsterGame from the server's point of perspective

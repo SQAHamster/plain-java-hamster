@@ -1,6 +1,6 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter;
+package de.hamstersimulator.objectsfirst.adapter;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Mode;
+import de.hamstersimulator.objectsfirst.datatypes.Mode;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;

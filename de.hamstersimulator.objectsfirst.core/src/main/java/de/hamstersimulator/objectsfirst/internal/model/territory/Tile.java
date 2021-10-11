@@ -1,16 +1,16 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory;
+package de.hamstersimulator.objectsfirst.internal.model.territory;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableTerritory;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableTile;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTerritory;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.ReadOnlyHamster;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTile;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;

@@ -3,4 +3,4 @@
  * @author Steffen Becker
  *
  */
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.main.tests;
+package de.hamstersimulator.objectsfirst.main.tests;

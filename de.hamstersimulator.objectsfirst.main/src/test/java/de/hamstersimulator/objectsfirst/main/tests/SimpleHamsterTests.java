@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.main.tests;
+package de.hamstersimulator.objectsfirst.main.tests;
 
 import static java.time.Duration.ofMillis;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,16 +13,16 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.mockito.Mockito;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.InputInterface;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.LocationVector;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Mode;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.exceptions.FrontBlockedException;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.exceptions.MouthEmptyException;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.exceptions.NoGrainOnTileException;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.Hamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.HamsterGame;
+import de.hamstersimulator.objectsfirst.adapter.InputInterface;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.datatypes.LocationVector;
+import de.hamstersimulator.objectsfirst.datatypes.Mode;
+import de.hamstersimulator.objectsfirst.exceptions.FrontBlockedException;
+import de.hamstersimulator.objectsfirst.exceptions.MouthEmptyException;
+import de.hamstersimulator.objectsfirst.exceptions.NoGrainOnTileException;
+import de.hamstersimulator.objectsfirst.external.model.Hamster;
+import de.hamstersimulator.objectsfirst.external.model.HamsterGame;
 
 /**
  * Simple tests for the hamster API.

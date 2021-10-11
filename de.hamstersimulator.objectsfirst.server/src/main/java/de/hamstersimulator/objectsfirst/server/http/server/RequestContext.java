@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.http.server;
+package de.hamstersimulator.objectsfirst.server.http.server;
 
 import com.sun.net.httpserver.HttpExchange;
 
@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
 
 /**
  * Wrapper for a HTTP request which provides the query parameters

@@ -1,6 +1,6 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.commands;
+package de.hamstersimulator.objectsfirst.commands;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.ObservableCommandSpecification;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.ObservableCommandSpecification;
 
 public interface CommandSpecification extends Cloneable, ObservableCommandSpecification {
 }

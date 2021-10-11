@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification;
+package de.hamstersimulator.objectsfirst.adapter.observables.command.specification;
 
 /**
  * Read-only command specification, base interface for all other ObservableCommandSpecifications

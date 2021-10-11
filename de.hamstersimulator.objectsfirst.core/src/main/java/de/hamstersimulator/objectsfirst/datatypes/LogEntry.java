@@ -1,9 +1,9 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes;
+package de.hamstersimulator.objectsfirst.datatypes;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableLogEntry;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.GameHamster;
-import de.unistuttgart.iste.sqa.utils.Preconditions;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableLogEntry;
+import de.hamstersimulator.objectsfirst.commands.CommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.GameHamster;
+import de.hamstersimulator.objectsfirst.utils.Preconditions;
 
 /**
  * A log entry object represents a log message of the
@@ -64,7 +64,7 @@ public class LogEntry implements ObservableLogEntry {
     /**
      * The command specification that caused this log entry to be generated.
      *
-     * @return An instance of a {@link de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CommandSpecification}
+     * @return An instance of a {@link de.hamstersimulator.objectsfirst.commands.CommandSpecification}
      *         which describes the event this log message represents (it also caused this LogEntry).
      *         This won't be null
      */

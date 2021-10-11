@@ -1,12 +1,12 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.http.server;
+package de.hamstersimulator.objectsfirst.server.http.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkArgument;
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkArgument;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
 
 /**
  * Base class for the HamsterHTTPServer, handles the session management and accepts new clients

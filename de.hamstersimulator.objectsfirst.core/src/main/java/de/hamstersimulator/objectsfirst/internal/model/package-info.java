@@ -5,4 +5,4 @@
  * @author snowball
  *
  */
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model;
+package de.hamstersimulator.objectsfirst.internal.model;

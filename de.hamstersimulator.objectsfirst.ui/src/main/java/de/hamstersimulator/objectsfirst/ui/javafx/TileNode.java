@@ -1,12 +1,12 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.javafx;
+package de.hamstersimulator.objectsfirst.ui.javafx;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableTile;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableTileContent;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableHamster;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTile;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTileContent;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ListChangeListener;
 import javafx.scene.image.Image;

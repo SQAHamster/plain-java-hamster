@@ -1,21 +1,21 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model;
+package de.hamstersimulator.objectsfirst.external.model;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Mode;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Size;
+import de.hamstersimulator.objectsfirst.commands.Command;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.datatypes.Mode;
+import de.hamstersimulator.objectsfirst.datatypes.Size;
 
 public class TerritoryBuilder {
-    private final de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.TerritoryBuilder decoratedBuilder;
+    private final de.hamstersimulator.objectsfirst.internal.model.territory.TerritoryBuilder decoratedBuilder;
 
     private TerritoryBuilder(
-            final de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.TerritoryBuilder internalBuilder) {
+            final de.hamstersimulator.objectsfirst.internal.model.territory.TerritoryBuilder internalBuilder) {
         this.decoratedBuilder = internalBuilder;
     }
 
     static TerritoryBuilder getTerritoryBuilderForTerritory(final Territory territory) {
-        var internalBuilder = de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.TerritoryBuilder
+        var internalBuilder = de.hamstersimulator.objectsfirst.internal.model.territory.TerritoryBuilder
                 .getTerritoryBuilderForTerritory(territory.getInternalTerritory());
         internalBuilder.addPreconditionCreator(builder -> {
             builder.addNewPrecondition(IllegalStateException::new,
@@ -27,7 +27,7 @@ public class TerritoryBuilder {
     /**
      * @param size
      * @return
-     * @see de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.TerritoryBuilder#initializeTerritory(de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Size)
+     * @see de.hamstersimulator.objectsfirst.internal.model.territory.TerritoryBuilder#initializeTerritory(de.hamstersimulator.objectsfirst.datatypes.Size)
      */
     public TerritoryBuilder initializeTerritory(Size size) {
         decoratedBuilder.initializeTerritory(size);
@@ -37,7 +37,7 @@ public class TerritoryBuilder {
     /**
      * @param location
      * @return
-     * @see de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.TerritoryBuilder#wallAt(de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location)
+     * @see de.hamstersimulator.objectsfirst.internal.model.territory.TerritoryBuilder#wallAt(de.hamstersimulator.objectsfirst.datatypes.Location)
      */
     public TerritoryBuilder wallAt(Location location) {
         decoratedBuilder.wallAt(location);
@@ -49,7 +49,7 @@ public class TerritoryBuilder {
      * @param direction
      * @param grainCount
      * @return
-     * @see de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.TerritoryBuilder#defaultHamsterAt(de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location, de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction, int)
+     * @see de.hamstersimulator.objectsfirst.internal.model.territory.TerritoryBuilder#defaultHamsterAt(de.hamstersimulator.objectsfirst.datatypes.Location, de.hamstersimulator.objectsfirst.datatypes.Direction, int)
      */
     public TerritoryBuilder defaultHamsterAt(Location location, Direction direction, int grainCount) {
         decoratedBuilder.defaultHamsterAt(location, direction, grainCount);
@@ -60,7 +60,7 @@ public class TerritoryBuilder {
      * @param location
      * @param grainCount
      * @return
-     * @see de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.TerritoryBuilder#grainAt(de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location, int)
+     * @see de.hamstersimulator.objectsfirst.internal.model.territory.TerritoryBuilder#grainAt(de.hamstersimulator.objectsfirst.datatypes.Location, int)
      */
     public TerritoryBuilder grainAt(Location location, int grainCount) {
         decoratedBuilder.grainAt(location, grainCount);
@@ -70,7 +70,7 @@ public class TerritoryBuilder {
     /**
      * @param location
      * @return
-     * @see de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.TerritoryBuilder#grainAt(de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location)
+     * @see de.hamstersimulator.objectsfirst.internal.model.territory.TerritoryBuilder#grainAt(de.hamstersimulator.objectsfirst.datatypes.Location)
      */
     public TerritoryBuilder grainAt(Location location) {
         decoratedBuilder.grainAt(location);
@@ -79,7 +79,7 @@ public class TerritoryBuilder {
 
     /**
      * @return
-     * @see de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.TerritoryBuilder#build()
+     * @see de.hamstersimulator.objectsfirst.internal.model.territory.TerritoryBuilder#build()
      */
     public Command build() {
         return decoratedBuilder.build();

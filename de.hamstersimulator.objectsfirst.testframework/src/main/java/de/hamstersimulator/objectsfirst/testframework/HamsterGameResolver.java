@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework;
+package de.hamstersimulator.objectsfirst.testframework;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
@@ -9,8 +9,8 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.SimpleHamsterGame;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamestate.RecordingHamsterGameTestEnvironment;
+import de.hamstersimulator.objectsfirst.external.model.SimpleHamsterGame;
+import de.hamstersimulator.objectsfirst.testframework.gamestate.RecordingHamsterGameTestEnvironment;
 
 /**
  * Parameter resolver which can resolve HamsterGameTestEnvironment (and supported subclasses) parameters.

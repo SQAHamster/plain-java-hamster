@@ -1,9 +1,9 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.clienttoserver;
+package de.hamstersimulator.objectsfirst.server.communication.clienttoserver;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Mode;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.Operation;
+import de.hamstersimulator.objectsfirst.datatypes.Mode;
+import de.hamstersimulator.objectsfirst.server.communication.Operation;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
 
 /**
  * Operation to notify the client that the mode changed

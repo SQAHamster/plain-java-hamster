@@ -1,11 +1,11 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.clienttoserver;
+package de.hamstersimulator.objectsfirst.server.communication.clienttoserver;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.Operation;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.delta.Delta;
+import de.hamstersimulator.objectsfirst.server.communication.Operation;
+import de.hamstersimulator.objectsfirst.server.datatypes.delta.Delta;
 
 import java.util.List;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
 
 /**
  * Operation to notify the server that a list of deltas should be added to the deltasList

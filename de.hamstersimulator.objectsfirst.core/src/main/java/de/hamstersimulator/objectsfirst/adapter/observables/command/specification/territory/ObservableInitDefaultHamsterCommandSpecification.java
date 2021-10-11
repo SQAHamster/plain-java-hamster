@@ -1,6 +1,6 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.territory;
+package de.hamstersimulator.objectsfirst.adapter.observables.command.specification.territory;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
 
 /**
  * observable version of command specification used to init the default hamster at a specific location and direction

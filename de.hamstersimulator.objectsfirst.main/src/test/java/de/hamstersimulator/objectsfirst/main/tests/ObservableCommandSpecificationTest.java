@@ -1,13 +1,13 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.main.tests;
+package de.hamstersimulator.objectsfirst.main.tests;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.HamsterGameViewModel;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableLogEntry;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.ObservableCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableMoveCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservablePutGrainCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableTurnLeftCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableWriteCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.Hamster;
+import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableLogEntry;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.ObservableCommandSpecification;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster.ObservableMoveCommandSpecification;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster.ObservablePutGrainCommandSpecification;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster.ObservableTurnLeftCommandSpecification;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster.ObservableWriteCommandSpecification;
+import de.hamstersimulator.objectsfirst.external.model.Hamster;
 import javafx.beans.property.ReadOnlyListProperty;
 import org.junit.jupiter.api.Test;
 

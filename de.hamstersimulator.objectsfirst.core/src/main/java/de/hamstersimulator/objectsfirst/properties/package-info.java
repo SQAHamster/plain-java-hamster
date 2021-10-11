@@ -5,4 +5,4 @@
  * @author snowball
  *
  */
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.properties;
+package de.hamstersimulator.objectsfirst.properties;

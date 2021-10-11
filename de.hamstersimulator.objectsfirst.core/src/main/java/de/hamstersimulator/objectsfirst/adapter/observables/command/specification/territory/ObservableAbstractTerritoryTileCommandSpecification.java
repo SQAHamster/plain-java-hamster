@@ -1,7 +1,7 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.territory;
+package de.hamstersimulator.objectsfirst.adapter.observables.command.specification.territory;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.ObservableCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.ObservableCommandSpecification;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
 
 /**
  * Base interface for all ObservableCommandSpecifications that need a location, like

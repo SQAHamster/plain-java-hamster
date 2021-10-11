@@ -1,13 +1,13 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables;
+package de.hamstersimulator.objectsfirst.adapter.observables;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Size;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.datatypes.Size;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 
 import java.util.List;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkArgument;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkArgument;
 
 /**
  * Interface to observe changes on the internal territory

@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamestate;
+package de.hamstersimulator.objectsfirst.testframework.gamestate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,11 +10,11 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.LocationVector;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.HamsterGameResolver;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.HamsterTest;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableHamster;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.datatypes.LocationVector;
+import de.hamstersimulator.objectsfirst.testframework.HamsterGameResolver;
+import de.hamstersimulator.objectsfirst.testframework.HamsterTest;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
@@ -25,7 +25,7 @@ import javafx.collections.ObservableList;
  * of the hamster on the territory.
  * @author Steffen Becker
  */
-@HamsterTest(game = "de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamestate.TestSimpleHamsterGame")
+@HamsterTest(game = "de.hamstersimulator.objectsfirst.testframework.gamestate.TestSimpleHamsterGame")
 @ExtendWith(HamsterGameResolver.class)
 public final class RecordingHamsterGameTestEnvironmentTest {
 

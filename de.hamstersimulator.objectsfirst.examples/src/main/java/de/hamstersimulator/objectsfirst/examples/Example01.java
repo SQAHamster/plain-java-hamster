@@ -1,6 +1,6 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.examples;
+package de.hamstersimulator.objectsfirst.examples;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.javafx.JavaFXUI;
+import de.hamstersimulator.objectsfirst.ui.javafx.JavaFXUI;
 
 /**
  * First hamster program used in lecture 2. The initial version used the predefined reference to

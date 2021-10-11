@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.config;
+package de.hamstersimulator.objectsfirst.config;
 
 import com.google.gson.Gson;
 

@@ -1,7 +1,7 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory;
+package de.hamstersimulator.objectsfirst.internal.model.territory;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkArgument;
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkArgument;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Size;
+import de.hamstersimulator.objectsfirst.commands.Command;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.datatypes.Size;
 
 public class TerritoryLoader {
 

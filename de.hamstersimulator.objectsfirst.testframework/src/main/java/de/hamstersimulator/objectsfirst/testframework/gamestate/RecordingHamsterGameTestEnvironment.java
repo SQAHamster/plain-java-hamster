@@ -1,12 +1,12 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamestate;
+package de.hamstersimulator.objectsfirst.testframework.gamestate;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.HamsterGameViewModel;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableLogEntry;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableTerritory;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.ObservableCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.SimpleHamsterGame;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.HamsterGameTestEnvironment;
-import de.unistuttgart.iste.sqa.utils.Preconditions;
+import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableLogEntry;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTerritory;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.ObservableCommandSpecification;
+import de.hamstersimulator.objectsfirst.external.model.SimpleHamsterGame;
+import de.hamstersimulator.objectsfirst.testframework.HamsterGameTestEnvironment;
+import de.hamstersimulator.objectsfirst.utils.Preconditions;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.collections.FXCollections;

@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter;
+package de.hamstersimulator.objectsfirst.adapter;
 
 import java.util.Optional;
 

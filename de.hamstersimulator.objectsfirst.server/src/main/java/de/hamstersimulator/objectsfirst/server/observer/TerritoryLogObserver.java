@@ -1,10 +1,10 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.observer;
+package de.hamstersimulator.objectsfirst.server.observer;
 
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.*;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.delta.*;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.type.TileContentType;
+import de.hamstersimulator.objectsfirst.adapter.observables.*;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.server.datatypes.delta.*;
+import de.hamstersimulator.objectsfirst.server.datatypes.type.TileContentType;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.*;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.*;
 
 /**
  * Observes changes on the provided territory and log, creates deltas which represent

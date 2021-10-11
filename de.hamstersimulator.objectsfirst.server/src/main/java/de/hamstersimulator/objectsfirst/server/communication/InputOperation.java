@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication;
+package de.hamstersimulator.objectsfirst.server.communication;
 
 /**
  * Base class for all input operations

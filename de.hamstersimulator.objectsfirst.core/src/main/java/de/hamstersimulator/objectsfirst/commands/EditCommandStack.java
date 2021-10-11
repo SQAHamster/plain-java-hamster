@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.commands;
+package de.hamstersimulator.objectsfirst.commands;
 
 public class EditCommandStack extends CommandStack {
 

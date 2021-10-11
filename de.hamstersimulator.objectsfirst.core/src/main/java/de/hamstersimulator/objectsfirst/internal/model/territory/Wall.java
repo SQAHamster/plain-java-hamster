@@ -1,6 +1,6 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory;
+package de.hamstersimulator.objectsfirst.internal.model.territory;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableWall;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableWall;
 
 public class Wall extends TileContent implements ObservableWall {
 

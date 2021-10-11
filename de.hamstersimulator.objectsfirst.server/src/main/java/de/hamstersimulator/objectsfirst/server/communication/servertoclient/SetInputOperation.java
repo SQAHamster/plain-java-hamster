@@ -1,8 +1,8 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.servertoclient;
+package de.hamstersimulator.objectsfirst.server.communication.servertoclient;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.InputOperation;
+import de.hamstersimulator.objectsfirst.server.communication.InputOperation;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
 
 /**
  * Operation to notify the client that the input with the specified id should be completed

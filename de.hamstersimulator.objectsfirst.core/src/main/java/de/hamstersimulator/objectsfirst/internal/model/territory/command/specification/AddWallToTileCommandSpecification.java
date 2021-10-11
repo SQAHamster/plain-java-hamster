@@ -1,7 +1,7 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.command.specification;
+package de.hamstersimulator.objectsfirst.internal.model.territory.command.specification;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.territory.ObservableAddWallToTileCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.territory.ObservableAddWallToTileCommandSpecification;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
 
 public final class AddWallToTileCommandSpecification extends AbstractTerritoryTileCommandSpecification implements ObservableAddWallToTileCommandSpecification {
 

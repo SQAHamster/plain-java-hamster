@@ -1,6 +1,6 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.delta;
+package de.hamstersimulator.objectsfirst.server.datatypes.delta;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.type.DeltaType;
+import de.hamstersimulator.objectsfirst.server.datatypes.type.DeltaType;
 
 /**
  * Delta which represents a removed tile content

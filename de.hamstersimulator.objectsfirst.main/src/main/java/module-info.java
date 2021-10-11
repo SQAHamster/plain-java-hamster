@@ -6,5 +6,5 @@ module sqa.hamster.main {
     requires sqa.hamster.server;
     requires com.google.gson;
 
-    exports de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model;
+    exports de.hamstersimulator.objectsfirst.external.model;
 }

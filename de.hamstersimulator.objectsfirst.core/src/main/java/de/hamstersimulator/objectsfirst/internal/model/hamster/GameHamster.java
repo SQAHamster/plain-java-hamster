@@ -1,15 +1,15 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster;
+package de.hamstersimulator.objectsfirst.internal.model.hamster;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CompositeCommand;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.exceptions.HamsterNotOnNonBlockingTileException;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification.InitHamsterCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification.PickGrainCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification.PutGrainCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification.TurnLeftCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.Grain;
-import de.unistuttgart.iste.sqa.utils.LambdaVisitor;
+import de.hamstersimulator.objectsfirst.commands.Command;
+import de.hamstersimulator.objectsfirst.commands.CommandSpecification;
+import de.hamstersimulator.objectsfirst.commands.CompositeCommand;
+import de.hamstersimulator.objectsfirst.exceptions.HamsterNotOnNonBlockingTileException;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification.InitHamsterCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification.PickGrainCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification.PutGrainCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification.TurnLeftCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.territory.Grain;
+import de.hamstersimulator.objectsfirst.utils.LambdaVisitor;
 
 import java.util.Optional;
 import java.util.function.Function;

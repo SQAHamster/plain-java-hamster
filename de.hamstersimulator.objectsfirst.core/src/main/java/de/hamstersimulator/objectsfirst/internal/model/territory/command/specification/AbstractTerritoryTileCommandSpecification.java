@@ -1,8 +1,8 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.command.specification;
+package de.hamstersimulator.objectsfirst.internal.model.territory.command.specification;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.territory.ObservableAbstractTerritoryTileCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.territory.ObservableAbstractTerritoryTileCommandSpecification;
+import de.hamstersimulator.objectsfirst.commands.CommandSpecification;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
 
 abstract class AbstractTerritoryTileCommandSpecification implements CommandSpecification, ObservableAbstractTerritoryTileCommandSpecification {
 

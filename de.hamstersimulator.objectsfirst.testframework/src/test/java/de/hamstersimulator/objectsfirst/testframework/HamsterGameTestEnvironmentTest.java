@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework;
+package de.hamstersimulator.objectsfirst.testframework;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -7,10 +7,10 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.HamsterGameViewModel;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableTerritory;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
+import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableHamster;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTerritory;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
 
 /**
  * Test to test the functionality of the HamsterTestUtils.

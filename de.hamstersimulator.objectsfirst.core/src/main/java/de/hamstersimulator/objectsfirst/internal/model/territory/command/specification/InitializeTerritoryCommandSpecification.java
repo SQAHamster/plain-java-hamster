@@ -1,8 +1,8 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.command.specification;
+package de.hamstersimulator.objectsfirst.internal.model.territory.command.specification;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.territory.ObservableInitializeTerritoryCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Size;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.territory.ObservableInitializeTerritoryCommandSpecification;
+import de.hamstersimulator.objectsfirst.commands.CommandSpecification;
+import de.hamstersimulator.objectsfirst.datatypes.Size;
 
 public final class InitializeTerritoryCommandSpecification implements CommandSpecification, ObservableInitializeTerritoryCommandSpecification {
 

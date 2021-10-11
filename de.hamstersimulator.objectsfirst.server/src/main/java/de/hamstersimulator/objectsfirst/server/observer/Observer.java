@@ -1,10 +1,10 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.observer;
+package de.hamstersimulator.objectsfirst.server.observer;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.delta.Delta;
+import de.hamstersimulator.objectsfirst.server.datatypes.delta.Delta;
 
 import java.util.List;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
 
 /**
  * Base class for observers

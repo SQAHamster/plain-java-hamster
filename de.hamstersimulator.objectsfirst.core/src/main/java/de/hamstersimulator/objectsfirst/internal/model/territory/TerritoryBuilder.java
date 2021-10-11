@@ -1,21 +1,21 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory;
+package de.hamstersimulator.objectsfirst.internal.model.territory;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CompositeCommand;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Size;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.command.specification.AddGrainsToTileCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.command.specification.AddWallToTileCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.command.specification.InitDefaultHamsterCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.command.specification.InitializeTerritoryCommandSpecification;
+import de.hamstersimulator.objectsfirst.commands.Command;
+import de.hamstersimulator.objectsfirst.commands.CommandSpecification;
+import de.hamstersimulator.objectsfirst.commands.CompositeCommand;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.datatypes.Size;
+import de.hamstersimulator.objectsfirst.internal.model.territory.command.specification.AddGrainsToTileCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.territory.command.specification.AddWallToTileCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.territory.command.specification.InitDefaultHamsterCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.territory.command.specification.InitializeTerritoryCommandSpecification;
 
 /**
  * Objects of this class can be used to define Hamster territories. The builder

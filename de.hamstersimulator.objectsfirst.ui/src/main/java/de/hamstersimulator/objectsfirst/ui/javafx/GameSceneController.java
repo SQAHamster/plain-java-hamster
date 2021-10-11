@@ -1,9 +1,9 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.javafx;
+package de.hamstersimulator.objectsfirst.ui.javafx;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.HamsterGameViewModel;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.HamsterGameController;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableLogEntry;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Mode;
+import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
+import de.hamstersimulator.objectsfirst.adapter.HamsterGameController;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableLogEntry;
+import de.hamstersimulator.objectsfirst.datatypes.Mode;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.collections.ListChangeListener;

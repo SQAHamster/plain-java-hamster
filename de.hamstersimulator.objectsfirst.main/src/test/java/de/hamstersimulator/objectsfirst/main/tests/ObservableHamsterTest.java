@@ -1,8 +1,8 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.main.tests;
+package de.hamstersimulator.objectsfirst.main.tests;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableTerritory;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.Hamster;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableHamster;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTerritory;
+import de.hamstersimulator.objectsfirst.external.model.Hamster;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicBoolean;

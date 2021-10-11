@@ -1,10 +1,10 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.javafx;
+package de.hamstersimulator.objectsfirst.ui.javafx;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.HamsterGameViewModel;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.InputInterface;
+import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
+import de.hamstersimulator.objectsfirst.adapter.InputInterface;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;

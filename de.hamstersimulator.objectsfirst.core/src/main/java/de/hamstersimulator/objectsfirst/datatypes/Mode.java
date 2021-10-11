@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes;
+package de.hamstersimulator.objectsfirst.datatypes;
 
 /**
  * The modes a hamster game can be in

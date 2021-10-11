@@ -1,12 +1,12 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.main.tests;
+package de.hamstersimulator.objectsfirst.main.tests;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.HamsterGameViewModel;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.InputInterface;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Size;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.HamsterGame;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.TerritoryBuilder;
+import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
+import de.hamstersimulator.objectsfirst.adapter.InputInterface;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.datatypes.Size;
+import de.hamstersimulator.objectsfirst.external.model.HamsterGame;
+import de.hamstersimulator.objectsfirst.external.model.TerritoryBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 

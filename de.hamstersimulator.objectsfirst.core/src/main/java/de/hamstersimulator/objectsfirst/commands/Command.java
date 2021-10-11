@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.commands;
+package de.hamstersimulator.objectsfirst.commands;
 
 import java.util.Collections;
 import java.util.List;

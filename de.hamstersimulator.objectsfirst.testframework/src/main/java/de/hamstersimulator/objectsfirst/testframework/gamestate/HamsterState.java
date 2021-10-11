@@ -1,8 +1,8 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamestate;
+package de.hamstersimulator.objectsfirst.testframework.gamestate;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.utils.Preconditions;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.utils.Preconditions;
 
 /**
  * Objects of this immutable class capture the state of a hamster

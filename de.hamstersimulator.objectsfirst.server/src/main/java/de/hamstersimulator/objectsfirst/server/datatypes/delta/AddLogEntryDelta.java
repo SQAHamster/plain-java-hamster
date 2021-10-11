@@ -1,8 +1,8 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.delta;
+package de.hamstersimulator.objectsfirst.server.datatypes.delta;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.type.DeltaType;
+import de.hamstersimulator.objectsfirst.server.datatypes.type.DeltaType;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
 
 /**
  * Delta which represents an added log entry

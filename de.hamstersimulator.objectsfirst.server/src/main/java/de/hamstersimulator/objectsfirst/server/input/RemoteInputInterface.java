@@ -1,8 +1,8 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.input;
+package de.hamstersimulator.objectsfirst.server.input;
 
 
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.InputInterface;
+import de.hamstersimulator.objectsfirst.adapter.InputInterface;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.*;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.*;
 
 /**
  * The input interface that handles remote requests.

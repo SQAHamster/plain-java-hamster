@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.main.tests;
+package de.hamstersimulator.objectsfirst.main.tests;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -10,10 +10,10 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.mockito.Mockito;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.InputInterface;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.exceptions.FrontBlockedException;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.Hamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.HamsterGame;
+import de.hamstersimulator.objectsfirst.adapter.InputInterface;
+import de.hamstersimulator.objectsfirst.exceptions.FrontBlockedException;
+import de.hamstersimulator.objectsfirst.external.model.Hamster;
+import de.hamstersimulator.objectsfirst.external.model.HamsterGame;
 
 /**
  * Simple tests for the hamster API.

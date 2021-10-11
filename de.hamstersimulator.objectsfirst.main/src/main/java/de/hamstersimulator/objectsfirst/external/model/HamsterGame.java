@@ -1,7 +1,7 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model;
+package de.hamstersimulator.objectsfirst.external.model;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkState;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkState;
 
 import java.io.InputStream;
 import java.util.Collections;
@@ -16,18 +16,18 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.HamsterGameViewModel;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.InputInterface;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CompositeCommand;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.EditCommandStack;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.GameCommandStack;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Mode;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.exceptions.GameAbortedException;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.GameLog;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification.AbstractHamsterCommandSpecification;
-import de.unistuttgart.iste.sqa.utils.Preconditions;
+import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
+import de.hamstersimulator.objectsfirst.adapter.InputInterface;
+import de.hamstersimulator.objectsfirst.commands.Command;
+import de.hamstersimulator.objectsfirst.commands.CommandSpecification;
+import de.hamstersimulator.objectsfirst.commands.CompositeCommand;
+import de.hamstersimulator.objectsfirst.commands.EditCommandStack;
+import de.hamstersimulator.objectsfirst.commands.GameCommandStack;
+import de.hamstersimulator.objectsfirst.datatypes.Mode;
+import de.hamstersimulator.objectsfirst.exceptions.GameAbortedException;
+import de.hamstersimulator.objectsfirst.internal.model.GameLog;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification.AbstractHamsterCommandSpecification;
+import de.hamstersimulator.objectsfirst.utils.Preconditions;
 
 /**
  * A class representing an instance of a hamster game. A hamster game consists of a territory, on

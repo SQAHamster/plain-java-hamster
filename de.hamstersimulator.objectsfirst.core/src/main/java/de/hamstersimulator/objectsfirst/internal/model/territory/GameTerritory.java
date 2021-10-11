@@ -1,26 +1,26 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory;
+package de.hamstersimulator.objectsfirst.internal.model.territory;
 
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CompositeCommand;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.LocationVector;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.exceptions.FrontBlockedException;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.exceptions.HamsterNotInitializedException;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.exceptions.MouthEmptyException;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.exceptions.NoGrainOnTileException;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.GameHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification.InitHamsterCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification.MoveCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification.PickGrainCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification.PutGrainCommandSpecification;
-import de.unistuttgart.iste.sqa.utils.LambdaVisitor;
+import de.hamstersimulator.objectsfirst.commands.Command;
+import de.hamstersimulator.objectsfirst.commands.CommandSpecification;
+import de.hamstersimulator.objectsfirst.commands.CompositeCommand;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.datatypes.LocationVector;
+import de.hamstersimulator.objectsfirst.exceptions.FrontBlockedException;
+import de.hamstersimulator.objectsfirst.exceptions.HamsterNotInitializedException;
+import de.hamstersimulator.objectsfirst.exceptions.MouthEmptyException;
+import de.hamstersimulator.objectsfirst.exceptions.NoGrainOnTileException;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.GameHamster;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.ReadOnlyHamster;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification.InitHamsterCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification.MoveCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification.PickGrainCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification.PutGrainCommandSpecification;
+import de.hamstersimulator.objectsfirst.utils.LambdaVisitor;
 
 public class GameTerritory extends EditorTerritory {
 

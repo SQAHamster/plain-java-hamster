@@ -1,7 +1,7 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model;
+package de.hamstersimulator.objectsfirst.external.model;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkState;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkState;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -9,14 +9,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.EditCommandStack;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Mode;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Size;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.ReadOnlyHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.GameTerritory;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.TerritoryLoader;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.Tile;
+import de.hamstersimulator.objectsfirst.commands.EditCommandStack;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.datatypes.Mode;
+import de.hamstersimulator.objectsfirst.datatypes.Size;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.ReadOnlyHamster;
+import de.hamstersimulator.objectsfirst.internal.model.territory.GameTerritory;
+import de.hamstersimulator.objectsfirst.internal.model.territory.TerritoryLoader;
+import de.hamstersimulator.objectsfirst.internal.model.territory.Tile;
 
 /**
  * The territory class represents territories for hamsters. Territories

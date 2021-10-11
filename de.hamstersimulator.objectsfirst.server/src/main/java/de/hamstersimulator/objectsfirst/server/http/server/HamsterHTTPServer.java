@@ -1,8 +1,8 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.http.server;
+package de.hamstersimulator.objectsfirst.server.http.server;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpServer;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.input.InputMessage;
+import de.hamstersimulator.objectsfirst.server.input.InputMessage;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -10,7 +10,7 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.util.*;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.*;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.*;
 
 /**
  * The Server of the HamsterGame

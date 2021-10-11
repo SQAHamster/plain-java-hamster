@@ -1,6 +1,6 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster;
+package de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableGrain;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableGrain;
 
 /**
  * observable version of command specification used to make the hamster pick up one grain

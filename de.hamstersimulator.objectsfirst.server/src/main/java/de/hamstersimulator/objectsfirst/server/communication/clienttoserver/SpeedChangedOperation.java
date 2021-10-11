@@ -1,8 +1,8 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.clienttoserver;
+package de.hamstersimulator.objectsfirst.server.communication.clienttoserver;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.Operation;
+import de.hamstersimulator.objectsfirst.server.communication.Operation;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkArgument;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkArgument;
 
 /**
  * Operation to notify the server that the speed changed

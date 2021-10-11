@@ -4,10 +4,10 @@ module sqa.hamster.ui {
     requires javafx.fxml;
     requires sqa.hamster.core;
 
-    opens de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.javafx to javafx.fxml;
-    opens de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.ressources.fxml;
-    opens de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.ressources.css;
-    opens de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.ressources.images;
+    opens de.hamstersimulator.objectsfirst.ui.javafx to javafx.fxml;
+    opens de.hamstersimulator.objectsfirst.ui.ressources.fxml;
+    opens de.hamstersimulator.objectsfirst.ui.ressources.css;
+    opens de.hamstersimulator.objectsfirst.ui.ressources.images;
 
-    exports de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.javafx;
+    exports de.hamstersimulator.objectsfirst.ui.javafx;
 }

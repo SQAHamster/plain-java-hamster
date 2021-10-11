@@ -1,9 +1,9 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory;
+package de.hamstersimulator.objectsfirst.internal.model.territory;
 
 import java.util.Optional;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableTileContent;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTileContent;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 

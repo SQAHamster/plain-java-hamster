@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.commands;
+package de.hamstersimulator.objectsfirst.commands;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,8 +10,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.properties.ModifyPropertyCommand;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.properties.ModifyPropertyCommandSpecification.ActionKind;
+import de.hamstersimulator.objectsfirst.properties.ModifyPropertyCommand;
+import de.hamstersimulator.objectsfirst.properties.ModifyPropertyCommandSpecification.ActionKind;
 import javafx.beans.property.Property;
 
 public class CompositeCommand extends Command {

@@ -1,7 +1,7 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.clienttoserver;
+package de.hamstersimulator.objectsfirst.server.communication.clienttoserver;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.Operation;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.input.InputMessage;
+import de.hamstersimulator.objectsfirst.server.communication.Operation;
+import de.hamstersimulator.objectsfirst.server.input.InputMessage;
 
 /**
  * Operation to notify the server that a new input is requested

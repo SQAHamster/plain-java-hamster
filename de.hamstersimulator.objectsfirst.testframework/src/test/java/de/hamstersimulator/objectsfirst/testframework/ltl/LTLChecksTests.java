@@ -1,16 +1,16 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.ltl;
+package de.hamstersimulator.objectsfirst.testframework.ltl;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.ObservableCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableAbstractHamsterCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableMoveCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservablePutGrainCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.HamsterGameResolver;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.HamsterTest;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamestate.GameState;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamestate.RecordingHamsterGameTestEnvironment;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableHamster;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.ObservableCommandSpecification;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster.ObservableAbstractHamsterCommandSpecification;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster.ObservableMoveCommandSpecification;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster.ObservablePutGrainCommandSpecification;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.testframework.HamsterGameResolver;
+import de.hamstersimulator.objectsfirst.testframework.HamsterTest;
+import de.hamstersimulator.objectsfirst.testframework.gamestate.GameState;
+import de.hamstersimulator.objectsfirst.testframework.gamestate.RecordingHamsterGameTestEnvironment;
 import javafx.collections.ObservableList;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author Steffen Becker
  */
-@HamsterTest(game = "de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.ltl.TestSimpleHamsterGame")
+@HamsterTest(game = "de.hamstersimulator.objectsfirst.testframework.ltl.TestSimpleHamsterGame")
 @ExtendWith(HamsterGameResolver.class)
 public final class LTLChecksTests {
 

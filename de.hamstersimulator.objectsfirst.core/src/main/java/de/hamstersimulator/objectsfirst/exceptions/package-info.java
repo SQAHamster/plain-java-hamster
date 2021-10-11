@@ -3,4 +3,4 @@
  * @author Steffen Becker
  *
  */
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.exceptions;
+package de.hamstersimulator.objectsfirst.exceptions;

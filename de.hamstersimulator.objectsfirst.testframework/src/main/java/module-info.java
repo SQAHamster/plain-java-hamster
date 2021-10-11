@@ -7,7 +7,7 @@ module sqa.hamster.testframework {
     requires sqa.hamster.core;
     requires javafx.base;
 
-    exports de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework;
-    exports de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamestate;
-    exports de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.ltl;
+    exports de.hamstersimulator.objectsfirst.testframework;
+    exports de.hamstersimulator.objectsfirst.testframework.gamestate;
+    exports de.hamstersimulator.objectsfirst.testframework.ltl;
 }

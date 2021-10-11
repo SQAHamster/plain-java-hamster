@@ -1,10 +1,10 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster;
+package de.hamstersimulator.objectsfirst.internal.model.hamster;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.Grain;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.TileContent;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableHamster;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.internal.model.territory.Grain;
+import de.hamstersimulator.objectsfirst.internal.model.territory.ReadOnlyTerritory;
+import de.hamstersimulator.objectsfirst.internal.model.territory.TileContent;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 

@@ -1,13 +1,13 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.examples;
+package de.hamstersimulator.objectsfirst.examples;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Size;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.Hamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.HamsterGame;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.Territory;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.TerritoryBuilder;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.javafx.JavaFXUI;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.datatypes.Size;
+import de.hamstersimulator.objectsfirst.external.model.Hamster;
+import de.hamstersimulator.objectsfirst.external.model.HamsterGame;
+import de.hamstersimulator.objectsfirst.external.model.Territory;
+import de.hamstersimulator.objectsfirst.external.model.TerritoryBuilder;
+import de.hamstersimulator.objectsfirst.ui.javafx.JavaFXUI;
 
 /**
  * Class demonstrating the intended use of the hamster simulator API.

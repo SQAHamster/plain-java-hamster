@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model;
+package de.hamstersimulator.objectsfirst.external.model;
 
 import java.util.logging.Logger;
 

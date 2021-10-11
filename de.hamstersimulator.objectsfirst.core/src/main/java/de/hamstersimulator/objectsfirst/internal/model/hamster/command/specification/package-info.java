@@ -5,4 +5,4 @@
  * @author snowball
  *
  */
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification;
+package de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification;

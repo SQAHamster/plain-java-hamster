@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.territory;
+package de.hamstersimulator.objectsfirst.adapter.observables.command.specification.territory;
 
 /**
  * observable version of command specification used to add a wall to a specified tile

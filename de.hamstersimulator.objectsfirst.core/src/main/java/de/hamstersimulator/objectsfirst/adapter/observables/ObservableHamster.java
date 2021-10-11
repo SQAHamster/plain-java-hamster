@@ -1,6 +1,6 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables;
+package de.hamstersimulator.objectsfirst.adapter.observables;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
 import javafx.beans.property.ReadOnlyObjectProperty;
 
 /**

@@ -1,9 +1,9 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.javafx;
+package de.hamstersimulator.objectsfirst.ui.javafx;
 
 import java.io.IOException;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.HamsterGameViewModel;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.HamsterGameController;
+import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
+import de.hamstersimulator.objectsfirst.adapter.HamsterGameController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

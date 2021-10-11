@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.utils;
+package de.hamstersimulator.objectsfirst.utils;
 
 import java.util.Objects;
 

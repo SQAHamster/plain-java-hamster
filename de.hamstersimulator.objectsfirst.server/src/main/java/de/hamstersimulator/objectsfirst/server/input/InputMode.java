@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.input;
+package de.hamstersimulator.objectsfirst.server.input;
 
 /**
  * Enum for the possible input types

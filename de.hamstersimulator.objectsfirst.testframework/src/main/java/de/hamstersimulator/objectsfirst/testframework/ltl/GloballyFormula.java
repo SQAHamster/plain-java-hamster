@@ -1,7 +1,7 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.ltl;
+package de.hamstersimulator.objectsfirst.testframework.ltl;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamestate.GameState;
-import de.unistuttgart.iste.sqa.utils.Preconditions;
+import de.hamstersimulator.objectsfirst.testframework.gamestate.GameState;
+import de.hamstersimulator.objectsfirst.utils.Preconditions;
 
 /**
  * Implementation the temporal globally operator. The formula evaluates to the true

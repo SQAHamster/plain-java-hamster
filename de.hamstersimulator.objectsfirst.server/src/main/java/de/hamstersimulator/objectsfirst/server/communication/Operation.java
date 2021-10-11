@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication;
+package de.hamstersimulator.objectsfirst.server.communication;
 
 import java.io.Serializable;
 

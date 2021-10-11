@@ -1,7 +1,7 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.command.specification;
+package de.hamstersimulator.objectsfirst.internal.model.territory.command.specification;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.territory.ObservableClearTileCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.territory.ObservableClearTileCommandSpecification;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
 
 public final class ClearTileCommandSpecification extends AbstractTerritoryTileCommandSpecification implements ObservableClearTileCommandSpecification {
 

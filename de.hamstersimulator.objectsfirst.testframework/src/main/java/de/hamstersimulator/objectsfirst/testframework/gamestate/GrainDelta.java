@@ -1,6 +1,6 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamestate;
+package de.hamstersimulator.objectsfirst.testframework.gamestate;
 
-import de.unistuttgart.iste.sqa.utils.Preconditions;
+import de.hamstersimulator.objectsfirst.utils.Preconditions;
 
 /**
  * Objects of this class describe the amount of grains picked up or dropped

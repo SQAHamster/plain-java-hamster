@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.javafx.HamsterTerritoryGrid?>
+<?import de.hamstersimulator.objectsfirst.ui.javafx.HamsterTerritoryGrid?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="root" minHeight="150.0" minWidth="200.0" prefHeight="322.0" prefWidth="690.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.javafx.GameSceneController">
+<BorderPane fx:id="root" minHeight="150.0" minWidth="200.0" prefHeight="322.0" prefWidth="690.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.hamstersimulator.objectsfirst.ui.javafx.GameSceneController">
    <top>
       <ToolBar fx:id="toolbar" prefHeight="30.0" BorderPane.alignment="CENTER">
         <items>

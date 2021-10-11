@@ -1,6 +1,6 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.examples;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.Hamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.javafx.JavaFXUI;
+package de.hamstersimulator.objectsfirst.examples;
+import de.hamstersimulator.objectsfirst.external.model.Hamster;
+import de.hamstersimulator.objectsfirst.ui.javafx.JavaFXUI;
 
 class Example02 extends SimpleHamsterGame {
     Hamster paula;

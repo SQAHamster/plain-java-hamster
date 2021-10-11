@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication;
+package de.hamstersimulator.objectsfirst.server.communication;
 
 /**
  * Operation to notify the server that the input with the specified id is aborted /

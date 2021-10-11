@@ -1,7 +1,7 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework;
+package de.hamstersimulator.objectsfirst.testframework;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.HamsterGameViewModel;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.SimpleHamsterGame;
+import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
+import de.hamstersimulator.objectsfirst.external.model.SimpleHamsterGame;
 
 /**
  * Environment to test a SimpleHamsterGame

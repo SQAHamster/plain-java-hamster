@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework;
+package de.hamstersimulator.objectsfirst.testframework;
 
 import org.junit.jupiter.api.BeforeEach;
 

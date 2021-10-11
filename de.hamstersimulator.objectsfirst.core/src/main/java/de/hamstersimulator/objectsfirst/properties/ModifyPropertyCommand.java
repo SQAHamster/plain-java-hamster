@@ -1,7 +1,7 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.properties;
+package de.hamstersimulator.objectsfirst.properties;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.properties.ModifyPropertyCommandSpecification.ActionKind;
+import de.hamstersimulator.objectsfirst.commands.Command;
+import de.hamstersimulator.objectsfirst.properties.ModifyPropertyCommandSpecification.ActionKind;
 import javafx.beans.property.Property;
 import javafx.beans.value.WritableListValue;
 import javafx.beans.value.WritableSetValue;

@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.examples;
+package de.hamstersimulator.objectsfirst.examples;
 
 class Example01a extends SimpleHamsterGame {
 

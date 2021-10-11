@@ -1,14 +1,14 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter;
+package de.hamstersimulator.objectsfirst.adapter;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableLog;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableTerritory;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableLog;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTerritory;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
 
 /**
  * Provides all components of a game which are necessary to attach a UI or a test framework to a game

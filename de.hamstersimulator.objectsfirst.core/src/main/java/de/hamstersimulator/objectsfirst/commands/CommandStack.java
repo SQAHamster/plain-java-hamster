@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.commands;
+package de.hamstersimulator.objectsfirst.commands;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkState;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkState;
 
 public abstract class CommandStack {
 

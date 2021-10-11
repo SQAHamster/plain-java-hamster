@@ -1,10 +1,10 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.delta;
+package de.hamstersimulator.objectsfirst.server.datatypes.delta;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.type.DeltaType;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.type.TileContentType;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.server.datatypes.type.DeltaType;
+import de.hamstersimulator.objectsfirst.server.datatypes.type.TileContentType;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
 
 /**
  * Delta which represents an added tile content

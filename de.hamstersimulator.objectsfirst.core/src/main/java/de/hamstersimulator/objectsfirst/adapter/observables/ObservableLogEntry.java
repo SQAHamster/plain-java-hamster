@@ -1,6 +1,6 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables;
+package de.hamstersimulator.objectsfirst.adapter.observables;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.ObservableCommandSpecification;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.ObservableCommandSpecification;
 
 /**
  * Interface which provides read-only access to a log entry
@@ -25,7 +25,7 @@ public interface ObservableLogEntry {
     /**
      * The command specification that caused this log entry to be generated.
      *
-     * @return An instance of a {@link de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CommandSpecification}
+     * @return An instance of a {@link de.hamstersimulator.objectsfirst.commands.CommandSpecification}
      *         which describes the event this log message represents (it also caused this LogEntry).
      *         This won't be null
      */

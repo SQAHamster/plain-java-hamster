@@ -1,13 +1,13 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes;
+package de.hamstersimulator.objectsfirst.server.datatypes;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Mode;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.delta.Delta;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.input.InputMessage;
+import de.hamstersimulator.objectsfirst.datatypes.Mode;
+import de.hamstersimulator.objectsfirst.server.datatypes.delta.Delta;
+import de.hamstersimulator.objectsfirst.server.input.InputMessage;
 
 import java.util.List;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkArgument;
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkArgument;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
 
 /**
  * Wrapper class for the state of a game with some deltas, used for json serialization

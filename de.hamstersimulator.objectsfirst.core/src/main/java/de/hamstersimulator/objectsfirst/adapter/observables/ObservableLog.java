@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables;
+package de.hamstersimulator.objectsfirst.adapter.observables;
 
 import javafx.beans.property.ReadOnlyListProperty;
 

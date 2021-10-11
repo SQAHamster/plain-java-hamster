@@ -1,11 +1,11 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.type;
+package de.hamstersimulator.objectsfirst.server.datatypes.type;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableGrain;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableTileContent;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableWall;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableGrain;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableHamster;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTileContent;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableWall;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
 
 /**
  * Enum with all possible tile content types

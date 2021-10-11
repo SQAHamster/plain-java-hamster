@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes;
+package de.hamstersimulator.objectsfirst.datatypes;
 
 /**
  * Objects of the class Size represent any kind of thing having a

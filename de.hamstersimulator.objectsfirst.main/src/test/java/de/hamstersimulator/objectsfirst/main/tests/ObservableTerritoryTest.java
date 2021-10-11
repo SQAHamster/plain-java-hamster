@@ -1,12 +1,12 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.main.tests;
+package de.hamstersimulator.objectsfirst.main.tests;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableTerritory;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableTile;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableTileContent;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.Hamster;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableHamster;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTerritory;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTile;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTileContent;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.external.model.Hamster;
 import javafx.collections.ListChangeListener;
 import org.junit.jupiter.api.Test;
 

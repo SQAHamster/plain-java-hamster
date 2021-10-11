@@ -5,4 +5,4 @@
  * @author snowball
  *
  */
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.command.specification;
+package de.hamstersimulator.objectsfirst.internal.model.territory.command.specification;

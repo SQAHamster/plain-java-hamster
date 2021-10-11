@@ -1,6 +1,6 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.ltl;
+package de.hamstersimulator.objectsfirst.testframework.ltl;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamestate.GameState;
+import de.hamstersimulator.objectsfirst.testframework.gamestate.GameState;
 
 /**
  * Interface representing a linear temporal logic formula. The only supported

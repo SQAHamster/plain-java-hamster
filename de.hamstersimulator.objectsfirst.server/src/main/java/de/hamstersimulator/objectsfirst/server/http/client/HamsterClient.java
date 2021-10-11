@@ -1,20 +1,20 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.http.client;
+package de.hamstersimulator.objectsfirst.server.http.client;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.HamsterGameController;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.HamsterGameViewModel;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Mode;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.AbortInputOperation;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.Operation;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.clienttoserver.SpeedChangedOperation;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.clienttoserver.*;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.communication.servertoclient.*;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.input.InputMode;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.delta.*;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.http.server.HamsterHTTPServer;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.input.RemoteInputInterface;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.observer.DeltaListener;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.observer.TerritoryLogObserver;
-import de.unistuttgart.iste.sqa.utils.LambdaVisitor;
+import de.hamstersimulator.objectsfirst.adapter.HamsterGameController;
+import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
+import de.hamstersimulator.objectsfirst.datatypes.Mode;
+import de.hamstersimulator.objectsfirst.server.communication.AbortInputOperation;
+import de.hamstersimulator.objectsfirst.server.communication.Operation;
+import de.hamstersimulator.objectsfirst.server.communication.clienttoserver.SpeedChangedOperation;
+import de.hamstersimulator.objectsfirst.server.communication.clienttoserver.*;
+import de.hamstersimulator.objectsfirst.server.communication.servertoclient.*;
+import de.hamstersimulator.objectsfirst.server.input.InputMode;
+import de.hamstersimulator.objectsfirst.server.datatypes.delta.*;
+import de.hamstersimulator.objectsfirst.server.http.server.HamsterHTTPServer;
+import de.hamstersimulator.objectsfirst.server.input.RemoteInputInterface;
+import de.hamstersimulator.objectsfirst.server.observer.DeltaListener;
+import de.hamstersimulator.objectsfirst.server.observer.TerritoryLogObserver;
+import de.hamstersimulator.objectsfirst.utils.LambdaVisitor;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -24,7 +24,7 @@ import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.*;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.*;
 
 /**
  * The HamsterClient connects to the HamsterServer.

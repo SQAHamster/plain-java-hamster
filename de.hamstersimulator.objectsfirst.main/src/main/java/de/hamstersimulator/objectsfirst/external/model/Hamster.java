@@ -1,28 +1,28 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model;
+package de.hamstersimulator.objectsfirst.external.model;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkArgument;
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkState;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkArgument;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkState;
 
 import java.util.Collection;
 import java.util.Optional;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.LocationVector;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.exceptions.FrontBlockedException;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.exceptions.MouthEmptyException;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.exceptions.NoGrainOnTileException;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.GameHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification.InitHamsterCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification.MoveCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification.PickGrainCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification.PutGrainCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification.TurnLeftCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification.WriteCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.Grain;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.Tile;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.TileContent;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.datatypes.LocationVector;
+import de.hamstersimulator.objectsfirst.exceptions.FrontBlockedException;
+import de.hamstersimulator.objectsfirst.exceptions.MouthEmptyException;
+import de.hamstersimulator.objectsfirst.exceptions.NoGrainOnTileException;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.GameHamster;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification.InitHamsterCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification.MoveCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification.PickGrainCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification.PutGrainCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification.TurnLeftCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification.WriteCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.territory.Grain;
+import de.hamstersimulator.objectsfirst.internal.model.territory.Tile;
+import de.hamstersimulator.objectsfirst.internal.model.territory.TileContent;
 
 /**
  * Class for Hamster in the Hamster Simulator. This class allows to initialize

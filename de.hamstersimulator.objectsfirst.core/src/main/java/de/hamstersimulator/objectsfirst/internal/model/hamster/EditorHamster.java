@@ -1,15 +1,15 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster;
+package de.hamstersimulator.objectsfirst.internal.model.hamster;
 
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CompositeCommand;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.Grain;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.command.specification.InitDefaultHamsterCommandSpecification;
-import de.unistuttgart.iste.sqa.utils.LambdaVisitor;
+import de.hamstersimulator.objectsfirst.commands.CompositeCommand;
+import de.hamstersimulator.objectsfirst.commands.Command;
+import de.hamstersimulator.objectsfirst.commands.CommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.territory.Grain;
+import de.hamstersimulator.objectsfirst.internal.model.territory.command.specification.InitDefaultHamsterCommandSpecification;
+import de.hamstersimulator.objectsfirst.utils.LambdaVisitor;
 
 public class EditorHamster extends ReadOnlyHamster {
 

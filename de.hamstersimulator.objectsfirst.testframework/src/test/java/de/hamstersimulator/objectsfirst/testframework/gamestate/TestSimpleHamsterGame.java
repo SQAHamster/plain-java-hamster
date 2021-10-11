@@ -1,11 +1,11 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamestate;
+package de.hamstersimulator.objectsfirst.testframework.gamestate;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Size;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.Hamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.SimpleHamsterGame;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.TerritoryBuilder;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.datatypes.Size;
+import de.hamstersimulator.objectsfirst.external.model.Hamster;
+import de.hamstersimulator.objectsfirst.external.model.SimpleHamsterGame;
+import de.hamstersimulator.objectsfirst.external.model.TerritoryBuilder;
 
 /**
  * Basic SimpleHamsterGame which creates a 6x6 territory with the Hamster at 0,0 facing south.

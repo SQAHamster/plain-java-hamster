@@ -6,4 +6,4 @@
  * Every test method which has HamsterGameTestEnvironment as a parameter gets a new
  * HamsterGameTestEnvironment with the correct new SimpleHamsterGame injected
  */
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework;
+package de.hamstersimulator.objectsfirst.testframework;

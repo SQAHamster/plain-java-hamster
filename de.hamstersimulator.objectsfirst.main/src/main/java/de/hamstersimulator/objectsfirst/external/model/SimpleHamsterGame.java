@@ -1,9 +1,9 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model;
+package de.hamstersimulator.objectsfirst.external.model;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.HamsterGameViewModel;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.config.HamsterConfig;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.exceptions.GameAbortedException;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.javafx.JavaFXUI;
+import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
+import de.hamstersimulator.objectsfirst.config.HamsterConfig;
+import de.hamstersimulator.objectsfirst.exceptions.GameAbortedException;
+import de.hamstersimulator.objectsfirst.ui.javafx.JavaFXUI;
 
 import java.io.Console;
 import java.io.IOException;
@@ -12,10 +12,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.http.client.HamsterClient;
+import de.hamstersimulator.objectsfirst.server.http.client.HamsterClient;
 
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkArgument;
-import static de.unistuttgart.iste.sqa.utils.Preconditions.checkNotNull;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkArgument;
+import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
 
 /**
  * Parent class of a simple, to a large extend preconfigured hamster game.

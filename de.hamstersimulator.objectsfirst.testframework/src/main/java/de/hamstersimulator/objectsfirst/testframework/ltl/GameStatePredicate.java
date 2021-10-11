@@ -1,10 +1,10 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.ltl;
+package de.hamstersimulator.objectsfirst.testframework.ltl;
 
 import java.util.Collection;
 import java.util.function.Predicate;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamestate.GameState;
-import de.unistuttgart.iste.sqa.utils.Preconditions;
+import de.hamstersimulator.objectsfirst.testframework.gamestate.GameState;
+import de.hamstersimulator.objectsfirst.utils.Preconditions;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.collections.FXCollections;

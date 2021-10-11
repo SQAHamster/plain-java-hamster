@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables;
+package de.hamstersimulator.objectsfirst.adapter.observables;
 
 /**
  * Interface to observe changes on the internal wall

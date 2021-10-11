@@ -1,23 +1,23 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework.gamestate;
+package de.hamstersimulator.objectsfirst.testframework.gamestate;
 
 import java.util.HashMap;
 import java.util.Optional;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableTerritory;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableTile;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.ObservableCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableAbstractHamsterCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableInitHamsterCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableMoveCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservablePickGrainCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservablePutGrainCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableTurnLeftCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableWriteCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.territory.ObservableInitializeTerritoryCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.utils.LambdaVisitor;
-import de.unistuttgart.iste.sqa.utils.Preconditions;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableHamster;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTerritory;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTile;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.ObservableCommandSpecification;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster.ObservableAbstractHamsterCommandSpecification;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster.ObservableInitHamsterCommandSpecification;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster.ObservableMoveCommandSpecification;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster.ObservablePickGrainCommandSpecification;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster.ObservablePutGrainCommandSpecification;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster.ObservableTurnLeftCommandSpecification;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster.ObservableWriteCommandSpecification;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.territory.ObservableInitializeTerritoryCommandSpecification;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.utils.LambdaVisitor;
+import de.hamstersimulator.objectsfirst.utils.Preconditions;
 
 /**
  * Internal factory class used to create new game states. Game states can

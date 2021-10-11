@@ -1,15 +1,15 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model;
+package de.hamstersimulator.objectsfirst.internal.model;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableLog;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.Command;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.commands.CommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.LogEntry;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.GameHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification.*;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.properties.ModifyPropertyCommand;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.properties.ModifyPropertyCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.properties.ModifyPropertyCommandSpecification.ActionKind;
-import de.unistuttgart.iste.sqa.utils.LambdaVisitor;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableLog;
+import de.hamstersimulator.objectsfirst.commands.Command;
+import de.hamstersimulator.objectsfirst.commands.CommandSpecification;
+import de.hamstersimulator.objectsfirst.datatypes.LogEntry;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.GameHamster;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification.*;
+import de.hamstersimulator.objectsfirst.properties.ModifyPropertyCommand;
+import de.hamstersimulator.objectsfirst.properties.ModifyPropertyCommandSpecification;
+import de.hamstersimulator.objectsfirst.properties.ModifyPropertyCommandSpecification.ActionKind;
+import de.hamstersimulator.objectsfirst.utils.LambdaVisitor;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.collections.FXCollections;

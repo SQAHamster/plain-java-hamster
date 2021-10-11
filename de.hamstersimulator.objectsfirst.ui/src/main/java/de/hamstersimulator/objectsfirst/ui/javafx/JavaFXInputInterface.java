@@ -1,9 +1,9 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.ui.javafx;
+package de.hamstersimulator.objectsfirst.ui.javafx;
 
 import java.util.Optional;
 import java.util.function.Function;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.InputInterface;
+import de.hamstersimulator.objectsfirst.adapter.InputInterface;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;

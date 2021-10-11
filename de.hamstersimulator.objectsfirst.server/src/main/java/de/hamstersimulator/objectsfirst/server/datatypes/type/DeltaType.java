@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.type;
+package de.hamstersimulator.objectsfirst.server.datatypes.type;
 
 /**
  * Type of the Delta

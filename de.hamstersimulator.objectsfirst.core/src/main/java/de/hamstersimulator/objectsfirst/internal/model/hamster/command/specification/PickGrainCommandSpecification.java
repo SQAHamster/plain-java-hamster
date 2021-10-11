@@ -1,8 +1,8 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification;
+package de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservablePickGrainCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.GameHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.Grain;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster.ObservablePickGrainCommandSpecification;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.GameHamster;
+import de.hamstersimulator.objectsfirst.internal.model.territory.Grain;
 
 public class PickGrainCommandSpecification extends AbstractHamsterCommandSpecification implements ObservablePickGrainCommandSpecification {
 

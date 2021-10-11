@@ -1,5 +1,5 @@
 module sqa.util {
     requires java.base;
 
-    exports de.unistuttgart.iste.sqa.utils;
+    exports de.hamstersimulator.objectsfirst.utils;
 }

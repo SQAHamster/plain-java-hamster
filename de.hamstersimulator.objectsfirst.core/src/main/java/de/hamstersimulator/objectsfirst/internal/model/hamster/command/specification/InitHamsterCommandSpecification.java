@@ -1,10 +1,10 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.command.specification;
+package de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster.ObservableInitHamsterCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.hamster.GameHamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.internal.model.territory.ReadOnlyTerritory;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster.ObservableInitHamsterCommandSpecification;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.internal.model.hamster.GameHamster;
+import de.hamstersimulator.objectsfirst.internal.model.territory.ReadOnlyTerritory;
 
 public final class InitHamsterCommandSpecification extends AbstractHamsterCommandSpecification
         implements ObservableInitHamsterCommandSpecification {

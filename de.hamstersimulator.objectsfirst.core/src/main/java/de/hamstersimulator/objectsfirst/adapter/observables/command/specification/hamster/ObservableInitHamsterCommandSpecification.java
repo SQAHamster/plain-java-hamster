@@ -1,8 +1,8 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.hamster;
+package de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.ObservableTerritory;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.adapter.observables.command.specification.territory.ObservableAbstractTerritoryTileCommandSpecification;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTerritory;
+import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.territory.ObservableAbstractTerritoryTileCommandSpecification;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
 
 /**
  * Observable version of command specification used to initialize hamster

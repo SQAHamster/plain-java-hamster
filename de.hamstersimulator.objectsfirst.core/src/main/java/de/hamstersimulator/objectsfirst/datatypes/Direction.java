@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes;
+package de.hamstersimulator.objectsfirst.datatypes;
 
 /**
  * Enumeration of the directions in which a hamster can look in the

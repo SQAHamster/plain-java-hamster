@@ -1,14 +1,14 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.main.tests;
+package de.hamstersimulator.objectsfirst.main.tests;
 
 import com.google.gson.*;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Direction;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Location;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Mode;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes.Size;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.Hamster;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.HamsterGame;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.TerritoryBuilder;
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.http.client.HamsterClient;
+import de.hamstersimulator.objectsfirst.datatypes.Direction;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
+import de.hamstersimulator.objectsfirst.datatypes.Mode;
+import de.hamstersimulator.objectsfirst.datatypes.Size;
+import de.hamstersimulator.objectsfirst.external.model.Hamster;
+import de.hamstersimulator.objectsfirst.external.model.HamsterGame;
+import de.hamstersimulator.objectsfirst.external.model.TerritoryBuilder;
+import de.hamstersimulator.objectsfirst.server.http.client.HamsterClient;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;

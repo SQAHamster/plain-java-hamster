@@ -1,10 +1,10 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.examples;
+package de.hamstersimulator.objectsfirst.examples;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.external.model.Hamster;
+import de.hamstersimulator.objectsfirst.external.model.Hamster;
 
 public class GrainHamsters {
 

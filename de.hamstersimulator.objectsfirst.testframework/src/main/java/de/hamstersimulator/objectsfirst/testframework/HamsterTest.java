@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.testframework;
+package de.hamstersimulator.objectsfirst.testframework;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

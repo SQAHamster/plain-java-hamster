@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.datatypes;
+package de.hamstersimulator.objectsfirst.datatypes;
 
 /**
  * A location vector is a vector in the mathematical sense. It can be used to describe a location

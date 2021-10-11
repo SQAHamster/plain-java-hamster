@@ -1,6 +1,6 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.server.observer;
+package de.hamstersimulator.objectsfirst.server.observer;
 
-import de.unistuttgart.iste.sqa.oo.hamstersimulator.server.datatypes.delta.Delta;
+import de.hamstersimulator.objectsfirst.server.datatypes.delta.Delta;
 
 import java.util.List;
 

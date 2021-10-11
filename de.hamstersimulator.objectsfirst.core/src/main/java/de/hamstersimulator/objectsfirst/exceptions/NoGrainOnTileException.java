@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.oo.hamstersimulator.exceptions;
+package de.hamstersimulator.objectsfirst.exceptions;
 
 public class NoGrainOnTileException extends HamsterException {
 
