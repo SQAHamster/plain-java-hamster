@@ -17,9 +17,9 @@ import javafx.scene.paint.Color;
 public class TileNode extends StackPane {
 
     private static final Image hamsterImage = new Image(
-            "de/unistuttgart/iste/sqa/oo/hamstersimulator/ui/ressources/images/Hamster24.png");
+            "de/hamstersimulator/objectsfirst/ui/ressources/images/Hamster24.png");
     private static final Image wallImage = new Image(
-            "de/unistuttgart/iste/sqa/oo/hamstersimulator/ui/ressources/images/Wall32.png", 39, 39, true, true);
+            "de/hamstersimulator/objectsfirst/ui/ressources/images/Wall32.png", 39, 39, true, true);
     private static final Map<Integer, Image> cornImages = new HashMap<>();
     static final Color[] hamsterColors = new Color[] {
             Color.BLUE,
@@ -30,7 +30,7 @@ public class TileNode extends StackPane {
             Color.RED
     };
     private final static Image PLUS_12_CORN_IMAGE = new Image(
-            "de/unistuttgart/iste/sqa/oo/hamstersimulator/ui/ressources/images/12PlusCorn32.png");
+            "de/hamstersimulator/objectsfirst/ui/ressources/images/12PlusCorn32.png");
 
     static {
         loadCornImages();
@@ -39,7 +39,7 @@ public class TileNode extends StackPane {
     private static void loadCornImages() {
         for (int i = 1; i < 13; i++) {
             cornImages.put(i,
-                    new Image("de/unistuttgart/iste/sqa/oo/hamstersimulator/ui/ressources/images/" + i + "Corn32.png"));
+                    new Image("de/hamstersimulator/objectsfirst/ui/ressources/images/" + i + "Corn32.png"));
         }
     }
 

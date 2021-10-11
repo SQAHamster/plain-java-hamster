@@ -3,8 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.hamstersimulator.objectsfirst</groupId>
     <artifactId>utils</artifactId>
-    <name>Utility classes from the SQA chair</name>
-    <description>Utility classes for SQA projects</description>
+    <name>Utility classes from the hamstersimulator</name>
+    <description>Utility classes for hamstersimulator</description>
 
     <parent>
         <groupId>de.hamstersimulator.objectsfirst</groupId>
