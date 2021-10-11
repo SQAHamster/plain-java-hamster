@@ -198,6 +198,12 @@
 			<organization>Software Quality and Architecture - University of Stuttgart</organization>
 			<organizationUrl>https://www.iste.uni-stuttgart.de/sqa/</organizationUrl>
 		</developer>
+		<developer>
+			<name>Georg Reißner</name>
+			<email>st168991@stud.uni-stuttgart.de</email>
+			<organization>Software Quality and Architecture - University of Stuttgart</organization>
+			<organizationUrl>https://www.iste.uni-stuttgart.de/sqa/</organizationUrl>
+		</developer>
 	</developers>
 
 </project>
