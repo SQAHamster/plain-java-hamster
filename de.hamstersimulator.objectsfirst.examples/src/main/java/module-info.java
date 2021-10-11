@@ -1,4 +1,4 @@
-module sqa.hamster.examples {
-    requires sqa.hamster.main;
-    requires sqa.hamster.ui;
+module de.hamstersimulator.objectsfirst.examples {
+    requires de.hamstersimulator.objectsfirst.main;
+    requires de.hamstersimulator.objectsfirst.ui;
 }

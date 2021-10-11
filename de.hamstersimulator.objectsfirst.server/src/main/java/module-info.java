@@ -1,6 +1,6 @@
-module sqa.hamster.server {
-    requires sqa.hamster.core;
-    requires sqa.util;
+module de.hamstersimulator.objectsfirst.server {
+    requires de.hamstersimulator.objectsfirst.core;
+    requires de.hamstersimulator.objectsfirst.util;
     requires com.google.gson;
     requires javafx.base;
     requires jdk.httpserver;

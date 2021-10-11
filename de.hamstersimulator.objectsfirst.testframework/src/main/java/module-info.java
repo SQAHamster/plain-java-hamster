@@ -1,10 +1,10 @@
-module sqa.hamster.testframework {
-    requires transitive sqa.hamster.main;
+module de.hamstersimulator.objectsfirst.testframework {
+    requires transitive de.hamstersimulator.objectsfirst.main;
 
     requires org.junit.jupiter.engine;
     requires org.junit.platform.launcher;
     requires transitive org.junit.jupiter.api;
-    requires sqa.hamster.core;
+    requires de.hamstersimulator.objectsfirst.core;
     requires javafx.base;
 
     exports de.hamstersimulator.objectsfirst.testframework;

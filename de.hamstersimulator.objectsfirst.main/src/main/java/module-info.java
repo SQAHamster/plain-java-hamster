@@ -1,9 +1,9 @@
-module sqa.hamster.main {
-    requires transitive sqa.hamster.core;
+module de.hamstersimulator.objectsfirst.main {
+    requires transitive de.hamstersimulator.objectsfirst.core;
     requires java.logging;
-    requires transitive sqa.hamster.ui;
-    requires sqa.hamster.config;
-    requires sqa.hamster.server;
+    requires transitive de.hamstersimulator.objectsfirst.ui;
+    requires de.hamstersimulator.objectsfirst.config;
+    requires de.hamstersimulator.objectsfirst.server;
     requires com.google.gson;
 
     exports de.hamstersimulator.objectsfirst.external.model;

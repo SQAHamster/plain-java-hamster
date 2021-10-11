@@ -1,5 +1,5 @@
-module sqa.hamster.core {
-    requires transitive sqa.util;
+module de.hamstersimulator.objectsfirst.core {
+    requires transitive de.hamstersimulator.objectsfirst.util;
     requires transitive javafx.base;
 
     exports de.hamstersimulator.objectsfirst.datatypes;
@@ -10,12 +10,12 @@ module sqa.hamster.core {
     exports de.hamstersimulator.objectsfirst.adapter.observables.command.specification.hamster;
     exports de.hamstersimulator.objectsfirst.adapter.observables.command.specification.territory;
 
-    exports de.hamstersimulator.objectsfirst.commands to sqa.hamster.main;
-    exports de.hamstersimulator.objectsfirst.internal.model to sqa.hamster.main;
-    exports de.hamstersimulator.objectsfirst.internal.model.hamster to sqa.hamster.main;
-    exports de.hamstersimulator.objectsfirst.internal.model.territory to sqa.hamster.main;
+    exports de.hamstersimulator.objectsfirst.commands to de.hamstersimulator.objectsfirst.main;
+    exports de.hamstersimulator.objectsfirst.internal.model to de.hamstersimulator.objectsfirst.main;
+    exports de.hamstersimulator.objectsfirst.internal.model.hamster to de.hamstersimulator.objectsfirst.main;
+    exports de.hamstersimulator.objectsfirst.internal.model.territory to de.hamstersimulator.objectsfirst.main;
     exports de.hamstersimulator.objectsfirst.internal.model.hamster.command.specification
-            to sqa.hamster.main;
+            to de.hamstersimulator.objectsfirst.main;
 
     opens de.hamstersimulator.objectsfirst.datatypes to com.google.gson;
 

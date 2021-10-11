@@ -1,8 +1,8 @@
-module sqa.hamster.ui {
+module de.hamstersimulator.objectsfirst.ui {
     requires javafx.base;
     requires javafx.controls;
     requires javafx.fxml;
-    requires sqa.hamster.core;
+    requires de.hamstersimulator.objectsfirst.core;
 
     opens de.hamstersimulator.objectsfirst.ui.javafx to javafx.fxml;
     opens de.hamstersimulator.objectsfirst.ui.ressources.fxml;
