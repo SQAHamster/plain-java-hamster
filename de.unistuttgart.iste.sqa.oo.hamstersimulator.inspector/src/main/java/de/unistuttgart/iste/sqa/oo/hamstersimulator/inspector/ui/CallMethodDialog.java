@@ -7,6 +7,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -32,15 +33,19 @@ public class CallMethodDialog extends Dialog<List<Object>> {
         dialogPane.setContent(contentGrid);
         dialogPane.setMaxWidth(300);
 
+        final Label methodNameLabel = new Label();
+        methodNameLabel.textProperty().bind((new SimpleStringProperty(this, "titleProp", "Calling method ")).concat(method.nameProperty()));
+        contentGrid.add(methodNameLabel, 0, 0, 2, 1);
+
         final List<ParamViewModel> params = method.paramsProperty().get();
         final List<InputControl> values = new ArrayList<>();
         for (int i = 0; i < params.size(); i++) {
             final ParamViewModel param = params.get(i);
             final Label nameLabel = new Label();
             nameLabel.textProperty().bind(param.nameProperty());
-            contentGrid.add(nameLabel, 0, i);
+            contentGrid.add(nameLabel, 0, i+1);
             final InputControl inputControl = new InputControl(param.typeProperty().get(), inspectionViewModel);
-            contentGrid.add(inputControl, 1, i);
+            contentGrid.add(inputControl, 1, i+1);
             values.add(inputControl);
         }
         final BooleanBinding allValid = Bindings.createBooleanBinding(() ->

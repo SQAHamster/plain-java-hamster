@@ -42,7 +42,7 @@ public class MethodsTitledPane extends TitledPane {
         for (int i = 0; i < methods.size(); i++) {
             final MethodViewModel method = methods.get(i);
             final Label nameLabel = new Label();
-            nameLabel.textProperty().bind(method.nameProperty());
+            nameLabel.textProperty().bind(method.methodSignatureProperty());
             this.contentGrid.add(nameLabel, 0, i);
             final Button callButton = new Button("Call");
             callButton.setOnMouseClicked(e -> {
