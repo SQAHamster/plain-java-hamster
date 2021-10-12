@@ -91,15 +91,15 @@ public final class InstanceFactory {
                 return null;
             }
         };
-        return new MethodViewModel(method.toGenericString(),
+        return new MethodViewModel(method.getName(),
                 Arrays.stream(method.getParameters()).map(ParamViewModel::fromParameter).collect(Collectors.toList()),
-                method.getReturnType(),
+                new Type(method.getReturnType()),
                 invokeMethod);
     }
 
     private FieldViewModel createInstanceFieldViewModel(final Object instance, final Field field) {
         try {
-            final FieldViewModel viewModel = new FieldViewModel(field.toGenericString(), new Type(field.getType()), field.get(instance));
+            final FieldViewModel viewModel = new FieldViewModel(field.getName(), new Type(field.getType()), field.get(instance));
             viewModel.valueProperty().addListener((observable, oldValue, newValue) -> {
                 try {
                     field.set(instance, newValue);
@@ -108,7 +108,7 @@ public final class InstanceFactory {
                 }
             });
             ChangeListener<Boolean> isVisibleListener = (change, oldVal, newVal) -> {
-                if (change.getValue()) {
+                if (change.getValue()) { //TODO: Spawn/kill refresh timer
                     try {
                         viewModel.valueProperty().setValue(field.get(instance));
                     } catch (IllegalAccessException e) {

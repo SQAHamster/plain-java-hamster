@@ -1,5 +1,6 @@
 package de.unistuttgart.iste.sqa.oo.hamstersimulator.inspector.model;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class Type {
@@ -28,12 +29,6 @@ public class Type {
 
     @Override
     public String toString() {
-        if (this.category == TypeCategory.COMPLEX) {
-            return this.type.getSimpleName();
-        } else if (this.category != TypeCategory.ENUM) {
-            return this.category.toString();
-        } else {
-            return "Enum: " + this.type.getSimpleName();
-        }
+        return this.type == null ? "null" : this.type.getSimpleName();
     }
 }

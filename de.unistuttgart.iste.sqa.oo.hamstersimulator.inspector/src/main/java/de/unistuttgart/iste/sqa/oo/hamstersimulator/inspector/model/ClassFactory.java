@@ -78,7 +78,7 @@ public final class ClassFactory {
         };
         return new MethodViewModel(method.toGenericString(),
                 Arrays.stream(method.getParameters()).map(ParamViewModel::fromParameter).collect(Collectors.toList()),
-                method.getReturnType(),
+                new Type(method.getReturnType()),
                 invokeMethod);
     }
 
@@ -93,7 +93,7 @@ public final class ClassFactory {
         };
         return new MethodViewModel(constructor.toGenericString(),
                 Arrays.stream(constructor.getParameters()).map(ParamViewModel::fromParameter).collect(Collectors.toList()),
-                constructor.getDeclaringClass(),
+                new Type(constructor.getDeclaringClass()),
                 construct);
     }
 
