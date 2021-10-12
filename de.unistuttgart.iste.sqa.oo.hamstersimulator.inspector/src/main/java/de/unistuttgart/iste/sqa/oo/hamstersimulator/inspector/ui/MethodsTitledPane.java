@@ -29,8 +29,10 @@ public class MethodsTitledPane extends TitledPane {
         this.methods = new SimpleListProperty<>(this, "methods");
         this.contentGrid = new GridPane();
         final ColumnConstraints firstColumnConstraints = new ColumnConstraints();
-        final ColumnConstraints secondColumnConstraints = new ColumnConstraints(50);
+        firstColumnConstraints.setPrefWidth(1000);
+        final ColumnConstraints secondColumnConstraints = new ColumnConstraints();
         secondColumnConstraints.setHalignment(HPos.RIGHT);
+        secondColumnConstraints.setMinWidth(50);
         this.contentGrid.getColumnConstraints().addAll(firstColumnConstraints, secondColumnConstraints);
         this.setContent(this.contentGrid);
         this.methods.addListener((ListChangeListener<MethodViewModel>) change -> this.updateLayout(this.methods));
