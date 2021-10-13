@@ -10,6 +10,7 @@ import javafx.geometry.HPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 
@@ -44,7 +45,11 @@ public class MethodsTitledPane extends TitledPane {
             final Label nameLabel = new Label();
             nameLabel.textProperty().bind(method.methodSignatureProperty());
             this.contentGrid.add(nameLabel, 0, i);
+            final Tooltip signatureTooltip = new Tooltip();
+            signatureTooltip.textProperty().bind(method.methodSignatureProperty());
+            nameLabel.setTooltip(signatureTooltip);
             final Button callButton = new Button("Call");
+            nameLabel.setLabelFor(callButton);
             callButton.setOnMouseClicked(e -> {
                 final CallMethodDialog dialog = new CallMethodDialog(method, this.inspectionViewModel);
                 dialog.setWidth(400);
