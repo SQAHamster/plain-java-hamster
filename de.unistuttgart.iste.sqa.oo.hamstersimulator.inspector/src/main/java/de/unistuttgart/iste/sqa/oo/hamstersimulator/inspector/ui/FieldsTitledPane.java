@@ -10,13 +10,17 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FieldsTitledPane extends TitledPane {
 
     private final SimpleListProperty<FieldViewModel> fields;
     private final InspectionViewModel inspectionViewModel;
     private final GridPane contentGrid;
+    private final Map<FieldViewModel, InputControl> currentInputControls = new HashMap<>();
 
     public FieldsTitledPane(final InspectionViewModel inspectionViewModel) {
         this.inspectionViewModel = inspectionViewModel;
@@ -34,6 +38,9 @@ public class FieldsTitledPane extends TitledPane {
 
     private void updateLayout(final List<FieldViewModel> fields) {
         this.contentGrid.getChildren().clear();
+        this.currentInputControls.forEach((key, value) -> value.valueProperty().unbindBidirectional(key.valueProperty()));
+        this.currentInputControls.clear();
+
         for (int i = 0; i < fields.size(); i++) {
             final FieldViewModel field = fields.get(i);
             final Label nameLabel = new Label();
@@ -42,6 +49,7 @@ public class FieldsTitledPane extends TitledPane {
             final InputControl inputControl = new InputControl(field.typeProperty().get(), this.inspectionViewModel);
             inputControl.valueProperty().bindBidirectional(field.valueProperty());
             this.contentGrid.add(inputControl, 1, i);
+            this.currentInputControls.put(field, inputControl);
         }
         if (fields.isEmpty()) {
             this.setExpanded(false);

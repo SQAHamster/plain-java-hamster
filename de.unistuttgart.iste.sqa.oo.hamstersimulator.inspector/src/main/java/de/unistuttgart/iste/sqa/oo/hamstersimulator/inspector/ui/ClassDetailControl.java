@@ -17,10 +17,10 @@ public class ClassDetailControl extends VBox {
         constructorsPane.setText("Constructors");
 
         final FieldsTitledPane staticFieldsPane = new FieldsTitledPane(inspectionViewModel);
-        staticFieldsPane.setText("Fields");
+        staticFieldsPane.setText("Static Fields");
 
         final MethodsTitledPane staticMethodsPane = new MethodsTitledPane(inspectionViewModel);
-        staticMethodsPane.setText("Methods");
+        staticMethodsPane.setText("Static Methods");
 
         this.getChildren().addAll(constructorsPane, staticFieldsPane, staticMethodsPane);
 

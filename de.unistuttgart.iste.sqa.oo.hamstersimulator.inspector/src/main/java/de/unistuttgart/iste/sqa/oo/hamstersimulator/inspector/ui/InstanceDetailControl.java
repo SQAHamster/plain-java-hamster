@@ -19,14 +19,24 @@ public class InstanceDetailControl extends VBox {
         final MethodsTitledPane methodsPane = new MethodsTitledPane(inspectionViewModel);
         methodsPane.setText("Methods");
 
-        this.getChildren().addAll(fieldsPane, methodsPane);
+        final FieldsTitledPane superClassFieldsPane = new FieldsTitledPane(inspectionViewModel);
+        superClassFieldsPane.setText("Superclass Fields");
+
+        final MethodsTitledPane superclassMethodsPane = new MethodsTitledPane(inspectionViewModel);
+        superclassMethodsPane.setText("Superclass Methods");
+
+        this.getChildren().addAll(fieldsPane, methodsPane, superClassFieldsPane, superclassMethodsPane);
 
         this.instance.addListener((observable, oldValue, newValue) -> {
             fieldsPane.fieldsProperty().unbind();
             methodsPane.methodsProperty().unbind();
+            superClassFieldsPane.fieldsProperty().unbind();
+            superclassMethodsPane.methodsProperty().unbind();
             if (newValue != null) {
                 fieldsPane.fieldsProperty().bind(newValue.fieldsProperty());
                 methodsPane.methodsProperty().bind(newValue.methodsProperty());
+                superClassFieldsPane.fieldsProperty().bind(newValue.superclassFieldsProperty());
+                superclassMethodsPane.methodsProperty().bind(newValue.superclassMethodsProperty());
             }
         });
     }
