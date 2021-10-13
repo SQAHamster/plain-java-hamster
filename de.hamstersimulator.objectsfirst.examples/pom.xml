@@ -8,7 +8,7 @@
     <parent>
         <groupId>de.hamstersimulator.objectsfirst</groupId>
         <artifactId>parent</artifactId>
-        <version>4.0.0</version>
+        <version>4.0.1-SNAPSHOT</version>
         <relativePath>../de.hamstersimulator.objectsfirst.parent</relativePath>
     </parent>
 
@@ -18,7 +18,7 @@
                 de.hamstersimulator.objectsfirst
             </groupId>
             <artifactId>main</artifactId>
-            <version>4.0.0</version>
+            <version>4.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
