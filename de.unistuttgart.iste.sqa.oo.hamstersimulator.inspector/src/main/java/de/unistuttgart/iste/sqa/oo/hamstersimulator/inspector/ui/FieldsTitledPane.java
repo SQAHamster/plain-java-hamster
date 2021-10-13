@@ -37,7 +37,7 @@ public class FieldsTitledPane extends TitledPane {
         for (int i = 0; i < fields.size(); i++) {
             final FieldViewModel field = fields.get(i);
             final Label nameLabel = new Label();
-            nameLabel.textProperty().bind(field.nameProperty());
+            nameLabel.textProperty().bind(field.typeProperty().asString().concat(" ").concat(field.nameProperty()));
             this.contentGrid.add(nameLabel, 0, i);
             final InputControl inputControl = new InputControl(field.typeProperty().get(), this.inspectionViewModel);
             inputControl.valueProperty().bindBidirectional(field.valueProperty());

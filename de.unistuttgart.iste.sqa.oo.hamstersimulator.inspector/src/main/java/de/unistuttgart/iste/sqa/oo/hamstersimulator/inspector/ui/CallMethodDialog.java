@@ -42,7 +42,7 @@ public class CallMethodDialog extends Dialog<List<Object>> {
         for (int i = 0; i < params.size(); i++) {
             final ParamViewModel param = params.get(i);
             final Label nameLabel = new Label();
-            nameLabel.textProperty().bind(param.nameProperty());
+            nameLabel.textProperty().bind(param.typeProperty().asString().concat(" ").concat(param.nameProperty()));
             contentGrid.add(nameLabel, 0, i+1);
             final InputControl inputControl = new InputControl(param.typeProperty().get(), inspectionViewModel);
             contentGrid.add(inputControl, 1, i+1);

@@ -76,7 +76,7 @@ public final class ClassFactory {
                 return null;
             }
         };
-        return new MethodViewModel(method.toGenericString(),
+        return new MethodViewModel(method.getName(),
                 Arrays.stream(method.getParameters()).map(ParamViewModel::fromParameter).collect(Collectors.toList()),
                 new Type(method.getReturnType()),
                 invokeMethod);
@@ -91,7 +91,7 @@ public final class ClassFactory {
                 return null;
             }
         };
-        return new MethodViewModel(constructor.toGenericString(),
+        return new MethodViewModel("",
                 Arrays.stream(constructor.getParameters()).map(ParamViewModel::fromParameter).collect(Collectors.toList()),
                 new Type(constructor.getDeclaringClass()),
                 construct);
@@ -99,7 +99,7 @@ public final class ClassFactory {
 
     private FieldViewModel createStaticFieldViewModel(final Field field) {
         try {
-            final FieldViewModel viewModel = new FieldViewModel(field.toGenericString(), new Type(field.getType()), field.get(null));
+            final FieldViewModel viewModel = new FieldViewModel(field.getName(), new Type(field.getType()), field.get(null));
             viewModel.valueProperty().addListener((observable, oldValue, newValue) -> {
                 try {
                     field.set(null, newValue);
