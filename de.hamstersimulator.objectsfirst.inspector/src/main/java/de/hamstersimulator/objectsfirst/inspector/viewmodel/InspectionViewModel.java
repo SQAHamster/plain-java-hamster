@@ -1,13 +1,8 @@
 package de.hamstersimulator.objectsfirst.inspector.viewmodel;
 
-import de.hamstersimulator.objectsfirst.external.model.Hamster;
-import de.hamstersimulator.objectsfirst.external.model.HamsterGame;
-import de.hamstersimulator.objectsfirst.external.model.SimpleHamsterGame;
 import de.hamstersimulator.objectsfirst.inspector.model.ClassFactory;
 import de.hamstersimulator.objectsfirst.inspector.model.InstanceFactory;
 import de.hamstersimulator.objectsfirst.inspector.model.Type;
-import de.hamstersimulator.objectsfirst.inspector.testdata.B;
-import de.hamstersimulator.objectsfirst.inspector.testdata.C;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -25,7 +20,7 @@ public class InspectionViewModel {
     private final InstanceFactory instanceFactory;
     private final ClassFactory classFactory;
 
-    public InspectionViewModel(final HamsterGame hamsterGame) {
+    public InspectionViewModel() {
         this.classes = new ReadOnlyListWrapper<>(this, "classes", FXCollections.observableList(new ArrayList<>()));
         this.instances = new SimpleListProperty<>(this, "objects", FXCollections.observableList(new ArrayList<>()));
         this.multiTypes.add(Type.OBJECT_TYPE);
@@ -53,11 +48,6 @@ public class InspectionViewModel {
 
         this.instanceFactory = new InstanceFactory(this);
         this.classFactory = new ClassFactory(this);
-
-        this.viewModelForClass(hamsterGame.getClass());
-        this.viewModelForClass(SimpleHamsterGame.class);
-        this.viewModelForClass(Hamster.class);
-        final InstanceViewModel hamsterGameViewModel = this.createInstanceViewModel(hamsterGame, "hamsterGame");
     }
 
     public ReadOnlyListProperty<ClassViewModel> classesProperty() {

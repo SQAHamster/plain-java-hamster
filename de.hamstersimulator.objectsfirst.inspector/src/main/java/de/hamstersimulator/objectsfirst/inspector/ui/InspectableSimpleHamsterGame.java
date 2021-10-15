@@ -1,6 +1,7 @@
 package de.hamstersimulator.objectsfirst.inspector.ui;
 
 import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
+import de.hamstersimulator.objectsfirst.datatypes.Location;
 import de.hamstersimulator.objectsfirst.exceptions.GameAbortedException;
 import de.hamstersimulator.objectsfirst.external.model.Hamster;
 import de.hamstersimulator.objectsfirst.external.model.HamsterGame;
@@ -30,7 +31,11 @@ public class InspectableSimpleHamsterGame extends SimpleHamsterGame {
 
     public InspectableSimpleHamsterGame() {
         super();
-        inspect = new InspectionViewModel(this.game);
+        //TODO put in method
+        inspect = new InspectionViewModel();
+        inspect.createInstanceViewModel(this, "simpleHamsterGame");
+        inspect.createInstanceViewModel(this.paule, "paule");
+        inspect.viewModelForClass(Hamster.class);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package de.hamstersimulator.objectsfirst.inspector.ui;
 
 import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
-import de.hamstersimulator.objectsfirst.inspector.testdata.B;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.InspectionViewModel;
 import de.hamstersimulator.objectsfirst.ui.javafx.HamsterGameStage;
 import javafx.scene.Scene;
@@ -24,8 +23,6 @@ public class InpectableHamsterGameStage extends HamsterGameStage {
         newScene.getStylesheets().add("style.css");
         newScene.getStylesheets().addAll(this.getScene().getStylesheets());
         this.setScene(newScene);
-
-        inspect.createInstanceViewModel(new B(), "b");
     }
 
 }
