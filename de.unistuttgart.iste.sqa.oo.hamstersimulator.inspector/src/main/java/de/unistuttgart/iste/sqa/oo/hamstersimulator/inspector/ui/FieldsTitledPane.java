@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 
@@ -45,6 +46,9 @@ public class FieldsTitledPane extends TitledPane {
             final FieldViewModel field = fields.get(i);
             final Label nameLabel = new Label();
             nameLabel.textProperty().bind(field.typeProperty().asString().concat(" ").concat(field.nameProperty()));
+            final Tooltip signatureTooltip = new Tooltip();
+            signatureTooltip.textProperty().bind(field.typeProperty().asString().concat(" ").concat(field.nameProperty()));
+            nameLabel.setTooltip(signatureTooltip);
             this.contentGrid.add(nameLabel, 0, i);
             final InputControl inputControl = new InputControl(field.typeProperty().get(), this.inspectionViewModel);
             inputControl.valueProperty().bindBidirectional(field.valueProperty());
