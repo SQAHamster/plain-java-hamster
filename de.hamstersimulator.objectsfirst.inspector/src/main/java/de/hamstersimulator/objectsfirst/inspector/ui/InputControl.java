@@ -296,7 +296,7 @@ public class InputControl extends HBox {
                     case OBJECT, COMPLEX -> {
                         final Optional<InstanceViewModel> instanceViewModel = this.inspectionViewModel.getViewModelForObject(value);
                         if (instanceViewModel.isPresent()) {
-                            instanceViewModel.get().nameProperty().get();
+                            label.setText(instanceViewModel.get().nameProperty().get());
                             this.isNewObjectValue.set(false);
                         } else {
                             label.setText("«new»");
@@ -314,6 +314,11 @@ public class InputControl extends HBox {
                 label.setText("null");
             }
         };
+        final ListChangeListener<InstanceViewModel> instanceViewModelListChangeListener = change -> {
+            this.onValueChanged.accept(this.value.get());
+        };
+        this.inspectionViewModel.instancesProperty().addListener(instanceViewModelListChangeListener);
+        this.currentListChangeListeners.add(instanceViewModelListChangeListener);
         this.currentInputControl = label;
         this.onValueChanged.accept(this.value.get());
     }
