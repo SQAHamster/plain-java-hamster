@@ -1,5 +1,6 @@
 package de.hamstersimulator.objectsfirst.inspector.ui;
 
+import de.hamstersimulator.objectsfirst.inspector.model.TypeCategory;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.MethodViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.InspectionViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.ParamViewModel;
@@ -63,9 +64,11 @@ public class MethodsTitledPane extends TitledPane {
                         : Optional.of(Collections.emptyList());
                 values.ifPresent(objects -> this.inspectionViewModel.executeOnMainThread(() -> {
                     final Object result = method.call(objects);
-                    JavaFXUtil.blockingExecuteOnFXThread(() -> {
-                        new ResultDialog(result, this.inspectionViewModel).showAndWait();
-                    });
+                    if (method.returnTypeProperty().get().getCategory() != TypeCategory.VOID) {
+                        JavaFXUtil.blockingExecuteOnFXThread(() -> {
+                            new ResultDialog(result, this.inspectionViewModel).showAndWait();
+                        });
+                    }
                 }));
             });
             this.contentGrid.add(callButton, 1, i);

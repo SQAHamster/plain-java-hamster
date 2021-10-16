@@ -15,7 +15,8 @@ public enum TypeCategory {
     ENUM,
     OBJECT,
     OPTIONAL,
-    COMPLEX;
+    COMPLEX,
+    VOID;
     
     public static TypeCategory getFromClass(Class<?> cls) {
         if (cls == byte.class || cls == Byte.class) {
@@ -42,6 +43,8 @@ public enum TypeCategory {
             return TypeCategory.OPTIONAL;
         } else if (cls.isEnum()) {
             return TypeCategory.ENUM;
+        } else if (cls == void.class) {
+            return TypeCategory.VOID;
         } else {
             return TypeCategory.COMPLEX;
         }
