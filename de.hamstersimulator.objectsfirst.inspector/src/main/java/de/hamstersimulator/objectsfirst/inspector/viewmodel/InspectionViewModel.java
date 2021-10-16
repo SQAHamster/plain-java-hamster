@@ -1,8 +1,10 @@
 package de.hamstersimulator.objectsfirst.inspector.viewmodel;
 
 import de.hamstersimulator.objectsfirst.inspector.model.ClassFactory;
+import de.hamstersimulator.objectsfirst.inspector.model.InspectionExecutor;
 import de.hamstersimulator.objectsfirst.inspector.model.InstanceFactory;
 import de.hamstersimulator.objectsfirst.inspector.model.Type;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -16,6 +18,7 @@ public class InspectionViewModel {
     private final SimpleListProperty<InstanceViewModel> instances;
     private final SimpleListProperty<Type> multiTypes
             = new SimpleListProperty<>(this, "multiInputTypes", FXCollections.observableList(new ArrayList<>()));
+    private final SimpleObjectProperty<InspectionExecutor> executor = new SimpleObjectProperty<>(this, "executor");
     private final Map<Class<?>, Type> enumInputTypeLookup = new HashMap<>();
     private final InstanceFactory instanceFactory;
     private final ClassFactory classFactory;
@@ -62,6 +65,10 @@ public class InspectionViewModel {
         return this.multiTypes;
     }
 
+    public BooleanBinding isReadOnly() {
+        return this.executor.isNull();
+    }
+
     public Optional<InstanceViewModel> getViewModelForObject(final Object object) {
         return this.instanceFactory.getViewModelForObject(object);
     }
@@ -80,5 +87,64 @@ public class InspectionViewModel {
 
     public boolean hasViewModelForClass(final Class<?> cls) {
         return this.classFactory.hasViewModelForClass(cls);
+    }
+
+    /*@
+     @ requires isReadOnly().get();
+     @ requires executor != null;
+     @ ensures !isReadOnly().get();
+     @*/
+    /**
+     * Sets the current executor
+     * Must be executed on the JavaFX thread
+     *
+     * @param executor the new executor used to execute runnables on the main thread
+     */
+    public void setExecutor(final InspectionExecutor executor) {
+        if (!this.isReadOnly().get()) {
+            throw new IllegalStateException("There is already an executor");
+        }
+        this.executor.set(executor);
+    }
+
+    /*@
+     @ requires !isReadOnly().get();
+     @ ensures isReadOnly().get();
+     @*/
+    /**
+     * Removes the current executor
+     * Must be executed on the JavaFX thread
+     */
+    public void removeExecutor() {
+        if (this.isReadOnly().get()) {
+            throw new IllegalStateException("There is currently no executor");
+        }
+        this.executor.set(null);
+    }
+
+    /*@
+     @ requires !isReadOnly().get();
+     @ requires runnable != null;
+     @*/
+    /**
+     * Executes a runnable on the main thread
+     * This is not blocking!
+     *
+     * @param runnable executed on the main thread
+     */
+    public void executeOnMainThread(final Runnable runnable) {
+        if (this.isReadOnly().get()) {
+            throw new IllegalStateException("There is currently no executor");
+        }
+        this.executor.get().scheduleRunnable(runnable);
+    }
+
+    /**
+     * Stops the execution
+     */
+    public void stopExecution() {
+        if (!this.isReadOnly().get()) {
+            this.executor.get().stop();
+        }
     }
 }

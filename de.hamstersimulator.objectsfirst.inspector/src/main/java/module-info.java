@@ -12,4 +12,5 @@ module de.hamstersimulator.objectsfirst.inspector {
     exports de.hamstersimulator.objectsfirst.inspector.ui;
     exports de.hamstersimulator.objectsfirst.inspector.viewmodel;
     exports de.hamstersimulator.objectsfirst.inspector.model;
+    exports de.hamstersimulator.objectsfirst.inspector;
 }

@@ -10,12 +10,15 @@ import java.io.IOException;
 
 public class InpectableHamsterGameStage extends HamsterGameStage {
 
-    public InpectableHamsterGameStage(HamsterGameViewModel hamsterGameViewModel, InspectionViewModel inspect) throws IOException {
+    private final InspectionViewModel inspectionViewModel;
+
+    public InpectableHamsterGameStage(HamsterGameViewModel hamsterGameViewModel, InspectionViewModel inspectionViewModel) throws IOException {
         super(hamsterGameViewModel);
 
+        this.inspectionViewModel = inspectionViewModel;
         final SplitPane root = new SplitPane();
         root.getItems().add(this.getScene().getRoot());
-        final InspectControl inspectControl = new InspectControl(inspect);
+        final InspectControl inspectControl = new InspectControl(inspectionViewModel);
         root.getItems().add(inspectControl);
         root.setDividerPosition(0,0.65);
         final Scene newScene = new Scene(root, 1280, 720);
@@ -25,4 +28,9 @@ public class InpectableHamsterGameStage extends HamsterGameStage {
         this.setScene(newScene);
     }
 
+    @Override
+    protected void onCloseRequest() {
+        super.onCloseRequest();
+        this.inspectionViewModel.stopExecution();
+    }
 }

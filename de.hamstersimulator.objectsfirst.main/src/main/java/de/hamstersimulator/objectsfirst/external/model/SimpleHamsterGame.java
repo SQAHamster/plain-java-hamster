@@ -80,13 +80,24 @@ public abstract class SimpleHamsterGame {
     public final void doRun() {
         try {
             this.run();
+            this.postRun();
         } catch (final GameAbortedException e) {
             // End this game
-        } catch (final RuntimeException e) {
+        } catch (final Exception e) {
             this.game.confirmAlert(e);
             throw e;
+        } finally {
+            this.game.stopGame();
         }
-        this.game.stopGame();
+    }
+
+    /**
+     * Executed after the run method was executed
+     * Can be used, to perform cleanup, or start UI tools
+     * Warning: might not be executed!
+     */
+    protected void postRun() {
+
     }
 
     /**

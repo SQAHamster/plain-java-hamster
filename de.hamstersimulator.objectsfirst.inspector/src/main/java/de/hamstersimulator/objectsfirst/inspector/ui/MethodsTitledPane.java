@@ -3,6 +3,7 @@ package de.hamstersimulator.objectsfirst.inspector.ui;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.MethodViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.InspectionViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.ParamViewModel;
+import de.hamstersimulator.objectsfirst.ui.javafx.JavaFXUtil;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.ListChangeListener;
@@ -51,6 +52,7 @@ public class MethodsTitledPane extends TitledPane {
             signatureTooltip.textProperty().bind(method.methodSignatureProperty());
             nameLabel.setTooltip(signatureTooltip);
             final Button callButton = new Button("Call");
+            callButton.disableProperty().bind(this.inspectionViewModel.isReadOnly());
             nameLabel.setLabelFor(callButton);
             callButton.setOnMouseClicked(e -> {
                 final CallMethodDialog dialog = new CallMethodDialog(method, this.inspectionViewModel);
@@ -59,10 +61,12 @@ public class MethodsTitledPane extends TitledPane {
                 final Optional<List<Object>> values = needsInput
                         ? new CallMethodDialog(method, this.inspectionViewModel).showAndWait()
                         : Optional.of(Collections.emptyList());
-                if (values.isPresent()) {
-                    final Object result = method.call(values.get());
-                    new ResultDialog(result, this.inspectionViewModel).showAndWait();
-                }
+                values.ifPresent(objects -> this.inspectionViewModel.executeOnMainThread(() -> {
+                    final Object result = method.call(objects);
+                    JavaFXUtil.blockingExecuteOnFXThread(() -> {
+                        new ResultDialog(result, this.inspectionViewModel).showAndWait();
+                    });
+                }));
             });
             this.contentGrid.add(callButton, 1, i);
         }

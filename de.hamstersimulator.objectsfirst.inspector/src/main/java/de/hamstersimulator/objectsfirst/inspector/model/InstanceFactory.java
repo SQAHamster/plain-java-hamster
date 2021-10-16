@@ -87,8 +87,7 @@ public final class InstanceFactory {
             try {
                 return method.invoke(instance, params.toArray());
             } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-                return null;
+                throw new IllegalArgumentException("Could not invoke method", e); //TODO maybe rethrow causing exception
             }
         };
         return new MethodViewModel(method.getName(),
@@ -99,28 +98,30 @@ public final class InstanceFactory {
 
     private FieldViewModel createInstanceFieldViewModel(final Object instance, final Field field) {
         try {
-            final FieldViewModel viewModel = new FieldViewModel(field.getName(), new Type(field.getType()), field.get(instance));
+            final FieldViewModel viewModel = new FieldViewModel(field.getName(), new Type(field.getType()),
+                    field.get(instance), Modifier.isFinal(field.getModifiers()));
             viewModel.valueProperty().addListener((observable, oldValue, newValue) -> {
-                try {
-                    field.set(instance, newValue);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+                this.viewModel.executeOnMainThread(() -> {
+                    try {
+                        field.set(instance, newValue);
+                    } catch (IllegalAccessException e) {
+                        throw new IllegalArgumentException("Could not set field", e);
+                    }
+                });
             });
             ChangeListener<Boolean> isVisibleListener = (change, oldVal, newVal) -> {
                 if (change.getValue()) { //TODO: Spawn/kill refresh timer
                     try {
                         viewModel.valueProperty().setValue(field.get(instance));
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException("Could not get field value", e);
                     }
                 }
             };
             viewModel.isVisibleProperty().addListener(isVisibleListener);
             return viewModel;
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("Cannot read field value");
+            throw new IllegalArgumentException("Cannot read field value",  e);
         }
     }
 

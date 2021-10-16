@@ -6,7 +6,6 @@ import javafx.collections.ListChangeListener;
 
 import java.lang.reflect.*;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -72,8 +71,7 @@ public final class ClassFactory {
             try {
                 return method.invoke(null, params.toArray());
             } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-                return null;
+                throw new IllegalArgumentException("Could not invoke static method", e); //TODO maybe rethrow causing exception
             }
         };
         return new MethodViewModel(method.getName(),
@@ -87,8 +85,7 @@ public final class ClassFactory {
             try {
                 return constructor.newInstance(params.toArray());
             } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
-                e.printStackTrace();
-                return null;
+                throw new IllegalArgumentException("Could not invoke constructor", e); //TODO maybe rethrow causing exception
             }
         };
         return new MethodViewModel("",
@@ -99,28 +96,30 @@ public final class ClassFactory {
 
     private FieldViewModel createStaticFieldViewModel(final Field field) {
         try {
-            final FieldViewModel viewModel = new FieldViewModel(field.getName(), new Type(field.getType()), field.get(null));
+            final FieldViewModel viewModel = new FieldViewModel(field.getName(), new Type(field.getType()),
+                    field.get(null), Modifier.isFinal(field.getModifiers()));
             viewModel.valueProperty().addListener((observable, oldValue, newValue) -> {
-                try {
-                    field.set(null, newValue);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+                this.viewModel.executeOnMainThread(() -> {
+                    try {
+                        field.set(null, newValue);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException("Could not set field", e);
+                    }
+                });
             });
             ChangeListener<Boolean> isVisibleListener = (change, oldVal, newVal) -> {
                 if (change.getValue()) {
                     try {
                         viewModel.valueProperty().setValue(field.get(null));
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException("Could not get field value", e);
                     }
                 }
             };
             viewModel.isVisibleProperty().addListener(isVisibleListener);
             return viewModel;
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("Cannot read field value");
+            throw new IllegalArgumentException("Cannot read field value", e);
         }
     }
 }

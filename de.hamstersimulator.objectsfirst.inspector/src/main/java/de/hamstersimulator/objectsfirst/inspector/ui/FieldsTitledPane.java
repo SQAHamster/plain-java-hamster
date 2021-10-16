@@ -51,6 +51,7 @@ public class FieldsTitledPane extends TitledPane {
             nameLabel.setTooltip(signatureTooltip);
             this.contentGrid.add(nameLabel, 0, i);
             final InputControl inputControl = new InputControl(field.typeProperty().get(), this.inspectionViewModel);
+            inputControl.isReadOnlyProperty().bind(this.inspectionViewModel.isReadOnly().or(field.isFinalProperty()));
             inputControl.valueProperty().bindBidirectional(field.valueProperty());
             this.contentGrid.add(inputControl, 1, i);
             this.currentInputControls.put(field, inputControl);
