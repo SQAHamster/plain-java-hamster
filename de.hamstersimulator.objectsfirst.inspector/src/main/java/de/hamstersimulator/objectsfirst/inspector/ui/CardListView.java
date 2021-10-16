@@ -12,6 +12,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import org.controlsfx.control.PopOver;
 
 import java.util.IdentityHashMap;
@@ -20,8 +21,8 @@ import java.util.Map;
 public abstract class CardListView<T> extends FlowPane {
 
     private final SimpleListProperty<T> items;
-
     private final Map<T, Node> cardLookUp = new IdentityHashMap<>();
+    private PopOver currentPopOver;
 
     public CardListView() {
         this.items = new SimpleListProperty<>(this, "items");
@@ -71,10 +72,17 @@ public abstract class CardListView<T> extends FlowPane {
         final PopOver popOver = new PopOver(content);
         popOver.setDetachable(false);
         popOver.show(owner);
+        this.currentPopOver = popOver;
     }
 
     protected abstract Node createCardContent(final T item);
 
     protected abstract Region createPopOverContent(final T item);
+
+    public void onClose() {
+        if (this.currentPopOver != null) {
+            this.currentPopOver.hide(Duration.ZERO);
+        }
+    }
 
 }
