@@ -33,53 +33,75 @@ public final class InstanceFactory {
     }
 
     public InstanceViewModel createInstanceViewModel(final Object obj, final String name) {
+        return this.createInstanceViewModel(obj, name, false);
+    }
+
+    public InstanceViewModel createInstanceViewModel(final Object obj, final String name, boolean setAccessible) {
         if (obj == null) {
             throw new IllegalArgumentException("cannot get InstanceViewModel for null");
         }
 
+        Class<?> cls = obj.getClass();
+        ClassViewModel clsViewModel = this.viewModel.viewModelForClass(cls, setAccessible, setAccessible);
+        boolean setAccessibleValue = setAccessible || clsViewModel.setInstancesAccessibleProperty().get();
+
+        if (setAccessibleValue) {
+            System.out.println("Making instance " + name + " accessible");
+        }
+
         final InstanceViewModel newInstance = new InstanceViewModel(name,
-                this.viewModel.viewModelForClass(obj.getClass()),
-                Arrays.stream(obj.getClass().getDeclaredMethods())
-                        .filter(method -> !Modifier.isStatic(method.getModifiers()))
-                        .filter(method -> Modifier.isPublic(method.getModifiers())) //TODO improve this check
-                        .map(method -> this.createInstanceMethodViewModel(obj, method))
-                        .collect(Collectors.toList()),
-                this.createSuperclassMethodViewModels(obj.getClass(), obj),
-                Arrays.stream(obj.getClass().getDeclaredFields())
-                        .filter(field -> !Modifier.isStatic(field.getModifiers()))
-                        .filter(field -> Modifier.isPublic(field.getModifiers())) //TODO improve this check
-                        .map(field -> this.createInstanceFieldViewModel(obj, field))
-                        .collect(Collectors.toList()),
-                this.createSuperclassFieldViewModels(obj.getClass(), obj),
+                clsViewModel,
+                this.createMethodViewModelsForObject(cls, obj, setAccessibleValue).collect(Collectors.toCollection(ArrayList::new)),
+                this.createSuperclassMethodViewModels(cls, obj, setAccessibleValue).collect(Collectors.toCollection(ArrayList::new)),
+                this.createFieldViewModelsForObject(cls, obj, setAccessibleValue).collect(Collectors.toCollection(ArrayList::new)),
+                this.createSuperclassFieldViewModels(cls, obj, setAccessibleValue).collect(Collectors.toCollection(ArrayList::new)),
                 obj);
         this.viewModel.instancesProperty().add(newInstance);
         return newInstance;
     }
 
-    private List<MethodViewModel> createSuperclassMethodViewModels(final Class<?> cls, final Object obj) {
-        Class<?> superclass = cls.getSuperclass();
-        if (superclass == null) {
-            return Collections.emptyList();
-        }
-        return Stream.concat(Arrays.stream(superclass.getDeclaredMethods())
-                                .filter(method -> !Modifier.isStatic(method.getModifiers()))
-                                .filter(method -> Modifier.isPublic(method.getModifiers())) //TODO improve this check
-                                .map(method -> this.createInstanceMethodViewModel(obj, method)),
-                        this.createSuperclassMethodViewModels(superclass, obj).stream())
-                .collect(Collectors.toList());
+    private Stream<MethodViewModel> createMethodViewModelsForObject(final Class<?> cls, final Object obj, boolean setAccessible) {
+        return Arrays.stream(cls.getDeclaredMethods())
+                .filter(method -> !Modifier.isStatic(method.getModifiers()))
+                .filter(method -> {
+                    if (setAccessible) {
+                        return method.trySetAccessible();
+                    } else {
+                        return Modifier.isPublic(method.getModifiers());
+                    }
+                }) //TODO improve this check, potentially reintroduce
+                .map(method -> this.createInstanceMethodViewModel(obj, method));
     }
 
-    private List<FieldViewModel> createSuperclassFieldViewModels(final Class<?> cls, final Object obj) {
+    private Stream<FieldViewModel> createFieldViewModelsForObject(final Class<?> cls, final Object obj, boolean setAccessible) {
+        return Arrays.stream(cls.getDeclaredFields())
+                .filter(field -> !Modifier.isStatic(field.getModifiers()))
+                .filter(field -> {
+                    if (setAccessible) {
+                        return field.trySetAccessible();
+                    } else {
+                        return Modifier.isPublic(field.getModifiers());
+                    }
+                }) //TODO improve this check
+                .map(field -> this.createInstanceFieldViewModel(obj, field));
+    }
+
+    private Stream<MethodViewModel> createSuperclassMethodViewModels(final Class<?> cls, final Object obj, boolean setAccessible) {
         Class<?> superclass = cls.getSuperclass();
         if (superclass == null) {
-            return Collections.emptyList();
+            return Stream.empty();
         }
-        return Stream.concat(Arrays.stream(obj.getClass().getDeclaredFields())
-                                .filter(field -> !Modifier.isStatic(field.getModifiers()))
-                                .filter(field -> Modifier.isPublic(field.getModifiers())) //TODO improve this check
-                                .map(field -> this.createInstanceFieldViewModel(obj, field)),
-                        this.createSuperclassFieldViewModels(superclass, obj).stream())
-                .collect(Collectors.toList());
+        return Stream.concat(this.createMethodViewModelsForObject(superclass, obj, setAccessible),
+                        this.createSuperclassMethodViewModels(superclass, obj, setAccessible));
+    }
+
+    private Stream<FieldViewModel> createSuperclassFieldViewModels(final Class<?> cls, final Object obj, boolean setAccessible) {
+        Class<?> superclass = cls.getSuperclass();
+        if (superclass == null) {
+            return Stream.empty();
+        }
+        return Stream.concat(this.createFieldViewModelsForObject(superclass, obj, setAccessible),
+                        this.createSuperclassFieldViewModels(superclass, obj, setAccessible));
     }
 
     private MethodViewModel createInstanceMethodViewModel(final Object instance, final Method method) {

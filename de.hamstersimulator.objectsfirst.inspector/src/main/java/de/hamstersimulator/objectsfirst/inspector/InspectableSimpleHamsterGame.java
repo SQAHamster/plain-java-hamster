@@ -4,6 +4,7 @@ import de.hamstersimulator.objectsfirst.external.model.Hamster;
 import de.hamstersimulator.objectsfirst.external.model.SimpleHamsterGame;
 import de.hamstersimulator.objectsfirst.inspector.model.InspectionExecutor;
 import de.hamstersimulator.objectsfirst.inspector.ui.InspectableJavaFXUI;
+import de.hamstersimulator.objectsfirst.inspector.viewmodel.ClassInstanceManager;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.InspectionViewModel;
 import de.hamstersimulator.objectsfirst.ui.javafx.JavaFXUtil;
 
@@ -24,9 +25,11 @@ public abstract class InspectableSimpleHamsterGame extends SimpleHamsterGame {
     }
 
     protected void initializeInspection(final InspectionViewModel inspect) {
-        inspect.createInstanceViewModel(this, "simpleHamsterGame");
-        inspect.createInstanceViewModel(this.paule, "paule");
-        inspect.viewModelForClass(Hamster.class);
+        ClassInstanceManager manager = this.inspect.getClassInstanceManager();
+        manager.addInstance(this, "simpleHamsterGame", true);
+        manager.addInstance(this.paule, "paule", true);
+        manager.addClass(Hamster.class, false);
+        manager.addClassesFromCurrentPackage();
     }
 
     @Override
