@@ -32,18 +32,34 @@ public final class InstanceFactory {
         });
     }
 
+    public void updateInstanceMemberListAccessible(final InstanceViewModel viewModel) {
+        if (!viewModel.hasPrivateMembersProperty().get()) {
+            final Object obj = viewModel.valueProperty().get();
+            final Class<?> cls = obj.getClass();
+            viewModel.methodsProperty().clear();
+            viewModel.methodsProperty().addAll(this.createMethodViewModelsForObject(cls, obj, true).collect(Collectors.toList()));
+            viewModel.superclassMethodsProperty().clear();
+            viewModel.superclassMethodsProperty().addAll(this.createSuperclassMethodViewModels(cls, obj, true).collect(Collectors.toList()));
+            viewModel.fieldsProperty().clear();
+            viewModel.fieldsProperty().addAll(this.createFieldViewModelsForObject(cls, obj, true).collect(Collectors.toList()));
+            viewModel.superclassFieldsProperty().clear();
+            viewModel.superclassFieldsProperty().addAll(this.createSuperclassFieldViewModels(cls, obj, true).collect(Collectors.toList()));
+            viewModel.hasPrivateMembersProperty().set(true);
+        }
+    }
+
     public InstanceViewModel createInstanceViewModel(final Object obj, final String name) {
         return this.createInstanceViewModel(obj, name, false);
     }
 
-    public InstanceViewModel createInstanceViewModel(final Object obj, final String name, boolean setAccessible) {
+    public InstanceViewModel createInstanceViewModel(final Object obj, final String name, final boolean setAccessible) {
         if (obj == null) {
             throw new IllegalArgumentException("cannot get InstanceViewModel for null");
         }
 
-        Class<?> cls = obj.getClass();
-        ClassViewModel clsViewModel = this.viewModel.viewModelForClass(cls, setAccessible, setAccessible);
-        boolean setAccessibleValue = setAccessible || clsViewModel.setInstancesAccessibleProperty().get();
+        final Class<?> cls = obj.getClass();
+        final ClassViewModel clsViewModel = this.viewModel.viewModelForClass(cls, setAccessible, setAccessible);
+        final boolean setAccessibleValue = setAccessible || clsViewModel.setInstancesAccessibleProperty().get();
 
         if (setAccessibleValue) {
             System.out.println("Making instance " + name + " accessible");
@@ -55,12 +71,13 @@ public final class InstanceFactory {
                 this.createSuperclassMethodViewModels(cls, obj, setAccessibleValue).collect(Collectors.toCollection(ArrayList::new)),
                 this.createFieldViewModelsForObject(cls, obj, setAccessibleValue).collect(Collectors.toCollection(ArrayList::new)),
                 this.createSuperclassFieldViewModels(cls, obj, setAccessibleValue).collect(Collectors.toCollection(ArrayList::new)),
-                obj);
+                obj,
+                setAccessibleValue);
         this.viewModel.instancesProperty().add(newInstance);
         return newInstance;
     }
 
-    private Stream<MethodViewModel> createMethodViewModelsForObject(final Class<?> cls, final Object obj, boolean setAccessible) {
+    private Stream<MethodViewModel> createMethodViewModelsForObject(final Class<?> cls, final Object obj, final boolean setAccessible) {
         return Arrays.stream(cls.getDeclaredMethods())
                 .filter(method -> !Modifier.isStatic(method.getModifiers()))
                 .filter(method -> {
@@ -73,7 +90,7 @@ public final class InstanceFactory {
                 .map(method -> this.createInstanceMethodViewModel(obj, method));
     }
 
-    private Stream<FieldViewModel> createFieldViewModelsForObject(final Class<?> cls, final Object obj, boolean setAccessible) {
+    private Stream<FieldViewModel> createFieldViewModelsForObject(final Class<?> cls, final Object obj, final boolean setAccessible) {
         return Arrays.stream(cls.getDeclaredFields())
                 .filter(field -> !Modifier.isStatic(field.getModifiers()))
                 .filter(field -> {
@@ -86,29 +103,29 @@ public final class InstanceFactory {
                 .map(field -> this.createInstanceFieldViewModel(obj, field));
     }
 
-    private Stream<MethodViewModel> createSuperclassMethodViewModels(final Class<?> cls, final Object obj, boolean setAccessible) {
-        Class<?> superclass = cls.getSuperclass();
+    private Stream<MethodViewModel> createSuperclassMethodViewModels(final Class<?> cls, final Object obj, final boolean setAccessible) {
+        final Class<?> superclass = cls.getSuperclass();
         if (superclass == null) {
             return Stream.empty();
         }
         return Stream.concat(this.createMethodViewModelsForObject(superclass, obj, setAccessible),
-                        this.createSuperclassMethodViewModels(superclass, obj, setAccessible));
+                this.createSuperclassMethodViewModels(superclass, obj, setAccessible));
     }
 
-    private Stream<FieldViewModel> createSuperclassFieldViewModels(final Class<?> cls, final Object obj, boolean setAccessible) {
-        Class<?> superclass = cls.getSuperclass();
+    private Stream<FieldViewModel> createSuperclassFieldViewModels(final Class<?> cls, final Object obj, final boolean setAccessible) {
+        final Class<?> superclass = cls.getSuperclass();
         if (superclass == null) {
             return Stream.empty();
         }
         return Stream.concat(this.createFieldViewModelsForObject(superclass, obj, setAccessible),
-                        this.createSuperclassFieldViewModels(superclass, obj, setAccessible));
+                this.createSuperclassFieldViewModels(superclass, obj, setAccessible));
     }
 
     private MethodViewModel createInstanceMethodViewModel(final Object instance, final Method method) {
         final Function<List<?>, Object> invokeMethod = params -> {
             try {
                 return method.invoke(instance, params.toArray());
-            } catch (IllegalAccessException | InvocationTargetException e) {
+            } catch (final IllegalAccessException | InvocationTargetException e) {
                 throw new IllegalArgumentException("Could not invoke method", e); //TODO maybe rethrow causing exception
             }
         };
@@ -122,28 +139,26 @@ public final class InstanceFactory {
         try {
             final FieldViewModel viewModel = new FieldViewModel(field.getName(), new Type(field.getType()),
                     field.get(instance), Modifier.isFinal(field.getModifiers()));
-            viewModel.valueProperty().addListener((observable, oldValue, newValue) -> {
-                this.viewModel.executeOnMainThread(() -> {
-                    try {
-                        field.set(instance, newValue);
-                    } catch (IllegalAccessException e) {
-                        throw new IllegalArgumentException("Could not set field", e);
-                    }
-                });
-            });
-            ChangeListener<Boolean> isVisibleListener = (change, oldVal, newVal) -> {
+            viewModel.valueProperty().addListener((observable, oldValue, newValue) -> this.viewModel.executeOnMainThread(() -> {
+                try {
+                    field.set(instance, newValue);
+                } catch (final IllegalAccessException e) {
+                    throw new IllegalArgumentException("Could not set field", e);
+                }
+            }));
+            final ChangeListener<Boolean> isVisibleListener = (change, oldVal, newVal) -> {
                 if (change.getValue()) { //TODO: Spawn/kill refresh timer
                     try {
                         viewModel.valueProperty().setValue(field.get(instance));
-                    } catch (IllegalAccessException e) {
+                    } catch (final IllegalAccessException e) {
                         throw new RuntimeException("Could not get field value", e);
                     }
                 }
             };
             viewModel.isVisibleProperty().addListener(isVisibleListener);
             return viewModel;
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("Cannot read field value",  e);
+        } catch (final IllegalAccessException e) {
+            throw new IllegalArgumentException("Cannot read field value", e);
         }
     }
 

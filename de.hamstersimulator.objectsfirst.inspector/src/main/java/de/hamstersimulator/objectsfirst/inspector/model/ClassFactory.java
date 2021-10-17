@@ -20,7 +20,7 @@ public final class ClassFactory {
     public ClassFactory(final InspectionViewModel viewModel) {
         this.viewModel = viewModel;
         viewModel.classesProperty().addListener((ListChangeListener<ClassViewModel>) change -> {
-            while(change.next()) {
+            while (change.next()) {
                 for (final ClassViewModel addedInfo : change.getAddedSubList()) {
                     this.classViewModelLookup.put(addedInfo.valueProperty().get(), addedInfo);
                 }
@@ -31,24 +31,53 @@ public final class ClassFactory {
         });
     }
 
-    public ClassViewModel viewModelForClass(Class<?> cls) {
+    public ClassViewModel viewModelForClass(final Class<?> cls) {
         return this.viewModelForClass(cls, false, false);
     }
 
-    public ClassViewModel viewModelForClass(Class<?> cls, boolean setAccessible, boolean setInstancesAccessible) {
+    public ClassViewModel viewModelForClass(final Class<?> cls, final boolean setAccessible, final boolean setInstancesAccessible) {
         if (cls == null) {
             throw new IllegalArgumentException("cannot get ClassViewModel for null");
         }
         if (this.hasViewModelForClass(cls)) {
-            return this.classViewModelLookup.get(cls);
+            final ClassViewModel viewModel = this.classViewModelLookup.get(cls);
+            viewModel.setInstancesAccessibleProperty().set(setInstancesAccessible);
+            if (setAccessible && !viewModel.hasPrivateMembersProperty().get()) {
+                this.updateClassMemberListAccessible(cls, viewModel);
+            }
+            return viewModel;
         } else {
-            ClassViewModel newClass = this.createClassViewModel(cls, setAccessible, setInstancesAccessible);
+            final ClassViewModel newClass = this.createClassViewModel(cls, setAccessible, setInstancesAccessible);
             this.viewModel.classesProperty().add(newClass);
             return newClass;
         }
     }
 
-    private ClassViewModel createClassViewModel(Class<?> cls, boolean setAccessible, boolean setInstancesAccessible) {
+    private void updateClassMemberListAccessible(final Class<?> cls, final ClassViewModel viewModel) {
+        viewModel.constructorsProperty().clear();
+        viewModel.constructorsProperty().addAll(Arrays.stream(cls.getConstructors())
+                .filter(AccessibleObject::trySetAccessible)
+                .map(this::createConstructorViewModel)
+                .collect(Collectors.toList()));
+
+        viewModel.staticMethodsProperty().clear();
+        viewModel.staticMethodsProperty().addAll(Arrays.stream(cls.getMethods())
+                .filter(method -> Modifier.isStatic(method.getModifiers()))
+                .filter(AccessibleObject::trySetAccessible)
+                .map(this::createStaticMethodViewModel)
+                .collect(Collectors.toList()));
+
+        viewModel.staticFieldsProperty().clear();
+        viewModel.staticFieldsProperty().addAll(Arrays.stream(cls.getFields())
+                .filter(field -> Modifier.isStatic(field.getModifiers()))
+                .filter(AccessibleObject::trySetAccessible)
+                .map(this::createStaticFieldViewModel)
+                .collect(Collectors.toList()));
+
+        viewModel.hasPrivateMembersProperty().set(true);
+    }
+
+    private ClassViewModel createClassViewModel(final Class<?> cls, final boolean setAccessible, final boolean setInstancesAccessible) {
         if (setInstancesAccessible) {
             System.out.println("Making class instances " + cls.getSimpleName() + " accessible");
         }
@@ -78,7 +107,7 @@ public final class ClassFactory {
                             }
                         }) //TODO improve this check, optionally reintroduce Modifier.isPublic(method.getModifiers())
                         .map(this::createStaticMethodViewModel)
-                                .collect(Collectors.toCollection(ArrayList::new)),
+                        .collect(Collectors.toCollection(ArrayList::new)),
                 Arrays.stream(cls.getFields())
                         .filter(field -> Modifier.isStatic(field.getModifiers()))
                         .filter(field -> {
@@ -91,7 +120,9 @@ public final class ClassFactory {
                         .map(this::createStaticFieldViewModel)
                         .collect(Collectors.toCollection(ArrayList::new)),
                 cls,
-                setInstancesAccessible);
+                setInstancesAccessible,
+                setAccessible
+        );
     }
 
     public boolean hasViewModelForClass(final Class<?> cls) {
@@ -102,7 +133,7 @@ public final class ClassFactory {
         final Function<List<?>, Object> invokeMethod = params -> {
             try {
                 return method.invoke(null, params.toArray());
-            } catch (IllegalAccessException | InvocationTargetException e) {
+            } catch (final IllegalAccessException | InvocationTargetException e) {
                 throw new IllegalArgumentException("Could not invoke static method", e); //TODO maybe rethrow causing exception
             }
         };
@@ -116,7 +147,7 @@ public final class ClassFactory {
         final Function<List<?>, ?> construct = params -> {
             try {
                 return constructor.newInstance(params.toArray());
-            } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            } catch (final IllegalAccessException | InvocationTargetException | InstantiationException e) {
                 throw new IllegalArgumentException("Could not invoke constructor", e); //TODO maybe rethrow causing exception
             }
         };
@@ -130,27 +161,25 @@ public final class ClassFactory {
         try {
             final FieldViewModel viewModel = new FieldViewModel(field.getName(), new Type(field.getType()),
                     field.get(null), Modifier.isFinal(field.getModifiers()));
-            viewModel.valueProperty().addListener((observable, oldValue, newValue) -> {
-                this.viewModel.executeOnMainThread(() -> {
-                    try {
-                        field.set(null, newValue);
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException("Could not set field", e);
-                    }
-                });
-            });
-            ChangeListener<Boolean> isVisibleListener = (change, oldVal, newVal) -> {
+            viewModel.valueProperty().addListener((observable, oldValue, newValue) -> this.viewModel.executeOnMainThread(() -> {
+                try {
+                    field.set(null, newValue);
+                } catch (final IllegalAccessException e) {
+                    throw new RuntimeException("Could not set field", e);
+                }
+            }));
+            final ChangeListener<Boolean> isVisibleListener = (change, oldVal, newVal) -> {
                 if (change.getValue()) {
                     try {
                         viewModel.valueProperty().setValue(field.get(null));
-                    } catch (IllegalAccessException e) {
+                    } catch (final IllegalAccessException e) {
                         throw new RuntimeException("Could not get field value", e);
                     }
                 }
             };
             viewModel.isVisibleProperty().addListener(isVisibleListener);
             return viewModel;
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             throw new IllegalArgumentException("Cannot read field value", e);
         }
     }
