@@ -7,11 +7,13 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Screen;
 import javafx.util.Duration;
 import org.controlsfx.control.PopOver;
 
@@ -67,9 +69,12 @@ public abstract class CardListView<T> extends FlowPane {
 
     private void addPopOver(final Node owner, final T item) {
         final Region content = this.createPopOverContent(item);
-        content.setMaxWidth(360);
         content.minWidthProperty().bind(content.maxWidthProperty());
-        final PopOver popOver = new PopOver(content);
+        final ScrollPane contentScrollPane = new ScrollPane(content);
+        contentScrollPane.setFitToWidth(true);
+        contentScrollPane.setMaxWidth(360);
+        contentScrollPane.setMaxHeight(Screen.getPrimary().getBounds().getHeight() / 2);
+        final PopOver popOver = new PopOver(contentScrollPane);
         popOver.setDetachable(false);
         popOver.show(owner);
         this.currentPopOver = popOver;
