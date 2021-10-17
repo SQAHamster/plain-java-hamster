@@ -5,12 +5,15 @@ import de.hamstersimulator.objectsfirst.datatypes.Location;
 import de.hamstersimulator.objectsfirst.external.model.Hamster;
 import de.hamstersimulator.objectsfirst.external.model.HamsterGame;
 import de.hamstersimulator.objectsfirst.external.model.Territory;
+import de.hamstersimulator.objectsfirst.ui.javafx.HamsterGameStage;
 import de.hamstersimulator.objectsfirst.ui.javafx.JavaFXUI;
+
+import java.io.IOException;
 
 /**
  * Simple test run of the hamster game API exemplifying the use of the objects.
- * @author Steffen Becker
  *
+ * @author Steffen Becker
  */
 public final class Main {
 
@@ -21,22 +24,30 @@ public final class Main {
 
     /**
      * Main method which instantiates, initializes, and starts a hamster game.
+     *
      * @param args Default command line parameters, not used.
      */
     public static void main(final String[] args) {
         JavaFXUI.start();
 
         final HamsterGame game = new HamsterGame();
-        game.initialize(Main.class.getResourceAsStream(DEFAULT_HAMSTER_TERRITORY));
+        game.initialize(Main.class.getResourceAsStream(Main.DEFAULT_HAMSTER_TERRITORY));
 
-        game.getModelViewAdapter().addInputInterface(JavaFXUI.getJavaFXInputInterface());
-
-        JavaFXUI.openSceneFor(game.getModelViewAdapter());
+        JavaFXUI.openSceneFor(inputInterface -> {
+            game.getModelViewAdapter().addInputInterface(inputInterface);
+            try {
+                return new HamsterGameStage(game.getModelViewAdapter());
+            } catch (final IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        });
         game.runGame(Main::exampleRun);
     }
 
     /**
      * Hamster main method, executed by this test.
+     *
      * @param territory The territory used during this test.
      */
     public static void exampleRun(final Territory territory) {
@@ -74,5 +85,6 @@ public final class Main {
     /**
      * Default constructor, only the VM should create instances of this.
      */
-    private Main() { }
+    private Main() {
+    }
 }

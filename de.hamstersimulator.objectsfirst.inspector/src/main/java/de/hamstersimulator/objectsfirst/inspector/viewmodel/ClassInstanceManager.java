@@ -17,14 +17,14 @@ public class ClassInstanceManager {
     }
 
     public <T> void addClass(final Class<T> cls, final boolean setAccessible) {
-        JavaFXUtil.blockingExecuteOnFXThread(() -> this.viewModel.classFactory.viewModelForClass(cls, setAccessible, setAccessible));
+        JavaFXUtil.blockingExecuteOnFXThreadIfAvailable(() -> this.viewModel.classFactory.viewModelForClass(cls, setAccessible, setAccessible));
     }
 
     public void addInstance(final Object instance, final String name, final boolean setAccessible) {
         if (instance == null) {
             throw new IllegalArgumentException("Instance to be added can't be null");
         }
-        JavaFXUtil.blockingExecuteOnFXThread(() -> {
+        JavaFXUtil.blockingExecuteOnFXThreadIfAvailable(() -> {
             final Optional<InstanceViewModel> instanceViewModel = this.viewModel.getViewModelForObject(instance);
             if (instanceViewModel.isEmpty()) {
                 this.viewModel.instanceFactory.createInstanceViewModel(instance, name, setAccessible);

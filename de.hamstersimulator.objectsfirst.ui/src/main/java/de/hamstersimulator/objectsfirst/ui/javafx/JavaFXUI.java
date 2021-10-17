@@ -1,13 +1,14 @@
 package de.hamstersimulator.objectsfirst.ui.javafx;
 
-import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-
 import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
 import de.hamstersimulator.objectsfirst.adapter.InputInterface;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
+import java.util.function.Function;
 
 public class JavaFXUI extends Application {
 
@@ -18,28 +19,38 @@ public class JavaFXUI extends Application {
     /*@
      @ requires true;
      @*/
+
     /**
      * Displays the hamster game associated with the provided hamster game adapter in a new window
      * This automatically starts the UI, adds the necessary input interface and opens the scene
+     *
      * @param hamsterGameViewModel the adapter of the hamster game to display, must be != null
      */
     public static void displayInNewGameWindow(final HamsterGameViewModel hamsterGameViewModel) {
-        hamsterGameViewModel.addInputInterface(inputInterface);
-        openSceneFor(hamsterGameViewModel);
+        JavaFXUI.openSceneFor(inputInterface -> {
+            hamsterGameViewModel.addInputInterface(inputInterface);
+            try {
+                return new HamsterGameStage(hamsterGameViewModel);
+            } catch (final IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        });
     }
 
     /*@
      @ requires true;
      @ ensures isStarted;
      @*/
+
     /**
      * Starts the javafx ui thread if not already started
      */
     public static void start() {
-        if (!isStarted) {
-            new Thread(()->Application.launch(JavaFXUI.class)).start();
-            waitForJavaFXStart();
-            isStarted = true;
+        if (!JavaFXUI.isStarted) {
+            new Thread(() -> Application.launch(JavaFXUI.class)).start();
+            JavaFXUI.waitForJavaFXStart();
+            JavaFXUI.isStarted = true;
             Platform.setImplicitExit(true);
         }
     }
@@ -50,53 +61,52 @@ public class JavaFXUI extends Application {
 
     @Override
     public void stop() throws Exception {
-        isStarted = false;
+        JavaFXUI.isStarted = false;
         super.stop();
     }
 
     private static void waitForJavaFXStart() {
         try {
-            initLatch.await();
-        } catch (final InterruptedException e) { }
+            JavaFXUI.initLatch.await();
+        } catch (final InterruptedException e) {
+        }
     }
 
     @Override
     public void start(final Stage primaryStage) throws Exception {
-        initLatch.countDown();
+        JavaFXUI.initLatch.countDown();
     }
 
     /*@
      @ requires true;
      @ ensures isStarted;
      @*/
+
     /**
-     * Opens a scene for the hamster game associated with hamsterGameViewModel
+     * Opens the GUI with the stage which is provided by the given stage supplier
      * requires that the JavaFXUI is started
-     * @param hamsterGameViewModel the adapter for the hamster game to display
+     *
+     * @param stageSupplier A function that provides ONE instance of a valid stage to display.
+     *                      The function is provided the input interface for the gui to use
+     *                      If `null` the stage won't be shown
      */
-    public static void openSceneFor(final HamsterGameViewModel hamsterGameViewModel) {
-        start();
+    public static void openSceneFor(final Function<InputInterface, Stage> stageSupplier) {
+        JavaFXUI.start();
         JavaFXUtil.blockingExecuteOnFXThread(() -> {
-            Stage stage;
-            try {
-                stage = new HamsterGameStage(hamsterGameViewModel);
+            final Stage stage = stageSupplier.apply(JavaFXUI.inputInterface);
+            if (stage != null) {
                 stage.show();
-            } catch (final IOException e) {
-                e.printStackTrace();
             }
         });
     }
 
-    /*@
-     @ requires true;
-     @ ensures \result != null;
-     @*/
     /**
-     * Getter for the JavaFXInputInterface singleton
-     * @return the JavaFXInputInterface to display
+     * Returns whether the JavaFX UI has already been started or not.
+     *
+     * @return Returns `true` as soon as at least one JavaFX UI has been started (e.g. via `displayInNewGameWindow`)
      */
-    public static InputInterface getJavaFXInputInterface() {
-        return inputInterface;
+    public static boolean getIsStarted() {
+        return JavaFXUI.isStarted;
     }
 
 }

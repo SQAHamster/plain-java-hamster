@@ -1,5 +1,6 @@
 package de.hamstersimulator.objectsfirst.inspector;
 
+import de.hamstersimulator.objectsfirst.datatypes.Location;
 import de.hamstersimulator.objectsfirst.external.model.Hamster;
 import de.hamstersimulator.objectsfirst.external.model.SimpleHamsterGame;
 import de.hamstersimulator.objectsfirst.inspector.model.InspectionExecutor;
@@ -25,16 +26,19 @@ public abstract class InspectableSimpleHamsterGame extends SimpleHamsterGame {
     }
 
     protected void initializeInspection(final InspectionViewModel inspect) {
-        ClassInstanceManager manager = this.inspect.getClassInstanceManager();
+        final ClassInstanceManager manager = this.inspect.getClassInstanceManager();
         manager.addInstance(this, "simpleHamsterGame", true);
-        manager.addInstance(this.paule, "paule", true);
+        manager.addInstance(this.paule, "paule", false);
+        manager.addInstance(this.game, "game", false);
+        manager.addInstance(this.game.getTerritory(), "territory", false);
         manager.addClass(Hamster.class, false);
+        manager.addClass(Location.class, false);
         manager.addClassesFromCurrentPackage();
     }
 
     @Override
     protected void displayInNewGameWindow() {
-        InspectableJavaFXUI.displayInNewGameWindow(this.game.getModelViewAdapter(), inspect);
+        InspectableJavaFXUI.displayInNewGameWindow(this.game.getModelViewAdapter(), this.inspect);
     }
 
     /**
@@ -45,7 +49,12 @@ public abstract class InspectableSimpleHamsterGame extends SimpleHamsterGame {
     @Override
     protected void postRun() {
         final InspectionExecutor executor = new InspectionExecutor();
-        JavaFXUtil.blockingExecuteOnFXThread(() -> this.inspect.setExecutor(executor));
+        JavaFXUtil.blockingExecuteOnFXThread(new Runnable() {
+            @Override
+            public void run() {
+                InspectableSimpleHamsterGame.this.inspect.setExecutor(executor);
+            }
+        });
         try {
             executor.blockingExecute();
         } finally {
