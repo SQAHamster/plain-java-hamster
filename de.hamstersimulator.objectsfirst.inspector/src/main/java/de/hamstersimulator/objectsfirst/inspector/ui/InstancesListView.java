@@ -2,6 +2,8 @@ package de.hamstersimulator.objectsfirst.inspector.ui;
 
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.InspectionViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.InstanceViewModel;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.value.ObservableStringValue;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
@@ -16,11 +18,8 @@ public class InstancesListView extends CardListView<InstanceViewModel> {
     }
 
     @Override
-    protected Node createCardContent(InstanceViewModel item) {
-        final Label label = new Label();
-        label.textProperty().bind(item.nameProperty());
-        label.setMaxWidth(100);
-        return label;
+    protected ObservableStringValue getCardText(InstanceViewModel item) {
+        return item.nameProperty();
     }
 
     @Override

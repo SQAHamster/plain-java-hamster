@@ -2,6 +2,7 @@ package de.hamstersimulator.objectsfirst.inspector.ui;
 
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.InspectionViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.ClassViewModel;
+import javafx.beans.value.ObservableStringValue;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
@@ -15,10 +16,8 @@ public class ClassesListView extends CardListView<ClassViewModel> {
     }
 
     @Override
-    protected Node createCardContent(ClassViewModel item) {
-        final Label label = new Label("test");
-        label.textProperty().bind(item.nameProperty());
-        return label;
+    protected ObservableStringValue getCardText(ClassViewModel item) {
+        return item.nameProperty();
     }
 
     @Override

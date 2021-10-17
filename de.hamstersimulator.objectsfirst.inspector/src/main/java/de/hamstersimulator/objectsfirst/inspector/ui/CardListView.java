@@ -2,17 +2,13 @@ package de.hamstersimulator.objectsfirst.inspector.ui;
 
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.value.ObservableStringValue;
 import javafx.collections.ListChangeListener;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.util.Duration;
 import org.controlsfx.control.PopOver;
@@ -23,20 +19,24 @@ import java.util.Map;
 public abstract class CardListView<T> extends FlowPane {
 
     private final SimpleListProperty<T> items;
-    private final Map<T, Node> cardLookUp = new IdentityHashMap<>();
+    private final Map<T, ToggleButton> cardLookUp = new IdentityHashMap<>();
     private PopOver currentPopOver;
 
     public CardListView() {
         this.items = new SimpleListProperty<>(this, "items");
+        final ToggleGroup toggleGroup = new ToggleGroup();
         this.items.addListener((ListChangeListener<T>) change -> {
             while (change.next()) {
                 for (final T addedElement: change.getAddedSubList()) {
-                    final Node newCard = this.createCard(addedElement);
+                    final ToggleButton newCard = this.createCard(addedElement);
                     this.cardLookUp.put(addedElement, newCard);
                     this.getChildren().add(newCard);
+                    newCard.setToggleGroup(toggleGroup);
                 }
                 for (final T removedElement: change.getRemoved()) {
-                    this.getChildren().remove(this.cardLookUp.remove(removedElement));
+                    final ToggleButton removedCard = this.cardLookUp.remove(removedElement);
+                    this.getChildren().remove(removedCard);
+                    removedCard.setToggleGroup(null);
                 }
             }
         });
@@ -49,25 +49,26 @@ public abstract class CardListView<T> extends FlowPane {
         return this.items;
     }
 
-    private Node createCard(final T item) {
-        final StackPane stackPane = new StackPane();
-        final Rectangle rectangle = new Rectangle();
-        rectangle.setWidth(120);
-        rectangle.setHeight(50);
-        rectangle.setArcWidth(10);
-        rectangle.setArcHeight(10);
-        rectangle.setFill(Color.LIGHTGRAY);
-        stackPane.getChildren().add(rectangle);
-        stackPane.maxWidthProperty().bind(rectangle.widthProperty());
-        final Node content = this.createCardContent(item);
-        stackPane.getChildren().add(content);
-        stackPane.setOnMouseClicked(e -> {
-            addPopOver(rectangle, item);
+    private ToggleButton createCard(final T item) {
+        final ToggleButton card = new ToggleButton();
+        card.setPrefWidth(120);
+        card.setPrefHeight(50);
+        card.maxWidthProperty().bind(card.prefWidthProperty());
+        card.maxHeightProperty().bind(card.prefHeightProperty());
+        card.textProperty().bind(this.getCardText(item));
+        card.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                this.addPopOver(card, item);
+            } else {
+                if (this.currentPopOver != null) {
+                    this.currentPopOver.hide();
+                }
+            }
         });
-        return stackPane;
+        return card;
     }
 
-    private void addPopOver(final Node owner, final T item) {
+    private void addPopOver(final ToggleButton owner, final T item) {
         final Region content = this.createPopOverContent(item);
         content.minWidthProperty().bind(content.maxWidthProperty());
         final ScrollPane contentScrollPane = new ScrollPane(content);
@@ -76,11 +77,13 @@ public abstract class CardListView<T> extends FlowPane {
         contentScrollPane.setMaxHeight(Screen.getPrimary().getBounds().getHeight() / 2);
         final PopOver popOver = new PopOver(contentScrollPane);
         popOver.setDetachable(false);
+        popOver.setConsumeAutoHidingEvents(false);
         popOver.show(owner);
+        popOver.setOnHidden(event -> owner.setSelected(false));
         this.currentPopOver = popOver;
     }
 
-    protected abstract Node createCardContent(final T item);
+    protected abstract ObservableStringValue getCardText(final T item);
 
     protected abstract Region createPopOverContent(final T item);
 
