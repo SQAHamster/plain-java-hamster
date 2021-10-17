@@ -56,8 +56,6 @@ public class MethodsTitledPane extends TitledPane {
             callButton.disableProperty().bind(this.inspectionViewModel.isReadOnly());
             nameLabel.setLabelFor(callButton);
             callButton.setOnMouseClicked(e -> {
-                final CallMethodDialog dialog = new CallMethodDialog(method, this.inspectionViewModel);
-                dialog.setWidth(400);
                 final boolean needsInput = !method.paramsProperty().get().isEmpty();
                 final Optional<List<Object>> values = needsInput
                         ? new CallMethodDialog(method, this.inspectionViewModel).showAndWait()
