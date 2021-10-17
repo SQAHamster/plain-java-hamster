@@ -5,6 +5,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 
 import java.lang.reflect.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -31,35 +32,66 @@ public final class ClassFactory {
     }
 
     public ClassViewModel viewModelForClass(Class<?> cls) {
+        return this.viewModelForClass(cls, false, false);
+    }
+
+    public ClassViewModel viewModelForClass(Class<?> cls, boolean setAccessible, boolean setInstancesAccessible) {
         if (cls == null) {
             throw new IllegalArgumentException("cannot get ClassViewModel for null");
         }
         if (this.hasViewModelForClass(cls)) {
             return this.classViewModelLookup.get(cls);
         } else {
-            ClassViewModel newClass = this.createClassViewModel(cls);
+            ClassViewModel newClass = this.createClassViewModel(cls, setAccessible, setInstancesAccessible);
             this.viewModel.classesProperty().add(newClass);
             return newClass;
         }
     }
 
-    private ClassViewModel createClassViewModel(Class<?> cls) {
+    private ClassViewModel createClassViewModel(Class<?> cls, boolean setAccessible, boolean setInstancesAccessible) {
+        if (setInstancesAccessible) {
+            System.out.println("Making class instances " + cls.getSimpleName() + " accessible");
+        }
+
+        if (setAccessible) {
+            System.out.println("Making class " + cls.getSimpleName() + " accessible");
+        }
+
         return new ClassViewModel(cls.getSimpleName(),
                 Arrays.stream(cls.getConstructors())
-                        .filter(AccessibleObject::trySetAccessible)
+                        .filter(constructor -> {
+                            if (setAccessible) {
+                                return constructor.trySetAccessible();
+                            } else {
+                                return Modifier.isPublic(constructor.getModifiers());
+                            }
+                        })
                         .map(this::createConstructorViewModel)
-                        .collect(Collectors.toList()),
+                        .collect(Collectors.toCollection(ArrayList::new)),
                 Arrays.stream(cls.getMethods())
                         .filter(method -> Modifier.isStatic(method.getModifiers()))
-                        .filter(method -> Modifier.isPublic(method.getModifiers())) //TODO improve this check,
+                        .filter(method -> {
+                            if (setAccessible) {
+                                return method.trySetAccessible();
+                            } else {
+                                return Modifier.isPublic(method.getModifiers());
+                            }
+                        }) //TODO improve this check, optionally reintroduce Modifier.isPublic(method.getModifiers())
                         .map(this::createStaticMethodViewModel)
-                                .collect(Collectors.toList()),
+                                .collect(Collectors.toCollection(ArrayList::new)),
                 Arrays.stream(cls.getFields())
-                        .filter(method -> Modifier.isStatic(method.getModifiers()))
-                        .filter(method -> Modifier.isPublic(method.getModifiers())) //TODO improve this check,
+                        .filter(field -> Modifier.isStatic(field.getModifiers()))
+                        .filter(field -> {
+                            if (setAccessible) {
+                                return field.trySetAccessible();
+                            } else {
+                                return Modifier.isPublic(field.getModifiers());
+                            }
+                        }) //TODO improve this check,
                         .map(this::createStaticFieldViewModel)
-                        .collect(Collectors.toList()),
-                cls);
+                        .collect(Collectors.toCollection(ArrayList::new)),
+                cls,
+                setInstancesAccessible);
     }
 
     public boolean hasViewModelForClass(final Class<?> cls) {

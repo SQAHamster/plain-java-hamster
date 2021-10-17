@@ -20,8 +20,9 @@ public class InspectionViewModel {
             = new SimpleListProperty<>(this, "multiInputTypes", FXCollections.observableList(new ArrayList<>()));
     private final SimpleObjectProperty<InspectionExecutor> executor = new SimpleObjectProperty<>(this, "executor");
     private final Map<Class<?>, Type> enumInputTypeLookup = new HashMap<>();
-    private final InstanceFactory instanceFactory;
-    private final ClassFactory classFactory;
+    final InstanceFactory instanceFactory;
+    final ClassFactory classFactory;
+    private final ClassInstanceManager classInstanceManager;
 
     public InspectionViewModel() {
         this.classes = new ReadOnlyListWrapper<>(this, "classes", FXCollections.observableList(new ArrayList<>()));
@@ -51,6 +52,7 @@ public class InspectionViewModel {
 
         this.instanceFactory = new InstanceFactory(this);
         this.classFactory = new ClassFactory(this);
+        this.classInstanceManager = new ClassInstanceManager(this);
     }
 
     public ReadOnlyListProperty<ClassViewModel> classesProperty() {
@@ -63,6 +65,10 @@ public class InspectionViewModel {
 
     public ListProperty<Type> multiInputTypesProperty() {
         return this.multiTypes;
+    }
+
+    public ClassInstanceManager getClassInstanceManager() {
+        return classInstanceManager;
     }
 
     public BooleanBinding isReadOnly() {
@@ -83,6 +89,10 @@ public class InspectionViewModel {
     
     public ClassViewModel viewModelForClass(final Class<?> cls) {
         return this.classFactory.viewModelForClass(cls);
+    }
+
+    public ClassViewModel viewModelForClass(final Class<?> cls, boolean setAccessible, boolean setInstancesAccessible) {
+        return this.classFactory.viewModelForClass(cls, setAccessible, setInstancesAccessible);
     }
 
     public boolean hasViewModelForClass(final Class<?> cls) {
