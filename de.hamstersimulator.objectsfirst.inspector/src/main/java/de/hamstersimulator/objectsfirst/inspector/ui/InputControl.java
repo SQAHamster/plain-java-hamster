@@ -286,6 +286,7 @@ public class InputControl extends HBox {
             }
         }
         this.currentInputControl.setPrefWidth(1000);
+        this.onValueChanged.accept(this.value.get());
     }
 
     private void createReadOnlyLabel() {
@@ -320,7 +321,6 @@ public class InputControl extends HBox {
         this.inspectionViewModel.instancesProperty().addListener(instanceViewModelListChangeListener);
         this.currentListChangeListeners.add(instanceViewModelListChangeListener);
         this.currentInputControl = label;
-        this.onValueChanged.accept(this.value.get());
     }
 
     private void createTextField() {
