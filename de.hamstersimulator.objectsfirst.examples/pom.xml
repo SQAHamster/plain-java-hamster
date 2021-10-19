@@ -20,5 +20,12 @@
             <artifactId>main</artifactId>
             <version>4.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>
+                de.hamstersimulator.objectsfirst
+            </groupId>
+            <artifactId>inspector</artifactId>
+            <version>4.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

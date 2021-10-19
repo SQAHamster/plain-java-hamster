@@ -10,18 +10,17 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-class HamsterGameStage extends Stage {
+public class HamsterGameStage extends Stage {
 
     private GameSceneController sceneController;
+    private final HamsterGameViewModel hamsterGameViewModel;
 
     public HamsterGameStage(final HamsterGameViewModel hamsterGameViewModel) throws IOException {
         super();
+        this.hamsterGameViewModel = hamsterGameViewModel;
         prepareStage();
         sceneController.connectToGame(hamsterGameViewModel);
-        this.setOnCloseRequest(event -> {
-            final HamsterGameController gameController = hamsterGameViewModel.getGameController();
-            new Thread(gameController::abortOrStopGame).start();
-        });
+        this.setOnCloseRequest(event -> this.onCloseRequest());
     }
 
     public void prepareStage() throws IOException {
@@ -41,5 +40,10 @@ class HamsterGameStage extends Stage {
         final Parent root = fxmlLoader.load();
         this.sceneController = (GameSceneController) fxmlLoader.getController();
         return root;
+    }
+
+    protected void onCloseRequest() {
+        final HamsterGameController gameController = hamsterGameViewModel.getGameController();
+        new Thread(gameController::abortOrStopGame).start();
     }
 }

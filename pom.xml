@@ -39,6 +39,11 @@
         <module>
             de.hamstersimulator.objectsfirst.config
         </module>
-        <module>de.hamstersimulator.objectsfirst.testframework</module>
+        <module>
+            de.hamstersimulator.objectsfirst.testframework
+        </module>
+        <module>
+            de.hamstersimulator.objectsfirst.inspector
+        </module>
     </modules>
 </project>

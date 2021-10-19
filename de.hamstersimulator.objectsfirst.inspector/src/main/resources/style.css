@@ -1,0 +1,16 @@
+.flow-item {
+    -fx-font-size: 16pt;
+    -fx-padding: 20px;
+}
+
+.warning {
+    -fx-background-color: #FFDD0055;
+}
+
+.error {
+    -fx-background-color: #FF000055;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent
+}
