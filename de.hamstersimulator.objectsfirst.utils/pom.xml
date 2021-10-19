@@ -9,7 +9,7 @@
     <parent>
         <groupId>de.hamstersimulator.objectsfirst</groupId>
         <artifactId>parent</artifactId>
-        <version>4.1.0</version>
+        <version>4.1.1-SNAPSHOT</version>
         <relativePath>../de.hamstersimulator.objectsfirst.parent</relativePath>
     </parent>
 </project>
