@@ -125,7 +125,14 @@ public final class InstanceFactory {
         final Function<List<?>, Object> invokeMethod = params -> {
             try {
                 return method.invoke(instance, params.toArray());
-            } catch (final IllegalAccessException | InvocationTargetException e) {
+            } catch (final InvocationTargetException targetEx) {
+                final Throwable cause = targetEx.getCause();
+                if (cause instanceof RuntimeException) {
+                    throw ((RuntimeException) cause);
+                } else {
+                    throw new RuntimeException("A non-RuntimeException was thrown. Message: " + cause.getMessage(), cause);
+                }
+            } catch (final IllegalAccessException e) {
                 throw new IllegalArgumentException("Could not invoke method", e); //TODO maybe rethrow causing exception
             }
         };

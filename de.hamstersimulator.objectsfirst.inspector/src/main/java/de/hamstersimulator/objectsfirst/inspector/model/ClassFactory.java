@@ -133,7 +133,14 @@ public final class ClassFactory {
         final Function<List<?>, Object> invokeMethod = params -> {
             try {
                 return method.invoke(null, params.toArray());
-            } catch (final IllegalAccessException | InvocationTargetException e) {
+            } catch (final InvocationTargetException targetEx) {
+                final Throwable cause = targetEx.getCause();
+                if (cause instanceof RuntimeException) {
+                    throw ((RuntimeException) cause);
+                } else {
+                    throw new RuntimeException("A non-RuntimeException was thrown. Message: " + cause.getMessage(), cause);
+                }
+            } catch (final IllegalAccessException e) {
                 throw new IllegalArgumentException("Could not invoke static method", e); //TODO maybe rethrow causing exception
             }
         };
@@ -147,7 +154,14 @@ public final class ClassFactory {
         final Function<List<?>, ?> construct = params -> {
             try {
                 return constructor.newInstance(params.toArray());
-            } catch (final IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            } catch (final InvocationTargetException targetEx) {
+                final Throwable cause = targetEx.getCause();
+                if (cause instanceof RuntimeException) {
+                    throw ((RuntimeException) cause);
+                } else {
+                    throw new RuntimeException("A non-RuntimeException was thrown. Message: " + cause.getMessage(), cause);
+                }
+            } catch (final IllegalAccessException | InstantiationException e) {
                 throw new IllegalArgumentException("Could not invoke constructor", e); //TODO maybe rethrow causing exception
             }
         };
