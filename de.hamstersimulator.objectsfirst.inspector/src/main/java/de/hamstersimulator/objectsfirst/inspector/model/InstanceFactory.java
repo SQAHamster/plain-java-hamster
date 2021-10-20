@@ -61,10 +61,6 @@ public final class InstanceFactory {
         final ClassViewModel clsViewModel = this.viewModel.viewModelForClass(cls, setAccessible, setAccessible);
         final boolean setAccessibleValue = setAccessible || clsViewModel.setInstancesAccessibleProperty().get();
 
-        if (setAccessibleValue) {
-            System.out.println("Making instance " + name + " accessible");
-        }
-
         final InstanceViewModel newInstance = new InstanceViewModel(name,
                 clsViewModel,
                 this.createMethodViewModelsForObject(cls, obj, setAccessibleValue).collect(Collectors.toCollection(ArrayList::new)),

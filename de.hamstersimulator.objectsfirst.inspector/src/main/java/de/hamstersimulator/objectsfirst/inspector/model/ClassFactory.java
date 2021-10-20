@@ -78,14 +78,6 @@ public final class ClassFactory {
     }
 
     private ClassViewModel createClassViewModel(final Class<?> cls, final boolean setAccessible, final boolean setInstancesAccessible) {
-        if (setInstancesAccessible) {
-            System.out.println("Making class instances " + cls.getSimpleName() + " accessible");
-        }
-
-        if (setAccessible) {
-            System.out.println("Making class " + cls.getSimpleName() + " accessible");
-        }
-
         return new ClassViewModel(cls.getSimpleName(),
                 Arrays.stream(cls.getConstructors())
                         .filter(constructor -> {
