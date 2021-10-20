@@ -86,7 +86,7 @@ public final class InstanceFactory {
                     } else {
                         return Modifier.isPublic(method.getModifiers());
                     }
-                }) //TODO improve this check, potentially reintroduce
+                })
                 .map(method -> this.createInstanceMethodViewModel(obj, method));
     }
 
@@ -99,7 +99,7 @@ public final class InstanceFactory {
                     } else {
                         return Modifier.isPublic(field.getModifiers());
                     }
-                }) //TODO improve this check
+                })
                 .map(field -> this.createInstanceFieldViewModel(obj, field));
     }
 
@@ -133,7 +133,7 @@ public final class InstanceFactory {
                     throw new RuntimeException("A non-RuntimeException was thrown. Message: " + cause.getMessage(), cause);
                 }
             } catch (final IllegalAccessException e) {
-                throw new IllegalArgumentException("Could not invoke method", e); //TODO maybe rethrow causing exception
+                throw new IllegalArgumentException("Could not invoke method", e);
             }
         };
         return new MethodViewModel(method.getName(),

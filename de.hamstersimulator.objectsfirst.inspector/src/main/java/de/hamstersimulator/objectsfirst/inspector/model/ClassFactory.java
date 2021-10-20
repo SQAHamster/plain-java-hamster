@@ -105,7 +105,7 @@ public final class ClassFactory {
                             } else {
                                 return Modifier.isPublic(method.getModifiers());
                             }
-                        }) //TODO improve this check, optionally reintroduce Modifier.isPublic(method.getModifiers())
+                        })
                         .map(this::createStaticMethodViewModel)
                         .collect(Collectors.toCollection(ArrayList::new)),
                 Arrays.stream(cls.getFields())
@@ -116,7 +116,7 @@ public final class ClassFactory {
                             } else {
                                 return Modifier.isPublic(field.getModifiers());
                             }
-                        }) //TODO improve this check,
+                        })
                         .map(this::createStaticFieldViewModel)
                         .collect(Collectors.toCollection(ArrayList::new)),
                 cls,
@@ -141,7 +141,7 @@ public final class ClassFactory {
                     throw new RuntimeException("A non-RuntimeException was thrown. Message: " + cause.getMessage(), cause);
                 }
             } catch (final IllegalAccessException e) {
-                throw new IllegalArgumentException("Could not invoke static method", e); //TODO maybe rethrow causing exception
+                throw new IllegalArgumentException("Could not invoke static method", e);
             }
         };
         return new MethodViewModel(method.getName(),
@@ -162,7 +162,7 @@ public final class ClassFactory {
                     throw new RuntimeException("A non-RuntimeException was thrown. Message: " + cause.getMessage(), cause);
                 }
             } catch (final IllegalAccessException | InstantiationException e) {
-                throw new IllegalArgumentException("Could not invoke constructor", e); //TODO maybe rethrow causing exception
+                throw new IllegalArgumentException("Could not invoke constructor", e);
             }
         };
         return new MethodViewModel("",
