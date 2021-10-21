@@ -61,10 +61,6 @@ public final class InstanceFactory {
         final ClassViewModel clsViewModel = this.viewModel.viewModelForClass(cls, setAccessible, setAccessible);
         final boolean setAccessibleValue = setAccessible || clsViewModel.setInstancesAccessibleProperty().get();
 
-        if (setAccessibleValue) {
-            System.out.println("Making instance " + name + " accessible");
-        }
-
         final InstanceViewModel newInstance = new InstanceViewModel(name,
                 clsViewModel,
                 this.createMethodViewModelsForObject(cls, obj, setAccessibleValue).collect(Collectors.toCollection(ArrayList::new)),
@@ -86,7 +82,7 @@ public final class InstanceFactory {
                     } else {
                         return Modifier.isPublic(method.getModifiers());
                     }
-                }) //TODO improve this check, potentially reintroduce
+                })
                 .map(method -> this.createInstanceMethodViewModel(obj, method));
     }
 
@@ -99,7 +95,7 @@ public final class InstanceFactory {
                     } else {
                         return Modifier.isPublic(field.getModifiers());
                     }
-                }) //TODO improve this check
+                })
                 .map(field -> this.createInstanceFieldViewModel(obj, field));
     }
 
@@ -125,8 +121,10 @@ public final class InstanceFactory {
         final Function<List<?>, Object> invokeMethod = params -> {
             try {
                 return method.invoke(instance, params.toArray());
-            } catch (final IllegalAccessException | InvocationTargetException e) {
-                throw new IllegalArgumentException("Could not invoke method", e); //TODO maybe rethrow causing exception
+            } catch (final InvocationTargetException targetException) {
+                throw ExecutionException.getForException(targetException);
+            } catch (final IllegalAccessException e) {
+                throw new IllegalArgumentException("Could not invoke method", e);
             }
         };
         return new MethodViewModel(method.getName(),

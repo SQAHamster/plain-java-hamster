@@ -78,14 +78,6 @@ public final class ClassFactory {
     }
 
     private ClassViewModel createClassViewModel(final Class<?> cls, final boolean setAccessible, final boolean setInstancesAccessible) {
-        if (setInstancesAccessible) {
-            System.out.println("Making class instances " + cls.getSimpleName() + " accessible");
-        }
-
-        if (setAccessible) {
-            System.out.println("Making class " + cls.getSimpleName() + " accessible");
-        }
-
         return new ClassViewModel(cls.getSimpleName(),
                 Arrays.stream(cls.getConstructors())
                         .filter(constructor -> {
@@ -105,7 +97,7 @@ public final class ClassFactory {
                             } else {
                                 return Modifier.isPublic(method.getModifiers());
                             }
-                        }) //TODO improve this check, optionally reintroduce Modifier.isPublic(method.getModifiers())
+                        })
                         .map(this::createStaticMethodViewModel)
                         .collect(Collectors.toCollection(ArrayList::new)),
                 Arrays.stream(cls.getFields())
@@ -116,7 +108,7 @@ public final class ClassFactory {
                             } else {
                                 return Modifier.isPublic(field.getModifiers());
                             }
-                        }) //TODO improve this check,
+                        })
                         .map(this::createStaticFieldViewModel)
                         .collect(Collectors.toCollection(ArrayList::new)),
                 cls,
@@ -133,8 +125,10 @@ public final class ClassFactory {
         final Function<List<?>, Object> invokeMethod = params -> {
             try {
                 return method.invoke(null, params.toArray());
-            } catch (final IllegalAccessException | InvocationTargetException e) {
-                throw new IllegalArgumentException("Could not invoke static method", e); //TODO maybe rethrow causing exception
+            } catch (final InvocationTargetException targetException) {
+                throw ExecutionException.getForException(targetException);
+            } catch (final IllegalAccessException e) {
+                throw new IllegalArgumentException("Could not invoke static method", e);
             }
         };
         return new MethodViewModel(method.getName(),
@@ -147,8 +141,10 @@ public final class ClassFactory {
         final Function<List<?>, ?> construct = params -> {
             try {
                 return constructor.newInstance(params.toArray());
-            } catch (final IllegalAccessException | InvocationTargetException | InstantiationException e) {
-                throw new IllegalArgumentException("Could not invoke constructor", e); //TODO maybe rethrow causing exception
+            } catch (final InvocationTargetException targetException) {
+                throw ExecutionException.getForException(targetException);
+            } catch (final IllegalAccessException | InstantiationException e) {
+                throw new IllegalArgumentException("Could not invoke constructor", e);
             }
         };
         return new MethodViewModel("",
