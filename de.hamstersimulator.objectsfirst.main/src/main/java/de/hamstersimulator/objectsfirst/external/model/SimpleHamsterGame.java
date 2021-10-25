@@ -3,16 +3,14 @@ package de.hamstersimulator.objectsfirst.external.model;
 import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
 import de.hamstersimulator.objectsfirst.config.HamsterConfig;
 import de.hamstersimulator.objectsfirst.exceptions.GameAbortedException;
+import de.hamstersimulator.objectsfirst.server.http.client.HamsterClient;
 import de.hamstersimulator.objectsfirst.ui.javafx.JavaFXUI;
 
-import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
-
-import de.hamstersimulator.objectsfirst.server.http.client.HamsterClient;
 
 import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkArgument;
 import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
@@ -50,18 +48,12 @@ public abstract class SimpleHamsterGame {
     protected final SimpleHamsterGame currentGame = this;
 
     /**
-     * A console object to demonstrate IO besides using the read or write methods
-     * of hamsters.
-     */
-    protected final Console console = System.console();
-
-    /**
      * Initialized a simple hamster game by loading a default territory
      * and setting protected references to contain the default hamster and
      * the game.
      */
     public SimpleHamsterGame() {
-        game.startGame();
+        this.game.startGame();
 
         this.paule = this.game.getTerritory().getDefaultHamster();
     }
@@ -107,8 +99,8 @@ public abstract class SimpleHamsterGame {
      * The default is JAVA_FX.
      */
     protected void displayInNewGameWindow() {
-        final String mode = getUIModeFromEnvironmentVariable()
-                .orElse(getUIModeFromConfig()
+        final String mode = SimpleHamsterGame.getUIModeFromEnvironmentVariable()
+                .orElse(SimpleHamsterGame.getUIModeFromConfig()
                         .orElse(UIMode.JAVA_FX));
         switch (mode) {
             case UIMode.JAVA_FX:
@@ -130,6 +122,7 @@ public abstract class SimpleHamsterGame {
      @ requires true;
      @ ensures game.getCurrentGameMode() == Mode.INITIALIZING;
      @*/
+
     /**
      * Loads the Territory from a resources file.
      * Only absolute resource paths are allowed. E.g. the fileName "/territory.ter" represents the file
@@ -144,7 +137,7 @@ public abstract class SimpleHamsterGame {
     protected final void loadTerritoryFromResourceFile(final String fileName) {
         checkNotNull(fileName);
         checkArgument(fileName.startsWith("/"), "fileName does not start with \"/\"");
-        final InputStream territoryFileStream = getClass().getResourceAsStream(fileName);
+        final InputStream territoryFileStream = this.getClass().getResourceAsStream(fileName);
         checkArgument(territoryFileStream != null, "territory file not found");
         this.game.initialize(territoryFileStream);
     }
