@@ -129,7 +129,11 @@ public class MemberFactory {
     }
 
     ChangeListener<Boolean> createFieldReloadListener(final List<FieldViewModel> fields) {
-        final ScheduledThreadPoolExecutor reloadTimer = new ScheduledThreadPoolExecutor(1);
+        final ScheduledThreadPoolExecutor reloadTimer = new ScheduledThreadPoolExecutor(1, runnable -> {
+            final Thread thread = new Thread(runnable);
+            thread.setDaemon(true);
+            return thread;
+        });
 
         return new ChangeListener<>() {
             ScheduledFuture<?> runningTask = null;
