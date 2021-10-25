@@ -4,10 +4,7 @@ import de.hamstersimulator.objectsfirst.inspector.viewmodel.*;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -76,27 +73,29 @@ public final class InstanceFactory {
     private Stream<MethodViewModel> createMethodViewModelsForObject(final Class<?> cls, final Object obj, final boolean setAccessible) {
         return Arrays.stream(cls.getDeclaredMethods())
                 .filter(method -> !Modifier.isStatic(method.getModifiers()))
-                .filter(method -> {
-                    if (setAccessible) {
-                        return method.trySetAccessible();
-                    } else {
-                        return Modifier.isPublic(method.getModifiers());
-                    }
-                })
+                .filter(method -> this.checkAndMakeAccessible(method, cls, obj, setAccessible))
                 .map(method -> this.createInstanceMethodViewModel(obj, method));
     }
 
     private Stream<FieldViewModel> createFieldViewModelsForObject(final Class<?> cls, final Object obj, final boolean setAccessible) {
         return Arrays.stream(cls.getDeclaredFields())
                 .filter(field -> !Modifier.isStatic(field.getModifiers()))
-                .filter(field -> {
-                    if (setAccessible) {
-                        return field.trySetAccessible();
-                    } else {
-                        return Modifier.isPublic(field.getModifiers());
-                    }
-                })
+                .filter(field -> this.checkAndMakeAccessible(field, cls, obj, setAccessible))
                 .map(field -> this.createInstanceFieldViewModel(obj, field));
+    }
+
+    private <T extends AccessibleObject & Member> boolean checkAndMakeAccessible(final T member, final Class<?> cls, final Object obj, final boolean setAccessible) {
+        if (setAccessible) {
+            if (cls.equals(obj.getClass())) {
+                return member.trySetAccessible();
+            } else if (cls.getPackage().equals(obj.getClass().getPackage())) {
+                return !Modifier.isPrivate(member.getModifiers()) && member.trySetAccessible();
+            } else {
+                return (Modifier.isPublic(member.getModifiers()) || Modifier.isProtected(member.getModifiers())) && member.trySetAccessible();
+            }
+        } else {
+            return Modifier.isPublic(member.getModifiers());
+        }
     }
 
     private Stream<MethodViewModel> createSuperclassMethodViewModels(final Class<?> cls, final Object obj, final boolean setAccessible) {
