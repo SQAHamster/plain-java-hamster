@@ -1,7 +1,7 @@
 package de.hamstersimulator.objectsfirst.examples;
 
 public abstract class SimpleHamsterGame
-        extends de.hamstersimulator.objectsfirst.external.model.SimpleHamsterGame {
+        extends de.hamstersimulator.objectsfirst.external.simple.game.SimpleHamsterGame {
 
     protected static SimpleHamsterGame createInstance() {
         return new Example01();

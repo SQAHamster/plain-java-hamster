@@ -4,7 +4,7 @@ import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
 import de.hamstersimulator.objectsfirst.adapter.observables.ObservableLogEntry;
 import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTerritory;
 import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.ObservableCommandSpecification;
-import de.hamstersimulator.objectsfirst.external.model.SimpleHamsterGame;
+import de.hamstersimulator.objectsfirst.external.simple.game.SimpleHamsterGame;
 import de.hamstersimulator.objectsfirst.testframework.HamsterGameTestEnvironment;
 import de.hamstersimulator.objectsfirst.utils.Preconditions;
 import javafx.beans.property.ReadOnlyListProperty;
