@@ -1,7 +1,9 @@
 package de.hamstersimulator.objectsfirst.inspector.model;
 
-import de.hamstersimulator.objectsfirst.inspector.viewmodel.*;
-import javafx.beans.value.ChangeListener;
+import de.hamstersimulator.objectsfirst.inspector.viewmodel.ClassViewModel;
+import de.hamstersimulator.objectsfirst.inspector.viewmodel.InspectionViewModel;
+import de.hamstersimulator.objectsfirst.inspector.viewmodel.MethodViewModel;
+import de.hamstersimulator.objectsfirst.inspector.viewmodel.ParamViewModel;
 import javafx.collections.ListChangeListener;
 
 import java.lang.reflect.AccessibleObject;
@@ -83,7 +85,7 @@ public final class ClassFactory {
     }
 
     private ClassViewModel createClassViewModel(final Class<?> cls, final boolean setAccessible, final boolean setInstancesAccessible) {
-        final ClassViewModel viewModel = new ClassViewModel(cls.getSimpleName(),
+        final ClassViewModel newClassViewModel = new ClassViewModel(cls.getSimpleName(),
                 Arrays.stream(cls.getConstructors())
                         .filter(constructor -> this.memberFactory.checkAndMakeAccessible(constructor, cls, setAccessible))
                         .map(this::createConstructorViewModel)
@@ -102,13 +104,10 @@ public final class ClassFactory {
                 setInstancesAccessible,
                 setAccessible
         );
-        final ChangeListener<Boolean> isVisibleListener = (change, oldVal, newVal) -> {
-            if (change.getValue()) {
-                viewModel.staticFieldsProperty().forEach(FieldViewModel::reloadValue);
-            }
-        };
-        viewModel.isVisibleProperty().addListener(isVisibleListener);
-        return viewModel;
+        newClassViewModel.isVisibleProperty().addListener(
+                this.memberFactory.createFieldReloadListener(newClassViewModel.staticFieldsProperty())
+        );
+        return newClassViewModel;
     }
 
     public boolean hasViewModelForClass(final Class<?> cls) {

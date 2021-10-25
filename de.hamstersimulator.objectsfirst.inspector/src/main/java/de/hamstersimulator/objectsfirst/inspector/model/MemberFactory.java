@@ -4,16 +4,21 @@ import de.hamstersimulator.objectsfirst.inspector.viewmodel.FieldViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.InspectionViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.MethodViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.ParamViewModel;
+import javafx.beans.value.ChangeListener;
 
 import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class MemberFactory {
 
     private final InspectionViewModel viewModel;
+
+    static final int FIELD_RELOAD_INTERVAL = 1000;
 
     public MemberFactory(final InspectionViewModel viewModel) {
         this.viewModel = viewModel;
@@ -88,11 +93,11 @@ public class MemberFactory {
     /**
      * Checks whether in the given configuration the given field/method should be accessible - and is it should it tries to do so.
      * <p>
-     * A method/field should be accessible if
-     * - It is public
-     * - It is protected and `setAccessible` is `true`
-     * - It is package private, the class of the member is in the same package as the given class of the instance and `setAccessible` is `true`
-     * - It is private, the class of the member is the same as the given class of the instance and `setAccessible` is `true`
+     * A method/field should be accessible if:<br>
+     * - It is public<br>
+     * - It is protected and `setAccessible` is `true`<br>
+     * - It is package private, the class of the member is in the same package as the given class of the instance and `setAccessible` is `true`<br>
+     * - It is private, the class of the member is the same as the given class of the instance and `setAccessible` is `true`<br>
      *
      * @param member        The class member to check for accessibility and make accessible if needed
      * @param instanceClass The class of the instance this member is called from. Used to determine which members are allowed to be accessed.
@@ -113,5 +118,22 @@ public class MemberFactory {
         } else {
             return Modifier.isPublic(member.getModifiers());
         }
+    }
+
+    ChangeListener<Boolean> createFieldReloadListener(final List<FieldViewModel> fields) {
+        final Timer reloadTimer = new Timer(false);
+        return (change, oldVal, newVal) -> {
+            if (change.getValue()) {
+                fields.forEach(FieldViewModel::reloadValue);
+                reloadTimer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        fields.forEach(FieldViewModel::reloadValue);
+                    }
+                }, MemberFactory.FIELD_RELOAD_INTERVAL, MemberFactory.FIELD_RELOAD_INTERVAL);
+            } else {
+                reloadTimer.cancel();
+            }
+        };
     }
 }

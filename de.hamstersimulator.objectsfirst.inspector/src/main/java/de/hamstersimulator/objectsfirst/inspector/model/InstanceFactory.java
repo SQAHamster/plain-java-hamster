@@ -69,6 +69,10 @@ public final class InstanceFactory {
                 this.createSuperclassFieldViewModels(cls, obj, setAccessibleValue).collect(Collectors.toCollection(ArrayList::new)),
                 obj,
                 setAccessibleValue);
+
+        newInstance.isVisibleProperty().addListener(
+                this.memberFactory.createFieldReloadListener(newInstance.fieldsProperty())
+        );
         this.viewModel.instancesProperty().add(newInstance);
         return newInstance;
     }
