@@ -1,7 +1,6 @@
 package de.hamstersimulator.objectsfirst.inspector.model;
 
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.*;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 
 import java.lang.reflect.Field;
@@ -135,8 +134,19 @@ public final class InstanceFactory {
 
     private FieldViewModel createInstanceFieldViewModel(final Object instance, final Field field) {
         try {
-            final FieldViewModel viewModel = new FieldViewModel(field.getName(), new Type(field.getType()),
-                    field.get(instance), Modifier.isFinal(field.getModifiers()));
+            final FieldViewModel viewModel = new FieldViewModel(
+                    field.getName(),
+                    new Type(field.getType()),
+                    field.get(instance),
+                    Modifier.isFinal(field.getModifiers()),
+                    () -> {
+                        try {
+                            return field.get(instance);
+                        } catch (final IllegalAccessException e) {
+                            throw new IllegalArgumentException("Cannot read field value", e);
+                        }
+                    }
+            );
             viewModel.valueProperty().addListener((observable, oldValue, newValue) -> this.viewModel.executeOnMainThread(() -> {
                 try {
                     field.set(instance, newValue);
@@ -144,16 +154,6 @@ public final class InstanceFactory {
                     throw new IllegalArgumentException("Could not set field", e);
                 }
             }));
-            final ChangeListener<Boolean> isVisibleListener = (change, oldVal, newVal) -> {
-                if (change.getValue()) { //TODO: Spawn/kill refresh timer
-                    try {
-                        viewModel.valueProperty().setValue(field.get(instance));
-                    } catch (final IllegalAccessException e) {
-                        throw new RuntimeException("Could not get field value", e);
-                    }
-                }
-            };
-            viewModel.isVisibleProperty().addListener(isVisibleListener);
             return viewModel;
         } catch (final IllegalAccessException e) {
             throw new IllegalArgumentException("Cannot read field value", e);

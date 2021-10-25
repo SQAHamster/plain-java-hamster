@@ -1,7 +1,6 @@
 package de.hamstersimulator.objectsfirst.inspector.model;
 
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.*;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 
 import java.lang.reflect.*;
@@ -78,7 +77,7 @@ public final class ClassFactory {
     }
 
     private ClassViewModel createClassViewModel(final Class<?> cls, final boolean setAccessible, final boolean setInstancesAccessible) {
-        return new ClassViewModel(cls.getSimpleName(),
+        final ClassViewModel viewModel = new ClassViewModel(cls.getSimpleName(),
                 Arrays.stream(cls.getConstructors())
                         .filter(constructor -> {
                             if (setAccessible) {
@@ -115,6 +114,7 @@ public final class ClassFactory {
                 setInstancesAccessible,
                 setAccessible
         );
+        return viewModel;
     }
 
     public boolean hasViewModelForClass(final Class<?> cls) {
@@ -155,8 +155,19 @@ public final class ClassFactory {
 
     private FieldViewModel createStaticFieldViewModel(final Field field) {
         try {
-            final FieldViewModel viewModel = new FieldViewModel(field.getName(), new Type(field.getType()),
-                    field.get(null), Modifier.isFinal(field.getModifiers()));
+            final FieldViewModel viewModel = new FieldViewModel(
+                    field.getName(),
+                    new Type(field.getType()),
+                    field.get(null),
+                    Modifier.isFinal(field.getModifiers()),
+                    () -> {
+                        try {
+                            return field.get(null);
+                        } catch (final IllegalAccessException e) {
+                            throw new IllegalArgumentException("Cannot read field value", e);
+                        }
+                    }
+            );
             viewModel.valueProperty().addListener((observable, oldValue, newValue) -> this.viewModel.executeOnMainThread(() -> {
                 try {
                     field.set(null, newValue);
@@ -164,16 +175,6 @@ public final class ClassFactory {
                     throw new RuntimeException("Could not set field", e);
                 }
             }));
-            final ChangeListener<Boolean> isVisibleListener = (change, oldVal, newVal) -> {
-                if (change.getValue()) {
-                    try {
-                        viewModel.valueProperty().setValue(field.get(null));
-                    } catch (final IllegalAccessException e) {
-                        throw new RuntimeException("Could not get field value", e);
-                    }
-                }
-            };
-            viewModel.isVisibleProperty().addListener(isVisibleListener);
             return viewModel;
         } catch (final IllegalAccessException e) {
             throw new IllegalArgumentException("Cannot read field value", e);
