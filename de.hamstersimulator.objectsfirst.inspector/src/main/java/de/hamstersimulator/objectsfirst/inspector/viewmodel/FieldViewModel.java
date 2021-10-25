@@ -12,6 +12,7 @@ public class FieldViewModel extends ParamViewModel {
     private final SimpleObjectProperty<Object> value;
     private final ReadOnlyBooleanWrapper isFinal;
     final Supplier<Object> reloadValueCallback;
+    private boolean changedByGui = true;
 
     public FieldViewModel(final String name, final Type type, final Object value, final boolean isFinal, final Supplier<Object> reloadValueCallback) {
         super(name, type);
@@ -28,7 +29,16 @@ public class FieldViewModel extends ParamViewModel {
         return this.isFinal.getReadOnlyProperty();
     }
 
+    public boolean isChangedByGui() {
+        return this.changedByGui;
+    }
+
     public void reloadValue() {
-        this.value.set(this.reloadValueCallback.get());
+        final Object val = this.reloadValueCallback.get();
+        if (val != this.value.getValue()) {
+            this.changedByGui = false;
+            this.value.set(val);
+            this.changedByGui = true;
+        }
     }
 }

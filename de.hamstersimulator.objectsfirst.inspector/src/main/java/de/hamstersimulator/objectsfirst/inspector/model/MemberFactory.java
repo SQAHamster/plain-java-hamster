@@ -4,6 +4,7 @@ import de.hamstersimulator.objectsfirst.inspector.viewmodel.FieldViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.InspectionViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.MethodViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.ParamViewModel;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
@@ -66,6 +67,7 @@ public class MemberFactory {
             throw new IllegalArgumentException("The field to create a view model for can't be null");
         }
         try {
+            final SimpleBooleanProperty changedByGui = new SimpleBooleanProperty();
             final FieldViewModel viewModel = new FieldViewModel(
                     field.getName(),
                     new Type(field.getType()),
@@ -79,13 +81,17 @@ public class MemberFactory {
                         }
                     }
             );
-            viewModel.valueProperty().addListener((observable, oldValue, newValue) -> this.viewModel.executeOnMainThread(() -> {
-                try {
-                    field.set(instance, newValue);
-                } catch (final IllegalAccessException e) {
-                    throw new IllegalArgumentException("Could not set field", e);
+            viewModel.valueProperty().addListener((observable, oldValue, newValue) -> {
+                if (viewModel.isChangedByGui()) {
+                    this.viewModel.executeOnMainThread(() -> {
+                        try {
+                            field.set(instance, newValue);
+                        } catch (final IllegalAccessException e) {
+                            throw new IllegalArgumentException("Could not set field", e);
+                        }
+                    });
                 }
-            }));
+            });
             return viewModel;
         } catch (final IllegalAccessException e) {
             throw new IllegalArgumentException("Cannot read field value", e);
@@ -131,7 +137,6 @@ public class MemberFactory {
             @Override
             public void changed(final ObservableValue<? extends Boolean> change, final Boolean oldVal, final Boolean newVal) {
                 if (change.getValue()) {
-                    // TODO: Find out why the values are sometimes old (?java mem model??)
                     MemberFactory.this.viewModel.executeOnMainThread(() -> fields.forEach(FieldViewModel::reloadValue));
                     if (this.runningTask == null) {
                         this.runningTask = reloadTimer.scheduleAtFixedRate(
