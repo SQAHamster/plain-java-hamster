@@ -1,15 +1,15 @@
 package de.hamstersimulator.objectsfirst.inspector.viewmodel;
 
-import de.hamstersimulator.objectsfirst.inspector.model.ClassFactory;
-import de.hamstersimulator.objectsfirst.inspector.model.InspectionExecutor;
-import de.hamstersimulator.objectsfirst.inspector.model.InstanceFactory;
-import de.hamstersimulator.objectsfirst.inspector.model.Type;
+import de.hamstersimulator.objectsfirst.inspector.model.*;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,6 +22,7 @@ public class InspectionViewModel {
     private final Map<Class<?>, Type> enumInputTypeLookup = new HashMap<>();
     final InstanceFactory instanceFactory;
     final ClassFactory classFactory;
+    final MemberFactory memberFactory;
     private final ClassInstanceManager classInstanceManager;
 
     public InspectionViewModel() {
@@ -32,7 +33,7 @@ public class InspectionViewModel {
                 .map(Type::new).collect(Collectors.toList()));
 
         this.classes.addListener((ListChangeListener<ClassViewModel>) change -> {
-            while(change.next()) {
+            while (change.next()) {
                 for (final ClassViewModel addedInfo : change.getAddedSubList()) {
                     final Class<?> cls = addedInfo.valueProperty().get();
                     if (Enum.class.isAssignableFrom(cls)) {
@@ -41,7 +42,7 @@ public class InspectionViewModel {
                         this.multiTypes.add(type);
                     }
                 }
-                for (final ClassViewModel removedInfo: change.getRemoved()) {
+                for (final ClassViewModel removedInfo : change.getRemoved()) {
                     final Class<?> cls = removedInfo.valueProperty().get();
                     if (this.enumInputTypeLookup.containsKey(cls)) {
                         this.multiTypes.remove(this.enumInputTypeLookup.remove(cls));
@@ -50,8 +51,9 @@ public class InspectionViewModel {
             }
         });
 
-        this.instanceFactory = new InstanceFactory(this);
-        this.classFactory = new ClassFactory(this);
+        this.memberFactory = new MemberFactory(this);
+        this.instanceFactory = new InstanceFactory(this, this.memberFactory);
+        this.classFactory = new ClassFactory(this, this.memberFactory);
         this.classInstanceManager = new ClassInstanceManager(this);
     }
 
@@ -68,7 +70,7 @@ public class InspectionViewModel {
     }
 
     public ClassInstanceManager getClassInstanceManager() {
-        return classInstanceManager;
+        return this.classInstanceManager;
     }
 
     public BooleanBinding isReadOnly() {
@@ -86,12 +88,12 @@ public class InspectionViewModel {
     public boolean hasViewModelForObject(final Object object) {
         return this.instanceFactory.hasViewModelForObject(object);
     }
-    
+
     public ClassViewModel viewModelForClass(final Class<?> cls) {
         return this.classFactory.viewModelForClass(cls);
     }
 
-    public ClassViewModel viewModelForClass(final Class<?> cls, boolean setAccessible, boolean setInstancesAccessible) {
+    public ClassViewModel viewModelForClass(final Class<?> cls, final boolean setAccessible, final boolean setInstancesAccessible) {
         return this.classFactory.viewModelForClass(cls, setAccessible, setInstancesAccessible);
     }
 
@@ -104,6 +106,7 @@ public class InspectionViewModel {
      @ requires executor != null;
      @ ensures !isReadOnly().get();
      @*/
+
     /**
      * Sets the current executor
      * Must be executed on the JavaFX thread
@@ -121,6 +124,7 @@ public class InspectionViewModel {
      @ requires !isReadOnly().get();
      @ ensures isReadOnly().get();
      @*/
+
     /**
      * Removes the current executor
      * Must be executed on the JavaFX thread
@@ -136,6 +140,7 @@ public class InspectionViewModel {
      @ requires !isReadOnly().get();
      @ requires runnable != null;
      @*/
+
     /**
      * Executes a runnable on the main thread
      * This is not blocking!

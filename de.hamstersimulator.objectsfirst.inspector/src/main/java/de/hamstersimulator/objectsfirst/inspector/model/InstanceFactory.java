@@ -3,22 +3,23 @@ package de.hamstersimulator.objectsfirst.inspector.model;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.*;
 import javafx.collections.ListChangeListener;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.IdentityHashMap;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class InstanceFactory {
 
     private final InspectionViewModel viewModel;
+    private final MemberFactory memberFactory;
     private final IdentityHashMap<Object, InstanceViewModel> instanceViewModelLookup = new IdentityHashMap<>();
 
-    public InstanceFactory(final InspectionViewModel viewModel) {
+    public InstanceFactory(final InspectionViewModel viewModel, final MemberFactory memberFactory) {
         this.viewModel = viewModel;
+        this.memberFactory = memberFactory;
         viewModel.instancesProperty().addListener((ListChangeListener<InstanceViewModel>) change -> {
             while (change.next()) {
                 for (final InstanceViewModel addedInfo : change.getAddedSubList()) {
@@ -82,7 +83,7 @@ public final class InstanceFactory {
                         return Modifier.isPublic(method.getModifiers());
                     }
                 })
-                .map(method -> this.createInstanceMethodViewModel(obj, method));
+                .map(method -> this.memberFactory.createMethodViewModel(obj, method));
     }
 
     private Stream<FieldViewModel> createFieldViewModelsForObject(final Class<?> cls, final Object obj, final boolean setAccessible) {
@@ -95,7 +96,7 @@ public final class InstanceFactory {
                         return Modifier.isPublic(field.getModifiers());
                     }
                 })
-                .map(field -> this.createInstanceFieldViewModel(obj, field));
+                .map(field -> this.memberFactory.createFieldViewModel(obj, field));
     }
 
     private Stream<MethodViewModel> createSuperclassMethodViewModels(final Class<?> cls, final Object obj, final boolean setAccessible) {
@@ -114,50 +115,6 @@ public final class InstanceFactory {
         }
         return Stream.concat(this.createFieldViewModelsForObject(superclass, obj, setAccessible),
                 this.createSuperclassFieldViewModels(superclass, obj, setAccessible));
-    }
-
-    private MethodViewModel createInstanceMethodViewModel(final Object instance, final Method method) {
-        final Function<List<?>, Object> invokeMethod = params -> {
-            try {
-                return method.invoke(instance, params.toArray());
-            } catch (final InvocationTargetException targetException) {
-                throw ExecutionException.getForException(targetException);
-            } catch (final IllegalAccessException e) {
-                throw new IllegalArgumentException("Could not invoke method", e);
-            }
-        };
-        return new MethodViewModel(method.getName(),
-                Arrays.stream(method.getParameters()).map(ParamViewModel::fromParameter).collect(Collectors.toList()),
-                new Type(method.getReturnType()),
-                invokeMethod);
-    }
-
-    private FieldViewModel createInstanceFieldViewModel(final Object instance, final Field field) {
-        try {
-            final FieldViewModel viewModel = new FieldViewModel(
-                    field.getName(),
-                    new Type(field.getType()),
-                    field.get(instance),
-                    Modifier.isFinal(field.getModifiers()),
-                    () -> {
-                        try {
-                            return field.get(instance);
-                        } catch (final IllegalAccessException e) {
-                            throw new IllegalArgumentException("Cannot read field value", e);
-                        }
-                    }
-            );
-            viewModel.valueProperty().addListener((observable, oldValue, newValue) -> this.viewModel.executeOnMainThread(() -> {
-                try {
-                    field.set(instance, newValue);
-                } catch (final IllegalAccessException e) {
-                    throw new IllegalArgumentException("Could not set field", e);
-                }
-            }));
-            return viewModel;
-        } catch (final IllegalAccessException e) {
-            throw new IllegalArgumentException("Cannot read field value", e);
-        }
     }
 
     public Optional<InstanceViewModel> getViewModelForObject(final Object obj) {
