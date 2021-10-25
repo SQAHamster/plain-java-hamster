@@ -236,8 +236,7 @@ public class InputControl extends HBox {
         addButton.setOnMouseClicked(e -> {
             AddInstanceDialogWrapper.showAndWait(this.inspectionViewModel, this.value.get());
         });
-        addButton.prefWidthProperty().bind(addButton.heightProperty());
-        addButton.minWidthProperty().bind(addButton.prefWidthProperty());
+        addButton.setMinWidth(Button.USE_PREF_SIZE);
         return addButton;
     }
 
