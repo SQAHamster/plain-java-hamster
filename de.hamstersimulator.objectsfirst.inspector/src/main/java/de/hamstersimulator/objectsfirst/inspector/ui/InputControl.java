@@ -219,9 +219,7 @@ public class InputControl extends HBox {
     }
 
     private String sanitizeString(final String textValue) {
-        if (textValue == null) {
-            return null;
-        }
+        assert textValue != null;
 
         final TypeCategory category = this.currentType.get().getCategory();
         if (category == TypeCategory.BYTE
@@ -356,14 +354,14 @@ public class InputControl extends HBox {
             }
         }, this.currentType, textField.textProperty()));
         final ChangeListener<String> changeListener = (observable, oldValue, newValue) -> {
-            final String sanitizedString = this.sanitizeString(newValue);
-            if (!Objects.equals(newValue, sanitizedString)) {
-                textField.setText(sanitizedString);
-            }
-            final ValidationResult validationResult = this.validateString(sanitizedString);
-            this.updateIsValid(validationResult);
-            if (validationResult != ValidationResult.ERROR) {
-                this.setFromString(sanitizedString);
+            if (newValue != null && !newValue.equals(this.sanitizeString(newValue))) {
+                textField.setText(this.sanitizeString(newValue));
+            } else {
+                final ValidationResult validationResult = this.validateString(newValue);
+                this.updateIsValid(validationResult);
+                if (validationResult != ValidationResult.ERROR) {
+                    this.setFromString(newValue);
+                }
             }
         };
         textField.textProperty().addListener(changeListener);
