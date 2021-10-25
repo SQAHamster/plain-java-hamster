@@ -1,5 +1,6 @@
 package de.hamstersimulator.objectsfirst.inspector.ui;
 
+import de.hamstersimulator.objectsfirst.inspector.viewmodel.HideableViewModel;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ObservableStringValue;
@@ -16,7 +17,7 @@ import org.controlsfx.control.PopOver;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-public abstract class CardListView<T> extends FlowPane {
+public abstract class CardListView<T extends HideableViewModel> extends FlowPane {
 
     private final SimpleListProperty<T> items;
     private final Map<T, ToggleButton> cardLookUp = new IdentityHashMap<>();
@@ -27,13 +28,13 @@ public abstract class CardListView<T> extends FlowPane {
         final ToggleGroup toggleGroup = new ToggleGroup();
         this.items.addListener((ListChangeListener<T>) change -> {
             while (change.next()) {
-                for (final T addedElement: change.getAddedSubList()) {
+                for (final T addedElement : change.getAddedSubList()) {
                     final ToggleButton newCard = this.createCard(addedElement);
                     this.cardLookUp.put(addedElement, newCard);
                     this.getChildren().add(newCard);
                     newCard.setToggleGroup(toggleGroup);
                 }
-                for (final T removedElement: change.getRemoved()) {
+                for (final T removedElement : change.getRemoved()) {
                     final ToggleButton removedCard = this.cardLookUp.remove(removedElement);
                     this.getChildren().remove(removedCard);
                     removedCard.setToggleGroup(null);
@@ -58,8 +59,10 @@ public abstract class CardListView<T> extends FlowPane {
         card.textProperty().bind(this.getCardText(item));
         card.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
+                item.isVisibleProperty().set(true);
                 this.addPopOver(card, item);
             } else {
+                item.isVisibleProperty().set(false);
                 if (this.currentPopOver != null) {
                     this.currentPopOver.hide();
                 }
