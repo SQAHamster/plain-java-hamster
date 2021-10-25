@@ -47,6 +47,8 @@ public class InputControl extends HBox {
 
         if (category == TypeCategory.OBJECT || category == TypeCategory.OPTIONAL) {
             final ComboBox<Type> multiTypeComboBox = this.createMultiTypeComboBox();
+            multiTypeComboBox.managedProperty().bind(this.isReadOnly.not());
+            multiTypeComboBox.visibleProperty().bind(this.isReadOnly.not());
             this.multiTypeComboBox = multiTypeComboBox;
             this.getChildren().add(multiTypeComboBox);
             this.currentType = multiTypeComboBox.getValue();
