@@ -116,12 +116,15 @@ public class InputControl extends HBox {
     }
 
     private ValidationResult validateString(final String textValue) {
-        assert textValue != null;
-
         if (this.currentType.getCategory() == TypeCategory.STRING) {
-            return ValidationResult.OK;
+            if (textValue == null) {
+                return ValidationResult.WARNING;
+            } else {
+                return ValidationResult.OK;
+            }
         }
-        if (!this.currentType.isPrimitive() && textValue.isBlank()) {
+        final String nonNullTextValue = Objects.requireNonNullElse(textValue, "");
+        if (!this.currentType.isPrimitive() && nonNullTextValue.isBlank()) {
             if (this.type.getCategory() == TypeCategory.OPTIONAL) {
                 return ValidationResult.OK;
             } else {
@@ -129,7 +132,7 @@ public class InputControl extends HBox {
             }
         }
         if (this.currentType.getCategory() == TypeCategory.CHARACTER) {
-            if (textValue.length() == 1) {
+            if (nonNullTextValue.length() == 1) {
                 return ValidationResult.OK;
             } else {
                 return ValidationResult.ERROR;
@@ -137,12 +140,12 @@ public class InputControl extends HBox {
         }
         try {
             switch (this.currentType.getCategory()) {
-                case BYTE -> Byte.parseByte(textValue);
-                case SHORT -> Short.parseShort(textValue);
-                case INTEGER -> Integer.parseInt(textValue);
-                case LONG -> Long.parseLong(textValue);
-                case FLOAT -> Float.parseFloat(textValue);
-                case DOUBLE -> Double.parseDouble(textValue);
+                case BYTE -> Byte.parseByte(nonNullTextValue);
+                case SHORT -> Short.parseShort(nonNullTextValue);
+                case INTEGER -> Integer.parseInt(nonNullTextValue);
+                case LONG -> Long.parseLong(nonNullTextValue);
+                case FLOAT -> Float.parseFloat(nonNullTextValue);
+                case DOUBLE -> Double.parseDouble(nonNullTextValue);
                 default -> throw new IllegalStateException("Illegal input category");
             }
             return ValidationResult.OK;
@@ -179,20 +182,21 @@ public class InputControl extends HBox {
     private void setFromString(final String textValue) {
         assert this.validateString(textValue) == ValidationResult.OK;
 
+        final String nonNullTextValue = Objects.requireNonNullElse(textValue, "");
         if (this.currentType.getCategory() == TypeCategory.STRING) {
-            this.setValue(textValue);
-        } else if (this.currentType.getCategory() == TypeCategory.CHARACTER && textValue.length() == 1) {
-            this.setValue(textValue.charAt(0));
-        } else if (textValue.isBlank()) {
+            this.setValue(nonNullTextValue);
+        } else if (this.currentType.getCategory() == TypeCategory.CHARACTER && nonNullTextValue.length() == 1) {
+            this.setValue(nonNullTextValue.charAt(0));
+        } else if (nonNullTextValue.isBlank()) {
             this.setValue(null);
         } else {
             switch (this.currentType.getCategory()) {
-                case BYTE -> this.setValue(Byte.parseByte(textValue));
-                case SHORT -> this.setValue(Short.parseShort(textValue));
-                case INTEGER -> this.setValue(Integer.parseInt(textValue));
-                case LONG -> this.setValue(Long.parseLong(textValue));
-                case FLOAT -> this.setValue(Float.parseFloat(textValue));
-                case DOUBLE -> this.setValue(Double.parseDouble(textValue));
+                case BYTE -> this.setValue(Byte.parseByte(nonNullTextValue));
+                case SHORT -> this.setValue(Short.parseShort(nonNullTextValue));
+                case INTEGER -> this.setValue(Integer.parseInt(nonNullTextValue));
+                case LONG -> this.setValue(Long.parseLong(nonNullTextValue));
+                case FLOAT -> this.setValue(Float.parseFloat(nonNullTextValue));
+                case DOUBLE -> this.setValue(Double.parseDouble(nonNullTextValue));
                 default -> throw new IllegalStateException("Illegal input category");
             }
         }
@@ -209,6 +213,10 @@ public class InputControl extends HBox {
     }
 
     private String sanitizeString(final String textValue) {
+        if (textValue == null) {
+            return null;
+        }
+
         final TypeCategory category = this.currentType.getCategory();
         if (category == TypeCategory.BYTE
                 || category == TypeCategory.SHORT
@@ -332,12 +340,12 @@ public class InputControl extends HBox {
             if (value != null) {
                 textField.setText(value.toString());
             } else {
-                textField.setText("");
+                textField.setText(null);
             }
         };
         final ChangeListener<String> changeListener = (observable, oldValue, newValue) -> {
             final String sanitizedString = this.sanitizeString(newValue);
-            if (!newValue.equals(sanitizedString)) {
+            if (!Objects.equals(newValue, sanitizedString)) {
                 textField.setText(sanitizedString);
             }
             final ValidationResult validationResult = this.validateString(sanitizedString);

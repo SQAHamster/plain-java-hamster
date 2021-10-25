@@ -4,11 +4,11 @@
 }
 
 .warning {
-    -fx-background-color: #FFDD0055;
+    -fx-control-inner-background: #F5DF4E;
 }
 
 .error {
-    -fx-background-color: #FF000055;
+    -fx-control-inner-background: #FF0000;
 }
 
 .scroll-pane {
