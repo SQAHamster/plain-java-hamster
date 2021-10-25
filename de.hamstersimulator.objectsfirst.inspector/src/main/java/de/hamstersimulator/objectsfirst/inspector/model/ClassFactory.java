@@ -85,35 +85,17 @@ public final class ClassFactory {
     private ClassViewModel createClassViewModel(final Class<?> cls, final boolean setAccessible, final boolean setInstancesAccessible) {
         final ClassViewModel viewModel = new ClassViewModel(cls.getSimpleName(),
                 Arrays.stream(cls.getConstructors())
-                        .filter(constructor -> {
-                            if (setAccessible) {
-                                return constructor.trySetAccessible();
-                            } else {
-                                return Modifier.isPublic(constructor.getModifiers());
-                            }
-                        })
+                        .filter(constructor -> this.memberFactory.checkAndMakeAccessible(constructor, cls, setAccessible))
                         .map(this::createConstructorViewModel)
                         .collect(Collectors.toCollection(ArrayList::new)),
                 Arrays.stream(cls.getMethods())
                         .filter(method -> Modifier.isStatic(method.getModifiers()))
-                        .filter(method -> {
-                            if (setAccessible) {
-                                return method.trySetAccessible();
-                            } else {
-                                return Modifier.isPublic(method.getModifiers());
-                            }
-                        })
+                        .filter(method -> this.memberFactory.checkAndMakeAccessible(method, cls, setAccessible))
                         .map(method -> this.memberFactory.createMethodViewModel(null, method))
                         .collect(Collectors.toCollection(ArrayList::new)),
                 Arrays.stream(cls.getFields())
                         .filter(field -> Modifier.isStatic(field.getModifiers()))
-                        .filter(field -> {
-                            if (setAccessible) {
-                                return field.trySetAccessible();
-                            } else {
-                                return Modifier.isPublic(field.getModifiers());
-                            }
-                        })
+                        .filter(field -> this.memberFactory.checkAndMakeAccessible(field, cls, setAccessible))
                         .map(field -> this.memberFactory.createFieldViewModel(null, field))
                         .collect(Collectors.toCollection(ArrayList::new)),
                 cls,

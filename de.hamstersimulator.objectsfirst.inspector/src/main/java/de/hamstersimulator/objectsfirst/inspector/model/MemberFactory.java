@@ -5,10 +5,7 @@ import de.hamstersimulator.objectsfirst.inspector.viewmodel.InspectionViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.MethodViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.ParamViewModel;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -85,6 +82,36 @@ public class MemberFactory {
             return viewModel;
         } catch (final IllegalAccessException e) {
             throw new IllegalArgumentException("Cannot read field value", e);
+        }
+    }
+
+    /**
+     * Checks whether in the given configuration the given field/method should be accessible - and is it should it tries to do so.
+     * <p>
+     * A method/field should be accessible if
+     * - It is public
+     * - It is protected and `setAccessible` is `true`
+     * - It is package private, the class of the member is in the same package as the given class of the instance and `setAccessible` is `true`
+     * - It is private, the class of the member is the same as the given class of the instance and `setAccessible` is `true`
+     *
+     * @param member        The class member to check for accessibility and make accessible if needed
+     * @param instanceClass The class of the instance this member is called from. Used to determine which members are allowed to be accessed.
+     * @param setAccessible Whether to attempt to make non-public fields accessible or only use public fields that don't need `setAccessible` to be called on it
+     * @param <T>           The type of member. Required to be able to return its modifiers and have an operation that tries to make it accessible. Either `Method` or `Field`
+     * @return `true` iff the given member is accessible or has successfully been made accessible
+     */
+    <T extends AccessibleObject & Member> boolean checkAndMakeAccessible(final T member, final Class<?> instanceClass, final boolean setAccessible) {
+        final Class<?> cls = member.getDeclaringClass();
+        if (setAccessible) {
+            if (cls.equals(instanceClass)) {
+                return member.trySetAccessible();
+            } else if (cls.getPackage().equals(instanceClass.getPackage())) {
+                return !Modifier.isPrivate(member.getModifiers()) && member.trySetAccessible();
+            } else {
+                return (Modifier.isPublic(member.getModifiers()) || Modifier.isProtected(member.getModifiers())) && member.trySetAccessible();
+            }
+        } else {
+            return Modifier.isPublic(member.getModifiers());
         }
     }
 }

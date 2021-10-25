@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.Optional;
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -79,29 +76,15 @@ public final class InstanceFactory {
     private Stream<MethodViewModel> createMethodViewModelsForObject(final Class<?> cls, final Object obj, final boolean setAccessible) {
         return Arrays.stream(cls.getDeclaredMethods())
                 .filter(method -> !Modifier.isStatic(method.getModifiers()))
-                .filter(method -> this.checkAndMakeAccessible(method, cls, obj, setAccessible))
+                .filter(method -> this.memberFactory.checkAndMakeAccessible(method, obj.getClass(), setAccessible))
                 .map(method -> this.memberFactory.createMethodViewModel(obj, method));
     }
 
     private Stream<FieldViewModel> createFieldViewModelsForObject(final Class<?> cls, final Object obj, final boolean setAccessible) {
         return Arrays.stream(cls.getDeclaredFields())
                 .filter(field -> !Modifier.isStatic(field.getModifiers()))
-                .filter(field -> this.checkAndMakeAccessible(field, cls, obj, setAccessible))
+                .filter(field -> this.memberFactory.checkAndMakeAccessible(field, obj.getClass(), setAccessible))
                 .map(field -> this.memberFactory.createFieldViewModel(obj, field));
-    }
-
-    private <T extends AccessibleObject & Member> boolean checkAndMakeAccessible(final T member, final Class<?> cls, final Object obj, final boolean setAccessible) {
-        if (setAccessible) {
-            if (cls.equals(obj.getClass())) {
-                return member.trySetAccessible();
-            } else if (cls.getPackage().equals(obj.getClass().getPackage())) {
-                return !Modifier.isPrivate(member.getModifiers()) && member.trySetAccessible();
-            } else {
-                return (Modifier.isPublic(member.getModifiers()) || Modifier.isProtected(member.getModifiers())) && member.trySetAccessible();
-            }
-        } else {
-            return Modifier.isPublic(member.getModifiers());
-        }
     }
 
     private Stream<MethodViewModel> createSuperclassMethodViewModels(final Class<?> cls, final Object obj, final boolean setAccessible) {
