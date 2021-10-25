@@ -5,12 +5,14 @@ import de.hamstersimulator.objectsfirst.inspector.viewmodel.InspectionViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.MethodViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.ParamViewModel;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -121,18 +123,28 @@ public class MemberFactory {
     }
 
     ChangeListener<Boolean> createFieldReloadListener(final List<FieldViewModel> fields) {
-        final Timer reloadTimer = new Timer(false);
-        return (change, oldVal, newVal) -> {
-            if (change.getValue()) {
-                fields.forEach(FieldViewModel::reloadValue);
-                reloadTimer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
+        final ScheduledThreadPoolExecutor reloadTimer = new ScheduledThreadPoolExecutor(1);
+
+        return new ChangeListener<>() {
+            ScheduledFuture<?> runningTask = null;
+
+            @Override
+            public void changed(final ObservableValue<? extends Boolean> change, final Boolean oldVal, final Boolean newVal) {
+                if (change.getValue()) {
+                    // TODO: Find out why the values are sometimes old (?java mem model??)
+                    MemberFactory.this.viewModel.executeOnMainThread(() -> fields.forEach(FieldViewModel::reloadValue));
+                    if (this.runningTask == null) {
+                        this.runningTask = reloadTimer.scheduleAtFixedRate(
+                                () -> fields.forEach(FieldViewModel::reloadValue),
+                                MemberFactory.FIELD_RELOAD_INTERVAL, MemberFactory.FIELD_RELOAD_INTERVAL, TimeUnit.MILLISECONDS);
+                    }
+                } else {
+                    if (this.runningTask != null) {
+                        this.runningTask.cancel(false);
+                        this.runningTask = null;
                         fields.forEach(FieldViewModel::reloadValue);
                     }
-                }, MemberFactory.FIELD_RELOAD_INTERVAL, MemberFactory.FIELD_RELOAD_INTERVAL);
-            } else {
-                reloadTimer.cancel();
+                }
             }
         };
     }
