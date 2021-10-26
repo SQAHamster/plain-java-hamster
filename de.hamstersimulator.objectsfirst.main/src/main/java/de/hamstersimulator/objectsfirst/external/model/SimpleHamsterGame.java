@@ -138,7 +138,7 @@ public abstract class SimpleHamsterGame {
      *             Can't be <code>null</code> and must be one of the Strings in `UIMode</code>
      * @throws IllegalArgumentException If <code>mode</code> is <code>null</code> or not one of the allowed values.
      */
-    protected void openGameUserInterface(final String mode) {
+    private void openGameUserInterface(final String mode) {
         switch (mode) {
             case UIMode.JAVA_FX:
                 JavaFXUI.displayInNewGameWindow(this.game.getModelViewAdapter());

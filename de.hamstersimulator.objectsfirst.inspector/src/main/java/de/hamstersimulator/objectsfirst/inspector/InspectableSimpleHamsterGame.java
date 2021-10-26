@@ -42,7 +42,7 @@ public abstract class InspectableSimpleHamsterGame extends SimpleHamsterGame {
         if (UIMode.JAVA_FX.equals(mode)) {
             InspectableJavaFXUI.displayInNewGameWindow(this.game.getModelViewAdapter(), this.inspect);
         } else {
-            super.openGameUserInterface(mode);
+            super.displayInNewGameWindow();
         }
     }
 
