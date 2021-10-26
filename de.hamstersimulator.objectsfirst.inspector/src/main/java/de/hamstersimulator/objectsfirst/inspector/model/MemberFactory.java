@@ -20,11 +20,18 @@ import java.util.stream.Collectors;
 public class MemberFactory {
 
     private final InspectionViewModel viewModel;
+    private final ScheduledThreadPoolExecutor reloadTimer;
 
     static final int FIELD_RELOAD_INTERVAL = 1000;
 
     public MemberFactory(final InspectionViewModel viewModel) {
         this.viewModel = viewModel;
+        this.reloadTimer = new ScheduledThreadPoolExecutor(1, runnable -> {
+            final Thread thread = new Thread(runnable);
+            thread.setName("reloadTimer-" + thread.getName());
+            thread.setDaemon(true);
+            return thread;
+        });
     }
 
     /**
@@ -128,22 +135,28 @@ public class MemberFactory {
         }
     }
 
+    /**
+     * Returns a boolean listener that - when activated with `true` - starts reloading the field values of
+     * all the fields in the given list in a regular interval specified by `FIELD_RELOAD_INTERVAL`.
+     * <p>
+     * Once activated with `false` the refreshing will be stopped.
+     * <p>
+     * The reloading will be done on a separate daemon thread in the `reloadTimer`.
+     * Except for the first load which is done on the calling thread
+     *
+     * @param fields The fields which to refresh when the listener was called with `true` until it is called with `false`
+     * @return The change listener for reloading
+     */
     ChangeListener<Boolean> createFieldReloadListener(final List<FieldViewModel> fields) {
-        final ScheduledThreadPoolExecutor reloadTimer = new ScheduledThreadPoolExecutor(1, runnable -> {
-            final Thread thread = new Thread(runnable);
-            thread.setDaemon(true);
-            return thread;
-        });
-
         return new ChangeListener<>() {
             ScheduledFuture<?> runningTask = null;
 
             @Override
             public void changed(final ObservableValue<? extends Boolean> change, final Boolean oldVal, final Boolean newVal) {
                 if (change.getValue()) {
-                    MemberFactory.this.viewModel.executeOnMainThread(() -> fields.forEach(FieldViewModel::reloadValue));
+                    fields.forEach(FieldViewModel::reloadValue);
                     if (this.runningTask == null) {
-                        this.runningTask = reloadTimer.scheduleAtFixedRate(
+                        this.runningTask = MemberFactory.this.reloadTimer.scheduleAtFixedRate(
                                 () -> fields.forEach(FieldViewModel::reloadValue),
                                 MemberFactory.FIELD_RELOAD_INTERVAL, MemberFactory.FIELD_RELOAD_INTERVAL, TimeUnit.MILLISECONDS);
                     }
