@@ -38,7 +38,12 @@ public abstract class InspectableSimpleHamsterGame extends SimpleHamsterGame {
 
     @Override
     protected void displayInNewGameWindow() {
-        InspectableJavaFXUI.displayInNewGameWindow(this.game.getModelViewAdapter(), this.inspect);
+        final String mode = this.getRequestedUIMode();
+        if (UIMode.JAVA_FX.equals(mode)) {
+            InspectableJavaFXUI.displayInNewGameWindow(this.game.getModelViewAdapter(), this.inspect);
+        } else {
+            super.openGameUserInterface(mode);
+        }
     }
 
     /**
@@ -49,7 +54,7 @@ public abstract class InspectableSimpleHamsterGame extends SimpleHamsterGame {
     @Override
     protected void postRun() {
         final InspectionExecutor executor = new InspectionExecutor();
-        JavaFXUtil.blockingExecuteOnFXThread(new Runnable() {
+        JavaFXUtil.blockingExecuteOnFXThreadIfAvailable(new Runnable() {
             @Override
             public void run() {
                 InspectableSimpleHamsterGame.this.inspect.setExecutor(executor);
@@ -58,7 +63,7 @@ public abstract class InspectableSimpleHamsterGame extends SimpleHamsterGame {
         try {
             executor.blockingExecute();
         } finally {
-            JavaFXUtil.blockingExecuteOnFXThread(this.inspect::removeExecutor);
+            JavaFXUtil.blockingExecuteOnFXThreadIfAvailable(this.inspect::removeExecutor);
         }
     }
 }
