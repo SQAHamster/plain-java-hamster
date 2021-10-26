@@ -33,7 +33,7 @@ public abstract class InspectableSimpleHamsterGame extends SimpleHamsterGame {
         manager.addInstance(this.game.getTerritory(), "territory", false);
         manager.addClass(Hamster.class, false);
         manager.addClass(Location.class, false);
-        manager.addClassesFromCurrentPackage();
+        manager.addClassesFromClassPackage(this.getClass());
     }
 
     /**
