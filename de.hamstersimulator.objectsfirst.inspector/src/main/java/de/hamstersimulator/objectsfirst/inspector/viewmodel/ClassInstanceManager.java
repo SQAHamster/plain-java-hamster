@@ -71,6 +71,7 @@ public class ClassInstanceManager {
                     }
                 })
                 .filter(Objects::nonNull)
+                .filter(loadedCls -> !loadedCls.getSimpleName().isBlank())
                 .forEach(loadedClass -> this.addClass(loadedClass, true));
     }
 
