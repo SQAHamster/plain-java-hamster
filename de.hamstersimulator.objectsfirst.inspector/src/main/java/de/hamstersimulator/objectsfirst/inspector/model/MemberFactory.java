@@ -108,7 +108,7 @@ public class MemberFactory {
     /**
      * Checks whether in the given configuration the given field/method should be accessible - and is it should it tries to do so.
      * <p>
-     * A method/field should be accessible if:<br>
+     * A method/field should be accessible if it is NOT synthetic AND if:<br>
      * - It is public<br>
      * - It is protected and `setAccessible` is `true`<br>
      * - It is package private, the class of the member is in the same package as the given class of the instance and `setAccessible` is `true`<br>
@@ -122,6 +122,9 @@ public class MemberFactory {
      */
     <T extends AccessibleObject & Member> boolean checkAndMakeAccessible(final T member, final Class<?> instanceClass, final boolean setAccessible) {
         final Class<?> cls = member.getDeclaringClass();
+        if (member.isSynthetic()) {
+            return false;
+        }
         if (setAccessible) {
             if (cls.equals(instanceClass)) {
                 return member.trySetAccessible();

@@ -60,12 +60,7 @@ public abstract class InspectableSimpleHamsterGame extends SimpleHamsterGame {
     @Override
     protected void postRun() {
         final InspectionExecutor executor = new InspectionExecutor();
-        JavaFXUtil.blockingExecuteOnFXThreadIfAvailable(new Runnable() {
-            @Override
-            public void run() {
-                InspectableSimpleHamsterGame.this.inspect.setExecutor(executor);
-            }
-        });
+        JavaFXUtil.blockingExecuteOnFXThreadIfAvailable(() -> InspectableSimpleHamsterGame.this.inspect.setExecutor(executor));
         try {
             executor.blockingExecute();
         } finally {
