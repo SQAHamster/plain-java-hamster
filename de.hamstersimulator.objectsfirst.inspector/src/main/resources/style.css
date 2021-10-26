@@ -4,11 +4,19 @@
 }
 
 .warning {
-    -fx-background-color: #FFDD0055;
+    -fx-control-inner-background: #F5DF4E;
 }
 
 .error {
-    -fx-background-color: #FF000055;
+    -fx-control-inner-background: #FF0000;
+}
+
+.combo-box.warning {
+    -fx-background-color: #F5DF4E;
+}
+
+.text-field {
+    -fx-prompt-text-fill: black
 }
 
 .scroll-pane {

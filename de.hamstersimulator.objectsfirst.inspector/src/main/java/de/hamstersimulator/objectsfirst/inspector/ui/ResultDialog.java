@@ -34,15 +34,16 @@ public class ResultDialog extends Dialog<Void> {
         inputControl.valueProperty().set(value);
         inputControl.isReadOnlyProperty().set(true);
         contentGrid.add(inputControl, 1, 1);
-        //dialogPane.setContent(inputControl);
 
-        Label typeText = new Label();
-        typeText.textProperty().set("Returned type:");
-        contentGrid.add(typeText, 0, 0);
+        if (value != null) {
+            Label typeText = new Label();
+            typeText.textProperty().set("Returned type:");
+            contentGrid.add(typeText, 0, 0);
 
-        Label typeLabel = new Label();
-        typeLabel.textProperty().set(returnValType.toString());
-        contentGrid.add(typeLabel,  1, 0);
+            Label typeLabel = new Label();
+            typeLabel.textProperty().set(returnValType.getType().getSimpleName());
+            contentGrid.add(typeLabel,  1, 0);
+        }
 
         this.setResultConverter(dialogButton -> null);
 
