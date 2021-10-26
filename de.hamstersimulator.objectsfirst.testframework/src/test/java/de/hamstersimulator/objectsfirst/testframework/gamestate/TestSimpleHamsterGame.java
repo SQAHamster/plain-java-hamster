@@ -4,7 +4,7 @@ import de.hamstersimulator.objectsfirst.datatypes.Direction;
 import de.hamstersimulator.objectsfirst.datatypes.Location;
 import de.hamstersimulator.objectsfirst.datatypes.Size;
 import de.hamstersimulator.objectsfirst.external.model.Hamster;
-import de.hamstersimulator.objectsfirst.external.model.SimpleHamsterGame;
+import de.hamstersimulator.objectsfirst.external.simple.game.SimpleHamsterGame;
 import de.hamstersimulator.objectsfirst.external.model.TerritoryBuilder;
 
 /**

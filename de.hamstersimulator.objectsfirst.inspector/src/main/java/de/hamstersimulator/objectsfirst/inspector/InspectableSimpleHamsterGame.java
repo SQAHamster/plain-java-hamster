@@ -2,7 +2,7 @@ package de.hamstersimulator.objectsfirst.inspector;
 
 import de.hamstersimulator.objectsfirst.datatypes.Location;
 import de.hamstersimulator.objectsfirst.external.model.Hamster;
-import de.hamstersimulator.objectsfirst.external.model.SimpleHamsterGame;
+import de.hamstersimulator.objectsfirst.external.simple.game.SimpleHamsterGame;
 import de.hamstersimulator.objectsfirst.inspector.model.InspectionExecutor;
 import de.hamstersimulator.objectsfirst.inspector.ui.InspectableJavaFXUI;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.ClassInstanceManager;

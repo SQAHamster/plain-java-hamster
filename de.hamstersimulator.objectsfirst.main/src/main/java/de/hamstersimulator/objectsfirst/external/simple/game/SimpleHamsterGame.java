@@ -1,8 +1,10 @@
-package de.hamstersimulator.objectsfirst.external.model;
+package de.hamstersimulator.objectsfirst.external.simple.game;
 
 import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
 import de.hamstersimulator.objectsfirst.config.HamsterConfig;
 import de.hamstersimulator.objectsfirst.exceptions.GameAbortedException;
+import de.hamstersimulator.objectsfirst.external.model.Hamster;
+import de.hamstersimulator.objectsfirst.external.model.HamsterGame;
 import de.hamstersimulator.objectsfirst.server.http.client.HamsterClient;
 import de.hamstersimulator.objectsfirst.ui.javafx.JavaFXUI;
 
@@ -20,7 +22,6 @@ import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
  * To be used in lectures 2-8 of PSE as predefined base class.
  *
  * @author Steffen Becker
- * @deprecated replaced with {@link de.hamstersimulator.objectsfirst.external.simple.game.SimpleHamsterGame}
  */
 public abstract class SimpleHamsterGame {
 
@@ -93,24 +94,6 @@ public abstract class SimpleHamsterGame {
 
     }
 
-    /*@
-     @ requires true;
-     @ ensures (\return = UIMode.JAVA_FX) || (\return = UIMode.HTTP) || (\return = UIMode.NONE)
-     */
-
-    /**
-     * Checks if a game UI mode is requested via environment variables or config and returns that mode in that priority.
-     * <p>
-     * If none is requested, the JAVA_FX mode will be requested.
-     *
-     * @return A non-null String which will be one of the strings in <code>UIMode</code>  of the currently requested mode,
-     */
-    protected String getRequestedUIMode() {
-        return SimpleHamsterGame.getUIModeFromEnvironmentVariable()
-                .orElse(SimpleHamsterGame.getUIModeFromConfig()
-                        .orElse(UIMode.JAVA_FX));
-    }
-
     /**
      * Displays the hamster game in a new game window
      * The UI type can be specified in the config file or in the environment variable
@@ -118,28 +101,9 @@ public abstract class SimpleHamsterGame {
      * The default is JAVA_FX.
      */
     protected void displayInNewGameWindow() {
-        this.openGameUserInterface(this.getRequestedUIMode());
-    }
-
-    /*@
-     @ requires (mode == UIMode.JAVA_FX) || (mode == UIMode.HTTP) || (mode == UIMode.NONE);
-     @*/
-
-    /**
-     * Starts the user interface specified by <code>mode</code> (must be one of the modes in `UIMode</code>)
-     * <p>
-     * Modes:
-     * <ul>
-     * <li>JAVA_FX: Starts the regular (default) JavaFX UI on the local display of the user</li>
-     * <li>HTTP: Starts the HTTP server interface to use in the Browser or in the VSCode extension</li>
-     * <li>NONE: Doesn't start any user interface for the simulator. E.g. for automated tests</li>
-     * </ul>
-     *
-     * @param mode The User Interface mode to start for this <code>SimpleHamsterGame</code> as String.
-     *             Can't be <code>null</code> and must be one of the Strings in `UIMode</code>
-     * @throws IllegalArgumentException If <code>mode</code> is <code>null</code> or not one of the allowed values.
-     */
-    private void openGameUserInterface(final String mode) {
+        final String mode = SimpleHamsterGame.getUIModeFromEnvironmentVariable()
+                .orElse(SimpleHamsterGame.getUIModeFromConfig()
+                        .orElse(UIMode.JAVA_FX));
         switch (mode) {
             case UIMode.JAVA_FX:
                 JavaFXUI.displayInNewGameWindow(this.game.getModelViewAdapter());
@@ -240,7 +204,7 @@ public abstract class SimpleHamsterGame {
      * Different UI types
      * No enum is used because enums use reflection for valueOf which can cause issues if reflection is forbidden
      */
-    protected static final class UIMode {
+    private static final class UIMode {
         public static final String JAVA_FX = "JAVA_FX";
         public static final String HTTP = "HTTP";
         public static final String NONE = "NONE";

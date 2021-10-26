@@ -1,6 +1,6 @@
 package de.hamstersimulator.objectsfirst.inspector.tests;
 
-import de.hamstersimulator.objectsfirst.external.model.SimpleHamsterGame;
+import de.hamstersimulator.objectsfirst.external.simple.game.SimpleHamsterGame;
 import de.hamstersimulator.objectsfirst.inspector.InspectableSimpleHamsterGame;
 
 public class TestInspectorGame extends InspectableSimpleHamsterGame {
