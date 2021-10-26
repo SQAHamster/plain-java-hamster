@@ -86,16 +86,16 @@ public final class ClassFactory {
 
     private ClassViewModel createClassViewModel(final Class<?> cls, final boolean setAccessible, final boolean setInstancesAccessible) {
         final ClassViewModel newClassViewModel = new ClassViewModel(cls.getSimpleName(),
-                Arrays.stream(cls.getConstructors())
+                Arrays.stream(cls.getDeclaredConstructors())
                         .filter(constructor -> this.memberFactory.checkAndMakeAccessible(constructor, cls, setAccessible))
                         .map(this::createConstructorViewModel)
                         .collect(Collectors.toCollection(ArrayList::new)),
-                Arrays.stream(cls.getMethods())
+                Arrays.stream(cls.getDeclaredMethods())
                         .filter(method -> Modifier.isStatic(method.getModifiers()))
                         .filter(method -> this.memberFactory.checkAndMakeAccessible(method, cls, setAccessible))
                         .map(method -> this.memberFactory.createMethodViewModel(null, method))
                         .collect(Collectors.toCollection(ArrayList::new)),
-                Arrays.stream(cls.getFields())
+                Arrays.stream(cls.getDeclaredFields())
                         .filter(field -> Modifier.isStatic(field.getModifiers()))
                         .filter(field -> this.memberFactory.checkAndMakeAccessible(field, cls, setAccessible))
                         .map(field -> this.memberFactory.createFieldViewModel(null, field))
