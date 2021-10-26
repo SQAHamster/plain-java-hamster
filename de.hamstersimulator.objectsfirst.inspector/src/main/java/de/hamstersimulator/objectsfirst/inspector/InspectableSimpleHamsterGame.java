@@ -36,6 +36,12 @@ public abstract class InspectableSimpleHamsterGame extends SimpleHamsterGame {
         manager.addClassesFromCurrentPackage();
     }
 
+    /**
+     * Displays the hamster game in a new game window
+     * The UI type can be specified in the config file or in the environment variable
+     * OUTPUT_INTERFACE. Possible values are "JAVA_FX" (inspection GUI), "HTTP" and "NONE"
+     * The default is "JAVA_FX" (inspection GUI).
+     */
     @Override
     protected void displayInNewGameWindow() {
         final String mode = this.getRequestedUIMode();
