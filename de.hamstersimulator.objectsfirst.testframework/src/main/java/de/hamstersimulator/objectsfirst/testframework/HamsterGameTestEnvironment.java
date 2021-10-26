@@ -1,7 +1,7 @@
 package de.hamstersimulator.objectsfirst.testframework;
 
 import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
-import de.hamstersimulator.objectsfirst.external.model.SimpleHamsterGame;
+import de.hamstersimulator.objectsfirst.external.simple.game.SimpleHamsterGame;
 
 /**
  * Environment to test a SimpleHamsterGame

@@ -7,4 +7,6 @@ module de.hamstersimulator.objectsfirst.main {
     requires com.google.gson;
 
     exports de.hamstersimulator.objectsfirst.external.model;
+    exports de.hamstersimulator.objectsfirst.external.simple.game;
+    opens de.hamstersimulator.objectsfirst.external.simple.game to de.hamstersimulator.objectsfirst.inspector;
 }

@@ -1,8 +1,10 @@
-package de.hamstersimulator.objectsfirst.external.model;
+package de.hamstersimulator.objectsfirst.external.simple.game;
 
 import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
 import de.hamstersimulator.objectsfirst.config.HamsterConfig;
 import de.hamstersimulator.objectsfirst.exceptions.GameAbortedException;
+import de.hamstersimulator.objectsfirst.external.model.Hamster;
+import de.hamstersimulator.objectsfirst.external.model.HamsterGame;
 import de.hamstersimulator.objectsfirst.server.http.client.HamsterClient;
 import de.hamstersimulator.objectsfirst.ui.javafx.JavaFXUI;
 
@@ -20,7 +22,6 @@ import static de.hamstersimulator.objectsfirst.utils.Preconditions.checkNotNull;
  * To be used in lectures 2-8 of PSE as predefined base class.
  *
  * @author Steffen Becker
- * @deprecated replaced with {@link de.hamstersimulator.objectsfirst.external.simple.game.SimpleHamsterGame}
  */
 public abstract class SimpleHamsterGame {
 
