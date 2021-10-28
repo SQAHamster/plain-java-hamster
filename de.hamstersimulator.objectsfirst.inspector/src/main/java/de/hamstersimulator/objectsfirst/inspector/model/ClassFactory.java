@@ -1,9 +1,6 @@
 package de.hamstersimulator.objectsfirst.inspector.model;
 
-import de.hamstersimulator.objectsfirst.inspector.viewmodel.ClassViewModel;
-import de.hamstersimulator.objectsfirst.inspector.viewmodel.InspectionViewModel;
-import de.hamstersimulator.objectsfirst.inspector.viewmodel.MethodViewModel;
-import de.hamstersimulator.objectsfirst.inspector.viewmodel.ParamViewModel;
+import de.hamstersimulator.objectsfirst.inspector.viewmodel.*;
 import javafx.collections.ListChangeListener;
 
 import java.lang.reflect.AccessibleObject;
@@ -85,25 +82,22 @@ public final class ClassFactory {
     }
 
     private ClassViewModel createClassViewModel(final Class<?> cls, final boolean setAccessible, final boolean setInstancesAccessible) {
-        final ClassViewModel newClassViewModel = new ClassViewModel(cls.getSimpleName(),
-                Arrays.stream(cls.getDeclaredConstructors())
-                        .filter(constructor -> this.memberFactory.checkAndMakeAccessible(constructor, cls, setAccessible))
-                        .map(this::createConstructorViewModel)
-                        .collect(Collectors.toCollection(ArrayList::new)),
-                Arrays.stream(cls.getDeclaredMethods())
-                        .filter(method -> Modifier.isStatic(method.getModifiers()))
-                        .filter(method -> this.memberFactory.checkAndMakeAccessible(method, cls, setAccessible))
-                        .map(method -> this.memberFactory.createMethodViewModel(null, method))
-                        .collect(Collectors.toCollection(ArrayList::new)),
-                Arrays.stream(cls.getDeclaredFields())
-                        .filter(field -> Modifier.isStatic(field.getModifiers()))
-                        .filter(field -> this.memberFactory.checkAndMakeAccessible(field, cls, setAccessible))
-                        .map(field -> this.memberFactory.createFieldViewModel(null, field))
-                        .collect(Collectors.toCollection(ArrayList::new)),
-                cls,
-                setInstancesAccessible,
-                setAccessible
-        );
+        final List<MethodViewModel> constructors = Arrays.stream(cls.getDeclaredConstructors())
+                .filter(constructor -> this.memberFactory.checkAndMakeAccessible(constructor, cls, setAccessible))
+                .map(this::createConstructorViewModel)
+                .collect(Collectors.toCollection(ArrayList::new));
+        final List<MethodViewModel> staticMethods = Arrays.stream(cls.getDeclaredMethods())
+                .filter(method -> Modifier.isStatic(method.getModifiers()))
+                .filter(method -> this.memberFactory.checkAndMakeAccessible(method, cls, setAccessible))
+                .map(method -> this.memberFactory.createMethodViewModel(null, method))
+                .collect(Collectors.toCollection(ArrayList::new));
+        final List<FieldViewModel> staticFields = Arrays.stream(cls.getDeclaredFields())
+                .filter(field -> Modifier.isStatic(field.getModifiers()))
+                .filter(field -> this.memberFactory.checkAndMakeAccessible(field, cls, setAccessible))
+                .map(field -> this.memberFactory.createFieldViewModel(null, field))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        final ClassViewModel newClassViewModel = new ClassViewModel(cls.getSimpleName(), constructors, staticMethods, staticFields, cls, setInstancesAccessible, setAccessible);
         newClassViewModel.isVisibleProperty().addListener(
                 this.memberFactory.createFieldReloadListener(newClassViewModel.staticFieldsProperty())
         );
