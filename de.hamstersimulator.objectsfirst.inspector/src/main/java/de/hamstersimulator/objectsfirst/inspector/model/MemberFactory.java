@@ -173,7 +173,7 @@ public class MemberFactory {
     /**
      * A listener class which supplies the logic for <code>createFieldReloadListener</code>
      *
-     * @see MemberFactory::createFieldReloadListener
+     * @see MemberFactory#createFieldReloadListener
      */
     private static class FieldTimedReloadListener implements ChangeListener<Boolean> {
 
@@ -218,7 +218,7 @@ public class MemberFactory {
             this.fields = fields;
             this.reloadTimer = reloadTimer;
         }
-        
+
         @Override
         public void changed(final ObservableValue<? extends Boolean> change, final Boolean oldValue, final Boolean newValue) {
             this.fields.forEach(FieldViewModel::reloadValue);
