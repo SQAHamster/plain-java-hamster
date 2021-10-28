@@ -22,7 +22,7 @@ public class MemberFactory {
     private final InspectionViewModel viewModel;
     private final ScheduledThreadPoolExecutor reloadTimer;
 
-    static final int FIELD_RELOAD_INTERVAL = 1000;
+    private static final int FIELD_RELOAD_INTERVAL = 1000;
 
     public MemberFactory(final InspectionViewModel viewModel) {
         this.viewModel = viewModel;
