@@ -4,7 +4,6 @@ import de.hamstersimulator.objectsfirst.inspector.viewmodel.FieldViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.InspectionViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.MethodViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.ParamViewModel;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
@@ -15,6 +14,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class MemberFactory {
@@ -26,12 +26,28 @@ public class MemberFactory {
 
     public MemberFactory(final InspectionViewModel viewModel) {
         this.viewModel = viewModel;
-        this.reloadTimer = new ScheduledThreadPoolExecutor(1, runnable -> {
-            final Thread thread = new Thread(runnable);
-            thread.setName("reloadTimer-" + thread.getName());
-            thread.setDaemon(true);
-            return thread;
-        });
+        this.reloadTimer = new ScheduledThreadPoolExecutor(1, MemberFactory::createReloadTimerThread);
+    }
+
+    /**
+     * Factory method to create new thread for the reload timer thread pool from the given executable.
+     * <p>
+     * All created threads have the common name prefix "reloadTimer-" and are Daemon threads,
+     * so they don't keep the program from exiting when the simulator is closed
+     *
+     * @param runnable The runnable the tread is supposed to execute. Can't be null
+     * @return A new (not yet started) thread that has been made a daemon thread with a name starting with
+     * "<code>reloadTimer-</code>"
+     * @throws IllegalArgumentException Iff <code>runnable</code> is null
+     */
+    private static Thread createReloadTimerThread(final Runnable runnable) {
+        if (runnable == null) {
+            throw new IllegalArgumentException("Runnable for reload timer thread was null");
+        }
+        final Thread thread = new Thread(runnable);
+        thread.setName("reloadTimer-" + thread.getName());
+        thread.setDaemon(true);
+        return thread;
     }
 
     /**
@@ -61,6 +77,10 @@ public class MemberFactory {
                 invokeMethod);
     }
 
+    private void fieldViewModelValueChanged(final FieldViewModel fieldViewModel, final Field field) {
+
+    }
+
     /**
      * Creates a new `FieldViewModel` instance for the field of a given instance or a static field if the given instance is `null`.
      * Also adds the reload function for the field
@@ -73,36 +93,32 @@ public class MemberFactory {
         if (field == null) {
             throw new IllegalArgumentException("The field to create a view model for can't be null");
         }
-        try {
-            final SimpleBooleanProperty changedByGui = new SimpleBooleanProperty();
-            final FieldViewModel viewModel = new FieldViewModel(
-                    field.getName(),
-                    new Type(field.getType()),
-                    field.get(instance),
-                    Modifier.isFinal(field.getModifiers()),
-                    () -> {
-                        try {
-                            return field.get(instance);
-                        } catch (final IllegalAccessException e) {
-                            throw new IllegalArgumentException("Cannot read field value", e);
-                        }
+        final Supplier<Object> fieldValueGetter = () -> {
+            try {
+                return field.get(instance);
+            } catch (final IllegalAccessException e) {
+                throw new IllegalArgumentException("Cannot read field value", e);
+            }
+        };
+        final FieldViewModel newFieldViewModel = new FieldViewModel(
+                field.getName(),
+                new Type(field.getType()),
+                fieldValueGetter.get(),
+                Modifier.isFinal(field.getModifiers()),
+                fieldValueGetter
+        );
+        newFieldViewModel.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newFieldViewModel.isChangedByGui()) {
+                this.viewModel.executeOnMainThread(() -> {
+                    try {
+                        field.set(instance, newValue);
+                    } catch (final IllegalAccessException e) {
+                        throw new IllegalArgumentException("Could not set field", e);
                     }
-            );
-            viewModel.valueProperty().addListener((observable, oldValue, newValue) -> {
-                if (viewModel.isChangedByGui()) {
-                    this.viewModel.executeOnMainThread(() -> {
-                        try {
-                            field.set(instance, newValue);
-                        } catch (final IllegalAccessException e) {
-                            throw new IllegalArgumentException("Could not set field", e);
-                        }
-                    });
-                }
-            });
-            return viewModel;
-        } catch (final IllegalAccessException e) {
-            throw new IllegalArgumentException("Cannot read field value", e);
-        }
+                });
+            }
+        });
+        return newFieldViewModel;
     }
 
     /**
@@ -144,33 +160,80 @@ public class MemberFactory {
      * <p>
      * Once activated with `false` the refreshing will be stopped.
      * <p>
-     * The reloading will be done on a separate daemon thread in the `reloadTimer`.
+     * The reloading will be done on a separate daemon thread in the <code>reloadTimer</code>.
      * Except for the first load which is done on the calling thread
      *
-     * @param fields The fields which to refresh when the listener was called with `true` until it is called with `false`
+     * @param fields The fields which to refresh when the listener was called with <code>true</code> until it is called with <code>false</code>
      * @return The change listener for reloading
      */
     ChangeListener<Boolean> createFieldReloadListener(final List<FieldViewModel> fields) {
-        return new ChangeListener<>() {
-            ScheduledFuture<?> runningTask = null;
+        return new FieldTimedReloadListener(fields, this.reloadTimer);
+    }
 
-            @Override
-            public void changed(final ObservableValue<? extends Boolean> change, final Boolean oldVal, final Boolean newVal) {
-                if (change.getValue()) {
-                    fields.forEach(FieldViewModel::reloadValue);
-                    if (this.runningTask == null) {
-                        this.runningTask = MemberFactory.this.reloadTimer.scheduleAtFixedRate(
-                                () -> fields.forEach(FieldViewModel::reloadValue),
-                                MemberFactory.FIELD_RELOAD_INTERVAL, MemberFactory.FIELD_RELOAD_INTERVAL, TimeUnit.MILLISECONDS);
-                    }
-                } else {
-                    if (this.runningTask != null) {
-                        this.runningTask.cancel(false);
-                        this.runningTask = null;
-                        fields.forEach(FieldViewModel::reloadValue);
-                    }
-                }
+    /**
+     * A listener class which supplies the logic for <code>createFieldReloadListener</code>
+     *
+     * @see MemberFactory::createFieldReloadListener
+     */
+    private static class FieldTimedReloadListener implements ChangeListener<Boolean> {
+
+        /**
+         * If a reload timer is currently running this is the <code>ScheduledFuture</code> to interact (specifically cancel) with it.
+         * <p>
+         * If none is running, this will be null. (It's not an Optional, as optionals as class property are considered bad practice)
+         */
+        private ScheduledFuture<?> runningTask = null;
+
+        /**
+         * The list of <code>FieldViewModel</code>s which need to be refreshed each time the timer is scheduled.
+         * <p>
+         * Can't be null
+         */
+        private final List<FieldViewModel> fields;
+
+        /**
+         * The <code>ScheduledThreadPoolExecutor</code> to schedule the timer reloads on.
+         * The actual reloading (for evey but the initial and last reload) will happen on the thread ths executor assigns the task to.
+         * <p>
+         * Can't be null
+         */
+        private final ScheduledThreadPoolExecutor reloadTimer;
+
+        /**
+         * Initializes a new <code>FieldTimedReloadListener</code> which reloads all the fields in the provided list on the given executor once activated
+         *
+         * @param fields      The list of <code>FieldViewModel</code>s which need to be refreshed each time the timer is scheduled.
+         *                    Can't be null
+         * @param reloadTimer The <code>ScheduledThreadPoolExecutor</code> to schedule the timer reloads on.
+         *                    The actual reloading (for evey but the initial and last reload) will happen on the thread ths executor assigns the task to.
+         *                    Can't be null
+         */
+        FieldTimedReloadListener(final List<FieldViewModel> fields, final ScheduledThreadPoolExecutor reloadTimer) {
+            if (fields == null) {
+                throw new IllegalArgumentException("List of fields to reload can't be null");
             }
-        };
+            if (reloadTimer == null) {
+                throw new IllegalArgumentException("The scheduled executor to run the reloads on can't be null");
+            }
+            this.fields = fields;
+            this.reloadTimer = reloadTimer;
+        }
+        
+        @Override
+        public void changed(final ObservableValue<? extends Boolean> change, final Boolean oldValue, final Boolean newValue) {
+            this.fields.forEach(FieldViewModel::reloadValue);
+            if (change.getValue()) {
+                if (this.runningTask == null) {
+                    this.runningTask = this.reloadTimer.scheduleAtFixedRate(
+                            () -> this.fields.forEach(FieldViewModel::reloadValue),
+                            MemberFactory.FIELD_RELOAD_INTERVAL,
+                            MemberFactory.FIELD_RELOAD_INTERVAL,
+                            TimeUnit.MILLISECONDS);
+                }
+            } else if (this.runningTask != null) {
+                this.runningTask.cancel(false);
+                this.runningTask = null;
+            }
+        }
     }
 }
