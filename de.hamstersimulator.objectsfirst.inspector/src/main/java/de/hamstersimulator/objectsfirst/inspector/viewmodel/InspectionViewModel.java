@@ -6,10 +6,7 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,29 +29,67 @@ public class InspectionViewModel {
         this.multiTypes.addAll(Stream.of(String.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class)
                 .map(Type::new).collect(Collectors.toList()));
 
-        this.classes.addListener((ListChangeListener<ClassViewModel>) change -> {
-            while (change.next()) {
-                for (final ClassViewModel addedInfo : change.getAddedSubList()) {
-                    final Class<?> cls = addedInfo.valueProperty().get();
-                    if (Enum.class.isAssignableFrom(cls)) {
-                        final Type type = new Type(cls);
-                        this.enumInputTypeLookup.put(cls, type);
-                        this.multiTypes.add(type);
-                    }
-                }
-                for (final ClassViewModel removedInfo : change.getRemoved()) {
-                    final Class<?> cls = removedInfo.valueProperty().get();
-                    if (this.enumInputTypeLookup.containsKey(cls)) {
-                        this.multiTypes.remove(this.enumInputTypeLookup.remove(cls));
-                    }
-                }
-            }
-        });
+        this.classes.addListener(this::onClassesListChanged);
 
         this.memberFactory = new MemberFactory(this);
         this.instanceFactory = new InstanceFactory(this, this.memberFactory);
         this.classFactory = new ClassFactory(this, this.memberFactory);
         this.classInstanceManager = new ClassInstanceManager(this);
+    }
+
+    /**
+     * Adds all enum types in the given list to the list of known enums
+     * (<code>multiTypes</code> and <code>enumInputTypeLookup</code>)
+     *
+     * @param classesToAdd A non-null list which to check if they are enums and potentially add
+     */
+    private void addToMultiTypesIfEnum(final List<? extends ClassViewModel> classesToAdd) {
+        if (classesToAdd == null) {
+            throw new IllegalArgumentException("List of classes can't be null");
+        }
+        for (final ClassViewModel addedInfo : classesToAdd) {
+            final Class<?> cls = addedInfo.valueProperty().get();
+            if (Enum.class.isAssignableFrom(cls)) {
+                final Type type = new Type(cls);
+                this.enumInputTypeLookup.put(cls, type);
+                this.multiTypes.add(type);
+            }
+        }
+    }
+
+    /**
+     * Removes the classes from <code>multiTypes</code> and <code>enumInputTypeLookup</code> if they were on them.
+     *
+     * @param classesToRemove A non-null list of class view models for which to remove the class from the list of known enums
+     */
+    private void removeFromMultiTypesIfEnum(final List<? extends ClassViewModel> classesToRemove) {
+        if (classesToRemove == null) {
+            throw new IllegalArgumentException("List of classes can't be null");
+        }
+        for (final ClassViewModel removedInfo : classesToRemove) {
+            final Class<?> cls = removedInfo.valueProperty().get();
+            if (this.enumInputTypeLookup.containsKey(cls)) {
+                this.multiTypes.remove(this.enumInputTypeLookup.remove(cls));
+            }
+        }
+    }
+
+    /**
+     * Listener function for changes in a classes list.
+     * <p>
+     * Iterates over all changes and for added classes adds them to the known enums if it is a valid enum.
+     * For removed classes if they were in the enum list they will be removed
+     *
+     * @param change All changes that happened to the list. Must be non-null
+     */
+    private void onClassesListChanged(final ListChangeListener.Change<? extends ClassViewModel> change) {
+        if (change == null) {
+            throw new IllegalArgumentException("List of classes can't be null");
+        }
+        while (change.next()) {
+            this.addToMultiTypesIfEnum(change.getAddedSubList());
+            this.removeFromMultiTypesIfEnum(change.getRemoved());
+        }
     }
 
     public ReadOnlyListProperty<ClassViewModel> classesProperty() {
