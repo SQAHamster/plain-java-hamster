@@ -218,30 +218,6 @@ public class InputControl extends HBox {
         this.changeFromInputControl = false;
     }
 
-    private String sanitizeString(final String textValue) {
-        assert textValue != null;
-
-        final TypeCategory category = this.currentType.get().getCategory();
-        if (category == TypeCategory.BYTE
-                || category == TypeCategory.SHORT
-                || category == TypeCategory.INTEGER
-                || category == TypeCategory.LONG) {
-            return textValue.replaceAll("[^0-9]", "");
-        } else if (category == TypeCategory.FLOAT || category == TypeCategory.DOUBLE) {
-            final String partialSanitized = textValue.replaceAll("[^.0-9]", "");
-            if (partialSanitized.indexOf('.') != partialSanitized.lastIndexOf('.')) {
-                final int firstDotIndex = partialSanitized.indexOf('.');
-                final String firstPart = partialSanitized.substring(0, firstDotIndex + 1);
-                final String lastPart = partialSanitized.substring(firstDotIndex + 1).replaceAll("\\.", "");
-                return firstPart + lastPart;
-            } else {
-                return partialSanitized;
-            }
-        } else {
-            return textValue;
-        }
-    }
-
     private Button createAddObjectButton() {
         final Button addButton = new Button();
         addButton.setText("+");
@@ -346,21 +322,18 @@ public class InputControl extends HBox {
         textField.promptTextProperty().bind(Bindings.createStringBinding(() -> {
             final String currentValue = textField.getText();
             final TypeCategory currentCategory = this.currentType.get().getCategory();
-            if (currentValue == null || (currentValue.isBlank() && currentCategory != TypeCategory.STRING) ) {
+            final boolean isPrimitive = this.currentType.get().isPrimitive();
+            if (!isPrimitive && (currentValue == null || (currentValue.isBlank() && currentCategory != TypeCategory.STRING))) {
                 return "null";
             } else {
                 return "";
             }
         }, this.currentType, textField.textProperty()));
         final ChangeListener<String> changeListener = (observable, oldValue, newValue) -> {
-            if (newValue != null && !newValue.equals(this.sanitizeString(newValue))) {
-                textField.setText(this.sanitizeString(newValue));
-            } else {
-                final ValidationResult validationResult = this.validateString(newValue);
-                this.updateIsValid(validationResult);
-                if (validationResult != ValidationResult.ERROR) {
-                    this.setFromString(newValue);
-                }
+            final ValidationResult validationResult = this.validateString(newValue);
+            this.updateIsValid(validationResult);
+            if (validationResult != ValidationResult.ERROR) {
+                this.setFromString(newValue);
             }
         };
         textField.textProperty().addListener(changeListener);
