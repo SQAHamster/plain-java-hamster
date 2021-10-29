@@ -125,6 +125,7 @@ public abstract class CardListView<T extends HideableViewModel> extends FlowPane
         popOver.show(owner);
         popOver.setOnHidden(event -> owner.setSelected(false));
         this.currentPopOver = popOver;
+        content.requestFocus();
     }
 
     protected abstract ObservableStringValue getCardText(final T item);
