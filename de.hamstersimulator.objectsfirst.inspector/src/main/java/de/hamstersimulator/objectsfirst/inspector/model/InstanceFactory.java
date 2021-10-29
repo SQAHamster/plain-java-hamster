@@ -1,22 +1,25 @@
 package de.hamstersimulator.objectsfirst.inspector.model;
 
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.*;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.function.Function;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.IdentityHashMap;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class InstanceFactory {
 
     private final InspectionViewModel viewModel;
+    private final MemberFactory memberFactory;
     private final IdentityHashMap<Object, InstanceViewModel> instanceViewModelLookup = new IdentityHashMap<>();
 
-    public InstanceFactory(final InspectionViewModel viewModel) {
+    public InstanceFactory(final InspectionViewModel viewModel, final MemberFactory memberFactory) {
         this.viewModel = viewModel;
+        this.memberFactory = memberFactory;
         viewModel.instancesProperty().addListener((ListChangeListener<InstanceViewModel>) change -> {
             while (change.next()) {
                 for (final InstanceViewModel addedInfo : change.getAddedSubList()) {
@@ -66,6 +69,10 @@ public final class InstanceFactory {
                 this.createSuperclassFieldViewModels(cls, obj, setAccessibleValue).collect(Collectors.toCollection(ArrayList::new)),
                 obj,
                 setAccessibleValue);
+
+        newInstance.isVisibleProperty().addListener(
+                this.memberFactory.createFieldReloadListener(newInstance.fieldsProperty())
+        );
         this.viewModel.instancesProperty().add(newInstance);
         return newInstance;
     }
@@ -73,29 +80,15 @@ public final class InstanceFactory {
     private Stream<MethodViewModel> createMethodViewModelsForObject(final Class<?> cls, final Object obj, final boolean setAccessible) {
         return Arrays.stream(cls.getDeclaredMethods())
                 .filter(method -> !Modifier.isStatic(method.getModifiers()))
-                .filter(method -> this.checkAndMakeAccessible(method, cls, obj, setAccessible))
-                .map(method -> this.createInstanceMethodViewModel(obj, method));
+                .filter(method -> this.memberFactory.checkAndMakeAccessible(method, obj.getClass(), setAccessible))
+                .map(method -> this.memberFactory.createMethodViewModel(obj, method));
     }
 
     private Stream<FieldViewModel> createFieldViewModelsForObject(final Class<?> cls, final Object obj, final boolean setAccessible) {
         return Arrays.stream(cls.getDeclaredFields())
                 .filter(field -> !Modifier.isStatic(field.getModifiers()))
-                .filter(field -> this.checkAndMakeAccessible(field, cls, obj, setAccessible))
-                .map(field -> this.createInstanceFieldViewModel(obj, field));
-    }
-
-    private <T extends AccessibleObject & Member> boolean checkAndMakeAccessible(final T member, final Class<?> cls, final Object obj, final boolean setAccessible) {
-        if (setAccessible) {
-            if (cls.equals(obj.getClass())) {
-                return member.trySetAccessible();
-            } else if (cls.getPackage().equals(obj.getClass().getPackage())) {
-                return !Modifier.isPrivate(member.getModifiers()) && member.trySetAccessible();
-            } else {
-                return (Modifier.isPublic(member.getModifiers()) || Modifier.isProtected(member.getModifiers())) && member.trySetAccessible();
-            }
-        } else {
-            return Modifier.isPublic(member.getModifiers());
-        }
+                .filter(field -> this.memberFactory.checkAndMakeAccessible(field, obj.getClass(), setAccessible))
+                .map(field -> this.memberFactory.createFieldViewModel(obj, field));
     }
 
     private Stream<MethodViewModel> createSuperclassMethodViewModels(final Class<?> cls, final Object obj, final boolean setAccessible) {
@@ -114,49 +107,6 @@ public final class InstanceFactory {
         }
         return Stream.concat(this.createFieldViewModelsForObject(superclass, obj, setAccessible),
                 this.createSuperclassFieldViewModels(superclass, obj, setAccessible));
-    }
-
-    private MethodViewModel createInstanceMethodViewModel(final Object instance, final Method method) {
-        final Function<List<?>, Object> invokeMethod = params -> {
-            try {
-                return method.invoke(instance, params.toArray());
-            } catch (final InvocationTargetException targetException) {
-                throw ExecutionException.getForException(targetException);
-            } catch (final IllegalAccessException e) {
-                throw new IllegalArgumentException("Could not invoke method", e);
-            }
-        };
-        return new MethodViewModel(method.getName(),
-                Arrays.stream(method.getParameters()).map(ParamViewModel::fromParameter).collect(Collectors.toList()),
-                new Type(method.getReturnType()),
-                invokeMethod);
-    }
-
-    private FieldViewModel createInstanceFieldViewModel(final Object instance, final Field field) {
-        try {
-            final FieldViewModel viewModel = new FieldViewModel(field.getName(), new Type(field.getType()),
-                    field.get(instance), Modifier.isFinal(field.getModifiers()));
-            viewModel.valueProperty().addListener((observable, oldValue, newValue) -> this.viewModel.executeOnMainThread(() -> {
-                try {
-                    field.set(instance, newValue);
-                } catch (final IllegalAccessException e) {
-                    throw new IllegalArgumentException("Could not set field", e);
-                }
-            }));
-            final ChangeListener<Boolean> isVisibleListener = (change, oldVal, newVal) -> {
-                if (change.getValue()) { //TODO: Spawn/kill refresh timer
-                    try {
-                        viewModel.valueProperty().setValue(field.get(instance));
-                    } catch (final IllegalAccessException e) {
-                        throw new RuntimeException("Could not get field value", e);
-                    }
-                }
-            };
-            viewModel.isVisibleProperty().addListener(isVisibleListener);
-            return viewModel;
-        } catch (final IllegalAccessException e) {
-            throw new IllegalArgumentException("Cannot read field value", e);
-        }
     }
 
     public Optional<InstanceViewModel> getViewModelForObject(final Object obj) {

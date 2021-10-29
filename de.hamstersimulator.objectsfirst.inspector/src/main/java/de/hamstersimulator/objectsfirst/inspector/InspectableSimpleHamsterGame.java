@@ -36,9 +36,20 @@ public abstract class InspectableSimpleHamsterGame extends SimpleHamsterGame {
         manager.addClassesFromClassPackage(this.getClass());
     }
 
+    /**
+     * Displays the hamster game in a new game window
+     * The UI type can be specified in the config file or in the environment variable
+     * OUTPUT_INTERFACE. Possible values are "JAVA_FX" (inspection GUI), "HTTP" and "NONE"
+     * The default is "JAVA_FX" (inspection GUI).
+     */
     @Override
     protected void displayInNewGameWindow() {
-        InspectableJavaFXUI.displayInNewGameWindow(this.game.getModelViewAdapter(), this.inspect);
+        final String mode = this.getRequestedUIMode();
+        if (UIMode.JAVA_FX.equals(mode)) {
+            InspectableJavaFXUI.displayInNewGameWindow(this.game.getModelViewAdapter(), this.inspect);
+        } else {
+            super.displayInNewGameWindow();
+        }
     }
 
     /**
@@ -49,16 +60,11 @@ public abstract class InspectableSimpleHamsterGame extends SimpleHamsterGame {
     @Override
     protected void postRun() {
         final InspectionExecutor executor = new InspectionExecutor();
-        JavaFXUtil.blockingExecuteOnFXThread(new Runnable() {
-            @Override
-            public void run() {
-                InspectableSimpleHamsterGame.this.inspect.setExecutor(executor);
-            }
-        });
+        JavaFXUtil.blockingExecuteOnFXThreadIfAvailable(() -> InspectableSimpleHamsterGame.this.inspect.setExecutor(executor));
         try {
             executor.blockingExecute();
         } finally {
-            JavaFXUtil.blockingExecuteOnFXThread(this.inspect::removeExecutor);
+            JavaFXUtil.blockingExecuteOnFXThreadIfAvailable(this.inspect::removeExecutor);
         }
     }
 }
