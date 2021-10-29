@@ -5,14 +5,14 @@
     <parent>
         <groupId>de.hamstersimulator.objectsfirst</groupId>
         <artifactId>parent</artifactId>
-        <version>4.2.0</version>
+        <version>4.2.1-SNAPSHOT</version>
         <relativePath>./de.hamstersimulator.objectsfirst.parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>root</artifactId>
     <name>SQA Hamster Simulator Root Project</name>
     <packaging>pom</packaging>
-    <version>4.2.0</version>
+    <version>4.2.1-SNAPSHOT</version>
 
     <modules>
         <module>
