@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>parent</artifactId>
+        <groupId>de.hamstersimulator.objectsfirst</groupId>
+        <version>4.2.1-SNAPSHOT</version>
+        <relativePath>../de.hamstersimulator.objectsfirst.parent/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>inspector</artifactId>
+    <name>Hamstersimulator Object and Class Inspector</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>
+                de.hamstersimulator.objectsfirst
+            </groupId>
+            <artifactId>core</artifactId>
+            <version>4.2.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>
+                de.hamstersimulator.objectsfirst
+            </groupId>
+            <artifactId>ui</artifactId>
+            <version>4.2.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx</artifactId>
+            <version>16</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>16</version>
+        </dependency>
+        <dependency>
+            <groupId>de.hamstersimulator.objectsfirst</groupId>
+            <artifactId>main</artifactId>
+            <version>4.2.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>11.1.0</version>
+        </dependency>
+    </dependencies>
+
+</project>

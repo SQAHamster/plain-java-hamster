@@ -1,0 +1,24 @@
+.flow-item {
+    -fx-font-size: 16pt;
+    -fx-padding: 20px;
+}
+
+.warning {
+    -fx-control-inner-background: #F5DF4E;
+}
+
+.error {
+    -fx-control-inner-background: #FF0000;
+}
+
+.combo-box.warning {
+    -fx-background-color: #F5DF4E;
+}
+
+.text-field {
+    -fx-prompt-text-fill: black
+}
+
+.scroll-pane {
+    -fx-background-color: transparent
+}
