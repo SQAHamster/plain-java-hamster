@@ -4,12 +4,10 @@ import de.hamstersimulator.objectsfirst.datatypes.Size;
 
 import java.util.List;
 
-public class TerritoryData {
-    private final Size size;
-    private final List<TileContentData> tileContents;
-
-    public TerritoryData(final Size size, final List<TileContentData> tileContents) {
-        this.size = size;
-        this.tileContents = tileContents;
-    }
-}
+/**
+ * Represents the state of a Territory
+ *
+ * @param size the size of the Territory
+ * @param tileContents a list of datas representing all TileContents
+ */
+public record TerritoryData(Size size, List<TileContentData> tileContents) { }

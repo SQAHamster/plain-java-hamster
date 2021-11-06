@@ -13,32 +13,52 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Factory to create a GameLog out of an initial Territory and a list of Commands
+ */
 public final class GameLogFactory {
 
     /**
-     * Dispatcher used to execute state change logic dependant on the command
+     * Dispatcher used to execute state change logic dependent on the command
      * specification executed on the previous state. The return value is not used here.
      */
     private final LambdaVisitor<ObservableCommandSpecification, LogEntry> logVisitor;
 
+    /**
+     * Used to create a data entry for a TileContent
+     */
     private final LambdaVisitor<ObservableTileContent, TileContentData> tileContentVisitor;
 
+    /**
+     * The TerritoryData representing the initial Territory
+     */
     private final TerritoryData territoryData;
 
+    /**
+     * List of all LogEntries, from first to last
+     */
     private final List<LogEntry> logEntries = new ArrayList<>();
 
+    /**
+     * Maps hamsters to their id
+     */
     private final Map<ObservableHamster, Integer> hamsterIdLookup = new HashMap<>();
 
+    /**
+     * Lock used for synchronization
+     */
+    private final ReentrantLock lock = new ReentrantLock(true);
     /**
      * counter for the TileContent id
      */
     private volatile int idCounter = 0;
 
     /**
-     * Lock used for synchronization
+     * Creates a new GameLogFactory which can be used to create a factory which creates
+     * game log entry
+     *
+     * @param territory the Territory initially associated with the game to observe
      */
-    private final ReentrantLock lock = new ReentrantLock(true);
-
     public GameLogFactory(final ObservableTerritory territory) {
         super();
 
@@ -52,13 +72,20 @@ public final class GameLogFactory {
                 .on(ObservableInitializeTerritoryCommandSpecification.class).then(this::fromInitTerritory);
 
         this.tileContentVisitor = new LambdaVisitor<ObservableTileContent, TileContentData>()
-                .on(ObservableHamster.class).then(hamster -> new HamsterData(hamster.getCurrentLocation().orElseThrow(), this.hamsterIdLookup.get(hamster), hamster.getDirection()))
+                .on(ObservableHamster.class).then(hamster -> new HamsterData(hamster.getCurrentLocation().orElseThrow(),
+                        this.hamsterIdLookup.get(hamster), hamster.getDirection()))
                 .on(ObservableGrain.class).then(grain -> new GrainData(grain.getCurrentLocation().orElseThrow()))
                 .on(ObservableWall.class).then(wall -> new WallData(wall.getCurrentLocation().orElseThrow()));
 
         this.territoryData = this.createTerritoryData(territory);
     }
 
+    /**
+     * Creates a TerritoryData based on a Territory
+     *
+     * @param territory the Territory to transform
+     * @return a TerritoryData which represents the provided Territory
+     */
     private TerritoryData createTerritoryData(final ObservableTerritory territory) {
         for (final ObservableHamster hamster : territory.getHamsters()) {
             this.registerHamster(hamster);
@@ -84,11 +111,12 @@ public final class GameLogFactory {
     }
 
     private LogEntry fromInit(final ObservableInitHamsterCommandSpecification initCommandSpecification) {
-        final LogEntry logEntry = new InitHamsterLogEntry(
-                new HamsterData(
-                        initCommandSpecification.getLocation(),
-                        this.registerHamster(initCommandSpecification.getHamster()
-                        ), initCommandSpecification.getNewDirection()));
+        final HamsterData hamsterData = new HamsterData(
+                initCommandSpecification.getLocation(),
+                this.registerHamster(initCommandSpecification.getHamster()),
+                initCommandSpecification.getNewDirection());
+        final LogEntry logEntry = new InitHamsterLogEntry(hamsterData);
+
         this.logEntries.add(logEntry);
         return logEntry;
     }
@@ -117,10 +145,22 @@ public final class GameLogFactory {
         return logEntry;
     }
 
+    /**
+     * Creates the GameLog created with this factory
+     *
+     * @return The created GameLog, contains all registered LogEntries
+     */
     public GameLog toGameLog() {
         return new GameLog(this.territoryData, this.logEntries);
     }
 
+    /**
+     * Registers a new Hamster and assigns a unique id for it
+     * This may only be called if this.lock is held
+     *
+     * @param hamster the Hamster to register
+     * @return the assigned id
+     */
     private int registerHamster(final ObservableHamster hamster) {
         final int newId = this.idCounter;
         this.idCounter++;
@@ -128,6 +168,12 @@ public final class GameLogFactory {
         return newId;
     }
 
+    /**
+     * Takes a Command, and creates a LogEntry based on that command
+     *
+     * @param commandSpecification The CommandSpecification which should be transformed into a log entry
+     * @return The created LogEntry
+     */
     public LogEntry applyNextCommand(final ObservableCommandSpecification commandSpecification) {
         this.lock.lock();
         try {

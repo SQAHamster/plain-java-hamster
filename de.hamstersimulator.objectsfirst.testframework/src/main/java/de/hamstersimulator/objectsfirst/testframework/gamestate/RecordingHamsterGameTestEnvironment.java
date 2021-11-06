@@ -47,8 +47,15 @@ public class RecordingHamsterGameTestEnvironment extends HamsterGameTestEnvironm
             }
             };
 
+    /**
+     * Factory used to create the GameLog
+     */
     private final GameLogFactory gameLogFactory;
 
+    /**
+     * Associates a LogEntry with each GameState
+     * Used to set error messages for log entries
+     */
     private final Map<GameState, LogEntry> stateLogEntryLookup = new HashMap<>();
 
     /**
@@ -80,6 +87,7 @@ public class RecordingHamsterGameTestEnvironment extends HamsterGameTestEnvironm
     /**
      * Called for each new game log entry. Creates and memorizes a new game state. Triggers an
      * update of the observable game state list.
+     *
      * @param observableCommandSpecification The specification of the command which has been executed.
      */
     private void processNewLog(final ObservableCommandSpecification observableCommandSpecification) {
@@ -93,6 +101,13 @@ public class RecordingHamsterGameTestEnvironment extends HamsterGameTestEnvironm
         this.stateLogEntryLookup.put(nextState, logEntry);
     }
 
+    /**
+     * Sets the error message associated with a specific GameState
+     * The message is added to the LogEntry
+     *
+     * @param state the state which caused the error
+     * @param errorMessage the error message
+     */
     public void setErrorMessage(final GameState state, final String errorMessage) {
         this.stateLogEntryLookup.get(state).setErrorMessage(errorMessage);
     }
