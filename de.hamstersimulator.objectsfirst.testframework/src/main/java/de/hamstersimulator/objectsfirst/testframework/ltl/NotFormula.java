@@ -3,6 +3,8 @@ package de.hamstersimulator.objectsfirst.testframework.ltl;
 import de.hamstersimulator.objectsfirst.testframework.gamestate.GameState;
 import de.hamstersimulator.objectsfirst.utils.Preconditions;
 
+import java.util.Optional;
+
 /**
  * Implementation of a logical not. The formula evaluates to true
  * if the operand formula is false for the given state.
@@ -29,8 +31,12 @@ public final class NotFormula extends UnaryLTLFormula {
     }
 
     @Override
-    public boolean appliesTo(final GameState state) {
+    public Optional<GameState> failsAt(final GameState state) {
         Preconditions.checkNotNull(state);
-        return !getInnerFormula().appliesTo(state);
+        if (this.getInnerFormula().appliesTo(state)) {
+            return Optional.of(state);
+        } else {
+            return Optional.empty();
+        }
     }
 }

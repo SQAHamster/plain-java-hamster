@@ -3,6 +3,8 @@ package de.hamstersimulator.objectsfirst.testframework.ltl;
 import de.hamstersimulator.objectsfirst.testframework.gamestate.GameState;
 import de.hamstersimulator.objectsfirst.utils.Preconditions;
 
+import java.util.Optional;
+
 /**
  * Implementation of a logical or. The formula evaluates to true
  * if one operand is a true formula for the given state.
@@ -31,8 +33,12 @@ public final class OrFormula extends BinaryLTLFormula {
     }
 
     @Override
-    public boolean appliesTo(final GameState state) {
+    public Optional<GameState> failsAt(final GameState state) {
         Preconditions.checkNotNull(state);
-        return this.getFirstOperand().appliesTo(state) || this.getSecondOperand().appliesTo(state);
+        if (this.getFirstOperand().appliesTo(state)) {
+            return Optional.empty();
+        } else {
+            return this.getSecondOperand().failsAt(state);
+        }
     }
 }
