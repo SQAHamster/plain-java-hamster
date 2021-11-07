@@ -27,7 +27,7 @@ public class InspectionViewModel {
     public InspectionViewModel() {
         this.classes = new ReadOnlyListWrapper<>(this, "classes", FXCollections.observableList(new ArrayList<>()));
         this.instances = new SimpleListProperty<>(this, "objects", FXCollections.observableList(new ArrayList<>()));
-        this.multiTypes.add(Type.OBJECT_TYPE);
+        this.multiTypes.add(new Type(Object.class));
         this.multiTypes.addAll(Stream.of(String.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class)
                 .map(Type::new).collect(Collectors.toList()));
 
