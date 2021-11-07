@@ -11,6 +11,8 @@ module de.hamstersimulator.objectsfirst.testframework {
     exports de.hamstersimulator.objectsfirst.testframework;
     exports de.hamstersimulator.objectsfirst.testframework.gamestate;
     exports de.hamstersimulator.objectsfirst.testframework.ltl;
+    exports de.hamstersimulator.objectsfirst.testframework.gamelog;
+    exports de.hamstersimulator.objectsfirst.testframework.gamelog.datatypes;
 
     opens de.hamstersimulator.objectsfirst.testframework.gamelog.datatypes to com.google.gson;
 }

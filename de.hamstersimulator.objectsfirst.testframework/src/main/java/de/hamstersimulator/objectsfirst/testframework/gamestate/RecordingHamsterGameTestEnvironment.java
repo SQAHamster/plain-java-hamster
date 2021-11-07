@@ -1,6 +1,8 @@
 package de.hamstersimulator.objectsfirst.testframework.gamestate;
 
+import de.hamstersimulator.objectsfirst.testframework.gamelog.GameLogException;
 import de.hamstersimulator.objectsfirst.testframework.gamelog.GameLogFactory;
+import de.hamstersimulator.objectsfirst.testframework.gamelog.datatypes.GameLog;
 import de.hamstersimulator.objectsfirst.testframework.gamelog.datatypes.LogEntry;
 import de.hamstersimulator.objectsfirst.adapter.HamsterGameViewModel;
 import de.hamstersimulator.objectsfirst.adapter.observables.ObservableLogEntry;
@@ -8,16 +10,18 @@ import de.hamstersimulator.objectsfirst.adapter.observables.ObservableTerritory;
 import de.hamstersimulator.objectsfirst.adapter.observables.command.specification.ObservableCommandSpecification;
 import de.hamstersimulator.objectsfirst.external.simple.game.SimpleHamsterGame;
 import de.hamstersimulator.objectsfirst.testframework.HamsterGameTestEnvironment;
+import de.hamstersimulator.objectsfirst.testframework.ltl.LTLFormula;
+import de.hamstersimulator.objectsfirst.testframework.ltl.StateCheckException;
 import de.hamstersimulator.objectsfirst.utils.Preconditions;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import com.google.gson.Gson;
 
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * This class extends {@link HamsterGameTestEnvironment} by the functionality to
@@ -112,9 +116,32 @@ public class RecordingHamsterGameTestEnvironment extends HamsterGameTestEnvironm
         this.stateLogEntryLookup.get(state).setErrorMessage(errorMessage);
     }
 
-    public String getLogJson() {
-        final Gson gson = new Gson();
-        return gson.toJson(this.gameLogFactory.toGameLog());
+    /**
+     * Creates the GameLog and returns it
+     * @return the created GameLog
+     */
+    public GameLog getGameLog() {
+        return this.gameLogFactory.toGameLog();
+    }
+
+    /**
+     * @param formula   The ltl formula to check against.
+     * @param gameState The game state against which the ltl formula is checked.
+     * @param message   The user defined message which should describe the intention of the
+     *                  ltl formula in natural language.
+     *
+     * Helper method for writing JUnit tests. The given formula is checked
+     * against the given game state. If this check is true, the method returns. Otherwise, a
+     * new {@link GameLogException} with a new {@link StateCheckException} as cause is generated and thrown.
+     * Also, automatically sets the error message for the LogEntry which caused the failure.
+     */
+    public void checkOrThrowWithLog(final LTLFormula formula, final GameState gameState, final String message) {
+        final Optional<GameState> failedAtState = formula.failsAt(gameState);
+        if (failedAtState.isPresent()) {
+            this.setErrorMessage(failedAtState.get(), message);
+            final StateCheckException exception = StateCheckException.createStateCheckException(formula, gameState, message);
+            throw new GameLogException(exception, this.getGameLog());
+        }
     }
 
 }
