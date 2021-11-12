@@ -45,7 +45,7 @@ public final class ClassFactory {
         }
         if (this.hasViewModelForClass(cls)) {
             final ClassViewModel viewModel = this.classViewModelLookup.get(cls);
-            viewModel.setInstancesAccessibleProperty().set(setInstancesAccessible);
+            viewModel.setInstancesAccessibleProperty().set(viewModel.setInstancesAccessibleProperty().get() || setInstancesAccessible);
             if (setAccessible && !viewModel.hasPrivateMembersProperty().get()) {
                 this.updateClassMemberListAccessible(cls, viewModel);
             }
