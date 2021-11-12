@@ -5,6 +5,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
+/**
+ * Implements the Lambda Visitor Pattern
+ * Can be used to execute a different callback based on the dynamic type
+ * of an object.
+ * Has the following priority:
+ * <ol>
+ *     <li>Check if a callback for the class is registered</li>
+ *     <li>Check if a callback for any interface that the class directly implements is registered</li>
+ *     <li>If the class has a superclass: continue 1. with the direct superclass</li>
+ * </ol>
+ */
 public final class LambdaVisitor<B, A> implements Function<B, A> {
     private final Map<Class<?>, Function<Object, A>> fMap = new HashMap<>();
 
