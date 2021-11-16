@@ -12,7 +12,7 @@ public final class ExecutionException extends RuntimeException {
 
     /**
      * Used to transform Throwables into RuntimeExceptions
-     * If the Throwable is already a RruntimeException, it is returned
+     * If the Throwable is already a RuntimeException, it is returned
      * Otherwise a new ExecutionException is created with the Throwable as cause
      */
     private static final LambdaVisitor<Throwable, RuntimeException> exceptionVisitor
