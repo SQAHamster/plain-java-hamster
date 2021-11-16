@@ -1,5 +1,7 @@
 package de.hamstersimulator.objectsfirst.inspector.model;
 
+import de.hamstersimulator.objectsfirst.utils.LambdaVisitor;
+
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -7,6 +9,16 @@ import java.lang.reflect.InvocationTargetException;
  * return causing RuntimeExceptions or return new ExecutionExceptions for InvocationTargetExceptions
  */
 public final class ExecutionException extends RuntimeException {
+
+    /**
+     * Used to transform Throwables into RuntimeExceptions
+     * If the Throwable is already a RruntimeException, it is returned
+     * Otherwise a new ExecutionException is created with the Throwable as cause
+     */
+    private static final LambdaVisitor<Throwable, RuntimeException> exceptionVisitor
+            = new LambdaVisitor<Throwable, RuntimeException>()
+            .on(RuntimeException.class).then(runtimeException -> runtimeException)
+            .on(Throwable.class).then(ExecutionException::new);
 
     /**
      * Creates a new ExecutionException with a message
@@ -27,10 +39,6 @@ public final class ExecutionException extends RuntimeException {
      */
     public static RuntimeException getForException(InvocationTargetException exception) {
         final Throwable cause = exception.getCause();
-        if (cause instanceof RuntimeException) {
-            return (RuntimeException)cause;
-        } else {
-            return new ExecutionException(cause);
-        }
+        return exceptionVisitor.apply(cause);
     }
 }
