@@ -93,7 +93,6 @@ public final class GameLogFactory {
         final List<TileContentData> datas = new ArrayList<>();
         for (final ObservableTile tile : territory.tilesProperty()) {
             for (final ObservableTileContent content : tile.contentProperty()) {
-                System.out.println(content.getClass());
                 datas.add(this.tileContentVisitor.apply(content));
             }
         }

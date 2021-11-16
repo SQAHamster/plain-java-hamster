@@ -8,7 +8,7 @@ import de.hamstersimulator.objectsfirst.testframework.gamelog.datatypes.GameLog;
 public class GameLogException extends RuntimeException {
 
     /***
-     * Marker text used for exception message which contains
+     * Marker text used for exception message which contains log JSON.
      */
     private static final String hamsterMarker = "##hamster##";
 
