@@ -3,6 +3,8 @@ package de.hamstersimulator.objectsfirst.testframework.ltl;
 import de.hamstersimulator.objectsfirst.testframework.gamestate.GameState;
 import de.hamstersimulator.objectsfirst.utils.Preconditions;
 
+import java.util.Optional;
+
 /**
  * Implementation of a logical and. The formula evaluates to true
  * if both operands are true formulas for the given state.
@@ -31,9 +33,13 @@ public final class AndFormula extends BinaryLTLFormula {
     }
 
     @Override
-    public boolean appliesTo(final GameState state) {
+    public Optional<GameState> failsAt(final GameState state) {
         Preconditions.checkNotNull(state);
-        return this.getFirstOperand().appliesTo(state) && this.getSecondOperand().appliesTo(state);
+        final Optional<GameState> failsAtFirst = this.getFirstOperand().failsAt(state);
+        if (failsAtFirst.isPresent()) {
+            return failsAtFirst;
+        } else {
+            return this.getSecondOperand().failsAt(state);
+        }
     }
-
 }

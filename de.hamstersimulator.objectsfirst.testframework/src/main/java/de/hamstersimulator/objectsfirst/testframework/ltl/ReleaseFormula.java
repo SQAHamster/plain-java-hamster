@@ -3,6 +3,8 @@ package de.hamstersimulator.objectsfirst.testframework.ltl;
 import de.hamstersimulator.objectsfirst.testframework.gamestate.GameState;
 import de.hamstersimulator.objectsfirst.utils.Preconditions;
 
+import java.util.Optional;
+
 /**
  * Implementation of a temporal release. For the formula to evaluate to true
  * the second operand has to be true until and including the point where
@@ -36,18 +38,18 @@ public final class ReleaseFormula extends BinaryLTLFormula {
     }
 
     @Override
-    public boolean appliesTo(final GameState state) {
+    public Optional<GameState> failsAt(final GameState state) {
         Preconditions.checkNotNull(state);
         GameState current = state;
-        while (getSecondOperand().appliesTo(current)) {
+        while (this.getSecondOperand().appliesTo(current)) {
             if (current.isFinalState()) {
-                return true;
+                return Optional.empty();
             }
-            if (getFirstOperand().appliesTo(current)) {
-                return true;
+            if (this.getFirstOperand().appliesTo(current)) {
+                return Optional.empty();
             }
             current = current.getNextGameState();
         }
-        return false;
+        return this.getSecondOperand().failsAt(state);
     }
 }

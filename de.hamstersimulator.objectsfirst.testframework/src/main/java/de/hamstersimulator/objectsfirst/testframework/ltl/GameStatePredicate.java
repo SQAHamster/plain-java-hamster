@@ -1,6 +1,7 @@
 package de.hamstersimulator.objectsfirst.testframework.ltl;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import de.hamstersimulator.objectsfirst.testframework.gamestate.GameState;
@@ -81,10 +82,14 @@ public final class GameStatePredicate implements LTLFormula {
     }
 
     @Override
-    public boolean appliesTo(final GameState state) {
+    public Optional<GameState> failsAt(final GameState state) {
         Preconditions.checkNotNull(state);
         Preconditions.checkArgument(allStates.contains(state));
-        return matchingStates.contains(state);
+        if (matchingStates.contains(state)) {
+            return Optional.empty();
+        } else {
+            return Optional.of(state);
+        }
     }
 
     @Override
