@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.hamstersimulator.objectsfirst</groupId>
 	<artifactId>parent</artifactId>
-	<version>4.3.0</version>
+	<version>4.3.1-SNAPSHOT</version>
 
 	<scm>
 		<connection>scm:git:git://github.com/SQAHamster/plain-java-hamster.git</connection>
