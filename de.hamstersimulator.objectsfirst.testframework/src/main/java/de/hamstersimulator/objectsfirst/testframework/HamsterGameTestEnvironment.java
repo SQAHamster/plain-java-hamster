@@ -27,6 +27,7 @@ public class HamsterGameTestEnvironment {
      * Also disables the delay on the provided game
      * To get the desired behaviour, it is encouraged to provide a SimpleHamsterGame which
      * was not executed before
+     *
      * @param targetGame the SimpleHamsterGame used to execute the HamsterGame
      */
     public HamsterGameTestEnvironment(final SimpleHamsterGame targetGame) {
@@ -37,6 +38,7 @@ public class HamsterGameTestEnvironment {
 
     /**
      * Gets the viewmodel of the underlying HamsterGame.
+     *
      * @return the viewmodel which represents the HamsterGame
      */
     public final HamsterGameViewModel getViewModel() {
@@ -51,5 +53,17 @@ public class HamsterGameTestEnvironment {
      */
     public void runGame() {
         this.game.doRun();
+    }
+
+    /**
+     * The used simple hamster gme for interacting with it or sharing test parameters
+     * <p>
+     * NOTE: For running the game, DO NOT use {@link SimpleHamsterGame#doRun()}.
+     * ALWAYS use {@link HamsterGameTestEnvironment#runGame()} to make sure the tests run properly
+     *
+     * @return The used {@code SimpleHamsterGame} instance of the tests.
+     */
+    public SimpleHamsterGame getGame() {
+        return this.game;
     }
 }
