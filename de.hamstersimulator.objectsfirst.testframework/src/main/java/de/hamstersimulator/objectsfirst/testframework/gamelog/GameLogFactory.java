@@ -52,6 +52,10 @@ public final class GameLogFactory {
      * counter for the TileContent id
      */
     private volatile int idCounter = 0;
+    /**
+     * Initial log entry used for errors associated with the initial GameState
+     */
+    private final InitialLogEntry initialLogEntry;
 
     /**
      * Creates a new GameLogFactory which can be used to create a factory which creates
@@ -78,6 +82,8 @@ public final class GameLogFactory {
                 .on(ObservableWall.class).then(wall -> new WallData(wall.getCurrentLocation().orElseThrow()));
 
         this.territoryData = this.createTerritoryData(territory);
+        this.initialLogEntry = new InitialLogEntry();
+        this.logEntries.add(this.initialLogEntry);
     }
 
     /**
@@ -180,6 +186,15 @@ public final class GameLogFactory {
         } finally {
             this.lock.unlock();
         }
+    }
+
+    /**
+     * Gets the initial log entry
+     * @return The initial log entry used to associate errors
+     * with the initial GameState
+     */
+    public InitialLogEntry getInitialLogEntry() {
+        return this.initialLogEntry;
     }
 
 }
