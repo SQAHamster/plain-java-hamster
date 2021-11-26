@@ -80,6 +80,7 @@ public class RecordingHamsterGameTestEnvironment extends HamsterGameTestEnvironm
         final GameState initialState = GameStateFactory.newGameStateFactory().fromInitialTerritory(territory);
         gameStates.add(initialState);
         this.gameLogFactory = new GameLogFactory(territory);
+        this.stateLogEntryLookup.put(initialState, this.gameLogFactory.getInitialLogEntry());
     }
 
     /**
