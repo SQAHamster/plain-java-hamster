@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>de.hamstersimulator.objectsfirst</groupId>
 		<artifactId>parent</artifactId>
-		<version>4.3.3</version>
+		<version>4.3.4-SNAPSHOT</version>
 		<relativePath>../de.hamstersimulator.objectsfirst.parent</relativePath>
 	</parent>
 
@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>de.hamstersimulator.objectsfirst</groupId>
 			<artifactId>utils</artifactId>
-			<version>4.3.3</version>
+			<version>4.3.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -52,28 +52,28 @@
 				de.hamstersimulator.objectsfirst
 			</groupId>
 			<artifactId>core</artifactId>
-			<version>4.3.3</version>
+			<version>4.3.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>
 				de.hamstersimulator.objectsfirst
 			</groupId>
 			<artifactId>ui</artifactId>
-			<version>4.3.3</version>
+			<version>4.3.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>
 				de.hamstersimulator.objectsfirst
 			</groupId>
 			<artifactId>config</artifactId>
-			<version>4.3.3</version>
+			<version>4.3.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>
 				de.hamstersimulator.objectsfirst
 			</groupId>
 			<artifactId>server</artifactId>
-			<version>4.3.3</version>
+			<version>4.3.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
