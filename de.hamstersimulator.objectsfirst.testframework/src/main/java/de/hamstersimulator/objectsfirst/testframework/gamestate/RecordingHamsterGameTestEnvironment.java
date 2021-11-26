@@ -20,6 +20,7 @@ import javafx.collections.ListChangeListener;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -144,4 +145,25 @@ public class RecordingHamsterGameTestEnvironment extends HamsterGameTestEnvironm
         }
     }
 
+    /**
+     * Runs the underlying HamsterGame by calling doRun on the
+     * SimpleHamsterGame
+     * Warning: it is possible to call this multiple times, and each time doRun is called on the
+     * SimpleHamsterGame. This might cause strange behavior and therefore is highly discouraged.
+     * This wraps all thrown Exceptions so that a GameLog is produced
+     *
+     * @throws GameLogException in case of any exception
+     */
+    @Override
+    public void runGame() {
+        try {
+            super.runGame();
+        } catch (final Exception exception) {
+            final GameLog gameLog = this.getGameLog();
+            final List<LogEntry> logEntries = gameLog.logEntries();
+            final LogEntry lastLogEntry = logEntries.get(logEntries.size() - 1);
+            lastLogEntry.setErrorMessage(exception.getMessage());
+            throw new GameLogException(exception, gameLog);
+        }
+    }
 }
