@@ -35,12 +35,12 @@ public final class FinallyFormula extends UnaryLTLFormula {
     public Optional<GameState> failsAt(final GameState state) {
         Preconditions.checkNotNull(state);
         GameState current = state;
-        do {
+        while (!current.isFinalState()) {
             if (getInnerFormula().appliesTo(current)) {
                 return Optional.empty();
             }
             current = current.getNextGameState();
-        } while (!current.isFinalState());
+        }
         return getInnerFormula().failsAt(current);
     }
 }

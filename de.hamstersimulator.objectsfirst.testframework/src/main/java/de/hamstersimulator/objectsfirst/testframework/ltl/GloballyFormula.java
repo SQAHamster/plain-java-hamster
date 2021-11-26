@@ -34,13 +34,13 @@ public final class GloballyFormula extends UnaryLTLFormula {
     public Optional<GameState> failsAt(final GameState state) {
         Preconditions.checkNotNull(state);
         GameState current = state;
-        do {
+        while (!current.isFinalState()) {
             final Optional<GameState> failsAtCurrent = getInnerFormula().failsAt(current);
             if (failsAtCurrent.isPresent()) {
                 return failsAtCurrent;
             }
             current = current.getNextGameState();
-        } while (!current.isFinalState());
+        }
         return getInnerFormula().failsAt(current);
     }
 }
