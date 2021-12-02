@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.logging.LogManager;
@@ -38,8 +39,11 @@ public class GameSceneController {
     static {
         final String logLevelString = "javafx.scene.control.level = WARNING";
         final InputStream logLevelStream = new ByteArrayInputStream(logLevelString.getBytes(StandardCharsets.UTF_8));
-        // Note: this is taken from the LogManager documentation and merges the old and new configuration
-        final Function<String, BiFunction<String, String, String>> mapper = (k) -> ((o, n) -> n == null ? o : n);
+        final Function<String, BiFunction<String, String, String>> mapper = (category) -> {
+            return (oldValue, newValue) -> {
+                return Optional.ofNullable(newValue).orElse(oldValue);
+            };
+        };
 
         try {
             LogManager.getLogManager().updateConfiguration(logLevelStream, mapper);
