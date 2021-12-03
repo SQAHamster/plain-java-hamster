@@ -49,7 +49,7 @@ public class GameSceneController {
             LogManager.getLogManager().updateConfiguration(logLevelStream, mapper);
         } catch (IOException e) {
             final System.Logger logger = System.getLogger(GameSceneController.class.getName());
-            logger.log(System.Logger.Level.INFO, "Failed to update JavaFX Controls log level to INFO");
+            logger.log(System.Logger.Level.INFO, "Failed to update JavaFX Controls log level to WARNING");
         }
     }
 
