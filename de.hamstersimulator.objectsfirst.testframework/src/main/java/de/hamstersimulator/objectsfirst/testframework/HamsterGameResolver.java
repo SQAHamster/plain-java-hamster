@@ -1,16 +1,15 @@
 package de.hamstersimulator.objectsfirst.testframework;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Parameter;
-import java.util.Optional;
-
+import de.hamstersimulator.objectsfirst.external.simple.game.SimpleHamsterGame;
+import de.hamstersimulator.objectsfirst.testframework.gamestate.RecordingHamsterGameTestEnvironment;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
-import de.hamstersimulator.objectsfirst.external.simple.game.SimpleHamsterGame;
-import de.hamstersimulator.objectsfirst.testframework.gamestate.RecordingHamsterGameTestEnvironment;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Parameter;
+import java.util.Optional;
 
 /**
  * Parameter resolver which can resolve HamsterGameTestEnvironment (and supported subclasses) parameters.
@@ -24,6 +23,7 @@ import de.hamstersimulator.objectsfirst.testframework.gamestate.RecordingHamster
  * </ul>
  * If the TestClass has the HamsterTest annotation, that one is used, otherwise the annotation
  * of the class with declares the method which gets the environment injected is used
+ *
  * @see org.junit.jupiter.api.extension.ExtendWith
  */
 public class HamsterGameResolver implements ParameterResolver {
@@ -35,9 +35,9 @@ public class HamsterGameResolver implements ParameterResolver {
      * This extension supports TestUtils parameters
      *
      * @param parameterContext the context for the parameter for which an argument should
-     * be resolved; != null
+     *                         be resolved; != null
      * @param extensionContext the extension context for the Executable
-     * about to be invoked; != null
+     *                         about to be invoked; != null
      * @return true if the parameter can be resolved
      */
     @Override
@@ -56,9 +56,9 @@ public class HamsterGameResolver implements ParameterResolver {
      * and {@link ExtensionContext}.
      *
      * @param parameterContext the context for the parameter for which an argument should
-     * be resolved; != null
+     *                         be resolved; != null
      * @param extensionContext the extension context for the Executable
-     * about to be invoked; != null
+     *                         about to be invoked; != null
      * @return the TestUtils with a new instance of the specified SimpleHamsterGame
      */
     @Override
@@ -68,19 +68,20 @@ public class HamsterGameResolver implements ParameterResolver {
             throw new ParameterResolutionException("Unsupported parameter type");
         }
 
-        final SimpleHamsterGame game = createSimpleHamsterGame(parameterContext, extensionContext);
+        final SimpleHamsterGame game = this.createSimpleHamsterGame(parameterContext, extensionContext);
         final Class<?> type = parameterContext.getParameter().getType();
-        return resolveTestEnvironment(game, type);
+        return this.resolveTestEnvironment(game, type);
     }
 
     /**
      * Creates a new instance of the SimpleHamsterGame specified with the HamsterTest annotation.
+     *
      * @param parameterContext he context for the parameter for which an argument should
-     *        be resolved, used to get the annotation
+     *                         be resolved, used to get the annotation
      * @param extensionContext the extension context for the Executable
-     *        about to be invoked; != null
+     *                         about to be invoked; != null
      * @return the created SimpleHamsterGame
-     * @throws ParameterResolutionException if it is not possible to create an instance of the specified SimpleHamsterGame
+     * @throws ParameterResolutionException with a descriptive message, if it is not possible to create an instance of the specified SimpleHamsterGame
      */
     private SimpleHamsterGame createSimpleHamsterGame(final ParameterContext parameterContext,
                                                       final ExtensionContext extensionContext) throws ParameterResolutionException {
@@ -89,13 +90,27 @@ public class HamsterGameResolver implements ParameterResolver {
                 .orElseThrow(() -> new ParameterResolutionException("The given class is no SimpleHamsterGame or doesn't exist"));
         try {
             return simpleHamsterGameClass.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new ParameterResolutionException("The simple hamster game to instantiate has public constructor without parameters", e);
+        } catch (final InstantiationException e) {
+            throw new ParameterResolutionException("The class " + simpleHamsterGameClass.getSimpleName() + " couldn't be instantiated.\n" +
+                    "Make sure the class isn't abstract and it is possible to create instances of it", e);
+        } catch (final IllegalAccessException e) {
+            throw new ParameterResolutionException("Access to the class " + simpleHamsterGameClass.getSimpleName() + " was denied.\n" +
+                    "Did you change anything regarding the access to classes (e.g. module-info, package-/module name etc.)?", e);
+        } catch (final InvocationTargetException e) {
+            if (RuntimeException.class.isAssignableFrom(e.getCause().getClass())) {
+                throw (RuntimeException) e.getCause();
+            } else {
+                throw new ParameterResolutionException("Exception while creating instance of " + simpleHamsterGameClass.getSimpleName() + ":\n" +
+                        e.getCause().getMessage(), e.getCause());
+            }
+        } catch (final NoSuchMethodException e) {
+            throw new ParameterResolutionException("The class " + simpleHamsterGameClass.getSimpleName() + " has no public constructor without parameters", e);
         }
     }
 
     /**
      * Creates a new HamsterGameTestEnvironment based on the specified type with the provided game.
+     *
      * @param game the SimpleHamsterGame the test environment is based of
      * @param type the type of test environment to create
      * @return the HamsterGameTestEnvironment based on game
@@ -112,16 +127,17 @@ public class HamsterGameResolver implements ParameterResolver {
 
     /**
      * Gets the Class of the SimpleHamsterGame specified via the HamsterTest annotation.
+     *
      * @param parameterContext the parameter context for the parameter which an argument should be resolved, != null
      * @param extensionContext the extension context for the Executable about to be invoked; != null
      * @return an empty optional if the class is not found or does not extend SimpleHamsterGame,
-     *         otherwise an optional with the Class of the specified SimpleHamsterGame
+     * otherwise an optional with the Class of the specified SimpleHamsterGame
      */
     @SuppressWarnings("unchecked")
     private static Optional<Class<? extends SimpleHamsterGame>> getHamsterGameClass(final ParameterContext parameterContext,
                                                                                     final ExtensionContext extensionContext) {
         try {
-            Optional<HamsterTest> hamsterTest = getHamsterTestAnnotation(parameterContext, extensionContext);
+            final Optional<HamsterTest> hamsterTest = HamsterGameResolver.getHamsterTestAnnotation(parameterContext, extensionContext);
             if (hamsterTest.isPresent()) {
                 final String hamsterClassName = hamsterTest.get().game();
                 final Class<?> declaredGameClass = Class.forName(hamsterClassName);
@@ -141,6 +157,7 @@ public class HamsterGameResolver implements ParameterResolver {
      * Gets the HamsterTest annotation based on on the parameterContext and the extensionContext
      * If the test class has the annotation, this one is returned, otherwise the one of the declaring class
      * is returned. If none is present, an empty Optional is returned
+     *
      * @param parameterContext the parameter context for the parameter which an argument should be resolved, != null
      * @param extensionContext the extension context for the Executable about to be invoked; != null
      * @return the HamsterTest annotation if possible, otherwise an empty Optional
