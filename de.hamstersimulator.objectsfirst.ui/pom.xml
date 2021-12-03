@@ -7,7 +7,7 @@
     <parent>
         <groupId>de.hamstersimulator.objectsfirst</groupId>
         <artifactId>parent</artifactId>
-        <version>4.3.4</version>
+        <version>4.3.5-SNAPSHOT</version>
         <relativePath>../de.hamstersimulator.objectsfirst.parent</relativePath>
     </parent>
 
@@ -17,7 +17,7 @@
                 de.hamstersimulator.objectsfirst
             </groupId>
             <artifactId>core</artifactId>
-            <version>4.3.4</version>
+            <version>4.3.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
