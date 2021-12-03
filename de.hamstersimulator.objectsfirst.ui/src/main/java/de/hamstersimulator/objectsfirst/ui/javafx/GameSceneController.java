@@ -48,7 +48,8 @@ public class GameSceneController {
         try {
             LogManager.getLogManager().updateConfiguration(logLevelStream, mapper);
         } catch (IOException e) {
-            // Do nothing, in this case we failed to update the log level
+            final System.Logger logger = System.getLogger(GameSceneController.class.getName());
+            logger.log(System.Logger.Level.INFO, "Failed to update JavaFX Controls log level to INFO");
         }
     }
 
