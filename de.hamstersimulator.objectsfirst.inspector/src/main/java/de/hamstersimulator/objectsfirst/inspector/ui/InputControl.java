@@ -519,21 +519,18 @@ public class InputControl extends HBox {
         textField.promptTextProperty().bind(Bindings.createStringBinding(() -> {
             final String currentValue = textField.getText();
             final TypeCategory currentCategory = this.currentType.get().getCategory();
-            if (currentValue == null || (currentValue.isBlank() && currentCategory != TypeCategory.STRING) ) {
+            final boolean isPrimitive = this.currentType.get().isPrimitive();
+            if (!isPrimitive && (currentValue == null || (currentValue.isBlank() && currentCategory != TypeCategory.STRING))) {
                 return "null";
             } else {
                 return "";
             }
         }, this.currentType, textField.textProperty()));
         final ChangeListener<String> changeListener = (observable, oldValue, newValue) -> {
-            if (newValue != null && !newValue.equals(this.sanitizeString(newValue))) {
-                textField.setText(this.sanitizeString(newValue));
-            } else {
-                final ValidationResult validationResult = this.validateString(newValue);
-                this.updateIsValid(validationResult);
-                if (validationResult != ValidationResult.ERROR) {
-                    this.setFromString(newValue);
-                }
+            final ValidationResult validationResult = this.validateString(newValue);
+            this.updateIsValid(validationResult);
+            if (validationResult != ValidationResult.ERROR) {
+                this.setFromString(newValue);
             }
         };
         textField.textProperty().addListener(changeListener);

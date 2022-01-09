@@ -3,6 +3,8 @@ package de.hamstersimulator.objectsfirst.testframework.ltl;
 import de.hamstersimulator.objectsfirst.testframework.gamestate.GameState;
 import de.hamstersimulator.objectsfirst.utils.Preconditions;
 
+import java.util.Optional;
+
 /**
  * Implementation the temporal next operator. The formula evaluates to the true
  * if the given operand is a true formula when applied to the successor of the given
@@ -30,12 +32,12 @@ public final class NextFormula extends UnaryLTLFormula {
     }
 
     @Override
-    public boolean appliesTo(final GameState state) {
+    public Optional<GameState> failsAt(final GameState state) {
         Preconditions.checkNotNull(state);
         if (state.isFinalState()) {
-            return false;
+            return Optional.of(state);
         }
         final GameState next = state.getNextGameState();
-        return getInnerFormula().appliesTo(next);
+        return getInnerFormula().failsAt(next);
     }
 }

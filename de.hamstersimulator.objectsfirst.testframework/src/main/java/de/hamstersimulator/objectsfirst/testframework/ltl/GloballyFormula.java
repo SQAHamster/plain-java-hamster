@@ -3,6 +3,8 @@ package de.hamstersimulator.objectsfirst.testframework.ltl;
 import de.hamstersimulator.objectsfirst.testframework.gamestate.GameState;
 import de.hamstersimulator.objectsfirst.utils.Preconditions;
 
+import java.util.Optional;
+
 /**
  * Implementation the temporal globally operator. The formula evaluates to the true
  * if the given operand is a true formula for the given game state and all its successors.
@@ -29,15 +31,16 @@ public final class GloballyFormula extends UnaryLTLFormula {
     }
 
     @Override
-    public boolean appliesTo(final GameState state) {
+    public Optional<GameState> failsAt(final GameState state) {
         Preconditions.checkNotNull(state);
         GameState current = state;
-        do {
-            if (!getInnerFormula().appliesTo(current)) {
-                return false;
+        while (!current.isFinalState()) {
+            final Optional<GameState> failsAtCurrent = getInnerFormula().failsAt(current);
+            if (failsAtCurrent.isPresent()) {
+                return failsAtCurrent;
             }
             current = current.getNextGameState();
-        } while (!current.isFinalState());
-        return getInnerFormula().appliesTo(current);
+        }
+        return getInnerFormula().failsAt(current);
     }
 }

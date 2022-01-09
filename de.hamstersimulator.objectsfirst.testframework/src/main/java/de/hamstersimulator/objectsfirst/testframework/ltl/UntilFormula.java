@@ -3,6 +3,8 @@ package de.hamstersimulator.objectsfirst.testframework.ltl;
 import de.hamstersimulator.objectsfirst.testframework.gamestate.GameState;
 import de.hamstersimulator.objectsfirst.utils.Preconditions;
 
+import java.util.Optional;
+
 /**
  * Implementation of a temporal until operator. For the formula to evaluate to true
  * the first operand has to hold at least until the second operand becomes true,
@@ -33,20 +35,22 @@ public final class UntilFormula extends BinaryLTLFormula {
     }
 
     @Override
-    public boolean appliesTo(final GameState state) {
+    public Optional<GameState> failsAt(GameState state) {
         Preconditions.checkNotNull(state);
         GameState current = state;
+        Optional<GameState> failsAtCurrent = this.getSecondOperand().failsAt(current);
         // loop invariant: all states starting from state until one state in front of
         // current fulfill first operand and not the second
-        while (!getSecondOperand().appliesTo(current)) {
+        while (failsAtCurrent.isPresent()) {
             if (current.isFinalState()) {
-                return false;
+                return failsAtCurrent;
             }
             if (!getFirstOperand().appliesTo(current)) {
-                return false;
+                return failsAtCurrent;
             }
             current = current.getNextGameState();
+            failsAtCurrent = this.getSecondOperand().failsAt(current);
         }
-        return true;
+        return Optional.empty();
     }
 }

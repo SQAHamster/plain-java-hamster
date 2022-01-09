@@ -1,7 +1,11 @@
 package de.hamstersimulator.objectsfirst.testframework.ltl;
 
+import de.hamstersimulator.objectsfirst.testframework.gamelog.GameLogException;
+import de.hamstersimulator.objectsfirst.testframework.gamelog.datatypes.GameLog;
 import de.hamstersimulator.objectsfirst.testframework.gamestate.GameState;
 import de.hamstersimulator.objectsfirst.utils.Preconditions;
+
+import java.util.Optional;
 
 /**
  * An exception which can be thrown to inform client programs that
@@ -64,15 +68,29 @@ public final class StateCheckException extends RuntimeException {
      */
     public static void checkOrThrow(final LTLFormula formula, final GameState gameState, final String message) {
         if (!formula.appliesTo(gameState)) {
-            final StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("The executed hamster game reached an unexpected state.\n");
-            stringBuilder.append("The reason given is:");
-            stringBuilder.append(message);
-            stringBuilder.append("\n\n");
-            stringBuilder.append("Underlying logic:");
-            stringBuilder.append(formula.getMessage());
-            stringBuilder.append("\n\n");
-            throw new StateCheckException(stringBuilder.toString(), formula, gameState);
+            final StateCheckException exception = createStateCheckException(formula, gameState, message);
+            throw exception;
         }
+    }
+
+    /**
+     * Creates a new StateCheckException based on a failed LTLFormula and a state to check, and a message
+     * which describes the failure
+     *
+     * @param formula the formula which did not apply to gameState
+     * @param gameState the GameState to which the formula did not apply
+     * @param message the message for the exception
+     * @return the created StateCheckException
+     */
+    public static StateCheckException createStateCheckException(LTLFormula formula, GameState gameState, String message) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("The executed hamster game reached an unexpected state.\n");
+        stringBuilder.append("The reason given is:");
+        stringBuilder.append(message);
+        stringBuilder.append("\n\n");
+        stringBuilder.append("Underlying logic:");
+        stringBuilder.append(formula.getMessage());
+        stringBuilder.append("\n\n");
+        return new StateCheckException(stringBuilder.toString(), formula, gameState);
     }
 }

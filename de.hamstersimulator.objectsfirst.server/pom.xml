@@ -7,7 +7,7 @@
     <parent>
         <groupId>de.hamstersimulator.objectsfirst</groupId>
         <artifactId>parent</artifactId>
-        <version>4.2.0-SNAPSHOT</version>
+        <version>4.3.5-SNAPSHOT</version>
         <relativePath>../de.hamstersimulator.objectsfirst.parent</relativePath>
     </parent>
 
@@ -20,17 +20,17 @@
         <dependency>
             <groupId>de.hamstersimulator.objectsfirst</groupId>
             <artifactId>utils</artifactId>
-            <version>4.2.0-SNAPSHOT</version>
+            <version>4.3.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>de.hamstersimulator.objectsfirst</groupId>
             <artifactId>core</artifactId>
-            <version>4.2.0-SNAPSHOT</version>
+            <version>4.3.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-base</artifactId>
-            <version>16</version>
+            <version>17.0.2-ea+1</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

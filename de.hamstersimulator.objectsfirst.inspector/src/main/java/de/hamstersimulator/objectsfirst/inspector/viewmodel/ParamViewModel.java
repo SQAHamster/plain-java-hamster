@@ -6,7 +6,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 
 import java.lang.reflect.Parameter;
 
-public class ParamViewModel extends HideableViewModel {
+public class ParamViewModel extends NamedViewModel {
     private final ReadOnlyObjectWrapper<Type> type;
 
     public ParamViewModel(final String name, final Type type) {

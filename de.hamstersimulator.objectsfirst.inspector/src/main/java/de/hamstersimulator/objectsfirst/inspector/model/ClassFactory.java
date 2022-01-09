@@ -1,10 +1,12 @@
 package de.hamstersimulator.objectsfirst.inspector.model;
 
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.*;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 
-import java.lang.reflect.*;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.IdentityHashMap;
@@ -15,10 +17,12 @@ import java.util.stream.Collectors;
 public final class ClassFactory {
 
     private final InspectionViewModel viewModel;
+    private final MemberFactory memberFactory;
     private final IdentityHashMap<Class<?>, ClassViewModel> classViewModelLookup = new IdentityHashMap<>();
 
-    public ClassFactory(final InspectionViewModel viewModel) {
+    public ClassFactory(final InspectionViewModel viewModel, final MemberFactory memberFactory) {
         this.viewModel = viewModel;
+        this.memberFactory = memberFactory;
         viewModel.classesProperty().addListener((ListChangeListener<ClassViewModel>) change -> {
             while (change.next()) {
                 for (final ClassViewModel addedInfo : change.getAddedSubList()) {
@@ -41,7 +45,7 @@ public final class ClassFactory {
         }
         if (this.hasViewModelForClass(cls)) {
             final ClassViewModel viewModel = this.classViewModelLookup.get(cls);
-            viewModel.setInstancesAccessibleProperty().set(setInstancesAccessible);
+            viewModel.setInstancesAccessibleProperty().set(viewModel.setInstancesAccessibleProperty().get() || setInstancesAccessible);
             if (setAccessible && !viewModel.hasPrivateMembersProperty().get()) {
                 this.updateClassMemberListAccessible(cls, viewModel);
             }
@@ -64,77 +68,44 @@ public final class ClassFactory {
         viewModel.staticMethodsProperty().addAll(Arrays.stream(cls.getMethods())
                 .filter(method -> Modifier.isStatic(method.getModifiers()))
                 .filter(AccessibleObject::trySetAccessible)
-                .map(this::createStaticMethodViewModel)
+                .map(method -> this.memberFactory.createMethodViewModel(null, method))
                 .collect(Collectors.toList()));
 
         viewModel.staticFieldsProperty().clear();
         viewModel.staticFieldsProperty().addAll(Arrays.stream(cls.getFields())
                 .filter(field -> Modifier.isStatic(field.getModifiers()))
                 .filter(AccessibleObject::trySetAccessible)
-                .map(this::createStaticFieldViewModel)
+                .map(field -> this.memberFactory.createFieldViewModel(null, field))
                 .collect(Collectors.toList()));
 
         viewModel.hasPrivateMembersProperty().set(true);
     }
 
     private ClassViewModel createClassViewModel(final Class<?> cls, final boolean setAccessible, final boolean setInstancesAccessible) {
-        return new ClassViewModel(cls.getSimpleName(),
-                Arrays.stream(cls.getConstructors())
-                        .filter(constructor -> {
-                            if (setAccessible) {
-                                return constructor.trySetAccessible();
-                            } else {
-                                return Modifier.isPublic(constructor.getModifiers());
-                            }
-                        })
-                        .map(this::createConstructorViewModel)
-                        .collect(Collectors.toCollection(ArrayList::new)),
-                Arrays.stream(cls.getMethods())
-                        .filter(method -> Modifier.isStatic(method.getModifiers()))
-                        .filter(method -> {
-                            if (setAccessible) {
-                                return method.trySetAccessible();
-                            } else {
-                                return Modifier.isPublic(method.getModifiers());
-                            }
-                        })
-                        .map(this::createStaticMethodViewModel)
-                        .collect(Collectors.toCollection(ArrayList::new)),
-                Arrays.stream(cls.getFields())
-                        .filter(field -> Modifier.isStatic(field.getModifiers()))
-                        .filter(field -> {
-                            if (setAccessible) {
-                                return field.trySetAccessible();
-                            } else {
-                                return Modifier.isPublic(field.getModifiers());
-                            }
-                        })
-                        .map(this::createStaticFieldViewModel)
-                        .collect(Collectors.toCollection(ArrayList::new)),
-                cls,
-                setInstancesAccessible,
-                setAccessible
+        final List<MethodViewModel> constructors = Arrays.stream(cls.getDeclaredConstructors())
+                .filter(constructor -> this.memberFactory.checkAndMakeAccessible(constructor, cls, setAccessible))
+                .map(this::createConstructorViewModel)
+                .collect(Collectors.toCollection(ArrayList::new));
+        final List<MethodViewModel> staticMethods = Arrays.stream(cls.getDeclaredMethods())
+                .filter(method -> Modifier.isStatic(method.getModifiers()))
+                .filter(method -> this.memberFactory.checkAndMakeAccessible(method, cls, setAccessible))
+                .map(method -> this.memberFactory.createMethodViewModel(null, method))
+                .collect(Collectors.toCollection(ArrayList::new));
+        final List<FieldViewModel> staticFields = Arrays.stream(cls.getDeclaredFields())
+                .filter(field -> Modifier.isStatic(field.getModifiers()))
+                .filter(field -> this.memberFactory.checkAndMakeAccessible(field, cls, setAccessible))
+                .map(field -> this.memberFactory.createFieldViewModel(null, field))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        final ClassViewModel newClassViewModel = new ClassViewModel(cls.getSimpleName(), constructors, staticMethods, staticFields, cls, setInstancesAccessible, setAccessible);
+        newClassViewModel.isVisibleProperty().addListener(
+                this.memberFactory.createFieldReloadListener(newClassViewModel.staticFieldsProperty())
         );
+        return newClassViewModel;
     }
 
     public boolean hasViewModelForClass(final Class<?> cls) {
         return this.classViewModelLookup.containsKey(cls);
-    }
-
-    private MethodViewModel createStaticMethodViewModel(final Method method) {
-        final Function<List<?>, Object> invokeMethod = params -> {
-            try {
-                return method.invoke(null, params.toArray());
-            } catch (final InvocationTargetException targetException) {
-                throw ExecutionException.getForException(targetException);
-            } catch (final IllegalAccessException e) {
-                throw new IllegalArgumentException("Could not invoke static method", e);
-            }
-        };
-        return new MethodViewModel(method.getName(),
-                Arrays.stream(method.getParameters()).map(ParamViewModel::fromParameter).collect(Collectors.toList()),
-                new Type(method.getReturnType()),
-                invokeMethod);
     }
 
     private MethodViewModel createConstructorViewModel(final Constructor<?> constructor) {
@@ -151,32 +122,5 @@ public final class ClassFactory {
                 Arrays.stream(constructor.getParameters()).map(ParamViewModel::fromParameter).collect(Collectors.toList()),
                 new Type(constructor.getDeclaringClass()),
                 construct);
-    }
-
-    private FieldViewModel createStaticFieldViewModel(final Field field) {
-        try {
-            final FieldViewModel viewModel = new FieldViewModel(field.getName(), new Type(field.getType()),
-                    field.get(null), Modifier.isFinal(field.getModifiers()));
-            viewModel.valueProperty().addListener((observable, oldValue, newValue) -> this.viewModel.executeOnMainThread(() -> {
-                try {
-                    field.set(null, newValue);
-                } catch (final IllegalAccessException e) {
-                    throw new RuntimeException("Could not set field", e);
-                }
-            }));
-            final ChangeListener<Boolean> isVisibleListener = (change, oldVal, newVal) -> {
-                if (change.getValue()) {
-                    try {
-                        viewModel.valueProperty().setValue(field.get(null));
-                    } catch (final IllegalAccessException e) {
-                        throw new RuntimeException("Could not get field value", e);
-                    }
-                }
-            };
-            viewModel.isVisibleProperty().addListener(isVisibleListener);
-            return viewModel;
-        } catch (final IllegalAccessException e) {
-            throw new IllegalArgumentException("Cannot read field value", e);
-        }
     }
 }

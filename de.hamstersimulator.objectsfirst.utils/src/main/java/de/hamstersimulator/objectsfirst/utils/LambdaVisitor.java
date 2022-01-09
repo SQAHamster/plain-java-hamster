@@ -2,8 +2,20 @@ package de.hamstersimulator.objectsfirst.utils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
+/**
+ * Implements the Lambda Visitor Pattern
+ * Can be used to execute a different callback based on the dynamic type
+ * of an object.
+ * Has the following priority:
+ * <ol>
+ *     <li>Check if a callback for the class is registered</li>
+ *     <li>Check if a callback for any interface that the class directly implements is registered</li>
+ *     <li>If the class has a superclass: continue 1. with the direct superclass</li>
+ * </ol>
+ */
 public final class LambdaVisitor<B, A> implements Function<B, A> {
     private final Map<Class<?>, Function<Object, A>> fMap = new HashMap<>();
 
@@ -13,21 +25,29 @@ public final class LambdaVisitor<B, A> implements Function<B, A> {
 
     @Override
     public A apply(final Object o) {
-        Function<Object, A> f = fMap.get(o.getClass());
+        final Optional<Function<Object, A>> result = this.applyInternal(o.getClass());
+        return result.map(function -> function.apply(o)).orElse(null);
+    }
+
+    private Optional<Function<Object, A>> applyInternal(final Class<?> clazz) {
+        Function<Object, A> f = fMap.get(clazz);
         if (f == null) {
-            for (final Class<?> interfaceClazz : o.getClass().getInterfaces()) {
+            for (final Class<?> interfaceClazz : clazz.getInterfaces()) {
                 if (fMap.containsKey(interfaceClazz)) {
                     f = fMap.get(interfaceClazz);
                     break;
                 }
-                // TODO: Do not only support dispatch on implemented interfaces but also on
-                // superclasses.
             }
             if (f == null) {
-                return null;
+                final Class<?> superClazz = clazz.getSuperclass();
+                if (superClazz != null) {
+                    return this.applyInternal(superClazz);
+                } else {
+                    return Optional.empty();
+                }
             }
         }
-        return f.apply(o);
+        return Optional.of(f);
     }
 
     public static final class Acceptor<A, B, C> {

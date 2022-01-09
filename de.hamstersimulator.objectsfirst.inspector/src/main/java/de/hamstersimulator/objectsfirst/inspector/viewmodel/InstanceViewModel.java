@@ -6,7 +6,7 @@ import javafx.collections.FXCollections;
 import java.util.List;
 import java.util.Objects;
 
-public class InstanceViewModel extends NamedViewModel {
+public class InstanceViewModel extends HideableViewModel {
 
     private final ReadOnlyObjectWrapper<ClassViewModel> classInfo;
     private final SimpleListProperty<MethodViewModel> methods;
