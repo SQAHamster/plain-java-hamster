@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Control to display a list of fields
+ */
 public class FieldsTitledPane extends TitledPane {
 
     private final SimpleListProperty<FieldViewModel> fields;
@@ -22,6 +25,11 @@ public class FieldsTitledPane extends TitledPane {
     private final GridPane contentGrid;
     private final Map<FieldViewModel, InputControl> currentInputControls = new HashMap<>();
 
+    /**
+     * Creates a FieldsTitledPane to display fields of a class or an instance
+     *
+     * @param inspectionViewModel the InspectionViewModel
+     */
     public FieldsTitledPane(final InspectionViewModel inspectionViewModel) {
         this.inspectionViewModel = inspectionViewModel;
         this.fields = new SimpleListProperty<>(this, "fields");
@@ -36,11 +44,16 @@ public class FieldsTitledPane extends TitledPane {
         this.disableProperty().bind(this.fields.emptyProperty());
     }
 
+    /**
+     * Updates the layout
+     * Must be called when the list of fields changes
+     *
+     * @param fields the new list of fields
+     */
     private void updateLayout(final List<FieldViewModel> fields) {
         this.contentGrid.getChildren().clear();
         this.currentInputControls.forEach((key, value) -> value.valueProperty().unbindBidirectional(key.valueProperty()));
         this.currentInputControls.clear();
-
         for (int i = 0; i < fields.size(); i++) {
             final FieldViewModel field = fields.get(i);
             final Label nameLabel = new Label();
@@ -60,6 +73,10 @@ public class FieldsTitledPane extends TitledPane {
         }
     }
 
+    /**
+     * Property for the fields list
+     * @return the property representing fields
+     */
     public ListProperty<FieldViewModel> fieldsProperty() {
         return this.fields;
     }

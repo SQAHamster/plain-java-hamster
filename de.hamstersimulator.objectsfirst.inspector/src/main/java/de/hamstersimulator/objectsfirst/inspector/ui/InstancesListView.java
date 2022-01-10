@@ -8,10 +8,21 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 
+/**
+ * ListView for a list of instances
+ */
 public class InstancesListView extends CardListView<InstanceViewModel> {
 
+    /**
+     * Detail control for the popOver content
+     */
     private final InstanceDetailControl instanceDetailControl;
 
+    /**
+     * Creates a new ClassesListView
+     *
+     * @param inspectionViewModel used to create the detail control for the selected instance
+     */
     public InstancesListView(final InspectionViewModel inspectionViewModel) {
         this.instanceDetailControl = new InstanceDetailControl(inspectionViewModel);
         this.instanceDetailControl.setMinWidth(300);

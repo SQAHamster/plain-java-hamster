@@ -18,6 +18,12 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Base class for the InstancesListView and the ClassesListView
+ * A list of cards, where a popOver is shown if a card is clicked
+ *
+ * @param <T> the type of the items
+ */
 public abstract class CardListView<T extends HideableViewModel> extends FlowPane {
 
     private final SimpleListProperty<T> items;
@@ -25,6 +31,9 @@ public abstract class CardListView<T extends HideableViewModel> extends FlowPane
     private PopOver currentPopOver;
     private final ToggleGroup toggleGroup;
 
+    /**
+     * Creates a new CardListView with no items
+     */
     public CardListView() {
         this.items = new SimpleListProperty<>(this, "items");
         this.toggleGroup = new ToggleGroup();
@@ -38,7 +47,8 @@ public abstract class CardListView<T extends HideableViewModel> extends FlowPane
      * Adds a toggleable card for each of the view models in the given list to this list view
      * by creating a card for every entry using {@link CardListView#createCard} for every one.
      * <p>
-     * WARNING: If a view model already has a card but is included in the list (or is present twice or more) multiple cards will be created for it.
+     * WARNING: If a view model already has a card but is included in the list (or is present twice or more)
+     * multiple cards will be created for it.
      *
      * @param addedViewModels A non-null list of view models to add to the list view
      */
@@ -87,10 +97,21 @@ public abstract class CardListView<T extends HideableViewModel> extends FlowPane
         }
     }
 
+    /**
+     * Property for the items list
+     * @return the property for items
+     */
     public ListProperty<T> itemsProperty() {
         return this.items;
     }
 
+    /**
+     * Creates a new card for an item
+     * Does not add the created card to any control
+     *
+     * @param item the item to create the card for
+     * @return the created card
+     */
     private ToggleButton createCard(final T item) {
         final ToggleButton card = new ToggleButton();
         card.setPrefWidth(120);
@@ -112,6 +133,14 @@ public abstract class CardListView<T extends HideableViewModel> extends FlowPane
         return card;
     }
 
+    /**
+     * Creates a popOver
+     * If the owner is clicked, the popOver is shown.
+     * If the popOver is hidden, the owner is unselected
+     *
+     * @param owner the card to create the popOver for, if clicked, the popOver is shown
+     * @param item the item associated with owner
+     */
     private void addPopOver(final ToggleButton owner, final T item) {
         final Region content = this.createPopOverContent(item);
         content.minWidthProperty().bind(content.maxWidthProperty());
@@ -128,10 +157,26 @@ public abstract class CardListView<T extends HideableViewModel> extends FlowPane
         content.requestFocus();
     }
 
+    /**
+     * Creates an observable String for the content of the card
+     *
+     * @param item the item to create the observable String for
+     * @return the created observable String
+     */
     protected abstract ObservableStringValue getCardText(final T item);
 
+    /**
+     * Creates the content of the popOver
+     *
+     * @param item the selected item
+     * @return the created content of the popOver
+     */
     protected abstract Region createPopOverContent(final T item);
 
+    /**
+     * Should be called when this CardListView is closed
+     * Closes the currentPopOver if open immediately
+     */
     public void onClose() {
         if (this.currentPopOver != null) {
             this.currentPopOver.hide(Duration.ZERO);
