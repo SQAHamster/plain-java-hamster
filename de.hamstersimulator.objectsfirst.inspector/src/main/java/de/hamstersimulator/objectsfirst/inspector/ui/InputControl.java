@@ -5,6 +5,7 @@ import de.hamstersimulator.objectsfirst.inspector.model.TypeCategory;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.InspectionViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.InstanceViewModel;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.WeakChangeListener;
@@ -15,6 +16,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import org.controlsfx.control.SearchableComboBox;
+
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -53,7 +55,7 @@ public class InputControl extends HBox {
      * Creates a new InputControl
      * The type this control supports cannot be changed
      *
-     * @param type The type of the input this control should support
+     * @param type                The type of the input this control should support
      * @param inspectionViewModel the ViewModel which contains the instances list
      */
     public InputControl(final Type type, final InspectionViewModel inspectionViewModel) {
@@ -77,6 +79,7 @@ public class InputControl extends HBox {
 
     /**
      * Property for the current value of this InputControl
+     *
      * @return a mutable property for the value
      */
     public ObjectProperty<Object> valueProperty() {
@@ -85,6 +88,7 @@ public class InputControl extends HBox {
 
     /**
      * Property if the current input is valid
+     *
      * @return a readonly property for isValid
      */
     public ReadOnlyBooleanProperty isValidProperty() {
@@ -92,8 +96,9 @@ public class InputControl extends HBox {
     }
 
     /**
+     * Property if the user can update the value of this control
      *
-     * @return
+     * @return a property for isReadOnly
      */
     public BooleanProperty isReadOnlyProperty() {
         return this.isReadOnly;
@@ -120,7 +125,7 @@ public class InputControl extends HBox {
      * types must be possible (OBJECT and OPTIONAL)
      *
      * @return The ComboBox used too switch between the different
-     *      input possibilities
+     * input possibilities
      */
     private ComboBox<Type> initTypeSwitchingUI() {
         final ComboBox<Type> multiTypeComboBox = this.createMultiTypeComboBox();
@@ -157,7 +162,7 @@ public class InputControl extends HBox {
     private Object escapeValue(final Object value) {
         if (this.type.getCategory() == TypeCategory.OPTIONAL) {
             assert value instanceof Optional;
-            return ((Optional<?>)value).orElse(null);
+            return ((Optional<?>) value).orElse(null);
         } else {
             return value;
         }
@@ -236,7 +241,6 @@ public class InputControl extends HBox {
 
     /**
      * Validates a character input
-     *
      *
      * @param textValue the input for the character, must be != null
      * @return OK if the input consists of exactly one character, otherwise ERROR
@@ -352,51 +356,6 @@ public class InputControl extends HBox {
     }
 
     /**
-     * Sanitizes a text input
-     * Removes all illegal characters.
-     * The exact behavior depends on the current type category
-     *
-     * @param textValue the current text input
-     * @return the sanitized text input
-     */
-    private String sanitizeString(final String textValue) {
-        assert textValue != null;
-
-        final TypeCategory category = this.currentType.get().getCategory();
-        if (category == TypeCategory.BYTE
-                || category == TypeCategory.SHORT
-                || category == TypeCategory.INTEGER
-                || category == TypeCategory.LONG) {
-            return textValue.replaceAll("[^0-9]", "");
-        } else if (category == TypeCategory.FLOAT || category == TypeCategory.DOUBLE) {
-            return this.sanitizeFloatingPointNumberString(textValue);
-        } else {
-            return textValue;
-        }
-    }
-
-    /**
-     * Sanitizes the input for a floating point number
-     * Ensures that it contains only numbers and at most one dot
-     *
-     * @param textValue the current text input
-     * @return the sanitized text input
-     */
-    private String sanitizeFloatingPointNumberString(final String textValue) {
-        assert textValue != null;
-
-        final String partialSanitized = textValue.replaceAll("[^.0-9]", "");
-        if (partialSanitized.indexOf('.') != partialSanitized.lastIndexOf('.')) {
-            final int firstDotIndex = partialSanitized.indexOf('.');
-            final String firstPart = partialSanitized.substring(0, firstDotIndex + 1);
-            final String lastPart = partialSanitized.substring(firstDotIndex + 1).replaceAll("\\.", "");
-            return firstPart + lastPart;
-        } else {
-            return partialSanitized;
-        }
-    }
-
-    /**
      * Creates an add instance button
      * If the button is clicked, the current value is added to the instances list
      *
@@ -457,6 +416,12 @@ public class InputControl extends HBox {
         }
     }
 
+    /**
+     * Creates a simple input control
+     * This control can handle all primitives, their wrappers, enums, and subtypes of object.
+     * It cannot handle object or optional on its own, as these require an input type dropdown.
+     * After a call to
+     */
     private void createSimpleInputControl() {
         this.currentChangeListeners.clear();
         final TypeCategory category = this.currentType.get().getCategory();
@@ -474,28 +439,16 @@ public class InputControl extends HBox {
         this.onValueChanged.accept(this.value.get());
     }
 
+    /**
+     * Creates the label which is displayed if the control is in readonly mode
+     * The content of the label depends on the current value and type
+     * Sets currentInputControl to the created label
+     */
     private void createReadOnlyLabel() {
         final Label label = new Label();
         this.onValueChanged = (value) -> {
             if (value != null) {
-                switch (this.currentType.get().getCategory()) {
-                    case OBJECT, COMPLEX -> {
-                        final Optional<InstanceViewModel> instanceViewModel = this.inspectionViewModel.getViewModelForObject(value);
-                        if (instanceViewModel.isPresent()) {
-                            label.setText(instanceViewModel.get().nameProperty().get());
-                            this.isNewObjectValue.set(false);
-                        } else {
-                            label.setText("«new»");
-                            this.isNewObjectValue.set(true);
-                        }
-                    }
-                    case ENUM -> {
-                        label.setText(((Enum<?>)value).name());
-                    }
-                    default -> {
-                        label.setText(value.toString());
-                    }
-                }
+                updateLabelText(label, value);
             } else {
                 label.setText("null");
             }
@@ -506,6 +459,39 @@ public class InputControl extends HBox {
         this.currentInputControl = label;
     }
 
+    /**
+     * Updates the text of the label based on the provided value Object
+     * If currentType is OBJECT or COMPLEX, also updates isNewObjectValue
+     *
+     * @param label the Label to set the text of
+     * @param value the current value
+     */
+    private void updateLabelText(final Label label, final Object value) {
+        switch (this.currentType.get().getCategory()) {
+            case OBJECT, COMPLEX -> {
+                final Optional<InstanceViewModel> instanceViewModel = this.inspectionViewModel.getViewModelForObject(value);
+                if (instanceViewModel.isPresent()) {
+                    label.setText(instanceViewModel.get().nameProperty().get());
+                    this.isNewObjectValue.set(false);
+                } else {
+                    label.setText("«new»");
+                    this.isNewObjectValue.set(true);
+                }
+            }
+            case ENUM -> {
+                label.setText(((Enum<?>) value).name());
+            }
+            default -> {
+                label.setText(value.toString());
+            }
+        }
+    }
+
+    /**
+     * Creates a TextField used for all simple (primitive and wrapper type) inputs.
+     * Adds a ChangeListener, which updates the current value on TextField updates
+     * Also adds a promptText which is displayed if the text field is empty
+     */
     private void createTextField() {
         final TextField textField = new TextField();
         this.currentInputControl = textField;
@@ -516,16 +502,7 @@ public class InputControl extends HBox {
                 textField.setText(null);
             }
         };
-        textField.promptTextProperty().bind(Bindings.createStringBinding(() -> {
-            final String currentValue = textField.getText();
-            final TypeCategory currentCategory = this.currentType.get().getCategory();
-            final boolean isPrimitive = this.currentType.get().isPrimitive();
-            if (!isPrimitive && (currentValue == null || (currentValue.isBlank() && currentCategory != TypeCategory.STRING))) {
-                return "null";
-            } else {
-                return "";
-            }
-        }, this.currentType, textField.textProperty()));
+        createTextFieldPromptBinding(textField);
         final ChangeListener<String> changeListener = (observable, oldValue, newValue) -> {
             final ValidationResult validationResult = this.validateString(newValue);
             this.updateIsValid(validationResult);
@@ -539,6 +516,34 @@ public class InputControl extends HBox {
         this.updateIsValid(validationResult);
     }
 
+    /**
+     * Creates the binding for the prompt text fo a simple type text field.
+     * Adds the binding to the provided TextField
+     * The prompt text display null if the current type is a wrapper and the current value is null or the
+     * current value is blank and the category is not STRING
+     *
+     * @param textField the TextField to add the prompt binding to
+     */
+    private void createTextFieldPromptBinding(TextField textField) {
+        textField.promptTextProperty().bind(Bindings.createStringBinding(() -> {
+            final String currentValue = textField.getText();
+            final TypeCategory currentCategory = this.currentType.get().getCategory();
+            final boolean isPrimitive = this.currentType.get().isPrimitive();
+            if (!isPrimitive && (currentValue == null || (currentValue.isBlank() && currentCategory != TypeCategory.STRING))) {
+                return "null";
+            } else {
+                return "";
+            }
+        }, this.currentType, textField.textProperty()));
+    }
+
+    /**
+     * Creates a ComboBox if the current category is BOOLEAN
+     * Adds true and false to the possible values.
+     * Also adds null, if the current type is a wrapper type
+     * Adds a changeListener which updates the current value on ComboBox selected item changes.
+     * Sets currentInputControl to the generated ComboBox
+     */
     private void createBooleanComboBox() {
         final ComboBox<String> comboBox = new ComboBox<>(FXCollections.observableList(
                 this.currentType.get().isPrimitive() ? Arrays.asList("true", "false") : Arrays.asList("true", "false", "null")));
@@ -546,7 +551,7 @@ public class InputControl extends HBox {
         this.onValueChanged = (value) -> {
             if (value == null) {
                 comboBox.setValue("null");
-            } else if ((boolean)value) {
+            } else if ((boolean) value) {
                 comboBox.setValue("true");
             } else {
                 comboBox.setValue("false");
@@ -566,6 +571,12 @@ public class InputControl extends HBox {
         this.validateComboBoxValue(comboBox.getValue());
     }
 
+    /**
+     * Creates a ComboBox if the current category is ENUM.
+     * Adds all possible enum values, including null to the items list.
+     * Adds a changeListener which updates the current value on ComboBox selected item changes.
+     * Sets currentInputControl to the generated ComboBox
+     */
     private void createEnumComboBox() {
         assert this.currentType.get().getCategory() == TypeCategory.ENUM;
 
@@ -574,11 +585,7 @@ public class InputControl extends HBox {
         final ComboBox<Object> comboBox = new SearchableComboBox<>(FXCollections.observableList(enumValues));
         this.currentInputControl = comboBox;
         this.onValueChanged = (value) -> {
-            if (value == null) {
-                comboBox.setValue("null");
-            } else {
-                comboBox.setValue(value);
-            }
+            comboBox.setValue(Objects.requireNonNullElse(value, "null"));
         };
         final ChangeListener<Object> changeListener = (observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -595,6 +602,11 @@ public class InputControl extends HBox {
         this.validateComboBoxValue(comboBox.getValue());
     }
 
+    /**
+     *  Creates a ComboBox if the current category is any object category.
+     *  Adds a changeListener which updates the current value on ComboBox selected item changes.
+     *  Sets currentInputControl to the generated ComboBox
+     */
     private void createObjectComboBox() {
         final ComboBox<OptionalInstance> comboBox = new SearchableComboBox<>();
         this.currentInputControl = comboBox;
@@ -608,7 +620,20 @@ public class InputControl extends HBox {
         this.onValueChanged = value -> {
             this.updateObjectComboBox(comboBox, value);
         };
-        final ChangeListener<OptionalInstance> changeListener = (observable, oldValue, newValue) -> {
+        final ChangeListener<OptionalInstance> changeListener = createObjectComboBoxChangeHandler();
+        comboBox.valueProperty().addListener(new WeakChangeListener<>(changeListener));
+        this.currentChangeListeners.add(changeListener);
+        this.validateComboBoxValue(comboBox.getValue());
+    }
+
+    /**
+     * Creates a ChangeHandler called when the value of the objectComboBox changes
+     * which updates the current value, and isNewObjectValue
+     *
+     * @return the generated ChangeListener
+     */
+    private ChangeListener<OptionalInstance> createObjectComboBoxChangeHandler() {
+        return (observable, oldValue, newValue) -> {
             if (newValue != null) {
                 this.validateComboBoxValue(newValue);
                 if (newValue.instance().isEmpty()) {
@@ -619,11 +644,19 @@ public class InputControl extends HBox {
                 this.isNewObjectValue.set(newValue.isNew());
             }
         };
-        comboBox.valueProperty().addListener(new WeakChangeListener<>(changeListener));
-        this.currentChangeListeners.add(changeListener);
-        this.validateComboBoxValue(comboBox.getValue());
     }
 
+    /**
+     * Updates the items list of the provided ComboBox based on the instances list on the
+     * inspectionViewModel. Each instance is added to the ComboBox if it has a compatible type.
+     * Additionally, a null entry is added.
+     * If the current value of the ComboBox is not already present in the generated items list,
+     * it is added too.
+     * The current value of the ComboBox is set to the OptionalInstance representing the provided value
+     *
+     * @param comboBox the ComboBox to update
+     * @param value the current value
+     */
     private void updateObjectComboBox(final ComboBox<OptionalInstance> comboBox, final Object value) {
         final ObservableList<OptionalInstance> itemsList = FXCollections.observableList(new ArrayList<>());
         final OptionalInstance nullValue = new OptionalInstance(Optional.empty(), "null", false);
@@ -646,10 +679,24 @@ public class InputControl extends HBox {
         comboBox.setValue(itemLookup.get(value));
     }
 
-    private Optional<OptionalInstance> addToObjectList(final ObservableList<OptionalInstance> itemsList, final InstanceViewModel instanceViewModel) {
+    /**
+     * Checks that the value of the instanceViewModel is assignable to the current type, and creates
+     * a new OptionalInstance with the provided instanceViewModel.
+     * Also adds it to the beginning of itemsList
+     *
+     * @param itemsList a list of all items, if an OptionalInstance was created, it is added at the beginning
+     *                  ot this list
+     * @param instanceViewModel the view model representing the instance to convert
+     * @return An optional with the created OptionalInstance if one was created, otherwise an empty Optional
+     */
+    private Optional<OptionalInstance> addToObjectList(final ObservableList<OptionalInstance> itemsList,
+                                                       final InstanceViewModel instanceViewModel) {
         if (this.currentType.get().getCategory() != TypeCategory.COMPLEX
                 || this.currentType.get().getType().isAssignableFrom(instanceViewModel.valueProperty().get().getClass())) {
-            final OptionalInstance newInstance = new OptionalInstance(Optional.of(instanceViewModel.valueProperty().get()), instanceViewModel.nameProperty().get(), false);
+            final OptionalInstance newInstance = new OptionalInstance(
+                    Optional.of(instanceViewModel.valueProperty().get()),
+                    instanceViewModel.nameProperty().get(),
+                    false);
             itemsList.add(0, newInstance);
             return Optional.of(newInstance);
         } else {
@@ -657,6 +704,14 @@ public class InputControl extends HBox {
         }
     }
 
+    /**
+     * Validates the value of an object ComboBox
+     * If it is null, the result is ERROR.
+     * If it is an OptionalInstance with text null, it displays a warning if the current category is not OPTIONAL
+     * Otherwise, the validation result is OK
+     *
+     * @param value the current value of the object ComboBox to validate
+     */
     private void validateComboBoxValue(final Object value) {
         if (value == null) {
             this.updateIsValid(ValidationResult.ERROR);
@@ -667,7 +722,14 @@ public class InputControl extends HBox {
         }
     }
 
-    private static record OptionalInstance(Optional<Object> instance, String text, boolean isNew) {
+    /**
+     * Entry for the object ComboBox
+     *
+     * @param instance the actual instance of the object
+     * @param text     the displayed text
+     * @param isNew    is the value new and not saved to the object bench?
+     */
+    private record OptionalInstance(Optional<Object> instance, String text, boolean isNew) {
 
         @Override
         public String toString() {

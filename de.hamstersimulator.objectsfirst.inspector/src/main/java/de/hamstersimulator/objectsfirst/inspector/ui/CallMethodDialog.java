@@ -6,10 +6,7 @@ import de.hamstersimulator.objectsfirst.inspector.viewmodel.ParamViewModel;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.StringExpression;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -128,13 +125,12 @@ public class CallMethodDialog extends Dialog<List<Object>> {
     private void bindOKButtonToValidation(final List<InputControl> inputControls) {
         final DialogPane dialogPane = this.getDialogPane();
 
-        final List<BooleanProperty> dependentProperties = inputControls.stream()
-                .map(InputControl::isValidProperty)
-                .collect(Collectors.toList());
+        final List<ReadOnlyBooleanProperty> dependentProperties = inputControls.stream()
+                .map(InputControl::isValidProperty).toList();
 
         final BooleanBinding allValid = Bindings.createBooleanBinding(
-                () -> dependentProperties.stream().allMatch(BooleanProperty::get),
-                dependentProperties.toArray(BooleanProperty[]::new));
+                () -> dependentProperties.stream().allMatch(ReadOnlyBooleanProperty::get),
+                dependentProperties.toArray(ReadOnlyBooleanProperty[]::new));
         dialogPane.lookupButton(ButtonType.OK).disableProperty().bind(allValid.not());
     }
 
