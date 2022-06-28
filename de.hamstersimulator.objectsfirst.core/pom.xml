@@ -19,24 +19,24 @@
 	    <dependency>
       		<groupId>org.openjfx</groupId>
     		<artifactId>javafx-base</artifactId>
-    		<version>17.0.2-ea+1</version>
+    		<version>18.0.1</version>
   		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>3.11.2</version>
+			<version>4.6.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.7.2</version>
+			<version>5.8.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.7.2</version>
+			<version>5.8.2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
