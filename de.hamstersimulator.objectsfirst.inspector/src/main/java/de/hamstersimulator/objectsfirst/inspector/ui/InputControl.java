@@ -5,7 +5,6 @@ import de.hamstersimulator.objectsfirst.inspector.model.TypeCategory;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.InspectionViewModel;
 import de.hamstersimulator.objectsfirst.inspector.viewmodel.InstanceViewModel;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringBinding;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.WeakChangeListener;
@@ -124,8 +123,7 @@ public class InputControl extends HBox {
      * Creates the children for the complex UI which is displayed if all input
      * types must be possible (OBJECT and OPTIONAL)
      *
-     * @return The ComboBox used too switch between the different
-     * input possibilities
+     * @return The ComboBox used to switch between the different input possibilities
      */
     private ComboBox<Type> initTypeSwitchingUI() {
         final ComboBox<Type> multiTypeComboBox = this.createMultiTypeComboBox();
@@ -152,12 +150,13 @@ public class InputControl extends HBox {
     }
 
     /**
-     * Parses a value
-     * If the currentType is OPTIONAL, the content of the optional is returned
-     * Otherwise, value is returned
+     * Parses a value.
+     * If the currentType is OPTIONAL, the content of the Optional is returned.
+     * In this case, value must be of type Optional
+     * Otherwise, value is returned.
      *
-     * @param value the value to escape
-     * @return the escaped value
+     * @param value the value to escape, might be null if type.getCategory() != TypeCategory.OPTIONAL
+     * @return the escaped value, might be null
      */
     private Object escapeValue(final Object value) {
         if (this.type.getCategory() == TypeCategory.OPTIONAL) {
@@ -172,7 +171,7 @@ public class InputControl extends HBox {
      * Called when the value changed
      * Guards for changes which are caused internally
      *
-     * @param value the new value
+     * @param value the new value, might be null
      */
     private void handleValueChanged(final Object value) {
         if (!this.changeFromInputControl) {
@@ -206,7 +205,7 @@ public class InputControl extends HBox {
     /**
      * Validates a String input based on the currentType
      *
-     * @param textValue the text to validate
+     * @param textValue the text to validate, might be null
      * @return the ValidationResult
      */
     private ValidationResult validateString(final String textValue) {
@@ -226,12 +225,15 @@ public class InputControl extends HBox {
     }
 
     /**
-     * Validates a String input
+     * Validates a String input if the current type is STRING.
+     * Must not be used if the current type is not String
      *
      * @param textValue the new value (might be null)
      * @return WARNING if textValue is null, otherwise OK
      */
     private ValidationResult validateStringInput(final String textValue) {
+        assert this.currentType.get().getCategory() == TypeCategory.STRING;
+
         if (textValue == null) {
             return ValidationResult.WARNING;
         } else {
@@ -284,11 +286,14 @@ public class InputControl extends HBox {
     }
 
     /**
-     * Updates isValid and sets style classes based on a ValidationResult
+     * Updates isValid and sets style classes based on a ValidationResult.
+     * Sets isValid to validationResult != ERROR.
      *
-     * @param validationResult the result of the latest input validation
+     * @param validationResult the result of the latest input validation, must be != null
      */
     private void updateIsValid(final ValidationResult validationResult) {
+        assert validationResult != null;
+
         final ObservableList<String> styleClass = this.currentInputControl.getStyleClass();
         styleClass.remove("error");
         styleClass.remove("warning");
@@ -304,6 +309,7 @@ public class InputControl extends HBox {
                 this.isValid.set(false);
                 styleClass.add("error");
             }
+            default -> throw new IllegalStateException("Unknown validation result");
         }
     }
 
@@ -338,7 +344,7 @@ public class InputControl extends HBox {
 
     /**
      * Sets the current value
-     * changeFromInputControl is temporarily set to true, to
+     * changeFromInputControl is temporarily set to true to
      * prevent the listener.
      * If the current type requires an Optional, the value
      * is wrapped in an Optional
@@ -418,8 +424,8 @@ public class InputControl extends HBox {
 
     /**
      * Creates a simple input control
-     * This control can handle all primitives, their wrappers, enums, and subtypes of object.
-     * It cannot handle object or optional on its own, as these require an input type dropdown.
+     * This control can handle all primitives, their wrappers, enums, and subtypes of Object.
+     * It cannot handle Object or Optional on its own, as these require an input type dropdown.
      * After a call to
      */
     private void createSimpleInputControl() {
@@ -603,7 +609,7 @@ public class InputControl extends HBox {
     }
 
     /**
-     *  Creates a ComboBox if the current category is any object category.
+     *  Creates a ComboBox if the current category is any Object category.
      *  Adds a changeListener which updates the current value on ComboBox selected item changes.
      *  Sets currentInputControl to the generated ComboBox
      */
@@ -627,7 +633,7 @@ public class InputControl extends HBox {
     }
 
     /**
-     * Creates a ChangeHandler called when the value of the objectComboBox changes
+     * Creates a ChangeHandler called when the value of the Object ComboBox changes
      * which updates the current value, and isNewObjectValue
      *
      * @return the generated ChangeListener
@@ -687,7 +693,7 @@ public class InputControl extends HBox {
      * @param itemsList a list of all items, if an OptionalInstance was created, it is added at the beginning
      *                  ot this list
      * @param instanceViewModel the view model representing the instance to convert
-     * @return An optional with the created OptionalInstance if one was created, otherwise an empty Optional
+     * @return An Optional with the created OptionalInstance if one was created, otherwise an empty Optional
      */
     private Optional<OptionalInstance> addToObjectList(final ObservableList<OptionalInstance> itemsList,
                                                        final InstanceViewModel instanceViewModel) {
@@ -705,12 +711,12 @@ public class InputControl extends HBox {
     }
 
     /**
-     * Validates the value of an object ComboBox
+     * Validates the value of an Object ComboBox
      * If it is null, the result is ERROR.
      * If it is an OptionalInstance with text null, it displays a warning if the current category is not OPTIONAL
      * Otherwise, the validation result is OK
      *
-     * @param value the current value of the object ComboBox to validate
+     * @param value the current value of the Object ComboBox to validate
      */
     private void validateComboBoxValue(final Object value) {
         if (value == null) {
@@ -723,11 +729,11 @@ public class InputControl extends HBox {
     }
 
     /**
-     * Entry for the object ComboBox
+     * Entry for the Object ComboBox
      *
-     * @param instance the actual instance of the object
+     * @param instance the actual instance of the Object
      * @param text     the displayed text
-     * @param isNew    is the value new and not saved to the object bench?
+     * @param isNew    is the value new and not saved to the Object bench?
      */
     private record OptionalInstance(Optional<Object> instance, String text, boolean isNew) {
 
