@@ -11,7 +11,6 @@ public class InspectableJavaFXUI {
     /*@
      @ requires true;
      @*/
-
     /**
      * Displays the hamster game and the class/instance inspector associated with the provided hamster game adapter
      * in a new window.
