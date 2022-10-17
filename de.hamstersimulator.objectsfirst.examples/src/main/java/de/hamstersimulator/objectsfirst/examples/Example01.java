@@ -1,7 +1,5 @@
 package de.hamstersimulator.objectsfirst.examples;
 
-import de.hamstersimulator.objectsfirst.ui.javafx.JavaFXUI;
-
 /**
  * First hamster program used in lecture 2. The initial version used the predefined reference to
  * paule (the default hamster) and exemplifies calling methods on that object.
@@ -22,8 +20,9 @@ class Example01 extends SimpleHamsterGame {
      */
     @Override
     protected void run() {
-        JavaFXUI.displayInNewGameWindow(game.getModelViewAdapter());
         game.initialize();
+        game.displayInNewGameWindow();
+
         for (int i = 0; i < SCENARIO_REPETITION_COUNT; i++) {
             paule.write("Hallo!");
             paule.move();

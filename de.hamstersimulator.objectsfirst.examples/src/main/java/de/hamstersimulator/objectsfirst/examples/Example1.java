@@ -1,13 +1,12 @@
 package de.hamstersimulator.objectsfirst.examples;
 
-import de.hamstersimulator.objectsfirst.ui.javafx.JavaFXUI;
-
 class Example1 extends SimpleHamsterGame {
 
     @Override
     protected void run() {
-        JavaFXUI.displayInNewGameWindow(game.getModelViewAdapter());
+        game.displayInNewGameWindow();
         game.initialize();
+
         paule.move();
         paule.move();
         paule.pickGrain();
