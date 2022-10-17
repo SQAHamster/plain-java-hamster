@@ -1,7 +1,5 @@
 package de.hamstersimulator.objectsfirst.examples;
 
-import de.hamstersimulator.objectsfirst.ui.javafx.JavaFXUI;
-
 class Example03 extends SimpleHamsterGame {
 
     /**
@@ -12,7 +10,7 @@ class Example03 extends SimpleHamsterGame {
     @Override
     protected void run() {
         game.initialize();
-        JavaFXUI.displayInNewGameWindow(game.getModelViewAdapter());
+        game.displayInNewGameWindow();
 
         doubleMove();
     }
