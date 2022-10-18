@@ -2,13 +2,12 @@ package de.hamstersimulator.objectsfirst.teaching.lecture08;
 
 import de.hamstersimulator.objectsfirst.teaching.base.SimpleHamsterGameBase;
 
-class Example03 extends SimpleHamsterGameBase {
+class Example03 extends SimpleHamsterGame {
 
     /**
      * Another hamster program. It demonstrates a double move.
      */
-    @Override
-    protected void run() {
+    void run() {
         game.initialize();
         game.displayInNewGameWindow();
 

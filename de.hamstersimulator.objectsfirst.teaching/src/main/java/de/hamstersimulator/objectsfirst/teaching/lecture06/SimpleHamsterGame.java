@@ -11,4 +11,11 @@ public abstract class SimpleHamsterGame extends SimpleHamsterGameBase {
         final SimpleHamsterGameBase example = new Example02();
         example.doRun();
     }
+
+    @Override
+    protected void abstractRun() {
+        run();
+    }
+
+    abstract void run();
 }

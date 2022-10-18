@@ -21,7 +21,7 @@ class Advanced extends SimpleHamsterGameBase {
      * and finally return to his initial tile.
      */
     @Override
-    protected void run() {
+    protected void abstractRun() {
         game.initialize();
         game.displayInNewGameWindow();
 
