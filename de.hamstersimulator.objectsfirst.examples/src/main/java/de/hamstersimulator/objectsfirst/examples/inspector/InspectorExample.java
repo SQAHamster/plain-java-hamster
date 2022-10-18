@@ -1,9 +1,20 @@
-package de.hamstersimulator.objectsfirst.examples;
+package de.hamstersimulator.objectsfirst.examples.inspector;
 
 import de.hamstersimulator.objectsfirst.inspector.InspectableSimpleHamsterGame;
 
+/**
+ * This class demonstrates how to start the hamster simulator in the
+ * inspector mode. In this mode, users can see the classes and objects
+ * used in the simulator and they can manipulate them manually at runtime in
+ * a similar way as the Greenfoot IDE does.
+ */
 public class InspectorExample extends InspectableSimpleHamsterGame {
 
+    /**
+     * Main method which instantiates a new hamster game using the
+     * object inspector mode and runs it.
+     * @param args Not used in this case
+     */
     public static void main(String[] args) {
         InspectorExample game = new InspectorExample();
         game.game.initialize();

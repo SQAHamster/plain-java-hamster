@@ -1,9 +1,8 @@
-package de.hamstersimulator.objectsfirst.examples;
+package de.hamstersimulator.objectsfirst.teaching.lecture02;
 
-class Example01a extends SimpleHamsterGame {
+class Example01_Pseudo_Code extends SimpleHamsterGame {
 
     // Run our first hamster game
-    @Override
     protected void run() {
        // Init UI
        // Init Territory

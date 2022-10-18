@@ -1,9 +1,8 @@
-package de.hamstersimulator.objectsfirst.examples;
+package de.hamstersimulator.objectsfirst.teaching.lecture02;
 
-class Example1 extends SimpleHamsterGame {
+class Example01 extends SimpleHamsterGame {
 
-    @Override
-    protected void run() {
+     void run() {
         game.displayInNewGameWindow();
         game.initialize();
 
