@@ -1,4 +1,6 @@
-package de.hamstersimulator.objectsfirst.examples;
+package de.hamstersimulator.objectsfirst.teaching.advanced;
+
+import de.hamstersimulator.objectsfirst.teaching.base.SimpleHamsterGameBase;
 
 /**
  * First hamster program used in lecture 2. The initial version used the predefined reference to
@@ -7,7 +9,7 @@ package de.hamstersimulator.objectsfirst.examples;
  * @author Steffen Becker
  *
  */
-class Example01 extends SimpleHamsterGame {
+class Advanced extends SimpleHamsterGameBase {
 
     /**
      * How often Paule should repeat its behaviour.

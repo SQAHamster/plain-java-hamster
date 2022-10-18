@@ -1,4 +1,4 @@
-package de.hamstersimulator.objectsfirst.examples;
+package de.hamstersimulator.objectsfirst.examples.api;
 
 import de.hamstersimulator.objectsfirst.datatypes.Direction;
 import de.hamstersimulator.objectsfirst.datatypes.Location;
@@ -11,6 +11,8 @@ import de.hamstersimulator.objectsfirst.ui.javafx.JavaFXUI;
 
 /**
  * Class demonstrating the intended use of the hamster simulator API.
+ * In particular, this demo does intentionally not rely on the
+ * SimpleHamsterGame class as base class.
  * @author Steffen Becker
  *
  */

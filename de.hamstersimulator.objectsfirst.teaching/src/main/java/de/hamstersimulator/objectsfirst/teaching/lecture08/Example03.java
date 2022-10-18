@@ -1,11 +1,11 @@
-package de.hamstersimulator.objectsfirst.examples;
+package de.hamstersimulator.objectsfirst.teaching.lecture08;
 
-class Example03 extends SimpleHamsterGame {
+import de.hamstersimulator.objectsfirst.teaching.base.SimpleHamsterGameBase;
+
+class Example03 extends SimpleHamsterGameBase {
 
     /**
-     * Another hamster program. The idea is to create
-     * Paula close to Paula with
-     * grain in her mouth. She drops it and Paule picks it up.     
+     * Another hamster program. It demonstrates a double move.
      */
     @Override
     protected void run() {

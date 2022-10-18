@@ -1,5 +1,8 @@
 /**
- * Hamstersimulator example classes
+ * Hamstersimulator example classes.
+ * The code in this module demonstrates capabilities of the
+ * Hamstersimulator core APIs and shows intended good uses of it.
+ *
  * @author Steffen Becker
  *
  */

@@ -37,6 +37,9 @@
             de.hamstersimulator.objectsfirst.examples
         </module>
         <module>
+            de.hamstersimulator.objectsfirst.teaching
+        </module>
+        <module>
             de.hamstersimulator.objectsfirst.config
         </module>
         <module>
