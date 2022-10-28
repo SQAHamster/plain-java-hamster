@@ -1,4 +1,4 @@
-package de.hamstersimulator.objectsfirst.main.tests;
+package de.hamstersimulator.objectsfirst.examples.api;
 
 import de.hamstersimulator.objectsfirst.datatypes.Direction;
 import de.hamstersimulator.objectsfirst.datatypes.Location;
@@ -15,7 +15,7 @@ import java.io.IOException;
  *
  * @author Steffen Becker
  */
-public final class Main {
+public final class MainAPIDemo {
 
     /**
      * Constant containing the filename of the default territory file.
@@ -31,7 +31,7 @@ public final class Main {
         JavaFXUI.start();
 
         final HamsterGame game = new HamsterGame();
-        game.initialize(Main.class.getResourceAsStream(Main.DEFAULT_HAMSTER_TERRITORY));
+        game.initialize(MainAPIDemo.class.getResourceAsStream(MainAPIDemo.DEFAULT_HAMSTER_TERRITORY));
 
         JavaFXUI.openSceneFor(inputInterface -> {
             game.getModelViewAdapter().addInputInterface(inputInterface);
@@ -42,7 +42,12 @@ public final class Main {
                 return null;
             }
         });
-        game.runGame(Main::exampleRun);
+        game.startGame();
+        try {
+            game.runGame(MainAPIDemo::exampleRun);
+        } finally {
+        	game.stopGame();
+        }
     }
 
     /**
@@ -85,6 +90,6 @@ public final class Main {
     /**
      * Default constructor, only the VM should create instances of this.
      */
-    private Main() {
+    private MainAPIDemo() {
     }
 }
